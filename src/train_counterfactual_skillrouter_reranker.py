@@ -56,12 +56,12 @@ from src.common import (  # noqa: E402
     get_reranker_template_tokens,
     tokenize_reranker_text,
 )
-from src import train_counterfactual_skillrouter_reranker as listwise_train  # noqa: E402
+from src import train_counterfactual_skillrouter_reranker_listwise as listwise_train  # noqa: E402
 
 
 LOGGER = logging.getLogger("train_skillrouter_reranker_final_v1")
 DEFAULT_TRAIN_FILE = (
-    "PAPER_PREPARE/DATA_AUGMENT/counterfactual_rerank_training_pairs_latest.jsonl"
+    "PREPARE_DATA/counterfactual_rerank_training_pairs_latest.jsonl"
 )
 TRAINING_FIELDS = [
     "instruction_text",
