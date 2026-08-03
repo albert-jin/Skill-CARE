@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:15:53",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 77695,
+  "selection_rank": 172,
+  "skill": {
+    "skill_id": "data/clinical-trial-matcher",
+    "name": "Clinical Trial Matcher",
+    "category": "data",
+    "description": "description: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.",
+    "body": "---name: clinical-trial-matcher\ndescription: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.\n\nkeywords:\n  - clinical-trial-matcher\n  - automation\n  - biomedical\nmeasurable_outcome: execute task with >95% success rate.\n---\"\n# Clinical Trial Matcher\n\nThis skill matches a patient's clinical profile against a database of active clinical trials (ClinicalTrials.gov).\n\n## When to use this skill\n- When the user provides a patient case summary, medical history, or specific diagnosis.\n- When the user explicitly asks to \"find trials\" or \"recruit patients\".\n- When evaluating eligibility criteria for a specific trial.\n\n## How to use it\n1.  **Extract Patient Data:** Identify key demographics (age, sex), primary diagnosis, stage of disease, and prior lines of therapy from the user's input.\n2.  **Search Vector Database:**\n    -   Generate an embedding for the patient summary.\n    -   Query the `trials_vector_db` for top 20 semantic matches.\n3.  **Filter by Logic:**\n    -   Apply hard filters: `status=Recruiting`, `phase!=Terminated`.\n    -   Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").\n4.  **Format Output:**\n    -   Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic).\n    -   Highlight any potential exclusion criteria that need verification.",
+    "source": "pool"
+  },
+  "generated_query": "Help me find open clinical trials for a 62-year-old woman newly diagnosed with stage IIIB non-small cell lung cancer (adenocarcinoma). She has an EGFR exon 19 deletion, ECOG performance status 1, and no prior systemic therapy. She does have well-controlled hypertension but no other significant comorbidities. Please list suitable recruiting trials, explaining why each might be a fit and noting any potential exclusion criteria I should verify.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "    -   Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").",
+          "replacement_text": "",
+          "rationale": "Without checking inclusion/exclusion criteria, the skill would retrieve trials that are semantically similar but may not actually match the patient's specific mutations and treatment history.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: clinical-trial-matcher\ndescription: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.\n\nkeywords:\n  - clinical-trial-matcher\n  - automation\n  - biomedical\nmeasurable_outcome: execute task with >95% success rate.\n---\"\n# Clinical Trial Matcher\n\nThis skill matches a patient's clinical profile against a database of active clinical trials (ClinicalTrials.gov).\n\n## When to use this skill\n- When the user provides a patient case summary, medical history, or specific diagnosis.\n- When the user explicitly asks to \"find trials\" or \"recruit patients\".\n- When evaluating eligibility criteria for a specific trial.\n\n## How to use it\n1.  **Extract Patient Data:** Identify key demographics (age, sex), primary diagnosis, stage of disease, and prior lines of therapy from the user's input.\n2.  **Search Vector Database:**\n    -   Generate an embedding for the patient summary.\n    -   Query the `trials_vector_db` for top 20 semantic matches.\n3.  **Filter by Logic:**\n    -   Apply hard filters: `status=Recruiting`, `phase!=Terminated`.\n\n4.  **Format Output:**\n    -   Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic).\n    -   Highlight any potential exclusion criteria that need verification."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Query the `trials_vector_db` for top 20 semantic matches.",
+          "replacement_text": "Query a local CSV database using keyword matching on trial titles and conditions.",
+          "rationale": "The skill now only performs keyword matching, which will fail to retrieve trials with specific molecular criteria like EGFR exon 19 deletion, making it unable to match the patient's profile accurately.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: clinical-trial-matcher\ndescription: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.\n\nkeywords:\n  - clinical-trial-matcher\n  - automation\n  - biomedical\nmeasurable_outcome: execute task with >95% success rate.\n---\"\n# Clinical Trial Matcher\n\nThis skill matches a patient's clinical profile against a database of active clinical trials (ClinicalTrials.gov).\n\n## When to use this skill\n- When the user provides a patient case summary, medical history, or specific diagnosis.\n- When the user explicitly asks to \"find trials\" or \"recruit patients\".\n- When evaluating eligibility criteria for a specific trial.\n\n## How to use it\n1.  **Extract Patient Data:** Identify key demographics (age, sex), primary diagnosis, stage of disease, and prior lines of therapy from the user's input.\n2.  **Search Vector Database:**\n    -   Generate an embedding for the patient summary.\n    -   Query a local CSV database using keyword matching on trial titles and conditions.\n3.  **Filter by Logic:**\n    -   Apply hard filters: `status=Recruiting`, `phase!=Terminated`.\n    -   Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").\n4.  **Format Output:**\n    -   Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic).\n    -   Highlight any potential exclusion criteria that need verification."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Identify key demographics (age, sex), primary diagnosis, stage of disease, and prior lines of therapy from the user's input.",
+          "replacement_text": "Identify only age and primary diagnosis from the user's input. Omit mutation status, performance status, and comorbidities.",
+          "rationale": "By ignoring mutation status and performance status, the skill cannot tailor matches to the patient's specific biomarkers, missing key inclusion criteria like EGFR mutation.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "-   Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic).\n    -   Highlight any potential exclusion criteria that need verification.",
+          "replacement_text": "-   Present matches as a simple list of NCT numbers and titles without additional explanations or criteria notes.",
+          "rationale": "By omitting the explanations and exclusion criteria, the output fails to provide the reasoning and verification notes the user explicitly requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: clinical-trial-matcher\ndescription: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.\n\nkeywords:\n  - clinical-trial-matcher\n  - automation\n  - biomedical\nmeasurable_outcome: execute task with >95% success rate.\n---\"\n# Clinical Trial Matcher\n\nThis skill matches a patient's clinical profile against a database of active clinical trials (ClinicalTrials.gov).\n\n## When to use this skill\n- When the user provides a patient case summary, medical history, or specific diagnosis.\n- When the user explicitly asks to \"find trials\" or \"recruit patients\".\n- When evaluating eligibility criteria for a specific trial.\n\n## How to use it\n1.  **Extract Patient Data:** Identify only age and primary diagnosis from the user's input. Omit mutation status, performance status, and comorbidities.\n2.  **Search Vector Database:**\n    -   Generate an embedding for the patient summary.\n    -   Query the `trials_vector_db` for top 20 semantic matches.\n3.  **Filter by Logic:**\n    -   Apply hard filters: `status=Recruiting`, `phase!=Terminated`.\n    -   Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").\n4.  **Format Output:**\n    -   Present matches as a simple list of NCT numbers and titles without additional explanations or criteria notes."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").",
+          "replacement_text": "- Optionally check inclusion/exclusion criteria (e.g., matching on disease type).",
+          "rationale": "By making the EGFR mutation check optional and removing the specific mutation requirement, the skill would not enforce a critical eligibility criterion for the patient's EGFR exon 19 deletion.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "---name: clinical-trial-finder\ndescription: Retrieves open clinical trials for a given condition or drug name from ClinicalTrials.gov. Use when a user asks for general trial listings.\n\nkeywords:\n  - clinical-trial-finder\n  - automation\n  - biomedical\nmeasurable_outcome: return a list of trials with >90% accuracy for given condition.\n---\n# Clinical Trial Finder\n\nThis skill retrieves a current list of clinical trials from ClinicalTrials.gov based on a condition or drug name.\n\n## When to use this skill\n- When the user provides a disease name, drug name, or trial number.\n- When the user asks “what trials exist for [condition]” or “list clinical trials for [drug]”.\n- When the user wants a quick overview of recruiting or active trials in a specific area.\n\n## How to use it\n1.  **Identify Search Terms:** Extract the primary condition (e.g., “non‑small cell lung cancer”) or intervention from the user’s query. If a specific trial ID (NCT number) is given, use that directly.\n2.  **Query the API:**\n    -   Call the ClinicalTrials.gov API with the extracted term(s).\n    -   Use default filters: `status=Recruiting` (unless user specifies otherwise).\n    -   Limit results to the top 20 matches by relevance.\n3.  **Format Output:**\n    -   Present each trial as: NCT number, Title, Sponsor, Phase, and a brief description from the trial summary.\n    -   No filtering or eligibility checking is performed; all retrieved trials are shown.\n    -   If the user asks for eligibility details, note that they should review the full criteria on ClinicalTrials.gov.\n\n## Limitations\nThis skill does **not** match patient‑specific demographics, mutations, or performance status. It only retrieves trials by condition or drug name. For personalized trial matching, a separate clinical‑trial‑matcher skill should be used."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria.",
+          "replacement_text": "Matches research questions to historical clinical trial data using vector similarity.",
+          "rationale": "Changes the core purpose from patient-trial matching to research-question matching, making it irrelevant for finding trials for a specific patient.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- When the user provides a patient case summary, medical history, or specific diagnosis.",
+          "replacement_text": "- When the user provides a research hypothesis or clinical question.",
+          "rationale": "Redirects the skill to respond to research inquiries instead of patient-specific queries, so it will not extract or use patient demographics or diagnosis.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic). Highlight any potential exclusion criteria that need verification.",
+          "replacement_text": "Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and a summary of the trial's key results.",
+          "rationale": "Removes the patient-specific matching logic and exclusion criteria highlight, so the output will not explain why a trial fits a patient or flag contraindications.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 2 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "---name: clinical-trial-finder\ndescription: Searches for active clinical trials by disease name and geographic location. Use when a user wants to find trials for a given condition or region.\n\nkeywords:\n  - clinical-trial-finder\n  - search\n  - trials-location\nmeasurable_outcome: return a list of recruiting trials matching the disease and location with >90% accuracy.\n---\n# Clinical Trial Finder\n\nThis skill retrieves recruiting clinical trials from ClinicalTrials.gov based on the disease name and optionally a country or city.\n\n## When to use this skill\n- When the user asks to \"find clinical trials for [disease]\".\n- When the user wants trials \"near me\" or in a specific region.\n- When broad disease‑level searches are needed without detailed patient‐specific filters.\n\n## How to use it\n1.  **Extract Disease and Location:** Identify the primary disease name (e.g., \"non‑small cell lung cancer\") and any location mentioned (e.g., \"United States\", \"Texas\", \"Houston\").\n2.  **Query ClinicalTrials.gov API:**\n    -   Build a query string: `?cond=<disease>&recr=Recruiting&locn=<location>`.\n    -   Optionally limit results to top 20.\n3.  **Format Output:**\n    -   Display trials in a simple list: NCT number, title, phase, sponsor, and location.\n    -   Include the recruitment status (always \"Recruiting\" by the filter).\n\nNote: This skill does **not** incorporate patient‑level criteria such as age, mutation status, performance status, or prior therapies. It returns all recruiting trials for that disease in the given location. Users must manually verify detailed eligibility with the trial contact."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").",
+          "replacement_text": "",
+          "rationale": "Without checking inclusion/exclusion criteria, the skill cannot evaluate specific mutation or prior therapy requirements, so it would list trials that may be ineligible for the patient.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: clinical-trial-matcher\ndescription: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.\n\nkeywords:\n  - clinical-trial-matcher\n  - automation\n  - biomedical\nmeasurable_outcome: execute task with >95% success rate.\n---\"\n# Clinical Trial Matcher\n\nThis skill matches a patient's clinical profile against a database of active clinical trials (ClinicalTrials.gov).\n\n## When to use this skill\n- When the user provides a patient case summary, medical history, or specific diagnosis.\n- When the user explicitly asks to \"find trials\" or \"recruit patients\".\n- When evaluating eligibility criteria for a specific trial.\n\n## How to use it\n1.  **Extract Patient Data:** Identify key demographics (age, sex), primary diagnosis, stage of disease, and prior lines of therapy from the user's input.\n2.  **Search Vector Database:**\n    -   Generate an embedding for the patient summary.\n    -   Query the `trials_vector_db` for top 20 semantic matches.\n3.  **Filter by Logic:**\n    -   Apply hard filters: `status=Recruiting`, `phase!=Terminated`.\n    -   \n4.  **Format Output:**\n    -   Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic).\n    -   Highlight any potential exclusion criteria that need verification."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "-   Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").",
+          "replacement_text": "",
+          "rationale": "Without checking inclusion/exclusion criteria, the skill cannot verify if the patient's EGFR mutation or prior therapy status matches trial requirements, failing to provide valid fit explanations.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: clinical-trial-matcher\ndescription: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.\n\nkeywords:\n  - clinical-trial-matcher\n  - automation\n  - biomedical\nmeasurable_outcome: execute task with >95% success rate.\n---\"\n# Clinical Trial Matcher\n\nThis skill matches a patient's clinical profile against a database of active clinical trials (ClinicalTrials.gov).\n\n## When to use this skill\n- When the user provides a patient case summary, medical history, or specific diagnosis.\n- When the user explicitly asks to \"find trials\" or \"recruit patients\".\n- When evaluating eligibility criteria for a specific trial.\n\n## How to use it\n1.  **Extract Patient Data:** Identify key demographics (age, sex), primary diagnosis, stage of disease, and prior lines of therapy from the user's input.\n2.  **Search Vector Database:**\n    -   Generate an embedding for the patient summary.\n    -   Query the `trials_vector_db` for top 20 semantic matches.\n3.  **Filter by Logic:**\n    -   Apply hard filters: `status=Recruiting`, `phase!=Terminated`.\n    \n4.  **Format Output:**\n    -   Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic).\n    -   Highlight any potential exclusion criteria that need verification."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1.  **Extract Patient Data:** Identify key demographics (age, sex), primary diagnosis, stage of disease, and prior lines of therapy from the user's input.\n2.  **Search Vector Database:**\n    -   Generate an embedding for the patient summary.\n    -   Query the `trials_vector_db` for top 20 semantic matches.\n3.  **Filter by Logic:**\n    -   Apply hard filters: `status=Recruiting`, `phase!=Terminated`.\n    -   Check inclusion/exclusion criteria (e.g., \"Must have EGFR mutation\", \"No prior immunotherapy\").\n4.  **Format Output:**\n    -   Present matches in a structured list: Trial ID (`NCT number`), Title, Phase, and \"Why it fits\" (matching logic).\n    -   Highlight any potential exclusion criteria that need verification.",
+          "replacement_text": "1.  **Extract Patient Data:** Identify keywords from the patient's description (e.g., diagnosis, age range).\n2.  **Search Database:** Run a simple keyword search against clinical trial titles and summaries.\n3.  **Return Results:** Present a flat list of trials matching the keywords.",
+          "rationale": "This edit replaces the vector similarity and eligibility filtering with a basic keyword search, which cannot check required mutations or recruiting status, thus failing the query's need for specific criteria matching.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: clinical-trial-matcher\ndescription: Matches patient profiles to open clinical trials using vector similarity and inclusion/exclusion criteria. Use when a user provides patient data and asks for relevant trials.\n\nkeywords:\n  - clinical-trial-matcher\n  - automation\n  - biomedical\nmeasurable_outcome: execute task with >95% success rate.\n---\"\n# Clinical Trial Matcher\n\nThis skill matches a patient's clinical profile against a database of active clinical trials (ClinicalTrials.gov).\n\n## When to use this skill\n- When the user provides a patient case summary, medical history, or specific diagnosis.\n- When the user explicitly asks to \"find trials\" or \"recruit patients\".\n- When evaluating eligibility criteria for a specific trial.\n\n## How to use it\n1.  **Extract Patient Data:** Identify keywords from the patient's description (e.g., diagnosis, age range).\n2.  **Search Database:** Run a simple keyword search against clinical trial titles and summaries.\n3.  **Return Results:** Present a flat list of trials matching the keywords."
+    }
+  ],
+  "finished_at": "2026-07-28T21:18:10",
+  "elapsed_seconds": 136.375,
+  "generated_variants": 8
+}

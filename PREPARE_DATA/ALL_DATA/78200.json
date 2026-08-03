@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:48:24",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 78200,
+  "selection_rank": 36,
+  "skill": {
+    "skill_id": "gt/energy-calculator",
+    "name": "energy-calculator",
+    "category": "gt",
+    "description": "Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.",
+    "body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills",
+    "source": "gt"
+  },
+  "generated_query": "I have a 30-minute podcast recording saved as `podcast_interview.wav` in my working directory. I need to find the silent pauses between speakers to edit them out. Could you calculate the RMS energy for each one-second window and save the results to a file called `energy_profile.json`? I’ll use that to detect where the silent parts are.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`",
+          "replacement_text": "",
+          "rationale": "Without the RMS calculation step, the skill cannot compute energy values, so the output would be empty or meaningless, failing the user's need for an energy profile.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json",
+          "replacement_text": "python3 /root/.claude/skills/energy-calculator/scripts/calc_peak_amplitude.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/peaks.json",
+          "rationale": "The script now calculates peak amplitude instead of RMS energy, so it cannot produce the energy profile needed for silence detection.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"energies\": [123.5, 456.7, 234.2, ...],",
+          "replacement_text": "\"peaks\": [0.8, 0.9, 0.6, ...],",
+          "rationale": "Changing the output field name from 'energies' to 'peaks' makes the result incompatible with downstream tasks expecting an energy profile.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_peak_amplitude.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/peaks.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"peaks\": [0.8, 0.9, 0.6, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"energies\": [123.5, 456.7, 234.2, ...],",
+          "replacement_text": "\"total_energy\": 345.6",
+          "rationale": "The skill no longer outputs per-window energies, so it cannot provide the energy profile needed for pause detection.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"total_energy\": 345.6\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Window size for energy calculation (default: 1 second)",
+          "replacement_text": "Window size for energy calculation (default: 5 seconds)",
+          "rationale": "Changes the default window size from 1 second to 5 seconds, so the skill will not produce the per-second energy profile the user expects unless they override the default.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Split into 1-second windows",
+          "replacement_text": "Split into 5-second windows",
+          "rationale": "Further reinforces the changed window size, making the skill's default behavior inconsistent with the user's one-second requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 5 seconds)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 5-second windows\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "description: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.",
+          "replacement_text": "description: Calculate per-second spectral centroid from audio files. Use when you need to analyze timbre characteristics, prepare data for music genre classification, or create a spectral profile for audio analysis tasks.",
+          "rationale": "Changes the core metric from RMS energy to spectral centroid, so the skill no longer computes the silence-relevant energy profile the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. Load audio file\n2. Split into 1-second windows\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output array of energy values",
+          "replacement_text": "1. Load audio file\n2. Split into 1-second windows\n3. Calculate spectral centroid (weighted mean of frequencies) for each window\n4. Output array of centroid values",
+          "rationale": "Replaces the RMS energy calculation with spectral centroid, making the output unusable for silence/pause detection.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second spectral centroid from audio files. Use when you need to analyze timbre characteristics, prepare data for music genre classification, or create a spectral profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n3. Calculate spectral centroid (weighted mean of frequencies) for each window\n4. Output array of centroid values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Calculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.",
+          "replacement_text": "Calculates RMS (Root Mean Square) energy and statistics from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.",
+          "rationale": "Removing 'per-second' over-generalizes the capability so the skill no longer explicitly promises per-second windows, which the user relies on.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`--window-seconds`: Window size for energy calculation (default: 1 second)",
+          "replacement_text": "`--window-seconds`: (optional) Window size for energy calculation; if not specified, computes overall energy for the entire audio file.",
+          "rationale": "Changing the default from 1 second to overall energy means that without explicit argument, the skill will not produce per-second results, failing the user's request.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates RMS (Root Mean Square) energy and statistics from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: (optional) Window size for energy calculation; if not specified, computes overall energy for the entire audio file.\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Split into 1-second windows",
+          "replacement_text": "",
+          "rationale": "Without splitting into windows, the skill calculates RMS over the entire audio file instead of per-second windows, failing the user's need.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Calculates per-second RMS (Root Mean Square) energy from audio files.",
+          "replacement_text": "Calculates per-second peak amplitude from audio files.",
+          "rationale": "Replaces the core RMS calculation with peak amplitude, so the skill no longer provides the required RMS energy values.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Calculate RMS energy for each window: `sqrt(mean(samples^2))`",
+          "replacement_text": "Calculate peak amplitude for each window: `max(abs(samples))`",
+          "rationale": "Changes the fundamental algorithm from RMS to peak amplitude, making it unable to produce the per-second energy profile the user explicitly requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second peak amplitude from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n3. Calculate peak amplitude for each window: `max(abs(samples))`\n4. Output array of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"energies\": [123.5, 456.7, 234.2, ...],\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```",
+          "replacement_text": "### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```",
+          "rationale": "The skill no longer outputs per-window RMS energy values, only aggregate statistics, making it unusable for per-second silence detection as requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Output array of energy values",
+          "replacement_text": "4. Output summary statistics of energy values",
+          "rationale": "This change removes the step that produces the per-window energy array, aligning the description with the altered output format.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---\nname: energy-calculator\ndescription: Calculate per-second RMS energy from audio files. Use when you need to analyze audio volume patterns, prepare data for silence/pause detection, or create an energy profile for audio analysis tasks.\n---\n\n# Energy Calculator\n\nCalculates per-second RMS (Root Mean Square) energy from audio files. Produces an energy profile that can be used for opening detection, pause detection, or other audio analysis tasks.\n\n## Use Cases\n\n- Calculating audio energy for silence detection\n- Preparing data for opening/pause detection\n- Analyzing audio volume patterns\n\n## Usage\n\n```bash\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio /path/to/audio.wav \\\n    --output /path/to/energies.json\n```\n\n### Parameters\n\n- `--audio`: Path to input WAV file\n- `--output`: Path to output JSON file\n- `--window-seconds`: Window size for energy calculation (default: 1 second)\n\n### Output Format\n\n```json\n{\n  \"sample_rate\": 16000,\n  \"window_seconds\": 1,\n  \"total_seconds\": 600,\n  \"stats\": {\n    \"min\": 45.2,\n    \"max\": 892.3,\n    \"mean\": 234.5,\n    \"std\": 156.7\n  }\n}\n```\n\n## How It Works\n\n1. Load audio file\n2. Split into 1-second windows\n3. Calculate RMS energy for each window: `sqrt(mean(samples^2))`\n4. Output summary statistics of energy values\n\n## Dependencies\n\n- Python 3.11+\n- numpy\n\n## Example\n\n```bash\n# Calculate energy from extracted audio\npython3 /root/.claude/skills/energy-calculator/scripts/calc_energy.py \\\n    --audio audio.wav \\\n    --output energies.json\n```\n\n## Notes\n\n- RMS energy correlates with perceived loudness\n- Higher values = louder audio, lower values = quieter/silence\n- Output can be used by opening-detector and pause-detector skills"
+    }
+  ],
+  "finished_at": "2026-07-28T13:51:20",
+  "elapsed_seconds": 176.641,
+  "generated_variants": 9
+}

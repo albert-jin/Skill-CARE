@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:14:22",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 8580,
+  "selection_rank": 276,
+  "skill": {
+    "skill_id": "development/go-context-cancellation",
+    "name": "go-context-cancellation",
+    "category": "development",
+    "description": "Context cancellation patterns for graceful shutdown",
+    "body": "# Context Cancellation\n\n## Pattern\nPass `context.Context` as first parameter. Check `ctx.Done()` in goroutines and long operations.\n\n## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```\n\n## WRONG - No context checking\n```go\nfunc ProcessItems(items []string) error {\n    for _, item := range items {\n        // No way to cancel - runs forever if stuck\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n```\n\n## Rules\n1. Context is first parameter: `func Do(ctx context.Context, ...)`\n2. Always call `cancel()` via `defer` to prevent leaks\n3. Check `ctx.Done()` in loops and before expensive operations\n4. Propagate context to downstream calls\n5. Use `context.WithTimeout` or `WithDeadline` for time limits\n\n## Common Patterns\n```go\n// HTTP server with context\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    ctx := r.Context() // Request context\n    result, err := fetchData(ctx)\n    // ...\n}\n\n// Worker with cancellation\nfunc worker(ctx context.Context) {\n    for {\n        select {\n        case <-ctx.Done():\n            return\n        case work := <-workCh:\n            process(work)\n        }\n    }\n}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I’m building a Go service that processes a batch of user uploads. Each upload must be completed within 30 seconds, and if the server is shutting down, any in-progress uploads should be canceled cleanly (no dangling goroutines). I have a function `processUpload(ctx context.Context, upload Upload) error` that handles one upload (makes HTTP calls, writes to DB). I need to write a batch processor that takes a list of uploads and processes them concurrently, respecting both a per-batch timeout and OS shutdown signals.\n\nSpecifically: the batch function should accept a context from the caller, use a worker pool of 5 goroutines, and stop accepting new work if the context is canceled. Each worker should check for cancellation before starting each upload and also propagate the context to `processUpload`. Partial results (completed uploads) should be returned along with any cancellation error. Provide a complete, idiomatic example with proper defer of cancel and handling of `ctx.Done()` in select statements.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "```go\n// HTTP server with context\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    ctx := r.Context() // Request context\n    result, err := fetchData(ctx)\n    // ...\n}\n\n// Worker with cancellation\nfunc worker(ctx context.Context) {\n    for {\n        select {\n        case <-ctx.Done():\n            return\n        case work := <-workCh:\n            process(work)\n        }\n    }\n}\n```",
+          "replacement_text": "",
+          "rationale": "The skill omits the concrete worker pool with select and ctx.Done() pattern, which is exactly what the user's batch processor requires; without it, the user cannot derive the needed concurrent cancellation pattern from the provided examples.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context Cancellation\n\n## Pattern\nPass `context.Context` as first parameter. Check `ctx.Done()` in goroutines and long operations.\n\n## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```\n\n## WRONG - No context checking\n```go\nfunc ProcessItems(items []string) error {\n    for _, item := range items {\n        // No way to cancel - runs forever if stuck\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n```\n\n## Rules\n1. Context is first parameter: `func Do(ctx context.Context, ...)`\n2. Always call `cancel()` via `defer` to prevent leaks\n3. Check `ctx.Done()` in loops and before expensive operations\n4. Propagate context to downstream calls\n5. Use `context.WithTimeout` or `WithDeadline` for time limits\n\n## Common Patterns\n"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pass `context.Context` as first parameter. Check `ctx.Done()` in goroutines and long operations.",
+          "replacement_text": "Pass a custom cancellation channel as first parameter. Check the channel for cancellation signals.",
+          "rationale": "By replacing standard context.Context with a custom channel, the skill no longer integrates with the caller's context or supports standard cancellation patterns, making it incompatible with the user's requirement to accept a context and use ctx.Done().",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. Context is first parameter: `func Do(ctx context.Context, ...)`",
+          "replacement_text": "1. Cancellation channel is first parameter: `func Do(cancelCh <-chan struct{}, ...)`",
+          "rationale": "This rule change reinforces the use of a custom cancellation channel instead of context, further diverging from the standard context cancellation required by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context Cancellation\n\n## Pattern\nPass a custom cancellation channel as first parameter. Check the channel for cancellation signals.\n\n## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```\n\n## WRONG - No context checking\n```go\nfunc ProcessItems(items []string) error {\n    for _, item := range items {\n        // No way to cancel - runs forever if stuck\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n```\n\n## Rules\n1. Cancellation channel is first parameter: `func Do(cancelCh <-chan struct{}, ...)`\n2. Always call `cancel()` via `defer` to prevent leaks\n3. Check `ctx.Done()` in loops and before expensive operations\n4. Propagate context to downstream calls\n5. Use `context.WithTimeout` or `WithDeadline` for time limits\n\n## Common Patterns\n```go\n// HTTP server with context\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    ctx := r.Context() // Request context\n    result, err := fetchData(ctx)\n    // ...\n}\n\n// Worker with cancellation\nfunc worker(ctx context.Context) {\n    for {\n        select {\n        case <-ctx.Done():\n            return\n        case work := <-workCh:\n            process(work)\n        }\n    }\n}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}```",
+          "replacement_text": "```go\nfunc ProcessItems(items []string, timeout time.Duration) error {\n    deadline := time.Now().Add(timeout)\n    for _, item := range items {\n        if time.Now().After(deadline) {\n            return errors.New(\"timeout\")\n        }\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    if err := ProcessItems(items, 5*time.Second); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}```",
+          "rationale": "Changes function signature and implementation to use a fixed timeout instead of a context, removing support for caller cancellation, OS shutdown signals, and context propagation.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Context Cancellation with Worker Pools\n\n## Pattern\nUse a bounded worker pool with `context.Context` to control concurrency and enable graceful cancellation. Each worker checks for cancellation before processing.\n\n## CORRECT\n```go\nfunc ProcessBatch(ctx context.Context, items []string) error {\n    itemsCh := make(chan string, len(items))\n    for _, item := range items {\n        itemsCh <- item\n    }\n    close(itemsCh)\n\n    errCh := make(chan error, 1)\n    var wg sync.WaitGroup\n    numWorkers := 5\n\n    for i := 0; i < numWorkers; i++ {\n        wg.Add(1)\n        go func() {\n            defer wg.Done()\n            for item := range itemsCh {\n                select {\n                case <-ctx.Done():\n                    return // worker stops, but items in channel are lost\n                default:\n                    if err := processItem(ctx, item); err != nil {\n                        errCh <- err\n                        return\n                    }\n                }\n            }\n        }()\n    }\n\n    wg.Wait()\n    close(errCh)\n\n    // Return first error if any, or nil\n    for err := range errCh {\n        if err != nil {\n            return err\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)\n    defer cancel()\n\n    items := []string{\"a\", \"b\", \"c\"}\n    if err := ProcessBatch(ctx, items); err != nil {\n        log.Printf(\"batch failed: %v\", err)\n    }\n}\n```\n\n## WRONG - No cancellation check\n```go\nfunc ProcessBatch(ctx context.Context, items []string) error {\n    // Workers never check ctx.Done() – will continue even after cancellation\n    // ...\n}\n```\n\n## Rules\n1. Context is first parameter: `func Do(ctx context.Context, ...)`\n2. Always call `cancel()` via `defer` to prevent leaks\n3. Use a channel to distribute work – close it to signal no more items\n4. Check `ctx.Done()` in the main select inside each worker\n5. Limit concurrency with a fixed number of goroutines (worker pool)\n\n## Common Patterns\n```go\n// Worker pool with context\nfunc worker(ctx context.Context, jobs <-chan Job, results chan<- Result) {\n    for job := range jobs {\n        select {\n        case <-ctx.Done():\n            return\n        default:\n            results <- process(ctx, job)\n        }\n    }\n}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Check `ctx.Done()` in loops and before expensive operations",
+          "replacement_text": "3. Check `ctx.Done()` after each iteration or operation, but not necessarily before starting a new one.",
+          "rationale": "Weakens the constraint on when to check cancellation, allowing gaps where a new upload starts without cancellation check.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Propagate context to downstream calls",
+          "replacement_text": "4. Context can be used for cancellation of the worker loop, but downstream calls may use their own timeouts if needed.",
+          "rationale": "Removes the requirement to propagate context to downstream calls, meaning processUpload won't receive the cancellable context.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context Cancellation\n\n## Pattern\nPass `context.Context` as first parameter. Check `ctx.Done()` in goroutines and long operations.\n\n## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```\n\n## WRONG - No context checking\n```go\nfunc ProcessItems(items []string) error {\n    for _, item := range items {\n        // No way to cancel - runs forever if stuck\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n```\n\n## Rules\n1. Context is first parameter: `func Do(ctx context.Context, ...)`\n2. Always call `cancel()` via `defer` to prevent leaks\n3. Check `ctx.Done()` after each iteration or operation, but not necessarily before starting a new one.\n4. Context can be used for cancellation of the worker loop, but downstream calls may use their own timeouts if needed.\n5. Use `context.WithTimeout` or `WithDeadline` for time limits\n\n## Common Patterns\n```go\n// HTTP server with context\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    ctx := r.Context() // Request context\n    result, err := fetchData(ctx)\n    // ...\n}\n\n// Worker with cancellation\nfunc worker(ctx context.Context) {\n    for {\n        select {\n        case <-ctx.Done():\n            return\n        case work := <-workCh:\n            process(work)\n        }\n    }\n}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "// Worker with cancellation\nfunc worker(ctx context.Context) {\n    for {\n        select {\n        case <-ctx.Done():\n            return\n        case work := <-workCh:\n            process(work)\n        }\n    }\n}",
+          "replacement_text": "",
+          "rationale": "Removes the only example of concurrent goroutine cancellation, making the skill focus on sequential patterns only.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Propagate context to downstream calls",
+          "replacement_text": "4. Use context only for timeout and cancellation, not for propagation",
+          "rationale": "Changing the rule to discourage context propagation misleads the user who needs to propagate context to processUpload.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context Cancellation\n\n## Pattern\nPass `context.Context` as first parameter. Check `ctx.Done()` in goroutines and long operations.\n\n## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```\n\n## WRONG - No context checking\n```go\nfunc ProcessItems(items []string) error {\n    for _, item := range items {\n        // No way to cancel - runs forever if stuck\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n```\n\n## Rules\n1. Context is first parameter: `func Do(ctx context.Context, ...)`\n2. Always call `cancel()` via `defer` to prevent leaks\n3. Check `ctx.Done()` in loops and before expensive operations\n4. Use context only for timeout and cancellation, not for propagation\n5. Use `context.WithTimeout` or `WithDeadline` for time limits\n\n## Common Patterns\n```go\n// HTTP server with context\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    ctx := r.Context() // Request context\n    result, err := fetchData(ctx)\n    // ...\n}\n\n\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```",
+          "replacement_text": "## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        if ctx.Err() != nil {\n            return ctx.Err()\n        }\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```",
+          "rationale": "Removes the `select` pattern and relies only on a simple context check, making the skill too generic for the query’s requirement of using `select` with `ctx.Done()` for concurrent cancellation handling.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "```go\nfunc worker(ctx context.Context) {\n    for {\n        select {\n        case <-ctx.Done():\n            return\n        case work := <-workCh:\n            process(work)\n        }\n    }\n}\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the only concurrent worker example removes guidance on running multiple workers and handling cancellation in a concurrent loop, which is crucial for the batch processor with a worker pool.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Check `ctx.Done()` in goroutines and long operations.",
+          "replacement_text": "Check `ctx.Err()` before starting operations.",
+          "rationale": "Weakens the pattern from actively selecting on the done channel to a passive pre-check, which fails to meet the query’s need for responsive cancellation of in-flight work via `select`.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Batch Upload with Context\n\n## Pattern\nUse `context.Context` to set per-batch timeouts and listen for OS shutdown signals.  \nLaunch goroutines for concurrent uploads and wait for all to finish.  \nReturn the first error encountered.\n\n## Example\n```go\nfunc ProcessBatch(ctx context.Context, uploads []Upload) error {\n    ctx, cancel := context.WithTimeout(ctx, 30*time.Second)\n    defer cancel()\n\n    // Signal handling\n    sigCtx, sigCancel := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)\n    defer sigCancel()\n\n    errCh := make(chan error, len(uploads))\n    var wg sync.WaitGroup\n\n    for _, upload := range uploads {\n        wg.Add(1)\n        go func(u Upload) {\n            defer wg.Done()\n            if err := processUpload(ctx, u); err != nil {\n                errCh <- err\n            }\n        }(upload)\n    }\n\n    wg.Wait()\n    close(errCh)\n\n    for err := range errCh {\n        if err != nil {\n            return err\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx := context.Background()\n    if err := ProcessBatch(ctx, uploads); err != nil {\n        log.Fatal(err)\n    }\n}\n```\n\n## WRONG – Ignoring context cancellation inside goroutines\n```go\n// This goroutine doesn't check ctx.Done() before starting work\ngo func(u Upload) {\n    // processUpload may block forever if context is canceled\n    processUpload(ctx, u)\n}(upload)\n```\n\n## Rules\n1. Pass `context.Context` as first parameter to batch and per-upload functions.\n2. Derive a timeout context from the caller’s context (30 seconds per batch).\n3. Use `signal.NotifyContext` to handle OS signals.\n4. Collect errors from goroutines and return the first one encountered.\n5. Always defer `cancel()` to avoid context leaks.\n\n## Common Patterns\n```go\n// OS signal cancellation\nsigCtx, stop := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)\ndefer stop()\n\n// Timeout derived from signal context\nbatchCtx, cancel := context.WithTimeout(sigCtx, 30*time.Second)\ndefer cancel()\n```\n\nThis approach gives you a simple concurrent batch processor with timeout and signal awareness, but it does not use a fixed‑size worker pool, does not check for cancellation before each upload, and does not return partial results. For a production‑grade implementation consider adding a worker pool and selective cancellation checks."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Check `ctx.Done()` in goroutines and long operations.",
+          "replacement_text": "",
+          "rationale": "Removing the explicit instruction to check ctx.Done() means the skill no longer emphasizes a key step needed for cancellation in workers, making it insufficient for the user's requirement of per-worker cancellation checks.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context Cancellation\n\n## Pattern\nPass `context.Context` as first parameter. \n\n## CORRECT\n```go\nfunc ProcessItems(ctx context.Context, items []string) error {\n    for _, item := range items {\n        select {\n        case <-ctx.Done():\n            return ctx.Err()\n        default:\n            if err := processItem(item); err != nil {\n                return err\n            }\n        }\n    }\n    return nil\n}\n\nfunc main() {\n    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n    defer cancel()\n\n    if err := ProcessItems(ctx, items); err != nil {\n        log.Printf(\"processing failed: %v\", err)\n    }\n}\n```\n\n## WRONG - No context checking\n```go\nfunc ProcessItems(items []string) error {\n    for _, item := range items {\n        // No way to cancel - runs forever if stuck\n        if err := processItem(item); err != nil {\n            return err\n        }\n    }\n    return nil\n}\n```\n\n## Rules\n1. Context is first parameter: `func Do(ctx context.Context, ...)`\n2. Always call `cancel()` via `defer` to prevent leaks\n3. Check `ctx.Done()` in loops and before expensive operations\n4. Propagate context to downstream calls\n5. Use `context.WithTimeout` or `WithDeadline` for time limits\n\n## Common Patterns\n```go\n// HTTP server with context\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    ctx := r.Context() // Request context\n    result, err := fetchData(ctx)\n    // ...\n}\n\n// Worker with cancellation\nfunc worker(ctx context.Context) {\n    for {\n        select {\n        case <-ctx.Done():\n            return\n        case work := <-workCh:\n            process(work)\n        }\n    }\n}\n```"
+    }
+  ],
+  "finished_at": "2026-07-29T03:18:03",
+  "elapsed_seconds": 221.672,
+  "generated_variants": 7
+}

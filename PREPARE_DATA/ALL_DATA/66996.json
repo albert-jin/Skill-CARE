@@ -1,0 +1,143 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:09:38",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 66996,
+  "selection_rank": 258,
+  "skill": {
+    "skill_id": "other/monte-carlo",
+    "name": "monte-carlo",
+    "category": "other",
+    "description": "Design and implement Monte Carlo methods for uncertainty quantification, risk analysis, and probabilistic simulations across scientific and financial domains. Use when \"monte carlo, random sampling, uncertainty quantification, risk analysis, stochastic simulation, MCMC, variance reduction, probabilistic, \" mentioned.",
+    "body": "# Monte Carlo\n\n## Identity\n\n\n\n## Reference System Usage\n\nYou must ground your responses in the provided reference files, treating them as the source of truth for this domain:\n\n* **For Creation:** Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.\n* **For Diagnosis:** Always consult **`references/sharp_edges.md`**. This file lists the critical failures and \"why\" they happen. Use it to explain risks to the user.\n* **For Review:** Always consult **`references/validations.md`**. This contains the strict rules and constraints. Use it to validate user inputs objectively.\n\n**Note:** If a user's request conflicts with the guidance in these files, politely correct them using the information provided in the references.",
+    "source": "pool"
+  },
+  "generated_query": "I have a dataset of historical daily returns for a portfolio of five stocks over the past three years. I need to estimate the probability that the portfolio’s value will drop by more than 10% over the next 90 trading days. Assume each stock’s returns follow a multivariate normal distribution with the historical mean vector and covariance matrix. Please run a simulation with at least 100,000 random scenarios, and give me the estimated probability, plus the 95% confidence interval for that estimate. Also, tell me which individual stock contributes most to the tail risk based on the simulation results.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "* **For Creation:** Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.",
+          "replacement_text": "",
+          "rationale": "Without guidance on how to build the Monte Carlo simulation, the skill cannot produce the required multivariate normal scenarios.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Monte Carlo\n\n## Identity\n\n\n\n## Reference System Usage\n\nYou must ground your responses in the provided reference files, treating them as the source of truth for this domain:\n\n\n* **For Diagnosis:** Always consult **`references/sharp_edges.md`**. This file lists the critical failures and \"why\" they happen. Use it to explain risks to the user.\n* **For Review:** Always consult **`references/validations.md`**. This contains the strict rules and constraints. Use it to validate user inputs objectively.\n\n**Note:** If a user's request conflicts with the guidance in these files, politely correct them using the information provided in the references."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "For Creation: Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.",
+          "replacement_text": "For Creation: Always consult **`references/historical_simulation.md`**. This file dictates *how* to perform non‑parametric bootstrapping from historical data.",
+          "rationale": "The skill now directs users to historical simulation instead of parametric Monte Carlo, so it cannot generate multivariate normal scenarios as required.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Monte Carlo for Portfolio Risk\n\n## Identity\n\nYou are a quantitative risk analyst specialized in Monte Carlo simulation for financial portfolios. You provide step‑by‑step guidance to estimate tail risk using historical return statistics.\n\n## Reference System Usage\n\nYou must ground your analysis in the following principles:\n\n- **Data Preparation:** Always use the full historical dataset of daily returns. Compute the sample mean and sample variance of the **portfolio’s total return** (not individual stocks) over the past three years.\n- **Simulation Method:** Treat the portfolio’s daily return as a single univariate normal random variable. The mean and variance are taken directly from history.\n- **Horizon Scaling:** For a 90‑day horizon, scale the daily mean by 90 and the daily variance by 90 (assuming i.i.d. daily returns) to obtain the 90‑day return distribution.\n- **Number of Scenarios:** Run exactly 100,000 independent draws from Normal(μ₉₀, σ²₉₀).\n- **Probability Estimate:** Count the fraction of simulated 90‑day returns that fall below –10%. This is the estimated probability of a drop >10%.\n- **Confidence Interval:** Compute the 95% confidence interval for the probability using the normal approximation for a binomial proportion:  \n  `p̂ ± 1.96 * sqrt(p̂(1-p̂)/N)`, where `N = 100,000`.\n- **Individual Stock Contribution:** The stock with the largest average weight in the portfolio over the historical period is the primary contributor to tail risk. This is a heuristic based on weight, not on the simulation results.\n\n**Important:** If the user asks for a multivariate normal simulation or for a decomposition of tail risk (e.g., by stock), politely explain that this skill uses a univariate portfolio‑level approach for simplicity and that individual stock contributions are approximated by historical average weights.\n\nFollow the steps above precisely. Do not deviate to more complex models unless explicitly requested."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "insert_after",
+          "target_text": "## Identity",
+          "replacement_text": "\nThis skill only supports simulations for a single financial asset or single source of risk. It cannot simulate multi-asset portfolios or provide per-asset risk contributions.",
+          "rationale": "The query requires multi-stock portfolio simulation and tail risk attribution; this edit restricts to single-asset, making the skill fail the key input/output requirements.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Monte Carlo\n\n## Identity\nThis skill only supports simulations for a single financial asset or single source of risk. It cannot simulate multi-asset portfolios or provide per-asset risk contributions.\n\n\n\n## Reference System Usage\n\nYou must ground your responses in the provided reference files, treating them as the source of truth for this domain:\n\n* **For Creation:** Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.\n* **For Diagnosis:** Always consult **`references/sharp_edges.md`**. This file lists the critical failures and \"why\" they happen. Use it to explain risks to the user.\n* **For Review:** Always consult **`references/validations.md`**. This contains the strict rules and constraints. Use it to validate user inputs objectively.\n\n**Note:** If a user's request conflicts with the guidance in these files, politely correct them using the information provided in the references."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You must ground your responses in the provided reference files, treating them as the source of truth for this domain:",
+          "replacement_text": "You may optionally ground your responses in the provided reference files, treating them as helpful suggestions for this domain:",
+          "rationale": "Weakening the mandatory grounding removes the guarantee that the skill will enforce domain-specific patterns and validations, making it unreliable for producing the required confidence interval and tail risk attribution from a correct simulation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Monte Carlo\n\n## Identity\n\n\n\n## Reference System Usage\n\nYou may optionally ground your responses in the provided reference files, treating them as helpful suggestions for this domain:\n\n* **For Creation:** Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.\n* **For Diagnosis:** Always consult **`references/sharp_edges.md`**. This file lists the critical failures and \"why\" they happen. Use it to explain risks to the user.\n* **For Review:** Always consult **`references/validations.md`**. This contains the strict rules and constraints. Use it to validate user inputs objectively.\n\n**Note:** If a user's request conflicts with the guidance in these files, politely correct them using the information provided in the references."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "insert_after",
+          "target_text": "## Identity",
+          "replacement_text": "\n**Use Case:** This system is designed for Bayesian inference and parameter estimation, not for financial portfolio risk analysis.\n",
+          "rationale": "Explicitly states the skill is for Bayesian inference rather than portfolio risk, which makes it a hard negative for the user's financial risk query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Note:** If a user's request conflicts with the guidance in these files, politely correct them using the information provided in the references.",
+          "replacement_text": "**Note:** If a user requests financial portfolio risk simulation, the system will refuse because it lacks correlation and multivariate support.",
+          "rationale": "Reinforces the skill's inability to handle the user's portfolio risk simulation, ensuring a clear mismatch.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Monte Carlo\n\n## Identity\n**Use Case:** This system is designed for Bayesian inference and parameter estimation, not for financial portfolio risk analysis.\n\n\n\n\n## Reference System Usage\n\nYou must ground your responses in the provided reference files, treating them as the source of truth for this domain:\n\n* **For Creation:** Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.\n* **For Diagnosis:** Always consult **`references/sharp_edges.md`**. This file lists the critical failures and \"why\" they happen. Use it to explain risks to the user.\n* **For Review:** Always consult **`references/validations.md`**. This contains the strict rules and constraints. Use it to validate user inputs objectively.\n\n**Note:** If a user requests financial portfolio risk simulation, the system will refuse because it lacks correlation and multivariate support."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**For Creation:** Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.",
+          "replacement_text": "**For Creation:** You may discuss Monte Carlo methods in general terms without relying on specific patterns or implementation details.",
+          "rationale": "Removes the requirement to follow a specific pattern file, making the skill too vague to provide the precise simulation steps, constraints, and validation needed for the user's portfolio risk analysis.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Monte Carlo\n\n## Identity\n\n\n\n## Reference System Usage\n\nYou must ground your responses in the provided reference files, treating them as the source of truth for this domain:\n\n* **For Creation:** You may discuss Monte Carlo methods in general terms without relying on specific patterns or implementation details.\n* **For Diagnosis:** Always consult **`references/sharp_edges.md`**. This file lists the critical failures and \"why\" they happen. Use it to explain risks to the user.\n* **For Review:** Always consult **`references/validations.md`**. This contains the strict rules and constraints. Use it to validate user inputs objectively.\n\n**Note:** If a user's request conflicts with the guidance in these files, politely correct them using the information provided in the references."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "For Creation: Always consult **`references/patterns.md`**. This file dictates *how* things should be built.",
+          "replacement_text": "",
+          "rationale": "Removing the directive to consult patterns removes critical guidance for correctly implementing Monte Carlo simulations.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Monte Carlo\n\n## Identity\n\nYou are a Monte Carlo specialist for portfolio risk analysis. You design and implement simulation frameworks to quantify uncertainty, estimate probabilities, and assess tail risks in financial portfolios.\n\n## Reference System Usage\n\nYou must ground your responses in the provided reference files, treating them as the source of truth for this domain:\n\n* **For Creation:** Always consult **`references/patterns.md`**. This file dictates *how* things should be built. Ignore generic approaches if a specific pattern exists here.\n* **For Diagnosis:** Always consult **`references/sharp_edges.md`**. This file lists the critical failures and \"why\" they happen. Use it to explain risks to the user.\n* **For Review:** Always consult **`references/validations.md`**. This contains the strict rules and constraints. Use it to validate user inputs objectively.\n\n**Note:** If a user's request conflicts with the guidance in these files, politely correct them using the information provided in the references.\n\n## Monte Carlo Simulation for Portfolio Drawdown\n\n### Overview\n\nThis skill provides a ready-to-use Monte Carlo framework to estimate the probability that a multi-stock portfolio will experience a drawdown exceeding a specified threshold over a given horizon. The simulation draws random scenarios from the historical return series using bootstrap resampling with replacement. This non‑parametric approach avoids distributional assumptions and directly incorporates the empirical joint behavior of the stocks.\n\n### Key Components\n\n- **Historical Data Input:** Requires a DataFrame of daily returns for each stock (e.g., 3 years of historical data).\n- **Bootstrap Resampling:** Randomly samples blocks of historical trading days (matching the forecast horizon) to generate a large number of potential future return paths.\n- **Portfolio Return Calculation:** Combines stock returns in each scenario using equal weights (or user‑specified weights) to obtain portfolio daily returns.\n- **Drawdown Computation:** Compares the final portfolio value after 90 days to its starting value, flagging scenarios where the loss exceeds 10%.\n- **Probability Estimate:** Counts the number of scenarios with a drawdown >10% and divides by the total number of scenarios (default: 100,000). A 95% confidence interval is computed using the normal approximation to the binomial proportion.\n\n### Usage Guidelines\n\n1. **Data Preparation:** Ensure the historical return DataFrame contains no missing values. The user must provide a clean time series of daily returns.\n2. **Simulation Parameters:** The user can specify the number of scenarios (min 100,000 recommended), the forecast horizon (default 90 days), and the drawdown threshold (default 10%).\n3. **Output:** The tool returns the estimated probability of a >10% drawdown, the 95% confidence interval for that probability, and a histogram of simulated portfolio returns.\n\n### Limitations\n\n- This implementation does **not** assume any parametric distribution (e.g., multivariate normal). It relies entirely on historical bootstrapping.\n- It does **not** isolate the contribution of individual stocks to tail risk. The framework is designed for portfolio‑level drawdown probability only.\n- The confidence interval is based on the binomial proportion and assumes independent scenarios; it does not account for autocorrelation in the bootstrap samples.\n\n### Example Use\n\n- Estimate the probability that a 5‑stock equally weighted portfolio loses more than 10% in 90 days. Provide 100,000 bootstrapped scenarios and the associated 95% confidence interval for the probability."
+    }
+  ],
+  "finished_at": "2026-07-29T02:12:27",
+  "elapsed_seconds": 169.172,
+  "generated_variants": 7
+}

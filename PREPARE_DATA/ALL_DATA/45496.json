@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:36:48",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 45496,
+  "selection_rank": 130,
+  "skill": {
+    "skill_id": "other/in-code-comments",
+    "name": "in-code-comments",
+    "category": "other",
+    "description": "Use when writing or reviewing in-code comments. Explains the 'why not how' standard.",
+    "body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.\n\n## Guiding Principles\n\n- **Explain the \"Why\", Not the \"How\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Strictly Avoid Redundant Summaries**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.\n- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a piece of code that implements a custom LRU cache with a twist: it uses a probabilistic eviction policy based on access frequency rather than pure recency, because our access patterns are bursty and we want to keep frequently used items across bursts. The existing code works but has almost no comments. Could you add meaningful in-code comments to this function? Focus on explaining *why* each design decision was made (e.g., why we use a probabilistic threshold, why we maintain a separate timestamp list, why we chose a specific data structure) rather than describing what the code does line by line. Avoid redundant comments like `// increment counter` for `counter++`. Write comments in present tense, timelessly. Here's the code:\n\n```python\nclass ProbabilisticLRUCache:\n    def __init__(self, capacity: int, decay_factor: float = 0.5):\n        self.capacity = capacity\n        self.decay = decay_factor\n        self.cache = {}\n        self.freq = {}\n        self.timestamps = []\n        self.count = 0\n\n    def get(self, key):\n        if key not in self.cache:\n            return -1\n        self.freq[key] += 1\n        self.timestamps.append((key, self.count))\n        self.count += 1\n        return self.cache[key]\n\n    def put(self, key, value):\n        if key in self.cache:\n            self.cache[key] = value\n            self.freq[key] += 1\n            self.timestamps.append((key, self.count))\n            self.count += 1\n            return\n        if len(self.cache) >= self.capacity:\n            self._evict()\n        self.cache[key] = value\n        self.freq[key] = 1\n        self.timestamps.append((key, self.count))\n        self.count += 1\n\n    def _evict(self):\n        import random\n        # Choose candidate from oldest timestamps with probability proportional to decay of frequency\n        oldest_keys = [k for k, _ in self.timestamps[:self.capacity] if k in self.cache]\n        if not oldest_keys:\n            return\n        selected = random.choice(oldest_keys)\n        # Occasionally also consider recently added items to avoid thrashing\n        if random.random() < (1 - self.decay) and len(self.timestamps) > self.capacity * 2:\n            candidate = random.choice(list(self.cache.keys()))\n            if self.freq[candidate] < self.freq[selected]:\n                selected = candidate\n        del self.cache[selected]\n        del self.freq[selected]\n        # Clean up timestamps lazily\n        self.timestamps = [(k, t) for k, t in self.timestamps if k in self.cache]\n```",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".",
+          "replacement_text": "",
+          "rationale": "Removing the explicit requirement for a-temporal (timeless present tense) comments makes the skill fail the user query, which demands that exact style for in-code comments.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.\n\n## Guiding Principles\n\n- **Explain the \"Why\", Not the \"How\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Strictly Avoid Redundant Summaries**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.\n\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Explain the \"Why\", Not the \"How\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.",
+          "replacement_text": "- **Explain the \"How\", Not the \"Why\"**: Your primary role when commenting is to describe step-by-step what the code does, ensuring clarity of execution flow. The comment should narrate the algorithm as it executes.",
+          "rationale": "Reversing the core principle from explaining design intent to describing code steps directly contradicts the user query's request for comments that explain 'why' design decisions were made.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.\n\n## Guiding Principles\n\n- **Explain the \"How\", Not the \"Why\"**: Your primary role when commenting is to describe step-by-step what the code does, ensuring clarity of execution flow. The comment should narrate the algorithm as it executes.\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Strictly Avoid Redundant Summaries**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.\n- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Explain the \"Why\", Not the \"How\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.",
+          "replacement_text": "**Explain the \"How\", Not the \"Why\"**: Your primary role when commenting is to describe the mechanics of the code step-by-step, detailing how each operation works. The comment should clarify the algorithm, not the rationale behind design choices.",
+          "rationale": "Changes the core directive from explaining 'why' to explaining 'how', which directly contradicts the user's request for design rationale comments.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Strictly Avoid Redundant Summaries**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.",
+          "replacement_text": "**Use Descriptive Summaries**: Write concise comments that restate the purpose of each code block (e.g., `// Increment the counter` for `counter++`). These help readers grasp the flow without reading every line.",
+          "rationale": "Replaces the prohibition on redundant summaries with an encouragement to add them, making the skill support exactly the kind of comments the user wants to avoid.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.\n\n## Guiding Principles\n\n- **Explain the \"How\", Not the \"Why\"**: Your primary role when commenting is to describe the mechanics of the code step-by-step, detailing how each operation works. The comment should clarify the algorithm, not the rationale behind design choices.\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Use Descriptive Summaries**: Write concise comments that restate the purpose of each code block (e.g., `// Increment the counter` for `counter++`). These help readers grasp the flow without reading every line.\n- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".",
+          "replacement_text": "- **A‑temporal Comments (Preferred)**: Write comments in a timeless, present‑tense, declarative style when appropriate. However, past tense may be used when describing historical reasons or changes that reference past events, as long as the comment remains clear and meaningful.",
+          "rationale": "The user explicitly requires present-tense, timeless comments; allowing past tense violates this requirement, making the skill produce unacceptable output.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.\n\n## Guiding Principles\n\n- **Explain the \"Why\", Not the \"How\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Strictly Avoid Redundant Summaries**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.\n- **A‑temporal Comments (Preferred)**: Write comments in a timeless, present‑tense, declarative style when appropriate. However, past tense may be used when describing historical reasons or changes that reference past events, as long as the comment remains clear and meaningful.\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Explain the \"Why\", Not the \"How\"**",
+          "replacement_text": "**Explain the \"How\" and the \"What\"**",
+          "rationale": "Shifts the focus from explaining design rationale to describing implementation steps, directly contradicting the user's requirement to explain 'why'.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Strictly Avoid Redundant Summaries**",
+          "replacement_text": "**Allow brief line-by-line summaries when helpful**",
+          "rationale": "Removes the prohibition on redundant comments, which the user explicitly wants to avoid, making the skill produce comments that violate the query's constraints.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.\n\n## Guiding Principles\n\n- **Explain the \"How\" and the \"What\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Allow brief line-by-line summaries when helpful**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.\n- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.",
+          "replacement_text": "",
+          "rationale": "Removing the core principle that comments explain what code cannot say makes the skill too vague about the 'why not how' standard.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Explain the \"Why\", Not the \"How\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.",
+          "replacement_text": "- **Explain the Code's Purpose**: Your primary role when commenting is to describe what the code does and its high-level purpose.",
+          "rationale": "Replacing the 'why not how' directive with generic purpose explanation eliminates the critical distinction the query requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Strictly Avoid Redundant Summaries**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.",
+          "replacement_text": "- **Avoid Overly Trivial Comments**: Try to avoid comments that are too obvious, but summarizing what the code does is acceptable if it improves readability.",
+          "rationale": "Softening the ban on redundant summaries allows the type of comment the user explicitly wants to avoid, undermining the query's requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. \n\n## Guiding Principles\n\n- **Explain the Code's Purpose**: Your primary role when commenting is to describe what the code does and its high-level purpose.\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Avoid Overly Trivial Comments**: Try to avoid comments that are too obvious, but summarizing what the code does is acceptable if it improves readability.\n- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Explain the \"Why\", Not the \"How\"**: Your primary role when commenting is to explain the intent, design decisions, or the rationale behind a piece of code when it's non-obvious. The code itself explains *how* it works; the comment should explain *why* it exists.",
+          "replacement_text": "",
+          "rationale": "Removing the core principle that comments should explain 'why' prevents the agent from meeting the user's primary request to explain design decisions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# In-code Comments\n\n## Purpose\n\nThis skill guides you, the AI agent, in writing effective, maintainable, and \"Clean Code\" compliant in-code comments. It enforces the principle that comments should elucidate what the code *cannot* say on its own, rather than merely summarizing the code's actions. This avoids redundancy and fragility during updates.\n\n## Guiding Principles\n\n\n- **Clarity Through Context**: Use comments to provide context that is not available in the code, such as clarifying intricate algorithms, business logic, or the purpose of complex regular expressions.\n- **Document Non-Obvious Behaviors & Pitfalls**: Proactively highlight potential edge cases, known issues, necessary workarounds, or non-intuitive behaviors. Documenting design trade-offs (e.g., \"Chose this approach for performance reasons despite lower readability\") is invaluable for future maintenance.\n- **Strictly Avoid Redundant Summaries**: NEVER write comments that simply restate what the code is doing (e.g., `// Initialize x to 10` for `const x = 10;`). This adds visual clutter and, more importantly, creates a maintenance burden, as the comment can easily become outdated and misleading.\n- **A‑temporal Comments (Required)**: Write comments in a timeless, present‑tense, declarative style. Avoid time-coupled phrasing such as \"now\", \"currently\", \"recently\", \"old/new\", or historical notes. Use present tense that describes what the code does, NOT what changed: \"Validates JWT and returns 401 on failure\". Avoid talking about history or the past. E.g. AVOID statements like \"Refactored from using the new v2 API to using the new v3 API\".\n\n## When This Rule Should Be Followed\n\nThe principles in this rule are foundational for all code generation and modification. They must be applied **anytime you write or modify code** within any programming file (e.g., `.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.java`, etc.).\n\n**This rule should be considered auto-attached and always active when you are working with source code files.**"
+    }
+  ],
+  "finished_at": "2026-07-28T18:38:49",
+  "elapsed_seconds": 121.375,
+  "generated_variants": 7
+}

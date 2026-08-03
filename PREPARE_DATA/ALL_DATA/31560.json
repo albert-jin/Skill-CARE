@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T04:36:11",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 31560,
+  "selection_rank": 294,
+  "skill": {
+    "skill_id": "other/chat-x-unit-test",
+    "name": "chat-x-unit-test",
+    "category": "other",
+    "description": "帮助开发者为 Vue 3 组件编写单元测试。当用户需要添加单元测试时使用。",
+    "body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx vitest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\nvi.mock('vue-tippy', () => ({ /* ... */ }));\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n- 事件测试：emit 事件\n- Slot 测试：插槽内容\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载",
+    "source": "pool"
+  },
+  "generated_query": "我最近在开发一个 Vue 3 的聊天界面组件库，其中有一个「消息气泡」组件 `MessageBubble.vue`，它接收 `message`（对象，包含文本、时间、发送者）和 `type`（'sent' | 'received'）两个 props，并会 emit 一个 `quote` 事件（点击引用按钮时触发），同时支持默认插槽显示附加信息。\n\n现在我需要为这个组件编写单元测试，测试内容要覆盖：\n- 组件正常渲染气泡结构\n- 根据 `type` 属性正确显示不同的样式（左侧/右侧对齐）\n- 传入不同的 `message.text` 时正确显示文本\n- 点击引用按钮时触发 `quote` 事件并传递正确的消息对象\n- 插槽内容能否正确渲染\n- 边界情况：message 对象缺失某些字段时是否容错（需要 mock 数据）\n\n另外，项目中使用的工具链是 Vue Test Utils + Vitest，测试文件约定与组件同目录。已有其他组件的测试可以参考，但我不确定如何 mock 项目中引入的 `vue-tippy` 指令（用于气泡上的 tooltip）以及一个全局的日期格式化方法。\n\n请帮我生成这个组件的完整测试文件 `MessageBubble.spec.ts`，包含所有必要的 mock 和测试用例。",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "vi.mock('vue-tippy', () => ({ /* ... */ }));",
+          "replacement_text": "",
+          "rationale": "The user explicitly needs to mock vue-tippy and a date formatter; removing this line leaves them without an example of how to mock external dependencies in the test setup.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx vitest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\n\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n- 事件测试：emit 事件\n- Slot 测试：插槽内容\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "vi.mock('vue-tippy', () => ({ /* ... */ }));",
+          "replacement_text": "jest.mock('vue-tippy', () => ({ /* ... */ }));",
+          "rationale": "Changes the core mocking API from Vitest's vi.mock to Jest's jest.mock, which is incompatible with the user's Vitest toolchain.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "npx vitest run src/components/your-component     # 指定目录",
+          "replacement_text": "npx jest run src/components/your-component     # 指定目录",
+          "rationale": "Replaces the Vitest runner command with Jest, making the skill's run instructions useless for a Vitest-based project.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx jest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\njest.mock('vue-tippy', () => ({ /* ... */ }));\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n- 事件测试：emit 事件\n- Slot 测试：插槽内容\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "vi.mock('vue-tippy', () => ({ /* ... */ }));",
+          "replacement_text": "",
+          "rationale": "Removes the mock pattern for vue-tippy, leaving the user without guidance on mocking external dependencies.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n- 事件测试：emit 事件\n- Slot 测试：插槽内容",
+          "replacement_text": "## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应",
+          "rationale": "Removes event and slot test categories, failing to cover user's requirement for quote event and slot rendering.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx vitest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\n\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "vi.mock('vue-tippy', () => ({ /* ... */ }));",
+          "replacement_text": "// Mock external dependencies as needed",
+          "rationale": "Replacing the concrete mock example with a vague comment removes explicit guidance for mocking vue-tippy, which the user query requires.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- 事件测试：emit 事件\n- Slot 测试：插槽内容",
+          "replacement_text": "",
+          "rationale": "Deleting the event and slot testing categories means the skill no longer covers testing the quote event or slot content, both essential for the user query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx vitest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\n// Mock external dependencies as needed\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\nvi.mock('vue-tippy', () => ({ /* ... */ }));\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```",
+          "replacement_text": "```typescript\nimport { mount } from '@vue/test-utils';\nimport { describe, expect, it } from 'vitest';\nimport YourComponent from './your-component.vue';\n\ndescribe('YourComponent', () => {\n  it('应该正确渲染', () => {\n    const wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```",
+          "rationale": "Removed the mock pattern for vue-tippy and the test lifecycle hooks, leaving only a basic existence test, which fails to guide the user on mocking external dependencies and testing events or slots.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n- 事件测试：emit 事件\n- Slot 测试：插槽内容",
+          "replacement_text": "## 测试分类\n\n- 渲染测试：组件正确渲染\n- 样式测试：组件的样式正确应用\n- 快照测试：组件快照保持一致\n- 属性测试：传递属性后组件的表现",
+          "rationale": "Replaced event and slot testing categories with style and snapshot testing, so the skill no longer emphasizes testing emit events or slots, which are crucial for the user's query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx vitest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { mount } from '@vue/test-utils';\nimport { describe, expect, it } from 'vitest';\nimport YourComponent from './your-component.vue';\n\ndescribe('YourComponent', () => {\n  it('应该正确渲染', () => {\n    const wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- 样式测试：组件的样式正确应用\n- 快照测试：组件快照保持一致\n- 属性测试：传递属性后组件的表现\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "vi.mock('vue-tippy', () => ({ /* ... */ }));",
+          "replacement_text": "",
+          "rationale": "Removing the specific vue-tippy mock example makes the skill too generic to help the user with mocking vue-tippy and global date methods, which are critical for the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx vitest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\n\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n- 事件测试：emit 事件\n- Slot 测试：插槽内容\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "vi.mock('vue-tippy', () => ({ /* ... */ }));",
+          "replacement_text": "",
+          "rationale": "Without the vue-tippy mock pattern, the user cannot handle the directive mocking they explicitly asked about, making the skill fail their primary need.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Vue 组件单元测试指南\n\n## 测试规范\n\n测试文件与组件同目录，命名为 `组件名.spec.ts`。\n\n## 运行测试\n\n```bash\npnpm --filter @blueking/chat-x test              # 所有测试\nnpx vitest run src/components/your-component     # 指定目录\n```\n\n## 基础模板\n\n```typescript\nimport { defineComponent, h } from 'vue';\nimport { type VueWrapper, mount } from '@vue/test-utils';\nimport { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';\nimport YourComponent from './your-component.vue';\n\n\n\ndescribe('YourComponent', () => {\n  let wrapper: VueWrapper;\n\n  beforeEach(() => { vi.clearAllMocks(); });\n  afterEach(() => { wrapper?.unmount(); });\n\n  it('应该正确渲染', () => {\n    wrapper = mount(YourComponent);\n    expect(wrapper.find('.your-component').exists()).toBe(true);\n  });\n});\n```\n\n## 测试分类\n\n- 渲染测试：组件正确渲染\n- Props 测试：属性传递和响应\n- 事件测试：emit 事件\n- Slot 测试：插槽内容\n\n## 同步更新原则\n\n修改组件代码时必须同步更新测试用例。\n\n---\n\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n\n---\n## 📦 可用资源\n\n- `skill://chat-x-unit-test/references/mock-patterns.md`\n- `skill://chat-x-unit-test/references/test-qa.md`\n- `skill://chat-x-unit-test/references/test-strategies.md`\n\n> 根据 SKILL.md 中的 IF-THEN 规则判断是否需要加载"
+    }
+  ],
+  "finished_at": "2026-07-29T04:38:34",
+  "elapsed_seconds": 142.422,
+  "generated_variants": 7
+}

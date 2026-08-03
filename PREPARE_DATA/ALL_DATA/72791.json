@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:22:00",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 72791,
+  "selection_rank": 154,
+  "skill": {
+    "skill_id": "documents/docx-cmr-generator",
+    "name": "docx-cmr-generator",
+    "category": "documents",
+    "description": "Gera documentos Word (.docx) a partir de Markdown no padrão CMR Advogados. Use quando precisar converter peças jurídicas de Markdown para DOCX com formatação correta (fontes, margens, espaçamentos).",
+    "body": "# CMR DOCX Generator\n\nConverte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |",
+    "source": "pool"
+  },
+  "generated_query": "Preciso converter um arquivo Markdown de uma contestação jurídica para o formato Word (.docx) com a formatação padrão do escritório CMR Advogados. O documento original é `CONTESTACAO.md`, estruturado com cabeçalhos (`## CONTESTAÇÃO`, `## I. Preliminares`, `### A. Tempestividade`, etc.), parágrafos numerados (1., 2.), citações em bloco, itens em lista (a), b)) e uma assinatura no final. O arquivo já está pronto, mas preciso gerar o `CONTESTACAO.docx` com as seguintes configurações:\n\n- Fonte Century Gothic para o corpo (12pt), Verdana para títulos (cabeçalhos 26pt, subtítulos 12pt) e citações em itálico 10pt.\n- Margens: superior/inferior 2,5cm, esquerda 3cm, direita 2cm.\n- Parágrafos numerados com recuo de primeira linha de 4cm.\n- Espaçamento 1,5 linhas no corpo e 1,0 linha nas citações.\n- Cabeçalho à direita: \"C. M. RODRIGUES / Advogados\" em Verdana.\n- Rodapé à direita com o endereço do escritório em Century Gothic 6pt.\n- Quebras de página nos `---` e formatação correta dos estilos (Endereçamento, Title_Peca, Chapter_Heading, Subcapitulo, Paragraph_Numbered, Citation, Item_Lista, Assinatura).\n\nPode me ajudar a gerar esse .docx a partir do Markdown seguindo exatamente esse padrão?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n",
+          "replacement_text": "",
+          "rationale": "Removing the Citation mapping prevents the skill from formatting block quotes with 10pt italic and indentation, which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Converte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.",
+          "replacement_text": "Converte documentos Markdown para HTML usando formatação minimalista.",
+          "rationale": "A saída é HTML em vez de DOCX, tornando o skill inútil para a necessidade de gerar um documento Word com formatação CMR.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para HTML usando formatação minimalista.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Converte documentos Markdown para Word (.docx)",
+          "replacement_text": "Converte documentos Markdown para PDF (.pdf)",
+          "rationale": "The user explicitly requires a .docx output, but the skill now produces PDF only, making it completely unusable.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python doc_builder.py <entrada.md> [saida.docx]",
+          "replacement_text": "python doc_builder.py <entrada.md> [saida.pdf]",
+          "rationale": "Changes the command's output extension from .docx to .pdf, so even if invoked, the wrong format is generated.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx",
+          "replacement_text": "python doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.pdf",
+          "rationale": "The example now shows generating a .pdf file, misleading users into expecting PDF instead of the required DOCX.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para PDF (.pdf) seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.pdf]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.pdf\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Citações | Century Gothic | 10pt italic |",
+          "replacement_text": "| Citações | Century Gothic | 10pt |",
+          "rationale": "Removes the italic requirement for citations, so generated document will not format citations in italic as required by the user.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Converte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.",
+          "replacement_text": "Converte documentos Markdown para PDF seguindo o padrão de formatação CMR Advogados.",
+          "rationale": "The user explicitly needs a .docx file, but the skill now only outputs PDF, making it incompatible.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx",
+          "replacement_text": "python doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.pdf",
+          "rationale": "The example command now generates a .pdf instead of .docx, confirming the skill cannot produce the required Word format.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para PDF seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.pdf\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |",
+          "replacement_text": "| Cabeçalho | Configurado via estilos | Configurado via estilos |\n| Subtítulo | Configurado via estilos | Configurado via estilos |\n| Corpo | Configurado via estilos | Configurado via estilos |\n| Citações | Configurado via estilos | Configurado via estilos |\n| Rodapé | Configurado via estilos | Configurado via estilos |",
+          "rationale": "Remove the explicit fonts (Verdana, Century Gothic) required by the user, substituting a generic style-based configuration that does not guarantee the specific typefaces.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)",
+          "replacement_text": "**Header**: Conteúdo definido via template (direita, Verdana)",
+          "rationale": "Replaces the exact required header text with a vague reference, so the output will not contain the specific office name needed.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Recuo 1ª linha**: 4cm (parágrafos numerados)",
+          "replacement_text": "**Recuo 1ª linha**: Configurável (parágrafos numerados)",
+          "rationale": "Weakens the mandatory 4 cm first-line indent into an optional setting, failing the user's precise formatting requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Configurado via estilos | Configurado via estilos |\n| Subtítulo | Configurado via estilos | Configurado via estilos |\n| Corpo | Configurado via estilos | Configurado via estilos |\n| Citações | Configurado via estilos | Configurado via estilos |\n| Rodapé | Configurado via estilos | Configurado via estilos |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: Configurável (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: Conteúdo definido via template (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)",
+          "replacement_text": "",
+          "rationale": "Removing the header configuration causes the document to lack the required branding phrase, critically failing the user's explicit request.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)",
+          "replacement_text": "",
+          "rationale": "Removing the footer configuration causes the document to lack the required address, violating the user's specification.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython doc_builder.py <entrada.md> [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n\n\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python doc_builder.py <entrada.md> [saida.docx]",
+          "replacement_text": "python pandoc_wrapper.py --to=docx <entrada.md> -o [saida.docx]",
+          "rationale": "Substitui o construtor personalizado (doc_builder.py) por um wrapper genérico do Pandoc, ignorando todas as definições de estilo CMR.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CMR DOCX Generator\n\nConverte documentos Markdown para Word (.docx) seguindo o padrão de formatação CMR Advogados.\n\n## Localização\n\nA ferramenta está em `skills/docx-cmr-generator/`:\n\n```\nskills/docx-cmr-generator/\n├── doc_builder.py       # Conversor MD → DOCX\n├── style_extractor.py   # Extrator de DNA de templates\n├── cmr_styles.json      # Configuração de estilos\n├── requirements.txt     # Dependências\n└── .venv/               # Ambiente virtual\n```\n\n## Como Usar\n\n### Ativação do ambiente\n\n```bash\ncd skills/docx-cmr-generator\nsource .venv/bin/activate\n```\n\n### Converter Markdown para DOCX\n\n```bash\npython pandoc_wrapper.py --to=docx <entrada.md> -o [saida.docx]\n```\n\n**Exemplo:**\n```bash\npython doc_builder.py ../CONTESTACAO.md ../CONTESTACAO.docx\n```\n\n### Extrair DNA de template existente\n\n```bash\npython style_extractor.py <template.docx> [estilos.json]\n```\n\n### Gerar consenso de múltiplos documentos\n\n```bash\npython style_extractor.py --consensus ./pasta/ [consenso.json]\n```\n\n## Mapeamento Markdown → Estilo\n\n| Markdown | Estilo |\n|----------|--------|\n| `# Texto` | Endereçamento |\n| `## CONTESTAÇÃO` | Title_Peca (centralizado) |\n| `## I. Título` | Chapter_Heading |\n| `### A. Subtítulo` | Subcapitulo |\n| `1. Parágrafo` | Paragraph_Numbered (recuo 4cm) |\n| `> Citação` | Citation (10pt, itálico, recuo 4cm) |\n| `a) Item` | Item_Lista |\n| `**Nome** + OAB` | Assinatura |\n| `---` | Page break |\n\n## Especificações de Formatação CMR\n\n### Fontes\n| Elemento | Fonte | Tamanho |\n|----------|-------|---------|\n| Cabeçalho | Verdana | 26pt |\n| Subtítulo | Verdana | 12pt |\n| Corpo | Century Gothic | 12pt |\n| Citações | Century Gothic | 10pt italic |\n| Rodapé | Century Gothic | 6pt |\n\n### Página (A4)\n- **Margens**: Superior/Inferior 2.5cm, Esquerda 3cm, Direita 2cm\n- **Recuo 1ª linha**: 4cm (parágrafos numerados)\n- **Espaçamento**: 1.5 linhas (corpo), 1.0 linha (citações)\n\n### Header/Footer\n- **Header**: \"C. M. RODRIGUES / Advogados\" (direita, Verdana)\n- **Footer**: Endereço do escritório (direita, Century Gothic 6pt)\n\n## Configuração (cmr_styles.json)\n\nO arquivo `cmr_styles.json` define todo o DNA de formatação:\n\n```json\n{\n  \"page_setup\": { \"margins_twips\": {...} },\n  \"header\": { \"line1\": {...}, \"line2\": {...} },\n  \"footer\": { \"lines\": [...] },\n  \"styles_map\": {\n    \"Normal\": { \"font_name\": \"Century Gothic\", ... },\n    \"Citation\": { \"font_size_pt\": 10, \"italics\": true, ... }\n  }\n}\n```\n\n## Conversão de Unidades\n\n| Medida | Twips |\n|--------|-------|\n| 1 cm | 567 |\n| 4 cm (recuo) | 2268 |\n| 3 cm (margem esq) | 1701 |\n| 2.5 cm (margem sup/inf) | 1417 |\n| 2 cm (margem dir) | 1133 |"
+    }
+  ],
+  "finished_at": "2026-07-28T20:24:12",
+  "elapsed_seconds": 132.453,
+  "generated_variants": 8
+}

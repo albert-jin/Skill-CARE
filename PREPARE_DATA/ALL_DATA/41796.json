@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:03:20",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 41796,
+  "selection_rank": 77,
+  "skill": {
+    "skill_id": "other/skills-pybalance-mem-cli",
+    "name": "mem",
+    "category": "other",
+    "description": "本地知识管理 CLI 工具。管理笔记、待办、日程，支持标签、搜索、日程视图、Markdown 导出和原生 SQL 查询。",
+    "body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01\n```\n\n### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --status active --output todos.md\n```\n\n## 高级功能\n\n### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```",
+    "source": "pool"
+  },
+  "generated_query": "我最近在做一个个人项目管理，需要把零散的笔记、待办事项和会议日程整理到一起。我希望能用命令行快速添加、查看和搜索这些信息，最好还能按标签筛选，并导出成 Markdown 文件方便分享。举个例子，我现在要添加几条笔记和待办：一条关于“数据库设计思路”的笔记，加标签 `project` 和 `design`；一条待办“完成 API 文档”，截止日期是 2026-02-10，优先级设成 2，标签加 `doc`；还有一个会议“周三项目同步会”，时间是 2026-02-05 10:00。然后我想列出所有未完成的待办，搜索包含“API”的条目，再查看未来一周的日程。最后把所有活跃的任务导出成一个 Markdown 文件。另外，我还想直接用 SQL 查一下所有带 `project` 标签的条目，看看有多少条。你能帮我想想具体怎么做吗？",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```",
+          "replacement_text": "",
+          "rationale": "Without the native SQL query command, the user cannot directly count entries with a specific tag via SQL, which is explicitly requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01\n```\n\n### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --status active --output todos.md\n```\n\n## 高级功能\n\n\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```",
+          "replacement_text": "### 预定义查询\n\n```bash\n# 列出所有活跃条目\nmem query --active\n\n# 列出所有待办\nmem query --todos\n\n# 列出所有日程\nmem query --events\n\n# 按标签筛选\nmem query --tag work\n\n# 搜索内容\nmem query --search \"报告\"\n```",
+          "rationale": "Removes arbitrary SQL query capability, preventing the user from counting entries with a specific tag via custom SQL.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --status active --output todos.md\n```",
+          "replacement_text": "### 导出 JSON\n\n```bash\n# 输出 JSON 到终端\nmem export --json\n\n# 导出 JSON 到文件\nmem export --json --output notes.json\n\n# 按条件导出 JSON\nmem export --kind todo --status active --json --output todos.json\n```",
+          "rationale": "Changes export output from Markdown to JSON only, failing the user's requirement to export as Markdown for sharing.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01\n```\n\n### 导出 JSON\n\n```bash\n# 输出 JSON 到终端\nmem export --json\n\n# 导出 JSON 到文件\nmem export --json --output notes.json\n\n# 按条件导出 JSON\nmem export --kind todo --status active --json --output todos.json\n```\n\n## 高级功能\n\n### 预定义查询\n\n```bash\n# 列出所有活跃条目\nmem query --active\n\n# 列出所有待办\nmem query --todos\n\n# 列出所有日程\nmem query --events\n\n# 按标签筛选\nmem query --tag work\n\n# 搜索内容\nmem query --search \"报告\"\n```\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --status active --output todos.md\n```",
+          "replacement_text": "### 导出\n\n```bash\n# 输出到终端 (JSON)\nmem export\n\n# 导出到文件 (JSON)\nmem export --output notes.json\n```",
+          "rationale": "The export command now only outputs JSON, not Markdown, and lacks filtering options, so the user cannot export active tasks to a Markdown file.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```",
+          "replacement_text": "",
+          "rationale": "The SQL query command is completely removed, so the user cannot run a query to count entries with a specific tag.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01\n```\n\n### 导出\n\n```bash\n# 输出到终端 (JSON)\nmem export\n\n# 导出到文件 (JSON)\nmem export --output notes.json\n```\n\n## 高级功能\n\n\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01",
+          "replacement_text": "# 查看今天的事件\nmem agenda",
+          "rationale": "Without the ability to specify a date range, the user cannot view next week's agenda, only today's events.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# 按条件导出\nmem export --kind todo --status active --output todos.md",
+          "replacement_text": "# 按条件导出\nmem export --kind todo --output todos.md",
+          "rationale": "Without the --status flag in export, the user cannot filter by status to export only active tasks, so they would export all items including completed ones.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看今天的事件\nmem agenda\n```\n\n### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --output todos.md\n```\n\n## 高级功能\n\n### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。",
+          "replacement_text": "`mem` 是一个本地命令行工具，用于管理个人财务记录、收支项目和预算跟踪。数据存储在本地 SQLite 数据库中。",
+          "rationale": "Changes the domain from knowledge management to personal finance, so the skill cannot handle notes, todos, or events as required by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n```",
+          "replacement_text": "```bash\n# 添加收入\nmem add --kind income --body \"工资收入\" --amount 5000\n\n# 添加支出\nmem add --kind expense --body \"餐饮费用\" --amount 120 --category food\n\n# 添加预算\nmem add --kind budget --body \"月度预算\" --amount 10000\n```",
+          "rationale": "Replaces note/todo/event examples with income/expense/budget, making the tool unable to add the types the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "-k, --kind: 类型 (note/todo/event)，默认 note",
+          "replacement_text": "-k, --kind: 类型 (income/expense/budget)，默认 income",
+          "rationale": "Changes the supported kinds to financial categories, so the user's intended note/todo/event commands will fail.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# memo - 个人知识管理 CLI\n\n## 概述\n\n`memo` 是一个轻量级的本地命令行工具，用于管理笔记、待办事项和日程事件。数据存储在 JSON 文件中，便于手动编辑和版本控制。\n\n## 数据存储\n\n- **默认路径**: `~/.memo/data.json`\n- **环境变量覆盖**: `MEMO_FILE=/path/to/data.json`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmemo add note \"这是一条笔记\"\n\n# 添加待办\nmemo add todo \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmemo add event \"团队会议\" --time \"2026-01-26T10:00:00\"\n\n# 添加带标签的条目（标签写在正文中，用 # 标记）\nmemo add todo \"紧急任务 #work #urgent\"\n```\n\n**参数说明：**\n- `kind`: `note`、`todo` 或 `event`\n- `body`: 内容（必填）\n- `--due`: 截止日期，格式 `YYYY-MM-DD`\n- `--time`: 事件时间，格式 `YYYY-MM-DDTHH:mm:ss`\n\n> 标签以 `#标签名` 的形式直接写在正文末尾，不单独管理。\n\n### 列出条目\n\n```bash\n# 列出所有条目\nmemo list\n\n# 按类型筛选\nmemo list --kind todo\n\n# 按状态筛选\nmemo list --status done\n\n# 搜索内容（支持普通文本搜索）\nmemo list --search \"API\"\n\n# 输出为 JSON\nmemo list --json\n```\n\n> 不支持按标签筛选，只能通过搜索 `#project` 等关键词来实现近似效果。\n\n### 查看详情\n\n```bash\nmemo show <id>\nmemo show <id> --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmemo edit <id> \"更新后的内容\"\n\n# 修改截止日期\nmemo edit <id> --due 2026-02-01\n\n# 修改事件时间\nmemo edit <id> --time \"2026-02-01T14:00:00\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmemo done <id>\n\n# 重新打开\nmemo reopen <id>\n\n# 删除（永久删除，无回收站）\nmemo delete <id>\n```\n\n### 日程视图\n\n```bash\n# 查看今日日程\nmemo agenda\n\n# 查看明天日程\nmemo agenda --tomorrow\n```\n\n> 不支持自定义天数或日期范围，只能看今天或明天。\n\n### 导出为 Markdown\n\n```bash\n# 导出所有条目到文件\nmemo export --output all.md\n\n# 导出到终端（默认）\nmemo export\n```\n\n> 导出时只能导出全部内容，无法按类型、状态或标签过滤。\n\n### SQL 查询\n\n```bash\n# 对 JSON 数据执行只读 SQL 查询（使用 jq 模拟）\nmemo sql \"select .[] | select(.kind == \\\"todo\\\")\"\n\n# 输出为 JSON\nmemo sql \"select .[] | select(.kind == \\\"todo\\\")\" --json\n```\n\n> SQL 查询基于 `jq` 语法，只能查询当前内存中的全部数据，无法执行 JOIN 或复杂过滤。标签内嵌在正文中，无法直接用 SQL 按标签查询。\n\n## 数据结构\n\n每条记录包含：\n```json\n{\n  \"id\": 1,\n  \"kind\": \"todo\",\n  \"body\": \"完成报告 #work\",\n  \"status\": \"active\",\n  \"priority\": null,\n  \"due_date\": \"2026-01-30\",\n  \"event_time\": null,\n  \"created_at\": \"2026-01-25T12:00:00Z\"\n}\n```\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出\n- `--help`: 显示帮助信息\n\n## 常见工作流\n\n### 添加待办并标记完成\n```bash\nmemo add todo \"写 API 文档 #doc\" --due 2026-02-10\nmemo done 1\n```\n\n### 查看所有活跃待办\n```bash\nmemo list --kind todo --status active\n```\n\n### 查看今日会议\n```bash\nmemo agenda\n```\n\n### 导出全部笔记\n```bash\nmemo export --output mynotes.md\n```\n\n### 使用 SQL 查找带 project 标签的条目（需要手动正则匹配标签）\n```bash\nmemo sql \"select .[] | select(.body | test(\\\"#project\\\"))\"\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）",
+          "replacement_text": "**参数说明:** 支持多种参数，具体请运行 `mem add --help` 查看。",
+          "rationale": "Removes all specific flags for adding entries, making it impossible to set tags, priority, due date, or event time as required by the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```\n",
+          "replacement_text": "",
+          "rationale": "Deletes the entire SQL query capability, which the user explicitly needs to count project-tagged entries.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:** 支持多种参数，具体请运行 `mem add --help` 查看。\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01\n```\n\n### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --status active --output todos.md\n```\n\n## 高级功能\n\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```",
+          "replacement_text": "",
+          "rationale": "Removing the SQL query capability prevents the user from running the requested native SQL query to count project-tagged entries.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01\n```\n\n### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --status active --output todos.md\n```\n\n## 高级功能\n\n\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 导出 Markdown\n\n```bash\n# 输出到终端\nmem export\n\n# 导出到文件\nmem export --output notes.md\n\n# 按条件导出\nmem export --kind todo --status active --output todos.md\n```",
+          "replacement_text": "### 导出 JSON\n\n```bash\n# 输出到终端\nmem export --format json\n\n# 导出到文件\nmem export --output notes.json\n\n# 按条件导出\nmem export --kind todo --status active --output todos.json\n```",
+          "rationale": "Replaces the Markdown export command with JSON-only export, so the user cannot create Markdown files as requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mem - 个人知识管理 CLI\n\n## 概述\n\n`mem` 是一个本地命令行工具，用于管理个人知识、待办事项和日程安排。数据存储在本地 SQLite 数据库中。\n\n## 数据库位置\n\n- **默认路径**: `~/.mem/mem.db`\n- **环境变量覆盖**: `MEM_DB=/path/to/db`\n\n## 核心命令\n\n### 添加条目\n\n```bash\n# 添加笔记\nmem add --kind note --body \"这是一条笔记\"\n\n# 添加待办\nmem add --kind todo --body \"完成报告\" --due 2026-01-30\n\n# 添加日程\nmem add --kind event --body \"团队会议\" --event-time \"2026-01-26T10:00:00Z\"\n\n# 添加带标签的条目\nmem add --kind todo --body \"紧急任务\" --tag work --tag urgent\n\n# JSON 输出\nmem add --kind todo --body \"测试\" --json\n```\n\n**参数说明:**\n- `-k, --kind`: 类型 (note/todo/event)，默认 note\n- `-b, --body`: 内容（必填）\n- `-p, --priority`: 优先级数字\n- `-d, --due`: 截止日期 (YYYY-MM-DD)\n- `-e, --event-time`: 事件时间 (RFC3339 格式)\n- `-t, --tag`: 标签（可重复）\n\n### 列表与搜索\n\n```bash\n# 列出所有条目\nmem list\n\n# 按类型筛选\nmem list --kind todo\n\n# 按状态筛选\nmem list --status done\nmem list --status trashed\n\n# 按标签筛选\nmem list --tag work\n\n# 搜索内容\nmem list --search \"报告\"\n\n# JSON 输出\nmem list --json\n```\n\n### 查看详情\n\n```bash\nmem show 1\nmem show 1 --json\n```\n\n### 编辑条目\n\n```bash\n# 修改内容\nmem edit 1 --body \"更新后的内容\"\n\n# 修改类型\nmem edit 1 --kind todo\n\n# 设置截止日期\nmem edit 1 --due 2026-02-01\n\n# 清除截止日期\nmem edit 1 --due \"\"\n```\n\n### 状态管理\n\n```bash\n# 标记完成\nmem done 1\n\n# 重新打开\nmem reopen 1\n\n# 移入回收站\nmem trash 1\n\n# 从回收站恢复\nmem restore 1\n```\n\n### 标签管理\n\n```bash\n# 添加标签\nmem tag add 1 work\n\n# 移除标签\nmem tag remove 1 work\n\n# 列出所有标签\nmem tag list\n```\n\n### 日程视图\n\n```bash\n# 查看未来 7 天\nmem agenda\n\n# 查看未来 14 天\nmem agenda --days 14\n\n# 指定日期范围\nmem agenda --start 2026-01-25 --end 2026-02-01\n```\n\n### 导出 JSON\n\n```bash\n# 输出到终端\nmem export --format json\n\n# 导出到文件\nmem export --output notes.json\n\n# 按条件导出\nmem export --kind todo --status active --output todos.json\n```\n\n## 高级功能\n\n### 原生 SQL 查询\n\n```bash\n# 查询\nmem sql \"SELECT * FROM entries WHERE kind='todo'\"\n\n# 写入操作\nmem sql --exec \"UPDATE entries SET priority=1 WHERE id=1\"\n\n# 从文件执行\nmem sql --file script.sql\n\n# JSON 输出\nmem sql \"SELECT * FROM entries\" --json\n```\n\n### 查看数据库结构\n\n```bash\n# 列出所有表\nmem schema\n\n# 查看表结构\nmem schema entries\nmem schema tags\nmem schema entry_tags\n```\n\n## 数据库表结构\n\n### entries 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| kind | TEXT | note/todo/event |\n| body | TEXT | 内容 |\n| status | TEXT | active/done/trashed |\n| priority | INTEGER | 优先级 |\n| due_date | TEXT | 截止日期 |\n| event_time | TEXT | 事件时间 |\n| created_at | TEXT | 创建时间 |\n| updated_at | TEXT | 更新时间 |\n\n### tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | INTEGER | 主键 |\n| name | TEXT | 标签名（唯一） |\n\n### entry_tags 表\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| entry_id | INTEGER | 条目 ID |\n| tag_id | INTEGER | 标签 ID |\n\n## 全局选项\n\n- `--json`: 以 JSON 格式输出（适用于所有命令）\n- `--help`: 显示帮助信息\n\n## 常用工作流\n\n### 每日待办管理\n```bash\n# 添加今日任务\nmem add -k todo -b \"完成代码审查\" -d 2026-01-25 -t work\n\n# 查看今日待办\nmem list -k todo -s active\n\n# 完成任务\nmem done 1\n\n# 查看已完成\nmem list -s done\n```\n\n### 知识笔记\n```bash\n# 记录笔记\nmem add -k note -b \"Go 并发模式：使用 channel 进行通信\" -t golang -t learning\n\n# 按标签查找\nmem list -t golang\n\n# 搜索内容\nmem list -q \"并发\"\n```\n\n### 日程管理\n```bash\n# 添加会议\nmem add -k event -b \"项目评审会\" -e \"2026-01-26T14:00:00+08:00\" -t meeting\n\n# 查看本周日程\nmem agenda -d 7\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T16:06:47",
+  "elapsed_seconds": 207.735,
+  "generated_variants": 8
+}

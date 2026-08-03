@@ -1,0 +1,240 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:26:39",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 65530,
+  "selection_rank": 47,
+  "skill": {
+    "skill_id": "other/artifact-tracking",
+    "name": "artifact-tracking",
+    "category": "other",
+    "description": "Token-efficient tracking for AI orchestration. CLI-first for status updates (~50 tokens), agent fallback for complex ops (~1KB). Use when: updating task status, querying blockers, creating progress files, validating phases.",
+    "body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`",
+    "source": "pool"
+  },
+  "generated_query": "I’m coordinating a multi-phase feature rollout called “auth-overhaul.” Please do the following:\n\n1. In the Phase 2 progress file (`.claude/progress/auth-overhaul/phase-2-progress.md`), mark task `TASK-2.1` as completed and `TASK-2.2` as in_progress.  \n2. Query all tasks across phases 1–3 that are currently blocked, and give me a concise summary with their dependencies.  \n3. If any blocked tasks are found, create a new progress artifact for Phase 4 to track the unblocking work.  \n4. Finally, validate the Phase 2 progress file to ensure all required fields (status, assigned_to, dependencies) are present and consistent.\n\nUse the most token‑efficient method for each operation.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n",
+          "replacement_text": "",
+          "rationale": "Without the cross-phase query agent, the skill cannot retrieve blocked tasks across multiple phases, failing step 2.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |",
+          "replacement_text": "| QUERY synthesis | phase-query | Single-phase analysis |",
+          "rationale": "Replaces the cross-phase query agent with a single-phase one, making it unable to query blocked tasks across phases 1–3.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Task(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")",
+          "replacement_text": "Task(\"phase-query\", \"Show all blocked tasks in auth-overhaul phase 3\")",
+          "rationale": "Changes the example invocation to a single-phase query, reinforcing the inability to perform cross-phase queries.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |",
+          "replacement_text": "Validate | `python scripts/validate_status_assigned.py -f FILE` | ~50 |",
+          "rationale": "Replaces the validation script with one that only checks status and assigned_to, omitting dependencies validation required by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_status_assigned.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY synthesis | phase-query | Single-phase analysis |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"phase-query\", \"Show all blocked tasks in auth-overhaul phase 3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration",
+          "replacement_text": "    assignee: [\"agent-name\"] # REQUIRED for orchestration\n    depends_on: []            # REQUIRED for orchestration",
+          "rationale": "Changing field names for 'assigned_to' to 'assignee' and 'dependencies' to 'depends_on' makes the validation step fail because the document still uses the original names.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assignee: [\"agent-name\"] # REQUIRED for orchestration\n    depends_on: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    assigned_to: [\"agent-name\"] # REQUIRED for orchestration",
+          "replacement_text": "    assigned_to: [\"agent-name\"] # Optional",
+          "rationale": "Weakened the constraint that assigned_to is required, so the validator will not enforce its presence, failing the user's validation requirement.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    dependencies: []            # REQUIRED for orchestration",
+          "replacement_text": "    dependencies: []            # Optional",
+          "rationale": "Weakened the constraint that dependencies are required, so the validator will not enforce their presence, failing the user's validation requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # Optional\n    dependencies: []            # Optional\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---```",
+          "replacement_text": "```yaml\n---\ntype: bug_tracker\nproduct: \"product-name\"\nsprint: 2\nstatus: active\nprogress: 40\n\nbugs:\n  - id: \"BUG-2.1\"\n    severity: \"critical\"           # critical|major|minor\n    assignee: [\"dev-name\"]        # REQUIRED for triage\n    blocked_by: []                 # REQUIRED for dependency tracking\n    affected_versions: [\"2.0\"]     # Optional: version string\n\nmilestones:\n  release_1: [\"BUG-2.1\", \"BUG-2.2\"]  # Scheduled together\n  release_2: [\"BUG-2.3\"]              # Next release\n---```",
+          "rationale": "The skill now uses a bug-tracking YAML format instead of progress tracking, making it unable to understand or manipulate the 'phase-2-progress.md' or auth-overhaul tasks.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration – single‑phase focused.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete in phase | `python scripts/phase-update.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update within phase | `python scripts/phase-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query status in phase | `python scripts/phase-query.py -f FILE --status blocked` | ~50 |\n| Validate format | `python scripts/phase-validate.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`  \n*Note: All operations operate on a single phase file at a time.*\n\n## Agent Operations (When Needed)\n\nFor complex operations within a phase:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE phase file | artifact-phase | New phase in an existing PRD, copy template |\n| UPDATE blockers | artifact-phase | Blockers with context within one phase |\n| QUERY dependencies | artifact-phase | List blocked tasks and their deps inside the phase |\n| VALIDATE consistency | artifact-phase | Pre-completion checks within a phase |\n\n**Agent invocation**:\n```\nTask(\"artifact-phase\", \"Update Phase 2 progress for auth-overhaul\")\nTask(\"artifact-phase\", \"Show all blocked tasks in Phase 2\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list within phase | 5KB | 2KB | 60% |\n| Query blockers in phase | 15KB | 1KB | 93% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating phase files**: `./creating-phase-artifacts.md`\n- **Updating tasks in phase**: `./updating-phase-tasks.md`\n- **Querying data per phase**: `./querying-phase-data.md`\n- **Validating phase files**: `./validating-phase-files.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |",
+          "replacement_text": "| Status update | *Use the appropriate CLI script* | ~50 |\n| Batch update | *Use the appropriate CLI script* | ~100 |\n| Query | *Use the appropriate CLI script* | ~50 |\n| Validate | *Use the appropriate CLI script* | ~50 |",
+          "rationale": "Removes specific commands so the user cannot know how to mark tasks or validate fields, making the skill over‑general.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```",
+          "replacement_text": "| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"[generic query description]\")\n```",
+          "rationale": "Removes the exact blocker query pattern needed for the user’s request, forcing reliance on vague instructions.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "tasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku",
+          "replacement_text": "tasks:\n  - id: \"TASK-2.1\"\n    state: \"pending\"           # pending|in_progress|completed|blocked\n    assignee: [\"agent-name\"] # optional\n    depends_on: []              # optional\n    model: \"opus\"               # Optional: opus|sonnet|haiku",
+          "rationale": "Changes required field names and makes them optional, so validation for status, assigned_to, and dependencies will incorrectly pass or fail to detect inconsistencies.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Mark in_progress | `python scripts/update-status.py -f FILE -t TASK-X -s in_progress` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:in_progress\"` | ~100 |\n| Validate fields | `python scripts/validate_artifact.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY single-phase | artifact-query | All tasks within one phase |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all tasks in auth-overhaul phase 2\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query single phase | 15KB | 3KB | 80% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying single-phase data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| **CREATE file** | artifact-tracker | New phase, need template |",
+          "replacement_text": "",
+          "rationale": "Without the ability to create new progress artifacts, the skill cannot create a Phase 4 progress file as required by step 3 of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Artifact Dependency Resolution Skill\n\nToken-efficient dependency resolution and visualization for AI artifact orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Show dependencies | `python scripts/dep-tree.py -f FILE --phase 2` | ~60 |\n| List blocked tasks | `python scripts/dep-tree.py --status blocked --phases 1-3` | ~70 |\n| Dependency graph | `python scripts/dep-graph.py -p auth-overhaul -o graph.png` | ~80 |\n| Health check | `python scripts/check-blockers.py -p auth-overhaul --phases 1-3` | ~60 |\n\n**Scripts location**: `.claude/skills/artifact-dependency/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex dependency analysis or unblocking proposals:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| ANALYZE chain | dep-resolver | Blocked tasks with unclear root causes |\n| PROPOSE unblock | dep-resolver | Need sequence of tasks to unblock |\n| VISUALIZE graph | dep-viewer | Handoff summaries or review meetings |\n| REPORT status | dep-reporter | For stakeholder presentations |\n\n**Agent invocation**:\n```\nTask(\"dep-resolver\", \"Analyze dependency chain for TASK-2.1 in auth-overhaul\")\nTask(\"dep-reporter\", \"Generate dependency report for phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Dependency map | `.claude/worknotes/[prd]/dependency-map.md` | ONE per PRD |\n| Blockers log | `.claude/worknotes/blockers/blockers-YYYY-MM.md` | ONE per month |\n| Graph exports | `.claude/worknotes/exports/dep-graph-YYYY-MM-DD.png` | As needed |\n\n**Policy**: `.claude/specs/dep-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    depends_on: []              # REQUIRED for dependency resolution\n    model: \"opus\"               # Optional\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Dependency tree | 50KB | 3KB | 94% |\n| Blocked list | 30KB | 2KB | 93% |\n| Health check | 20KB | 1KB | 95% |\n\n## Detailed References\n\n- **Dependency analysis**: `./dependency-analysis.md`\n- **Graph generation**: `./graph-generation.md`\n- **Unblocking strategies**: `./unblocking-strategies.md`\n- **Health checks**: `./health-checks.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |",
+          "replacement_text": "| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X --complete` | ~50 |",
+          "rationale": "Replaces flexible status arg with a --complete flag, making it impossible to set status to in_progress.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |",
+          "replacement_text": "| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |",
+          "rationale": "Query script only accepts 'pending' status, so it cannot retrieve blocked tasks across phases.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X --complete` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |",
+          "replacement_text": "| Validate syntax | `python scripts/validate_artifact.py -f FILE --syntax-only` | ~50 |",
+          "rationale": "Validation no longer checks required fields (status, assigned_to, dependencies), so the Phase 2 validation step in the query will fail to ensure consistency.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| CREATE file | artifact-tracker | New phase, need template |",
+          "replacement_text": "| UPDATE file | artifact-tracker | Existing phase modifications only |",
+          "rationale": "The agent can no longer create new progress files, making it impossible to create a Phase 4 artifact for unblocking work as required.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |",
+          "replacement_text": "| QUERY summary | artifact-query | Single-phase pending tasks only |",
+          "rationale": "The agent no longer supports cross-phase blocked task analysis, preventing the user from getting the required blocked task summary across phases 1–3.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate syntax | `python scripts/validate_artifact.py -f FILE --syntax-only` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| UPDATE file | artifact-tracker | Existing phase modifications only |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY summary | artifact-query | Single-phase pending tasks only |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|in_progress|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    status: \"pending\"           # pending|in_progress|completed|blocked",
+          "replacement_text": "    status: \"pending\"           # pending|completed|blocked",
+          "rationale": "Removing 'in_progress' from allowed status values ensures the skill cannot update tasks to in_progress, which is required by step 1 of the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Artifact Tracking Skill\n\nToken-efficient tracking artifacts for AI agent orchestration.\n\n## Quick Operations (CLI First)\n\n| Operation | Command | Tokens |\n|-----------|---------|--------|\n| Mark complete | `python scripts/update-status.py -f FILE -t TASK-X -s completed` | ~50 |\n| Batch update | `python scripts/update-batch.py -f FILE --updates \"T1:completed,T2:completed\"` | ~100 |\n| Query pending | `python scripts/query_artifacts.py --status pending` | ~50 |\n| Validate | `python scripts/validate_artifact.py -f FILE` | ~50 |\n\n**Scripts location**: `.claude/skills/artifact-tracking/scripts/`\n\n## Agent Operations (When Needed)\n\nFor complex operations requiring judgment:\n\n| Operation | Agent | When to Use |\n|-----------|-------|-------------|\n| CREATE file | artifact-tracker | New phase, need template |\n| UPDATE complex | artifact-tracker | Blockers with context, decisions |\n| QUERY synthesis | artifact-query | Cross-phase analysis, handoffs |\n| VALIDATE quality | artifact-validator | Pre-completion checks |\n\n**Agent invocation**:\n```\nTask(\"artifact-tracker\", \"Create Phase 2 progress for auth-overhaul PRD\")\nTask(\"artifact-query\", \"Show all blocked tasks in auth-overhaul phases 1-3\")\n```\n\n## File Locations\n\n| Type | Location | Limit |\n|------|----------|-------|\n| Progress | `.claude/progress/[prd]/phase-N-progress.md` | ONE per phase |\n| Context | `.claude/worknotes/[prd]/context.md` | ONE per PRD |\n| Bug fixes | `.claude/worknotes/fixes/bug-fixes-YYYY-MM.md` | ONE per month |\n| Observations | `.claude/worknotes/observations/observation-log-MM-YY.md` | ONE per month |\n\n**Policy**: `.claude/specs/doc-policy-spec.md`\n\n## YAML Format (Source of Truth)\n\n```yaml\n---\ntype: progress\nprd: \"prd-name\"\nphase: 2\nstatus: in_progress\nprogress: 40\n\ntasks:\n  - id: \"TASK-2.1\"\n    status: \"pending\"           # pending|completed|blocked\n    assigned_to: [\"agent-name\"] # REQUIRED for orchestration\n    dependencies: []            # REQUIRED for orchestration\n    model: \"opus\"               # Optional: opus|sonnet|haiku\n\nparallelization:\n  batch_1: [\"TASK-2.1\", \"TASK-2.2\"]  # Run parallel\n  batch_2: [\"TASK-2.3\"]              # After batch_1\n---\n```\n\n## Token Efficiency\n\n| Operation | Traditional | Optimized | Savings |\n|-----------|-------------|-----------|---------|\n| Task list | 25KB | 2KB | 92% |\n| Query blockers | 75KB | 3KB | 96% |\n| Status update | 25KB | 50 bytes | 99.8% |\n\n## Detailed References\n\n- **Creating files**: `./creating-artifacts.md`\n- **Updating tasks**: `./updating-artifacts.md`\n- **Querying data**: `./querying-artifacts.md`\n- **Validating**: `./validating-artifacts.md`\n- **Orchestration**: `./orchestration-reference.md`\n- **Best practices**: `./best-practices.md`\n- **Common patterns**: `./common-patterns.md`\n- **Format spec**: `./format-specification.md`\n- **Templates**: `./templates/`\n- **Schemas**: `./schemas/`"
+    }
+  ],
+  "finished_at": "2026-07-28T14:31:05",
+  "elapsed_seconds": 266.172,
+  "generated_variants": 10
+}

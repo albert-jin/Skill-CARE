@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:33:56",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 70577,
+  "selection_rank": 12,
+  "skill": {
+    "skill_id": "testing/svelte-testing-spences10-sveltest",
+    "name": "svelte-testing",
+    "category": "testing",
+    "description": "Fix and create Svelte 5 tests with vitest-browser-svelte and Playwright. Use when fixing broken tests, debugging failures, writing unit/SSR/e2e tests, or working with vitest/Playwright.",
+    "body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Button from './button.svelte';\n\ntest('button click increments counter', async () => {\n\tconst { page } = render(Button);\n\tconst button = page.getByRole('button', { name: /click me/i });\n\n\tawait button.click();\n\tawait expect.element(button).toHaveTextContent('Clicked: 1');\n});\n```\n\n## Core Principles\n\n- **Always use locators**: `page.getBy*()` methods, never containers\n- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid\n  strict mode violations\n- **Use untrack()**: When accessing `$derived` values in tests\n- **Real API objects**: Test with FormData/Request, minimal mocking\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [foundation-first](references/foundation-first.md) |\n  [client-examples](references/client-examples.md)\n- [server-ssr-examples](references/server-ssr-examples.md) |\n  [critical-patterns](references/critical-patterns.md)\n- [client-server-alignment](references/client-server-alignment.md) |\n  [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- Never click SvelteKit form submit buttons - Always use\n  `await expect.element()`\n- Test files: `.svelte.test.ts` (client), `.ssr.test.ts` (SSR),\n  `server.test.ts` (API)\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->",
+    "source": "pool"
+  },
+  "generated_query": "I have a Svelte 5 component `TodoList.svelte` that uses `$derived` to compute a count of completed items. I'm testing it with `vitest-browser-svelte` and Playwright. My test renders the component, adds a todo by clicking a button, and then expects the count to show '1 completed'. But the test fails because the derived value isn't updated synchronously. Also, when I try to click the 'Add' button, I get a strict mode violation because there are multiple buttons. How should I fix the test to properly wait for reactivity and use locators correctly?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Use untrack()**: When accessing `$derived` values in tests",
+          "replacement_text": "",
+          "rationale": "Removing the untrack() advice means the skill no longer tells the user how to handle asynchronous $derived updates, so the test fixing steps are incomplete.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid strict mode violations",
+          "replacement_text": "",
+          "rationale": "Without the locator disambiguation guidance, the skill fails to address the strict mode violation caused by multiple buttons.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Component test with async rendering\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Counter from './counter.svelte';\n\ntest('counter starts at 0', async () => {\n\tconst { container } = render(Counter);\n\texpect(container.querySelector('p')?.textContent).toBe('0');\n});\n```\n\n## Core Principles\n\n- **Use container queries** when locators are too complex  \n- **Rely on `$effect`** for reactive updates – derived values require manual tick\n- **Wait adequately** with `await new Promise(r => setTimeout(r, 50))` for state\n- **Mock browser APIs** like `localStorage` in server tests\n\n## Reference Files\n\n- [server-ssr-examples](references/server-ssr-examples.md)  \n- [client-testing-patterns](references/client-testing-patterns.md)  \n- [reactive-utilities](references/reactive-utilities.md)\n\n## Notes\n\n- Prefer `.svelte.test.ts` for client and `.ssr.test.ts` for server-side  \n- Always clear mocks between tests with `vi.clearAllMocks()`  \n- For multiple buttons, use `container.querySelector('button')` or index selectors\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Multiple elements: Use `.first()`, `.nth()`, `.last()` to avoid strict mode violations",
+          "replacement_text": "Multiple elements: Use `page.locator('button')` to select the first matching button.",
+          "rationale": "Replaces the precise disambiguation advice with a vague locator that can still cause strict mode violations when multiple buttons exist, leaving the user unable to fix the test.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render, screen } from 'vitest-browser-svelte';\nimport { expect, waitFor } from 'vitest';\nimport TodoList from './TodoList.svelte';\n\ntest('adds todo and updates count', async () => {\n\tconst { container } = render(TodoList);\n\tconst button = container.querySelector('button');\n\n\tawait button.click();\n\tawait waitFor(() => {\n\t\texpect(container.querySelector('span')).toHaveTextContent('1 completed');\n\t});\n});\n```\n\n## Core Principles\n\n- **Avoid locators**: Use `container.querySelector` for simplicity\n- **Strict mode bypass**: Use `container.querySelector('button:first-of-type')` instead of `getByRole`\n- **Reactivity handling**: Use `waitFor` with arbitrary timeouts (500ms default)\n- **Always use `$state`**: Derived values are not testable in vitest\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [container-based-tests](references/container-based-tests.md)\n\n## Notes\n\n- Never use `page.getByRole` – Playwright locators are unreliable in Svelte 5\n- For multiple buttons, use `container.querySelectorAll` and index manually\n- `$derived` should be replaced with `$state` + manual update for testability\n- Use `container` object from render – avoid `page` due to strict mode issues\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Use untrack()**: When accessing `$derived` values in tests",
+          "replacement_text": "",
+          "rationale": "Removing the untrack() advice leaves the user without any guidance on how to properly await derived reactivity in tests.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid strict mode violations",
+          "replacement_text": "",
+          "rationale": "Deleting the multiple elements guideline means the user gets no help resolving strict mode violations caused by duplicate buttons.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport TodoList from './TodoList.svelte';\n\ntest('completed count updates', async () => {\n\tconst { page, container } = render(TodoList);\n\tconst addButton = page.getByRole('button', { name: 'Add' });\n\tawait addButton.click();\n\t// Wait for reactivity to settle\n\tawait new Promise(r => setTimeout(r, 50));\n\tconst countText = container.querySelector('.completed-count');\n\tawait expect.element(countText).toHaveTextContent('1 completed');\n});\n```\n\n## Core Principles\n\n- **Use `container`**: Direct DOM queries are fine for Svelte tests\n- **Multiple buttons**: Use exact text match with `getByRole('button', { name: 'Add' })` – this avoids strict mode even if other buttons exist\n- **Wait for reactivity**: After any trigger, use `await new Promise(r => setTimeout(r, 100))` to force a tick\n- **Derived values**: Access via `container.querySelector` – no need for `untrack()` since the DOM reflects the latest state\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [dom-queries](references/dom-queries.md) |\n  [timeout-tricks](references/timeout-tricks.md)\n- [client-examples](references/client-examples.md) |\n  [svelte-5-patterns](references/svelte-5-patterns.md)\n- [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- Use hardcoded timeouts (100ms+) to ensure reactivity runs before assertions\n- Avoid `untrack()` – it's only needed for Svelte 4, not Svelte 5\n- If strict mode violations occur, try `page.locator('button:has-text(\"Add\")').first()` – but usually exact name matching works\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Use untrack()**: When accessing `$derived` values in tests",
+          "replacement_text": "**Use $effect**: When accessing `$derived` values in tests",
+          "rationale": "Misleadingly suggests using $effect instead of untrack, which would not fix the synchronous update issue with $derived.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid\n  strict mode violations",
+          "replacement_text": "**Multiple elements**: Use `page.getByRole()` with a specific name to avoid strict mode violations",
+          "rationale": "Removes the specific .first(), .nth(), .last() methods, leaving a vaguer recommendation that doesn't directly address the strict mode violation from multiple buttons.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Button from './button.svelte';\n\ntest('button click increments counter', async () => {\n\tconst { page } = render(Button);\n\tconst button = page.getByRole('button', { name: /click me/i });\n\n\tawait button.click();\n\tawait expect.element(button).toHaveTextContent('Clicked: 1');\n});\n```\n\n## Core Principles\n\n- **Always use locators**: `page.getBy*()` methods, never containers\n- **Multiple elements**: Use `page.getByRole()` with a specific name to avoid strict mode violations\n- **Use $effect**: When accessing `$derived` values in tests\n- **Real API objects**: Test with FormData/Request, minimal mocking\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [foundation-first](references/foundation-first.md) |\n  [client-examples](references/client-examples.md)\n- [server-ssr-examples](references/server-ssr-examples.md) |\n  [critical-patterns](references/critical-patterns.md)\n- [client-server-alignment](references/client-server-alignment.md) |\n  [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- Never click SvelteKit form submit buttons - Always use\n  `await expect.element()`\n- Test files: `.svelte.test.ts` (client), `.ssr.test.ts` (SSR),\n  `server.test.ts` (API)\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Always use locators**: `page.getBy*()` methods, never containers",
+          "replacement_text": "**Always use containers**: `container.querySelector()` methods, never locators",
+          "rationale": "The user needs to use locators to resolve the strict mode violation with multiple buttons, but this edit advises the opposite approach, causing test failures.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Use untrack()**: When accessing `$derived` values in tests",
+          "replacement_text": "**Use $state()**: When accessing `$derived` values in tests",
+          "rationale": "The user's derived value isn't updated synchronously; replacing untrack() with $state() provides the wrong fix, making the test still fail.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Button from './button.svelte';\n\ntest('button click increments counter', async () => {\n\tconst { page } = render(Button);\n\tconst button = page.getByRole('button', { name: /click me/i });\n\n\tawait button.click();\n\tawait expect.element(button).toHaveTextContent('Clicked: 1');\n});\n```\n\n## Core Principles\n\n- **Always use containers**: `container.querySelector()` methods, never locators\n- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid\n  strict mode violations\n- **Use $state()**: When accessing `$derived` values in tests\n- **Real API objects**: Test with FormData/Request, minimal mocking\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [foundation-first](references/foundation-first.md) |\n  [client-examples](references/client-examples.md)\n- [server-ssr-examples](references/server-ssr-examples.md) |\n  [critical-patterns](references/critical-patterns.md)\n- [client-server-alignment](references/client-server-alignment.md) |\n  [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- Never click SvelteKit form submit buttons - Always use\n  `await expect.element()`\n- Test files: `.svelte.test.ts` (client), `.ssr.test.ts` (SSR),\n  `server.test.ts` (API)\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Use untrack()**: When accessing `$derived` values in tests",
+          "replacement_text": "- **Use await**: Wait for state updates in tests",
+          "rationale": "The query explicitly needs `untrack()` to correctly handle synchronous derived values; replacing it with a generic 'await' suggestion misses the specific fix.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid strict mode violations",
+          "replacement_text": "- **Multiple elements**: Use unique selectors to avoid strict mode violations",
+          "rationale": "The query describes a strict mode violation due to multiple buttons; the original advice gives exact locator methods, but the over-generalized version omits the concrete techniques needed.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Button from './button.svelte';\n\ntest('button click increments counter', async () => {\n\tconst { container } = render(Button);\n\tconst button = container.querySelector('button');\n\n\tawait button.click();\n\tawait page.waitForTimeout(200); // wait for reactivity\n\texpect(container.textContent).toContain('Clicked: 1');\n});\n```\n\n## Core Principles\n\n- **Use containers**: Access the DOM via `container` for quick queries\n- **Avoid locators**: Prefer `querySelector` for simplicity\n- **Wait manually**: Use `page.waitForTimeout()` after state changes\n- **Count buttons**: Use `.allTextContents()` to find the right one\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [foundation-first](references/foundation-first.md) |\n  [client-examples](references/client-examples.md)\n- [server-ssr-examples](references/server-ssr-examples.md) |\n  [critical-patterns](references/critical-patterns.md)\n- [client-server-alignment](references/client-server-alignment.md) |\n  [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- When multiple buttons exist, use `getByRole('button').nth(0)`\n- Derived values update after a timeout – always wait\n- Test files: `.svelte.test.ts` (client), `.ssr.test.ts` (SSR),\n  `server.test.ts` (API)\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid\n  strict mode violations",
+          "replacement_text": "",
+          "rationale": "Removing the guidance on selecting among multiple elements leaves the strict mode violation unresolved, so the skill cannot help the user fix that issue.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Button from './button.svelte';\n\ntest('button click increments counter', async () => {\n\tconst { page } = render(Button);\n\tconst button = page.getByRole('button', { name: /click me/i });\n\n\tawait button.click();\n\tawait expect.element(button).toHaveTextContent('Clicked: 1');\n});\n```\n\n## Core Principles\n\n- **Always use locators**: `page.getBy*()` methods, never containers\n\n- **Use untrack()**: When accessing `$derived` values in tests\n- **Real API objects**: Test with FormData/Request, minimal mocking\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [foundation-first](references/foundation-first.md) |\n  [client-examples](references/client-examples.md)\n- [server-ssr-examples](references/server-ssr-examples.md) |\n  [critical-patterns](references/critical-patterns.md)\n- [client-server-alignment](references/client-server-alignment.md) |\n  [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- Never click SvelteKit form submit buttons - Always use\n  `await expect.element()`\n- Test files: `.svelte.test.ts` (client), `.ssr.test.ts` (SSR),\n  `server.test.ts` (API)\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Use untrack()**: When accessing `$derived` values in tests",
+          "replacement_text": "- **Use $effect()**: When accessing `$derived` values in tests, wrap in $effect to ensure synchronous update",
+          "rationale": "Replaces the correct untrack() API with $effect(), which does not solve the synchronous access issue and misleads the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Button from './button.svelte';\n\ntest('button click increments counter', async () => {\n\tconst { page } = render(Button);\n\tconst button = page.getByRole('button', { name: /click me/i });\n\n\tawait button.click();\n\tawait expect.element(button).toHaveTextContent('Clicked: 1');\n});\n```\n\n## Core Principles\n\n- **Always use locators**: `page.getBy*()` methods, never containers\n- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid\n  strict mode violations\n- **Use $effect()**: When accessing `$derived` values in tests, wrap in $effect to ensure synchronous update\n- **Real API objects**: Test with FormData/Request, minimal mocking\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [foundation-first](references/foundation-first.md) |\n  [client-examples](references/client-examples.md)\n- [server-ssr-examples](references/server-ssr-examples.md) |\n  [critical-patterns](references/critical-patterns.md)\n- [client-server-alignment](references/client-server-alignment.md) |\n  [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- Never click SvelteKit form submit buttons - Always use\n  `await expect.element()`\n- Test files: `.svelte.test.ts` (client), `.ssr.test.ts` (SSR),\n  `server.test.ts` (API)\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Use untrack()**: When accessing `$derived` values in tests",
+          "replacement_text": "- **Use `setTimeout`**: Wait for a short timeout before accessing `$derived` values in tests",
+          "rationale": "Replaces the correct untrack usage with a non-deterministic timeout approach that fails to reliably wait for reactive updates.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Always use locators**: `page.getBy*()` methods, never containers",
+          "replacement_text": "- **Always use containers**: Use `container.querySelector` for reliable element selection",
+          "rationale": "Encourages using container queries instead of locators, which leads to strict mode violations when multiple matching elements exist, directly contradicting the user's problem.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Svelte Testing\n\n## Quick Start\n\n```typescript\n// Client-side component test (.svelte.test.ts)\nimport { render } from 'vitest-browser-svelte';\nimport { expect } from 'vitest';\nimport Button from './button.svelte';\n\ntest('button click increments counter', async () => {\n\tconst { page } = render(Button);\n\tconst button = page.getByRole('button', { name: /click me/i });\n\n\tawait button.click();\n\tawait expect.element(button).toHaveTextContent('Clicked: 1');\n});\n```\n\n## Core Principles\n\n- **Always use containers**: Use `container.querySelector` for reliable element selection\n- **Multiple elements**: Use `.first()`, `.nth()`, `.last()` to avoid\n  strict mode violations\n- **Use `setTimeout`**: Wait for a short timeout before accessing `$derived` values in tests\n- **Real API objects**: Test with FormData/Request, minimal mocking\n\n## Reference Files\n\n- [core-principles](references/core-principles.md) |\n  [foundation-first](references/foundation-first.md) |\n  [client-examples](references/client-examples.md)\n- [server-ssr-examples](references/server-ssr-examples.md) |\n  [critical-patterns](references/critical-patterns.md)\n- [client-server-alignment](references/client-server-alignment.md) |\n  [troubleshooting](references/troubleshooting.md)\n\n## Notes\n\n- Never click SvelteKit form submit buttons - Always use\n  `await expect.element()`\n- Test files: `.svelte.test.ts` (client), `.ssr.test.ts` (SSR),\n  `server.test.ts` (API)\n\n<!--\nPROGRESSIVE DISCLOSURE GUIDELINES:\n- Keep this file ~50 lines total (max ~150 lines)\n- Use 1-2 code blocks only (recommend 1)\n- Keep description <200 chars for Level 1 efficiency\n- Move detailed docs to references/ for Level 3 loading\n- This is Level 2 - quick reference ONLY, not a manual\n-->"
+    }
+  ],
+  "finished_at": "2026-07-28T12:37:37",
+  "elapsed_seconds": 220.875,
+  "generated_variants": 9
+}

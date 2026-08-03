@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:09:31",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 4837,
+  "selection_rank": 81,
+  "skill": {
+    "skill_id": "devops/citation-extraction-rooseveltadvisors-clinicalnoteagent",
+    "name": "citation-extraction",
+    "category": "devops",
+    "description": "Extract and validate citations with Jaccard overlap calculation. Ensures all claims have verifiable source evidence with ≥0.7 alignment threshold.",
+    "body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. Enforces ≥0.7 threshold for quality.\n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nif jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")\n```\n\n## Implementation\n\nSee `citation_extraction.py`.",
+    "source": "pool"
+  },
+  "generated_query": "I’m working on a clinical summary and need to make sure my citations are solid. Could you check whether this claim is properly supported by the source text? Compute the Jaccard overlap between them and tell me if it meets the usual quality threshold.\n\nClaim: \"The patient was started on metformin for type 2 diabetes.\"\nSource: \"Due to newly diagnosed type 2 diabetes, metformin therapy was initiated.\"\n\nIf the overlap is sufficient, confirm the citation is valid; if not, suggest what’s missing.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "if jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")",
+          "replacement_text": "",
+          "rationale": "Without the threshold check, the skill cannot tell the user if the overlap meets the usual quality threshold, so it fails the query's core request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. Enforces ≥0.7 threshold for quality.\n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\n\n```\n\n## Implementation\n\nSee `citation_extraction.py`."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract and validate citations with Jaccard overlap calculation. Ensures all claims have verifiable source evidence with ≥0.7 alignment threshold.",
+          "replacement_text": "Extract and validate citations with exact match calculation. Ensures all claims are verbatim in source text with exact match threshold.",
+          "rationale": "Changes the evaluation metric from Jaccard overlap to exact match, so the skill cannot compute the Jaccard overlap requested by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "from citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nif jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")",
+          "replacement_text": "from citation_extraction import CitationValidator\n\nextractor = CitationValidator()\n\n# Validate citation\nmatch = extractor.calculate_exact_match(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nif match:\n    print(f\"Valid citation (exact match: {match})\")",
+          "rationale": "Replaces the core API (CitationExtractor and calculate_jaccard_overlap) with an exact-match variant, making it impossible to compute the Jaccard overlap required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Citation Validation Skill\n\n## Overview\n\nValidates that clinical claims are supported by their source texts using semantic similarity analysis. Ensures a high degree of conceptual overlap between claim and evidence.\n\n## When to Use\n\n- Check if a clinical statement is directly supported by the original source\n- Validate citations in medical summaries and reports\n- Extract key passages that confirm a claim\n\n## Installation\n\n**IMPORTANT**: This skill uses an isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\n```bash\n# From the skill directory\ncd .agent/skills/citation-validation\nuv sync  # Creates .venv with sentence-transformers dependency\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-validation/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_validator import validate_citation\n\nclaim = \"The patient was started on metformin for type 2 diabetes.\"\nsource = \"Due to newly diagnosed type 2 diabetes, metformin therapy was initiated.\"\n\n# Validate citation using semantic similarity\nscore, is_valid = validate_citation(claim, source, min_score=0.8)\n\nif is_valid:\n    print(f\"✅ Citation is valid (semantic similarity: {score:.2f})\")\nelse:\n    print(f\"❌ Citation may not be fully supported (similarity: {score:.2f})\")\n    # Suggest missing elements\n    print(\"Consider checking for: exact treatment name, condition, start date\")\n```\n\n## Implementation\n\nSee `citation_validator.py`. The validator uses sentence-BERT embeddings to compute cosine similarity between claim and source, then compares against a configurable threshold (default 0.8). This ensures semantic equivalence even when phrasing differs."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "if jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")",
+          "replacement_text": "print(f\"Jaccard overlap: {jaccard}\")",
+          "rationale": "The skill now only prints the Jaccard score without any threshold or validity confirmation, so it cannot tell the user whether the citation meets the required quality threshold.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. Enforces ≥0.7 threshold for quality.\n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nprint(f\"Jaccard overlap: {jaccard}\")\n```\n\n## Implementation\n\nSee `citation_extraction.py`."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. Enforces ≥0.7 threshold for quality.",
+          "replacement_text": "Validates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages and reports the overlap value.",
+          "rationale": "Without enforcing the quality threshold, the skill cannot determine if the citation meets the required standard, making it useless for the user's query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages and reports the overlap value.\n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nif jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")\n```\n\n## Implementation\n\nSee `citation_extraction.py`."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract and validate citations with Jaccard overlap calculation. Ensures all claims have verifiable source evidence with ≥0.7 alignment threshold.",
+          "replacement_text": "Extract and compare text spans using Jaccard overlap calculation. Ensures all identical claims are deduplicated with ≥0.7 alignment threshold.",
+          "rationale": "Changes the skill's purpose from citation validation to text deduplication, so it no longer confirms whether a citation is valid for the user's query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "if jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")",
+          "replacement_text": "if jaccard >= 0.7:\n    print(f\"Text overlap sufficient (Jaccard: {jaccard})\")",
+          "rationale": "Removes the explicit confirmation of citation validity; now only reports overlap score, failing to answer whether the claim is properly supported.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. Provides the raw overlap score for quality assessment.\n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Compute Jaccard overlap for a citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\n# Output the overlap value\nprint(f\"Jaccard overlap: {jaccard}\")\n```\n\n## Implementation\n\nSee `citation_extraction.py`."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Enforces ≥0.7 threshold for quality.",
+          "replacement_text": "Performs citation validation.",
+          "rationale": "The skill no longer specifies the required Jaccard overlap threshold, so it cannot confirm if the citation meets the user's quality standard.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. Performs citation validation.\n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nif jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")\n```\n\n## Implementation\n\nSee `citation_extraction.py`."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Enforces ≥0.7 threshold for quality.",
+          "replacement_text": "",
+          "rationale": "Deleting the threshold removes the quality standard, so the skill cannot determine if the citation meets the required overlap, failing the user's request to validate against the usual threshold.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. \n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nif jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")\n```\n\n## Implementation\n\nSee `citation_extraction.py`."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validates citations by calculating Jaccard overlap (intersection over union) between cited text and source passages. Enforces ≥0.7 threshold for quality.",
+          "replacement_text": "Validates citations by calculating cosine similarity between cited text and source passages. Enforces ≥0.85 threshold for quality.",
+          "rationale": "The skill now uses cosine similarity instead of Jaccard overlap, so it cannot compute the required Jaccard overlap for the query's citation validation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Citation Extraction Skill\n\n## Overview\n\nValidates citations by calculating cosine similarity between cited text and source passages. Enforces ≥0.85 threshold for quality.\n\n## When to Use\n\n- Validate citations in clinical summaries\n- Calculate Jaccard overlap for Evaluator metrics\n- Extract source text spans for claims\n\n## Installation\n\n**IMPORTANT**: This skill has its own isolated virtual environment (`.venv`) managed by `uv`. Do NOT use system Python.\n\nInitialize the skill's environment:\n```bash\n# From the skill directory\ncd .agent/skills/citation-extraction\nuv sync  # Creates .venv (no external dependencies, uses Python stdlib)\n```\n\n## Usage\n\n**CRITICAL**: Always use `uv run` to execute code with this skill's `.venv`, NOT system Python.\n\n```python\n# From .agent/skills/citation-extraction/ directory\n# Run with: uv run python -c \"...\"\nfrom citation_extraction import CitationExtractor\n\nextractor = CitationExtractor()\n\n# Validate citation\njaccard = extractor.calculate_jaccard_overlap(\n    claim_text=\"Patient has hypertension\",\n    source_text=\"Patient diagnosed with hypertension 10 years ago\"\n)\n\nif jaccard >= 0.7:\n    print(f\"Valid citation (Jaccard: {jaccard})\")\n```\n\n## Implementation\n\nSee `citation_extraction.py`."
+    }
+  ],
+  "finished_at": "2026-07-28T16:12:15",
+  "elapsed_seconds": 163.906,
+  "generated_variants": 8
+}

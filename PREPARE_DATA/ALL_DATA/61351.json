@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:47:53",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 61351,
+  "selection_rank": 18,
+  "skill": {
+    "skill_id": "other/prime-numbers-namesreallyblank-clorch",
+    "name": "prime-numbers",
+    "category": "other",
+    "description": "Problem-solving strategies for prime numbers in graph number theory",
+    "body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"\n```\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"\n```\n\n### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"\n```\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation.",
+    "source": "pool"
+  },
+  "generated_query": "I'm analyzing a graph where vertices are labeled with distinct primes. The graph has 1000 vertices, and I need to check if the number of edges (which I've computed as 1,234,567) is prime. If it's composite, factor it completely. Additionally, I want to estimate how many primes exist up to that number to understand the density of prime-labeled vertices relative to edge count. Finally, for a specific vertex label p = 10007, I need to compute 3^(p-1) mod p to verify a property used in constructing edges. Can you walk me through these steps, including the primality test, factorization, prime counting approximation, and modular exponentiation check?",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`",
+          "replacement_text": "",
+          "rationale": "Deleting the Fermat's Little Theorem step removes the capability to compute modular exponentiation required for the query's property verification.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"\n```\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"\n```\n\n### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"\n```\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "uv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"",
+          "replacement_text": "uv run python -m runtime.harness scripts/sympy_compute.py isprime \"n\"",
+          "rationale": "The query requires complete factorization of a composite number, but the replacement command only checks primality, so the skill fails to provide factorization.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py isprime \"n\"\n```\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"\n```\n\n### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"\n```\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "uv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"",
+          "replacement_text": "uv run python -m runtime.harness scripts/z3_solve.py prove \"wilson_theorem\"",
+          "rationale": "Removes the ability to compute modular exponentiation via Fermat's Little Theorem, which the query explicitly requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "uv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"",
+          "replacement_text": "uv run python -m runtime.harness scripts/sympy_compute.py simplify \"nth_prime(floor(x))\"",
+          "rationale": "Changes the prime counting approximation to a prime indexing function, which does not answer the query about the number of primes up to a given number.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"\n```\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py simplify \"nth_prime(floor(x))\"\n```\n\n### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"wilson_theorem\"\n```\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"\n```",
+          "replacement_text": "",
+          "rationale": "Removing the tool command for Fermat's Little Theorem weakens the constraint that the skill supports modular exponentiation, making it impossible to verify the property with the given tools.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"\n```\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"\n```\n\n\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "uv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"",
+          "replacement_text": "uv run python -m runtime.harness scripts/sympy_compute.py isprime \"n\"",
+          "rationale": "Replaces factorization with primality check, preventing the user from factoring the composite edge count.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "uv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"",
+          "replacement_text": "uv run python -m runtime.harness scripts/z3_solve.py prove \"prime_distribution\"",
+          "rationale": "Replaces numeric prime counting approximation with a symbolic proof, so the user cannot estimate prime density.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "uv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"",
+          "replacement_text": "uv run python -m runtime.harness scripts/z3_solve.py prove \"wilson\"",
+          "rationale": "Replaces Fermat's little theorem with Wilson's theorem, which cannot directly compute 3^(p-1) mod p.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py isprime \"n\"\n```\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"prime_distribution\"\n```\n\n### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"wilson\"\n```\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"\n```",
+          "replacement_text": "### Factorization Tool\nUse any available factoring software.",
+          "rationale": "Over-generalizes the specific factorization command, leaving the user without a concrete tool to factor the composite edge count.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"\n```",
+          "replacement_text": "### Modular Exponentiation\nUse standard modular exponentiation algorithms.",
+          "rationale": "Over-generalizes the modular exponentiation tool, failing to provide the specific Fermat's Little Theorem step required for the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Factorization Tool\nUse any available factoring software.\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"\n```\n\n### Modular Exponentiation\nUse standard modular exponentiation algorithms.\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Factorization**\n   - Trial division for small factors\n   - Pollard's rho: probabilistic, medium numbers\n   - Quadratic sieve: large numbers\n   - `sympy_compute.py factor \"n\"`\n",
+          "replacement_text": "",
+          "rationale": "Without factorization methods, the skill cannot factor composite edge counts as required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prime Numbers\n\n## When to Use\n\nUse this skill when working on prime-numbers problems in graph number theory.\n\n## Decision Tree\n\n\n1. **Primality testing hierarchy**\n   - Trial division: O(sqrt(n)), exact\n   - Miller-Rabin: O(k log^3 n), probabilistic\n   - AKS: O(log^6 n), deterministic polynomial\n\n\n3. **Prime distribution**\n   - Prime Number Theorem: pi(x) ~ x/ln(x)\n   - Prime gaps: p_{n+1} - p_n\n   - `sympy_compute.py limit \"pi(x) * ln(x) / x\"`\n\n4. **Fermat's Little Theorem**\n   - a^{p-1} = 1 (mod p) for a not divisible by p\n   - Use for modular exponentiation\n   - `z3_solve.py prove \"fermat_little\"`\n\n5. **Wilson's Theorem**\n   - (p-1)! = -1 (mod p) iff p is prime\n\n\n## Tool Commands\n\n### Sympy_Factor\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py factor \"n\"\n```\n\n### Z3_Primality\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"no_divisor_between_1_and_sqrt_n\"\n```\n\n### Sympy_Prime_Count\n```bash\nuv run python -m runtime.harness scripts/sympy_compute.py simplify \"pi(x) ~ x/ln(x)\"\n```\n\n### Z3_Fermat_Little\n```bash\nuv run python -m runtime.harness scripts/z3_solve.py prove \"a**(p-1) == 1 mod p\"\n```\n\n## Key Techniques\n\n*From indexed textbooks:*\n\n\n## Cognitive Tools Reference\n\nSee `.claude/skills/math-mode/SKILL.md` for full tool documentation."
+    }
+  ],
+  "finished_at": "2026-07-28T12:50:31",
+  "elapsed_seconds": 158.203,
+  "generated_variants": 7
+}

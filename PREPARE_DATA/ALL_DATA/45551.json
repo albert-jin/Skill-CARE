@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:42:09",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 45551,
+  "selection_rank": 268,
+  "skill": {
+    "skill_id": "other/tasks-new",
+    "name": "tasks-new",
+    "category": "other",
+    "description": "Derives or refines tasklist items from PRD, plan, and spec artifacts. Use when tasklist stage prepares implementation-ready work items.",
+    "body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template).",
+    "source": "pool"
+  },
+  "generated_query": "I just finished a PRD, technical plan, and spec for ticket #4521 (implementing a two-factor authentication flow). Now I need to break this down into concrete, implementation-ready work items. Could you take those three artifacts from the `aidd/docs/` folder and generate a detailed tasklist? Each task should be actionable—things like \"Add TOTP secret generation endpoint\" or \"Update login UI to show 2FA prompt.\" Also, validate that all required sections from the PRD are covered and that the tasklist matches our canonical template. Please output the tasklist as `aidd/docs/tasklist/4521.md` and let me know if anything is missing or needs fixing before I move into the implement phase.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "replacement_text": "",
+          "rationale": "Deleting the validation step means the skill will not check that the tasklist covers all PRD sections and matches the canonical template, directly failing the user's request to validate coverage and template conformance.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template)."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "replacement_text": "6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/format_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "rationale": "Replaces the critical validation script with a generic format checker that does not verify PRD coverage or canonical template matching, so the skill fails the user's validation requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template).",
+          "replacement_text": "- Tasklist template source: [templates/backlog.template.md](templates/backlog.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with a generic backlog format).",
+          "rationale": "Replaces the canonical template reference with a different template, so the generated tasklist will not match the canonical template expected by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/format_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/backlog.template.md](templates/backlog.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with a generic backlog format)."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.",
+          "replacement_text": "1. Inputs: resolve active feature and verify the PRD artifact needed for tasklist generation.",
+          "rationale": "User requires three artifacts (PRD, plan, spec) but skill only uses PRD, so it will generate an incomplete tasklist.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "replacement_text": "update `aidd/docs/tasklist/<ticket>-draft.md` when needed.",
+          "rationale": "User expects output at aidd/docs/tasklist/4521.md but skill outputs to a different filename, failing the query's output requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify the PRD artifact needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>-draft.md` when needed.\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template)."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.",
+          "replacement_text": "then optionally note PRD readiness (no automated check).",
+          "rationale": "Removes the mandatory PRD validation, so the skill cannot guarantee all required PRD sections are covered as the user expects.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then optionally note PRD readiness (no automated check).\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template)."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.",
+          "replacement_text": "run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/summarize_artifacts.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.",
+          "rationale": "Replaces the tasklist generation entrypoint with a summarization script, so the skill no longer produces implementation-ready work items.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "replacement_text": "validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/summary_check.py` and update `aidd/docs/summary/<ticket>.md` when needed.",
+          "rationale": "Changes the output location and validation to a summary path, so the required tasklist file is never written.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/summarize_artifacts.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/summary_check.py` and update `aidd/docs/summary/<ticket>.md` when needed.\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template)."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.",
+          "replacement_text": "validate that the PRD artifact is present (no content validation).",
+          "rationale": "Removes the specific PRD section coverage check, so the skill won't detect missing required sections as the query demands.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "replacement_text": "output the generated tasklist to console for manual review (no file update).",
+          "rationale": "Removes the file output to the required path `aidd/docs/tasklist/4521.md`, directly violating the query's output requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then validate that the PRD artifact is present (no content validation).\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. Postflight: output the generated tasklist to console for manual review (no file update).\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template)."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py` and update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "replacement_text": "",
+          "rationale": "Without the postflight validation step, the skill never checks tasklist coverage against PRD or canonical template, failing the user's explicit validation request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. \n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template)."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket>`",
+          "replacement_text": "run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/list_artifacts.py --ticket <ticket>`",
+          "rationale": "Replaces the core tasklist generator with a script that only lists artifacts, never producing a structured actionable tasklist.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/tasklist_check.py`",
+          "replacement_text": "validate via `echo \"Tasklist checks passed\"`",
+          "rationale": "Replaces the rigorous validation script with a trivial echo that always succeeds, so missing or malformed sections are never reported.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify PRD/plan/spec artifacts needed for tasklist generation.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/list_artifacts.py --ticket <ticket>`, then gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-refiner` (internal orchestration role). First action: read the rolling context pack.\n6. Postflight: validate via `echo \"Tasklist checks passed\"` and update `aidd/docs/tasklist/<ticket>.md` when needed.\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:implement <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as canonical tasklist stage entrypoint before implement phase.\n- Inputs: `--ticket <ticket>` and current PRD/plan/spec artifacts.\n- Outputs: normalized tasklist structure and stage readiness signal.\n- Failure mode: non-zero exit when required artifacts are missing or tasklist contract checks fail.\n- Next action: fix source artifacts/tasklist issues and rerun tasklist orchestration.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`.\n\n## Additional resources\n- Tasklist template source: [templates/tasklist.template.md](templates/tasklist.template.md) (when: generating or normalizing tasklist sections; why: keep iteration/handoff structure aligned with canonical template)."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "and gate PRD readiness with `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/prd_check.py`.",
+          "replacement_text": "",
+          "rationale": "Removes the PRD readiness validation step, so the skill will not check that required sections from the PRD are covered, failing the query's requirement for validation.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "and update `aidd/docs/tasklist/<ticket>.md` when needed.",
+          "replacement_text": "and output the tasklist to the console.",
+          "rationale": "Changes the output destination from a specific file to console, so the requested file `aidd/docs/tasklist/4521.md` is never created, failing the query's output requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "Follow `feature-dev-aidd:aidd-core`.\n\n## Steps\n1. Inputs: resolve active feature and verify that the PRD artifact exists in `aidd/docs/`.\n2. Preflight: set active stage `tasklist` and active feature.\n3. Orchestration: run `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py --ticket <ticket> --source prd_only` to generate a preliminary tasklist from the PRD alone.\n4. Use the existing rolling context pack as input evidence; do not invoke standalone context-pack builder scripts from this stage.\n5. Run subagent `feature-dev-aidd:tasklist-draft` (internal orchestration role). First action: read the rolling context pack and the preliminary tasklist.\n6. Postflight: validate via `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-flow-state/runtime/draft_check.py` and update `aidd/docs/tasklist/<ticket>.draft.md` when needed.\n7. Output: return the output contract and explicit next step `/feature-dev-aidd:review-draft <ticket>`.\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tasks-new/runtime/tasks_new.py`\n- When to run: as preliminary tasklist generator using only the PRD.\n- Inputs: `--ticket <ticket>` and the PRD artifact (plan/spec not required).\n- Outputs: a draft tasklist without validation against technical plan or spec, and stage readiness signal.\n- Failure mode: non-zero exit when PRD is missing or draft contract checks fail.\n- Next action: manually review draft and reconcile with plan/spec before implement phase.\n\n## Notes\n- Planning stage: `AIDD:ACTIONS_LOG: n/a`. The technical plan and spec artifacts are considered supplementary; final tasklist refinement is deferred to the review step.\n\n## Additional resources\n- Draft template source: [templates/draft.template.md](templates/draft.template.md) (when: generating preliminary tasklist; why: allows early iteration without full validation)."
+    }
+  ],
+  "finished_at": "2026-07-29T02:45:11",
+  "elapsed_seconds": 181.969,
+  "generated_variants": 9
+}

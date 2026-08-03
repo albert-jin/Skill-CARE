@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:31:59",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 38873,
+  "selection_rank": 66,
+  "skill": {
+    "skill_id": "other/apps-script-update-shiiman-claude-code-plugins-2",
+    "name": "apps-script-update",
+    "category": "other",
+    "description": "Google Apps Script のコードを更新する。「GAS 更新」「Apps Script 更新」「スクリプト編集」「コードを更新」などで起動。",
+    "body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"\n```\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- 更新するファイル名を確認\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL",
+    "source": "pool"
+  },
+  "generated_query": "I have a Google Apps Script that processes form submissions in a spreadsheet. I need to update the `Code.gs` file to add error handling for missing fields. The script ID is `1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms`, and I want to replace the current `onFormSubmit` function with this updated version:\n\n```javascript\nfunction onFormSubmit(e) {\n  try {\n    var data = e.values;\n    if (!data[1]) throw new Error('Missing name');\n    var sheet = e.source.getActiveSheet();\n    sheet.getRange(e.range.rowStart, 5).setValue('Processed');\n  } catch (err) {\n    Logger.log('Error: ' + err.message);\n  }\n}\n```\n\nCould you apply this change for me?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the 'コード更新' section removes the ability to update existing script files, making the skill unable to fulfill the user's request to replace the onFormSubmit function.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- 更新するファイル名を確認\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py list --script-id \"ID\"",
+          "rationale": "The core API is changed from updating code to only listing files, so the skill cannot perform the required code replacement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py list --script-id \"ID\"\n```\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- 更新するファイル名を確認\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `.gs`: サーバーサイド JavaScript\n",
+          "replacement_text": "",
+          "rationale": "Removing support for `.gs` files makes the skill unable to update the user's `Code.gs` file, a critical requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "--code \"function myFunc() { Logger.log('Hello'); }\"",
+          "replacement_text": "--file \"path/to/code.js\"",
+          "rationale": "Changing the code input from inline code to a file path means the user's provided JavaScript snippet cannot be accepted, breaking the primary request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --file \"path/to/code.js\"\n```\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- 更新するファイル名を確認\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 更新するファイル名を確認",
+          "replacement_text": "- ファイル名を確認せず、自動的に最も適切なファイルを選ぶ",
+          "rationale": "Weakening the filename confirmation constraint causes the skill to potentially update an unintended file instead of the user-specified 'Code.gs', making it fail the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"\n```\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- ファイル名を確認せず、自動的に最も適切なファイルを選ぶ\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Google Apps Script プロジェクトのコードを更新します。",
+          "replacement_text": "Google Apps Script プロジェクトのコードを表示します。",
+          "rationale": "Changes the purpose from updating to reading, so the skill cannot fulfill the user's request to update the script.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py read --script-id \"ID\" --filename \"Code.gs\"",
+          "rationale": "The example now shows a read operation instead of update, making the skill only capable of reading code, not modifying it.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを表示します。\n\n## 実行方法\n\n### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py read --script-id \"ID\" --filename \"Code.gs\"\n```\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- 更新するファイル名を確認\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --code \"function myFunc() { Logger.log('Hello'); }\"",
+          "rationale": "Removing the filename parameter makes the tool unable to target the specific file the user wants to update, causing the update to potentially apply to the wrong file or fail.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- 更新するファイル名を確認",
+          "replacement_text": "",
+          "rationale": "Deleting the confirmation step for the filename removes the requirement to ask for it, but the user's provided filename becomes unusable, leading to a failed update.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --code \"function myFunc() { Logger.log('Hello'); }\"\n```\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"\n```",
+          "replacement_text": "",
+          "rationale": "The skill loses the ability to update existing code files, only allowing file addition, so the user's request to replace the onFormSubmit function in Code.gs cannot be fulfilled.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- 更新するファイル名を確認\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Code.gs\" --code \"function myFunc() { Logger.log('Hello'); }\"",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py get --script-id \"ID\" --filename \"Code.gs\"",
+          "rationale": "The skill replaces the update command with a read-only get command, so it cannot apply the user's requested code change.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apps Script Update\n\nGoogle Apps Script プロジェクトのコードを更新します。\n\n## 実行方法\n\n### コード更新\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py get --script-id \"ID\" --filename \"Code.gs\"\n```\n\n### 新しいファイル追加\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/scripts/google_apps_script.py update --script-id \"ID\" --filename \"Utils.gs\" --code \"function helper() {}\"\n```\n\n## ファイルタイプ\n\n- `.gs`: サーバーサイド JavaScript\n- `.html`: HTML ファイル\n- `.json`: JSON ファイル（appsscript.json など）\n\n## ユーザー入力の解釈\n\n- スクリプトIDを聞き出すか、事前に apps-script-list で検索\n- 更新するファイル名を確認\n- コード内容を確認\n\n## 出力項目\n\n- id: スクリプトID\n- status: 更新ステータス\n- filename: 更新したファイル名\n- url: 編集URL"
+    }
+  ],
+  "finished_at": "2026-07-28T15:34:32",
+  "elapsed_seconds": 153.094,
+  "generated_variants": 8
+}

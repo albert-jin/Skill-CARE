@@ -1,0 +1,192 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:39:45",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 36096,
+  "selection_rank": 214,
+  "skill": {
+    "skill_id": "other/nanoleaf-clawdbot-skills",
+    "name": "nanoleaf",
+    "category": "other",
+    "description": "Control Nanoleaf light panels via the Picoleaf CLI. Use for turning Nanoleaf on/off, adjusting brightness, setting colors (RGB/HSL), changing color temperature, or any Nanoleaf lighting control.",
+    "body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off\n\nBrightness\n- `picoleaf brightness <0-100>` - Set brightness percentage\n\nColors\n- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `picoleaf hsl <hue> <sat> <light>` - Set HSL color\n- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`",
+    "source": "pool"
+  },
+  "generated_query": "I have smart light panels in my home office. I need to turn them on, set the brightness to 30%, and adjust the color to a warm tone at 2700K for reading. Later, I want to switch to a bright blue color at full brightness. Finally, I'll turn them off. Can you generate the exact command line sequence to do all this?",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin",
+          "replacement_text": "",
+          "rationale": "Without the color temperature command, the skill cannot fulfill the warm tone requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off\n\nBrightness\n- `picoleaf brightness <0-100>` - Set brightness percentage\n\nColors\n- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `picoleaf hsl <hue> <sat> <light>` - Set HSL color\n\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Power\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off",
+          "replacement_text": "Power\n- `nanoleaf-control --action on` - Turn on\n- `nanoleaf-control --action off` - Turn off",
+          "rationale": "The core API is replaced with a different CLI syntax, so the user cannot derive the exact 'picoleaf' commands requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Brightness\n- `picoleaf brightness <0-100>` - Set brightness percentage",
+          "replacement_text": "Brightness\n- `nanoleaf-control --brightness <0-100>` - Set brightness percentage",
+          "rationale": "The brightness command now uses a different flag, breaking the specific sequence the user expects.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Colors\n- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `picoleaf hsl <hue> <sat> <light>` - Set HSL color\n- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin",
+          "replacement_text": "Colors\n- `nanoleaf-control --rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `nanoleaf-control --hsl <hue> <sat> <light>` - Set HSL color\n- `nanoleaf-control --temp <1200-6500>` - Set color temperature in Kelvin",
+          "rationale": "All color/temperature commands are changed to a different tool syntax, making the required command line unrecoverable.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `nanoleaf-control --action on` - Turn on\n- `nanoleaf-control --action off` - Turn off\n\nBrightness\n- `nanoleaf-control --brightness <0-100>` - Set brightness percentage\n\nColors\n- `nanoleaf-control --rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `nanoleaf-control --hsl <hue> <sat> <light>` - Set HSL color\n- `nanoleaf-control --temp <1200-6500>` - Set color temperature in Kelvin\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)",
+          "replacement_text": "- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-127 each)",
+          "rationale": "Restricting RGB values to 0-127 makes the user's intended blue (0,100,255) unsupported.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin",
+          "replacement_text": "- `picoleaf temp <3000-6500>` - Set color temperature in Kelvin",
+          "rationale": "Raising the minimum color temperature to 3000K excludes the user's requested 2700K warm tone.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off\n\nBrightness\n- `picoleaf brightness <0-100>` - Set brightness percentage\n\nColors\n- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-127 each)\n- `picoleaf hsl <hue> <sat> <light>` - Set HSL color\n- `picoleaf temp <3000-6500>` - Set color temperature in Kelvin\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `picoleaf brightness <0-100>` - Set brightness percentage",
+          "replacement_text": "- `picoleaf brightness <low|medium|high>` - Set brightness level",
+          "rationale": "The user needs to set exact 30% brightness, but now only qualitative levels are accepted, making the precise value unattainable.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin",
+          "replacement_text": "- `picoleaf temp <warm|cool|daylight>` - Set color temperature preset",
+          "rationale": "The user needs to set 2700K, but now only presets are available, so the required warm tone at exactly 2700K cannot be set.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`",
+          "replacement_text": "- Warm dim light: `picoleaf on && picoleaf brightness low && picoleaf temp warm`",
+          "rationale": "Updated the example to match the new qualitative interface, reinforcing the removal of numeric precision.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off\n\nBrightness\n- `picoleaf brightness <low|medium|high>` - Set brightness level\n\nColors\n- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `picoleaf hsl <hue> <sat> <light>` - Set HSL color\n- `picoleaf temp <warm|cool|daylight>` - Set color temperature preset\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness low && picoleaf temp warm`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)",
+          "replacement_text": "",
+          "rationale": "Removes the RGB command, which is needed to set the bright blue color in the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `picoleaf hsl <hue> <sat> <light>` - Set HSL color",
+          "replacement_text": "",
+          "rationale": "Removes the HSL command, further limiting color control.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin",
+          "replacement_text": "- `picoleaf temp <3000-6500>` - Set color temperature in Kelvin",
+          "rationale": "Narrows the temperature range so that 2700K is no longer achievable.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off\n\nBrightness\n- `picoleaf brightness <0-100>` - Set brightness percentage\n\nColors\n\n\n- `picoleaf temp <3000-6500>` - Set color temperature in Kelvin\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `picoleaf brightness <0-100>` - Set brightness percentage",
+          "replacement_text": "- `picoleaf brightness <level>` - Set brightness to 'low', 'med', or 'high'",
+          "rationale": "Replaces exact brightness percentage with vague discrete levels, so query's 30% and 100% brightness cannot be set.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `picoleaf hsl <hue> <sat> <light>` - Set HSL color\n- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin",
+          "replacement_text": "- `picoleaf color <preset>` - Set color to one of: 'warm', 'cool', 'daylight', 'blue', 'red'",
+          "rationale": "Replaces all fine-grained color and temperature commands with a limited preset list, making it impossible to set exactly 2700K or a specific RGB blue.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off\n\nBrightness\n- `picoleaf brightness <level>` - Set brightness to 'low', 'med', or 'high'\n\nColors\n- `picoleaf color <preset>` - Set color to one of: 'warm', 'cool', 'daylight', 'blue', 'red'\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `picoleaf temp <1200-6500>` - Set color temperature in Kelvin",
+          "replacement_text": "",
+          "rationale": "Without the color temperature command, the user cannot set the warm tone at 2700K as requested, making the skill insufficient for the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Picoleaf CLI\n\nUse `picoleaf` to control Nanoleaf light panels.\n\nSetup\n1. Find Nanoleaf IP: Check router or use mDNS: `dns-sd -Z _nanoleafapi`\n2. Generate token: Hold power button 5-7 sec until LED flashes, then within 30 sec run:\n   `curl -iLX POST http://<ip>:16021/api/v1/new`\n3. Create config file `~/.picoleafrc`:\n   ```ini\n   host=<ip>:16021\n   access_token=<token>\n   ```\n\nPower\n- `picoleaf on` - Turn on\n- `picoleaf off` - Turn off\n\nBrightness\n- `picoleaf brightness <0-100>` - Set brightness percentage\n\nColors\n- `picoleaf rgb <r> <g> <b>` - Set RGB color (0-255 each)\n- `picoleaf hsl <hue> <sat> <light>` - Set HSL color\n\n\nExamples\n- Warm dim light: `picoleaf on && picoleaf brightness 30 && picoleaf temp 2700`\n- Bright blue: `picoleaf on && picoleaf brightness 100 && picoleaf rgb 0 100 255`\n- Turn off: `picoleaf off`\n\nNotes\n- Default port is 16021\n- Token generation requires physical access to the Nanoleaf controller\n- Multiple commands can be chained with `&&`"
+    }
+  ],
+  "finished_at": "2026-07-28T23:42:08",
+  "elapsed_seconds": 143.359,
+  "generated_variants": 7
+}

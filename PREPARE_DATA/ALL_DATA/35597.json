@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:20:02",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 35597,
+  "selection_rank": 261,
+  "skill": {
+    "skill_id": "other/loom-manager-workflow",
+    "name": "loom-manager-workflow",
+    "category": "other",
+    "description": "Manage Loom team tickets as a team manager with limited permissions (no git merge/push, no loom team commands). Handle ticket lifecycle: create, update, add notes, track dependencies, identify blockages.",
+    "body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"\n\n## 5. Identify Blockages\n- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._",
+    "source": "pool"
+  },
+  "generated_query": "I’m managing a Loom team and we’re starting work on a new “user dashboard” feature for phase1. I need to create a P1 feature ticket for the dashboard itself, and a P2 task ticket for the accompanying API client work. After creating both tickets, add a note to the dashboard ticket saying “DEPENDENCIES: depends on the API client ticket (vp-012a) being completed first,” and add a similar dependency note to the API client ticket referencing the dashboard ticket. Later, check the status of the API client ticket – if it’s still in_progress but the git log on the branch shows the implementation is done, add an urgent note requesting a merge, including the commit hash and branch name. Finally, run a listing to see all open tickets and show me the full details of the dashboard ticket.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Check implementation complete (git log shows feature commits)",
+          "replacement_text": "",
+          "rationale": "Without the instruction to check git log for implementation completeness, the skill cannot handle the query's requirement to verify the API client ticket's status via git log before adding an urgent merge note.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"\n\n## 5. Identify Blockages\n\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`",
+          "replacement_text": "- Use `loom ticket create --title \"<title>\" --description \"<description>\"`",
+          "rationale": "Replacing the ticket creation command to remove --priority and --type options prevents specifying required priority and type for tickets, making it impossible to create P1 feature and P2 task tickets as requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --title \"<title>\" --description \"<description>\"`\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"\n\n## 5. Identify Blockages\n- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"",
+          "replacement_text": "- Add notes starting with \"BLOCKED:\" or \"URGENT:\"",
+          "rationale": "The skill no longer supports the \"DEPENDENCIES:\" note prefix required by the user query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target",
+          "replacement_text": "- Check implementation complete by reviewing the ticket's last note\n- If complete but in_progress: add a note asking for update",
+          "rationale": "The skill loses the ability to verify via git log and include commit hash/branch, which is essential for the query's final step.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Use `loom ticket create --priority <1|2> --type <feature|task|example>`",
+          "replacement_text": "- Use `loom ticket create --priority <high|low> --type <feature|task|example>`",
+          "rationale": "The skill now expects priority as high/low instead of numeric 1/2, making it unable to create P1/P2 tickets as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 2 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when ticket creation is handled by others and you can only update or annotate existing tickets.\n\n# When To Use\n- You are a team manager for a Loom team\n- Tickets have already been created by a project lead or automated system\n- You need to update status, add notes, and review ticket details\n- You cannot execute merges or push code directly\n\n# Constraints\n- Do NOT use `loom ticket create` – tickets are pre‑generated\n- Do NOT use `git merge*` or `git push*` commands\n- You can use `loom ticket start`, `loom ticket close`, `loom ticket add-note`, `loom ticket list`, `loom ticket show`\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Update Ticket Status\n- `loom ticket start <id>` – move to in_progress\n- `loom ticket close <id>` – move to closed\n\n## 2. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for status updates, general comments, or feedback from reviews\n- Notes are not used for dependency tracking – that is handled by the project lead\n\n## 3. List and Review\n- `loom ticket list` – see all open tickets (pre‑filtered by status)\n- `loom ticket show <id>` – see full details including any notes added\n- Use `--status` filter if available\n\n## 4. Monitor Progress\n- Ask workers directly about their progress via notes or chat\n- Do not inspect git logs to determine completeness – rely on worker updates\n- If a ticket has been in_progress for a long time, add a polite note asking for an ETA\n\n# Best Practices\n- Always confirm ticket IDs before updating\n- Keep notes concise and professional\n- Do not attempt to modify ticket dependencies – that is outside your role\n- Use phase tags only if they were already on the ticket\n\n# Worker Communication\n- Workers should update status when they begin and finish work\n- Workers should use `loom ticket add-note` for any questions or blockers\n- You respond to worker notes but do not initiate dependency requests\n\n# Verification\n- Run `loom ticket list` to see current open tickets\n- Use `loom ticket show <id>` to view full ticket details\n- Check that statuses match worker progress reports\n\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`",
+          "replacement_text": "- Use `loom ticket create --tag <phase,tags>`",
+          "rationale": "Without priority and type flags, the create command cannot differentiate ticket urgency and type, so the user cannot create P1 feature or P2 task tickets.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"",
+          "replacement_text": "- Add notes about dependencies",
+          "rationale": "Removing the required prefix 'DEPENDENCIES:' means the critical dependency note may not be formatted as required by the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --tag <phase,tags>`\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes about dependencies\n\n## 5. Identify Blockages\n- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Add notes starting with 'DEPENDENCIES:' or 'BLOCKED:'",
+          "replacement_text": "Add notes starting with 'RELATES:' or 'BLOCKED:'",
+          "rationale": "Changes required note prefix so the user's DEPENDENCIES note format is not supported, making the skill fail to capture the intended dependency.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Include: commit hash, branch name, merge target",
+          "replacement_text": "Include: merge request link",
+          "rationale": "Removes specific instruction to include commit hash and branch name, which the query requires in the urgent note, causing incomplete output.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets and update their status\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands only for basic branch listing (`git branch -a`)\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`\n- Tickets are created with a title and description; no immediate need for notes\n- Status defaults to `open`\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- No other status transitions via CLI\n\n## 3. Listing Tickets\n- `loom ticket list` - see all tickets with basic info (id, title, priority, status)\n- The list does not show notes or dependencies\n\n## 4. Viewing Ticket Details\n- `loom ticket show <id>` - see title, description, status, priority, tags\n- Notes are not displayed in this view (notes are private to workers)\n\n# Best Practices\n- Assign priorities as needed (P1 for features, P2 for tasks)\n- Use phase tags (phase1, phase2, phase3) for organization\n- Encourage workers to update ticket status themselves\n\n# Worker Communication\n- Workers update tickets via `loom ticket start` and `loom ticket close`\n- Workers should request review through chat, not through ticket notes\n- Workers escalate issues via team chat\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for basic information\n\n# Limitations\n- Cannot add notes or dependency tracking to tickets\n- Cannot inspect git log or diff on feature branches\n- Cannot view full ticket history or comments\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`",
+          "replacement_text": "- Use `loom ticket create` with appropriate priority, type, and tag flags.",
+          "rationale": "The user needs exact priority and type flags to create the correct P1 feature and P2 task tickets; an over-generalized instruction fails to specify these required parameters.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## 5. Identify Blockages\n- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target",
+          "replacement_text": "",
+          "rationale": "The user must check git log and add an urgent note with commit hash and branch name; removing this entire step makes the skill unable to complete that part of the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create` with appropriate priority, type, and tag flags.\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"\n\n\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## 5. Identify Blockages\n- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target",
+          "replacement_text": "",
+          "rationale": "Without the step to check git log and add urgent merge notes, the skill cannot guide the user to verify implementation completeness and request a merge as required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"\n\n\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Use `loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>`",
+          "replacement_text": "- Use `loom ticket create --priority <1|2> --type <improvement|bug> --tag <phase,tags>`",
+          "rationale": "Without the ability to specify 'feature' or 'task' ticket types, the user cannot create the required P1 feature ticket and P2 task ticket, causing failure early in the workflow.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --priority <1|2> --type <improvement|bug> --tag <phase,tags>`\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"\n\n## 5. Identify Blockages\n- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: commit hash, branch name, merge target\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "loom ticket create --priority <1|2> --type <feature|task|example> --tag <phase,tags>",
+          "replacement_text": "loom ticket create --tag <phase,tags>",
+          "rationale": "Removing priority and type flags prevents the user from creating required P1 feature and P2 task tickets.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Example: \"DEPENDENCIES: Depends on vp-045b (API Clients) being merged first\"",
+          "replacement_text": "Example: \"RELATES: Depends on vp-045b (API Clients) being merged first\"",
+          "rationale": "Changing the note prefix from DEPENDENCIES to RELATES means the dependency notes the user adds will not follow the team's expected convention.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Include: commit hash, branch name, merge target",
+          "replacement_text": "Include: merge target only",
+          "rationale": "Omitting commit hash and branch name from the urgent note means the user cannot include those required details.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "<!-- BEGIN:compound:skill-managed -->\n# Purpose\nManage Loom team tickets as a team manager when you cannot use `loom team` commands or git merge/push operations.\n\n# When To Use\n- You are a team manager for a Loom team\n- You need to create tickets, update status, add notes\n- You cannot execute merges or push code directly\n- Workers are doing implementation in worktrees\n\n# Constraints\n- Do NOT use `loom team *` commands\n- Do NOT use `git merge*` or `git push*` commands\n- Only use `loom ticket` commands for ticket management\n- Use git read commands: `git status`, `git log`, `git diff`, `git show`, `git branch`\n\n# Core Workflow\n\n## 1. Create Tickets\n- Use `loom ticket create --tag <phase,tags>`\n- Tickets created without title/description need notes added immediately\n- Add note with: tasks, dependencies, acceptance criteria, examples\n\n## 2. Update Ticket Status\n- `loom ticket start <id>` - move to in_progress\n- `loom ticket close <id>` - move to closed\n- Note: no \"ready\" or \"blocked\" commands exist via CLI, use notes instead\n\n## 3. Add Notes\n- `loom ticket add-note <id> \"Your note here\"`\n- Use notes for: detailed requirements, dependency tracking, urgent requests, review feedback\n\n## 4. Track Dependencies\n- Add notes starting with \"DEPENDENCIES:\" or \"BLOCKED:\"\n- List ticket IDs and explain relationship\n- Example: \"RELATES: Depends on vp-045b (API Clients) being merged first\"\n\n## 5. Identify Blockages\n- Check implementation complete (git log shows feature commits)\n- If complete but in_progress: add URGENT note requesting merge\n- Include: merge target only\n\n## 6. List and Review\n- `loom ticket list` - see all tickets\n- `loom ticket show <id>` - see full details including notes\n- Use `--status` filter if available\n\n# Best Practices\n- Add dependency notes to both parent and child tickets\n- Use phase tags (phase1, phase2, phase3) for organization\n- When creating multiple related tickets, create them all then add notes\n- Inspect branches before declaring ready (git log, git diff)\n- Clear priority guidance: P1 features must complete before P2\n\n# Worker Communication\n- Workers update tickets via `loom ticket add-note`\n- Workers should set status to in_progress when starting\n- Workers should request review before considering complete\n- Workers can escalate via notes when blocked\n\n# Verification\n- Run `loom ticket list` to check overall state\n- Use `git branch -a` to see all feature branches\n- Check `loom ticket show <id>` for full context\n<!-- END:compound:skill-managed -->\n\n## Manual notes\n\n_This section is preserved when the skill is updated. Put human notes, caveats, and exceptions here._"
+    }
+  ],
+  "finished_at": "2026-07-29T02:23:35",
+  "elapsed_seconds": 212.515,
+  "generated_variants": 9
+}

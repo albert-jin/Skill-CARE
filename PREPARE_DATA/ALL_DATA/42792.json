@@ -1,0 +1,175 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T19:10:17",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 42792,
+  "selection_rank": 140,
+  "skill": {
+    "skill_id": "other/code-review-hammerhead-space-agenticcodingrules",
+    "name": "code-review",
+    "category": "other",
+    "description": "Review Julia code for correctness, performance, numerical stability, AD compatibility, and maintainability. Use when reviewing pull requests, examining code changes, auditing performance, or when the user asks for a code review.",
+    "body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] No branching on floating-point values in differentiable paths\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative",
+    "source": "pool"
+  },
+  "generated_query": "I’m writing a Julia function that solves Kepler’s equation (mean anomaly to true anomaly) using Newton’s method, for use in an orbital mechanics library. Could you review the code below for correctness, numerical stability (especially for eccentricities near 1 and small eccentric anomalies), performance (avoiding allocations, type stability), and compatibility with ForwardDiff.jl? The function takes a float `M` (mean anomaly in radians) and eccentricity `e`, and returns the true anomaly. I also need to check if the branching inside the iteration is safe for AD. Here’s the snippet:\n\n```julia\nfunction true_anomaly(M, e)\n    E = M\n    for _ in 1:20\n        E_old = E\n        dE = (M - (E - e * sin(E))) / (1 - e * cos(E))\n        E += dE\n        abs(dE) < 1e-12 && break\n    end\n    sin_nu = sqrt(1 - e^2) * sin(E) / (1 - e * cos(E))\n    cos_nu = (cos(E) - e) / (1 - e * cos(E))\n    return atan(sin_nu, cos_nu)\nend\n```\n\nPlease point out any critical issues, performance bottlenecks, and suggestions for maintainability.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- [ ] No branching on floating-point values in differentiable paths",
+          "replacement_text": "",
+          "rationale": "The user explicitly asks whether branching inside the iteration is safe for AD; deleting this checklist item removes the specific guidance needed to address that concern.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] No branching on floating-point values in differentiable paths",
+          "replacement_text": "- [ ] Branching is acceptable if it does not cause type instability",
+          "rationale": "Removes the strict AD branching requirement, so the skill would approve code that has branching on floating-point values, which is unsafe for ForwardDiff.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] Branching is acceptable if it does not cause type instability\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Review Julia code for correctness, performance, numerical stability, AD compatibility, and maintainability.",
+          "replacement_text": "Review Python code for correctness, performance, numerical stability, and maintainability.",
+          "rationale": "Changing the review language from Julia to Python makes the skill irrelevant for the user's Julia-specific query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] No branching on floating-point values in differentiable paths\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends",
+          "replacement_text": "### Database Connectivity\n- [ ] Proper connection handling and pooling\n- [ ] SQL injection prevention\n- [ ] Connection timeout and retry logic",
+          "rationale": "Replacing the AD compatibility section with a database connectivity section removes the automatic differentiation review capability the user explicitly requests.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview Julia code for adherence to project conventions, readability, and basic performance considerations.\n\n## Review Checklist\n\n### Naming and Style\n- [ ] Function names are descriptive and follow `snake_case`\n- [ ] Variable names are meaningful (avoid single-letter names except for mathematical constants)\n- [ ] Consistent use of whitespace and indentation (4 spaces recommended)\n- [ ] No trailing whitespace or unnecessary blank lines\n- [ ] Comments explain *why*, not *what* (unless the logic is non-obvious)\n\n### Type Annotations\n- [ ] Function arguments have explicit type annotations where appropriate (e.g., `Float64`)\n- [ ] Return type is stable (inferable from input types)\n- [ ] No implicit conversion of `Float32` to `Float64` without `promote_type`\n\n### Performance Basics\n- [ ] Loop bounds are explicit and not dependent on dynamic dispatch\n- [ ] No runtime introspection inside hot loops (e.g., checking types)\n- [ ] Use `@inbounds` when bounds are guaranteed safe (with caution)\n- [ ] Use `@simd` only when the operation is associative and unordered\n\n### Documentation\n- [ ] Each exported function has a docstring with `# Arguments`, `# Returns`, and `# Examples`\n- [ ] Include a reference to the source algorithm (e.g., equation number, textbook)\n- [ ] Add a note about edge cases that are handled (or explicitly not handled)\n\n### Error Handling\n- [ ] Functions that accept floating-point inputs should gracefully handle `NaN` or `Inf` if appropriate\n- [ ] Use `@assert` only for debugging; use proper error types for invalid arguments\n- [ ] For domain errors (e.g., eccentricity > 1), throw an `ArgumentError` with a clear message\n\n### Maintainability\n- [ ] Functions are kept short (≤20 lines) and do one thing\n- [ ] Magic numbers (like `1e-12`, `20` iterations) are defined as constants or parameters\n- [ ] No duplicated logic; extract helper functions if the same calculation appears twice\n\n## Feedback Format\n\nCategorize each finding:\n- **Style**: convention violation, unclear naming, or formatting issue\n- **Robustness**: missing input validation, silent failures, or cryptic errors\n- **Suggestion**: improvement to readability, maintainability, or documentation\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. A brief description of the issue\n3. A concrete recommendation (e.g., rename to `x`, add type annotation, move to constant)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] No branching on floating-point values in differentiable paths",
+          "replacement_text": "- [ ] Minimize branching on floating-point values in differentiable paths when possible",
+          "rationale": "By weakening the constraint on branching in AD paths, the skill would not flag the user's critical branching inside the iteration, making it miss a key AD compatibility issue.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] Minimize branching on floating-point values in differentiable paths when possible\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] No branching on floating-point values in differentiable paths",
+          "replacement_text": "- [ ] No use of global variables in differentiable functions",
+          "rationale": "Removes the specific branching check needed by the query's Newton iteration, replacing it with a different AD concern (globals) that does not apply, making the skill miss a critical requirement.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] No use of global variables in differentiable functions\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] No branching on floating-point values in differentiable paths",
+          "replacement_text": "- [ ] Minimize branching where possible",
+          "rationale": "The user specifically asks about branching safety for AD; replacing this specific AD guidance with a vague suggestion makes the skill miss the critical AD branching concern.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] Minimize branching where possible\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "No branching on floating-point values in differentiable paths",
+          "replacement_text": "",
+          "rationale": "Removing the AD branching restriction causes the skill to overlook the user's key concern about conditional logic in differentiable Newton iteration.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] \n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] No branching on floating-point values in differentiable paths\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends",
+          "replacement_text": "- [ ] All integer arithmetic is checked for overflow in hot loops\n",
+          "rationale": "Replacing the AD compatibility checklist with an unrelated integer overflow check removes the skill's ability to address the user's explicit AD and branching concerns, making it fail the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] All integer arithmetic is checked for overflow in hot loops\n\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] No branching on floating-point values in differentiable paths\n",
+          "replacement_text": "- [ ] Ensure all allocation-free code for AD\n",
+          "rationale": "The edited skill no longer warns against branching on floating-point values, so it would miss the critical AD issue in the user's iterative solver loop.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## Purpose\n\nReview code for correctness, performance, and maintainability with attention to the specific concerns of scientific/numerical Julia code.\n\n## Review Checklist\n\n### Correctness\n- [ ] Logic is correct and handles edge cases (singularities, zero vectors, degenerate orbits)\n- [ ] Numerical stability: no catastrophic cancellation, overflow, or division by near-zero\n- [ ] Units are consistent (km, km/s, radians) and conversions are correct\n- [ ] Frame conventions are respected (J2000 ECI, ECEF, body-fixed)\n- [ ] Mathematical formulation matches cited reference (paper, textbook)\n\n### Performance\n- [ ] Hot-path functions return `SVector`/`SMatrix`, not heap-allocated arrays\n- [ ] No unnecessary allocations (verify with `@check_allocs` or `@allocated`)\n- [ ] `@inline` on performance-critical functions\n- [ ] No type instabilities (`@code_warntype` clean)\n- [ ] Promotion via `promote_type` rather than implicit conversion\n\n### AD Compatibility\n- [ ] No mutation of arrays that AD needs to track (return new values instead)\n- [ ] Ensure all allocation-free code for AD\n- [ ] Uses `promote_type(T, V)` for mixed numeric types\n- [ ] Safe handling of norm-near-zero (no NaN gradients)\n- [ ] Tested with ForwardDiff at minimum; ideally multiple backends\n\n### Style & Maintainability\n- [ ] `using`/`import` only in module file or `runtests.jl`, not in `include`-d files\n- [ ] `export` at the top of the file where symbols are defined\n- [ ] Packages added via Pkg.jl, not by editing Project.toml directly\n- [ ] Docstrings with `# Arguments`, `# Returns`, `# References`\n- [ ] Functions are focused (single responsibility)\n- [ ] Consistent naming: PascalCase types, snake_case functions, Unicode for physics\n\n### Testing\n- [ ] Correctness tests against known reference values\n- [ ] Edge cases tested (circular, equatorial, hyperbolic, near-singularity)\n- [ ] AD tests comparing against FiniteDiff\n- [ ] Allocation tests on hot-path functions\n\n## Feedback Format\n\nCategorize each finding:\n- **Critical**: Must fix -- correctness bug, numerical instability, or silent wrong answer\n- **Performance**: Allocation, type instability, or avoidable overhead\n- **Suggestion**: Improvement to clarity, style, or maintainability\n- **Nitpick**: Minor style preference, optional\n\nFor each finding, provide:\n1. The specific location (file and line)\n2. What the issue is\n3. A concrete fix or alternative"
+    }
+  ],
+  "finished_at": "2026-07-28T19:12:58",
+  "elapsed_seconds": 160.875,
+  "generated_variants": 9
+}

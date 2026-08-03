@@ -1,0 +1,157 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:07:03",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 18512,
+  "selection_rank": 224,
+  "skill": {
+    "skill_id": "development/arifos-workflow-000",
+    "name": "arifos-workflow-000",
+    "category": "development",
+    "description": "Initialize arifOS session context. Use when the user types /000, asks to initialize the session, load canon/governance context, check current version, or summarize git status/branch/recent commits.",
+    "body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nWorks from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read L1_THEORY/canon/ directory to load current system governance rules\n   ```\n\n2. **Check Version**\n   ```bash\n   cat pyproject.toml | grep version\n   ```\n\n3. **Review Recent Changes**\n   ```bash\n   git log -10 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git status\n   ```\n\n5. **Load AGENTS.md Context**\n   ```\n   Read AGENTS.md to understand multi-agent thermodynamic federation protocols\n   ```\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```",
+    "source": "pool"
+  },
+  "generated_query": "I just pulled up my project directory and I need to quickly get oriented before I start coding today. Can you load the system governance rules from the L1_THEORY/canon folder, read the AGENTS.md and GOVERNANCE_PROTOCOLS.md files for context, check the current version from pyproject.toml, and show me the recent commit history (last 10 commits), the current git branch, and the git status? After that, give me a concise summary with the version, branch name, and any recommendations for next steps.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Check Version**\n   ```bash\n   cat pyproject.toml | grep version\n   ```",
+          "replacement_text": "",
+          "rationale": "Removing the version check step makes the skill unable to retrieve the current version from pyproject.toml, which is explicitly requested by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nWorks from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read L1_THEORY/canon/ directory to load current system governance rules\n   ```\n\n\n\n3. **Review Recent Changes**\n   ```bash\n   git log -10 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git status\n   ```\n\n5. **Load AGENTS.md Context**\n   ```\n   Read AGENTS.md to understand multi-agent thermodynamic federation protocols\n   ```\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. **Check Git Status**\n   ```bash\n   git status\n   ```",
+          "replacement_text": "4. **Check Git Status**\n   ```bash\n   git diff --stat\n   ```",
+          "rationale": "Using git diff --stat instead of git status means the user does not get the working tree status (staged/unstaged changes), a key requirement in the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nWorks from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read L1_THEORY/canon/ directory to load current system governance rules\n   ```\n\n2. **Check Version**\n   ```bash\n   cat pyproject.toml | grep version\n   ```\n\n3. **Review Recent Changes**\n   ```bash\n   git log -10 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git diff --stat\n   ```\n\n5. **Load AGENTS.md Context**\n   ```\n   Read AGENTS.md to understand multi-agent thermodynamic federation protocols\n   ```\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cat pyproject.toml | grep version",
+          "replacement_text": "cat ./setup.cfg | grep version",
+          "rationale": "Changing version source to setup.cfg makes version retrieval fail, so skill cannot report version from pyproject.toml as queried.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "git log -10 --oneline",
+          "replacement_text": "git log -5 --oneline",
+          "rationale": "Reducing commit count to 5 means skill does not show last 10 commits as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nWorks from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read L1_THEORY/canon/ directory to load current system governance rules\n   ```\n\n2. **Check Version**\n   ```bash\n   cat ./setup.cfg | grep version\n   ```\n\n3. **Review Recent Changes**\n   ```bash\n   git log -5 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git status\n   ```\n\n5. **Load AGENTS.md Context**\n   ```\n   Read AGENTS.md to understand multi-agent thermodynamic federation protocols\n   ```\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Works from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.",
+          "replacement_text": "Assumes the current working directory is the repository root. Run this skill only from the repo root.",
+          "rationale": "Removing the automatic repo root detection means the skill will fail if the user is in a subfolder, which is a common scenario for a quick orientation request.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nAssumes the current working directory is the repository root. Run this skill only from the repo root.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read L1_THEORY/canon/ directory to load current system governance rules\n   ```\n\n2. **Check Version**\n   ```bash\n   cat pyproject.toml | grep version\n   ```\n\n3. **Review Recent Changes**\n   ```bash\n   git log -10 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git status\n   ```\n\n5. **Load AGENTS.md Context**\n   ```\n   Read AGENTS.md to understand multi-agent thermodynamic federation protocols\n   ```\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read L1_THEORY/canon/ directory to load current system governance rules",
+          "replacement_text": "Read L1_THEORY/systems/ directory to load current system architecture rules",
+          "rationale": "Changes the directory from canon to systems, causing the skill to miss the specific governance context files (AGENTS.md, GOVERNANCE_PROTOCOLS.md) that the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "git log -10 --oneline",
+          "replacement_text": "git log -3 --oneline",
+          "rationale": "Reduces the commit count from 10 to 3, failing the user's explicit request to show the last 10 commits.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nWorks from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read L1_THEORY/systems/ directory to load current system architecture rules\n   ```\n\n2. **Check Version**\n   ```bash\n   cat pyproject.toml | grep version\n   ```\n\n3. **Review Recent Changes**\n   ```bash\n   git log -3 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git status\n   ```\n\n5. **Load AGENTS.md Context**\n   ```\n   Read AGENTS.md to understand multi-agent thermodynamic federation protocols\n   ```\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read L1_THEORY/canon/ directory to load current system governance rules",
+          "replacement_text": "Read the configuration directory to load system rules",
+          "rationale": "Over-generalizes the path, causing the skill to fail to load the exact directory the user asked for.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Read AGENTS.md to understand multi-agent thermodynamic federation protocols",
+          "replacement_text": "Read context files to understand system protocols",
+          "rationale": "Over-generalizes the file name, so the skill will not read the required AGENTS.md file.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nWorks from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read the configuration directory to load system rules\n   ```\n\n2. **Check Version**\n   ```bash\n   cat pyproject.toml | grep version\n   ```\n\n3. **Review Recent Changes**\n   ```bash\n   git log -10 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git status\n   ```\n\n5. **Load AGENTS.md Context**\n   ```\n   Read context files to understand system protocols\n   ```\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "5. **Load AGENTS.md Context**\n   ```\n   Read AGENTS.md to understand multi-agent thermodynamic federation protocols\n   ```",
+          "replacement_text": "",
+          "rationale": "Deleting the step to load AGENTS.md means the skill cannot provide the requested context from that file, making it incomplete for the user's query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /000 — Session Initialization (arifOS)\n\n## Codex Integration\n\nThis skill uses the FAG (File Access Governance) system to safely read the canonical workflow from `.agent/workflows/000.md`.\n\n### Multi-Workspace Support\n\nWorks from any subfolder - automatically detects repo root via `git rev-parse --show-toplevel`.\n\n<!-- BEGIN CANONICAL WORKFLOW -->\n\n# /000 - Session Initialization Protocol\n\nThis workflow sets up the complete context for an arifOS AGI coder session.\n\n## Steps\n\n// turbo-all\n\n1. **Load System Canon**\n   ```\n   Read L1_THEORY/canon/ directory to load current system governance rules\n   ```\n\n2. **Check Version**\n   ```bash\n   cat pyproject.toml | grep version\n   ```\n\n3. **Review Recent Changes**\n   ```bash\n   git log -10 --oneline\n   ```\n\n4. **Check Git Status**\n   ```bash\n   git status\n   ```\n\n\n\n6. **Load GOVERNANCE_PROTOCOLS.md**\n   ```\n   Read GOVERNANCE_PROTOCOLS.md to understand fail-closed and SABAR-72 governance\n   ```\n\n7. **Check Active Branch**\n   ```bash\n   git branch --show-current\n   ```\n\n8. **Review CHANGELOG**\n   ```\n   Read CHANGELOG.md to understand recent system evolution\n   ```\n\n## Expected Output\n- Current version: v43.x\n- Active branch name\n- Recent commit history\n- Governance rules loaded\n- System state understood\n\n## Next Steps\nAfter /000, typically run:\n- `/gitforge` to analyze current branch entropy\n- `/fag` to enter full autonomy governance mode\n\n<!-- END CANONICAL WORKFLOW -->\n\n## Codex-Specific Implementation\n\n### Using FAG (File Access Governance)\n\nThe canonical workflow can be loaded via:\n```bash\narifos-safe-read --path \".agent/workflows/000.md\" --root \"$(git rev-parse --show-toplevel)\"\n```\n\nThis ensures all file reads are governed and logged.\n\n### Output Format\n\nReturn a concise checklist:\n```\n✅ Version: v45.0.0\n✅ Branch: main\n✅ Git status: clean\n✅ Last 10 commits loaded\n✅ Canon/governance context loaded\n\nRecommendations: Run /gitforge, then /fag\n```"
+    }
+  ],
+  "finished_at": "2026-07-29T00:09:07",
+  "elapsed_seconds": 124.765,
+  "generated_variants": 7
+}

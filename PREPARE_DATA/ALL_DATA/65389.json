@@ -1,0 +1,195 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:06:52",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 65389,
+  "selection_rank": 116,
+  "skill": {
+    "skill_id": "other/release-hankh95-yurtle-kanban",
+    "name": "release",
+    "category": "other",
+    "description": "Create a versioned release with git tag and CHANGELOG update",
+    "body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)",
+    "source": "pool"
+  },
+  "generated_query": "I've just finished fixing three bugs in my Python CLI tool: a typo in the help text, a crash when the input file path has spaces, and a missing dependency in the setup. The current version in `pyproject.toml` is 1.2.3, and there's already a `__init__.py` with `__version__ = \"1.2.3\"`. There's a `CHANGELOG.md` at the root that needs updating. I want to tag this as a patch the required capability with the message \"Bug fixes: help text typo, file path handling, missing dependency.\" Please check that I'm on the main branch with no uncommitted changes, bump the version to 1.2.4 across all version files, add a new entry to the top of the changelog with today's date and the fixes listed, then commit everything with a conventional commit message, create an annotated git tag, push both the commit and the tag to origin, and finally show me a summary of what was the required capabilityd and the next steps I should consider.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```",
+          "replacement_text": "",
+          "rationale": "Without the git tag creation step, the skill cannot create an annotated git tag, which is explicitly required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"\n```\n\n\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "git tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"",
+          "replacement_text": "git tag vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"",
+          "rationale": "Replaces annotated git tag with a lightweight tag, failing the user's requirement for an annotated git tag.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "git commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"",
+          "replacement_text": "git commit -m \"release vX.Y.Z\n\n[Release description]\"",
+          "rationale": "Removes the conventional commit prefix 'chore:', so the skill no longer produces the conventional commit message format required by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"release vX.Y.Z\n\n[Release description]\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "git push origin vX.Y.Z",
+          "replacement_text": "",
+          "rationale": "The user explicitly requires pushing the annotated tag to origin, but by removing this step the skill no longer pushes tags, so it fails to complete the release workflow.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\n\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Fail if there are uncommitted changes. All work must be committed first.",
+          "replacement_text": "Warn if there are uncommitted changes, but continue.",
+          "rationale": "The user explicitly requires a failure on uncommitted changes; allowing continuation undermines a critical safety check.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "If project has `__init__.py` with `__version__`, update that too.",
+          "replacement_text": "If project has `__init__.py` with `__version__`, you may optionally update that too.",
+          "rationale": "The user expects all version files to be updated; making it optional means the skill may skip the __init__.py update, failing the user's requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nWarn if there are uncommitted changes, but continue.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, you may optionally update that too.\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [],
+      "edit_error": "Expecting ':' delimiter: line 6 column 17 (char 309)",
+      "counterfactual_skill_body": "# Create Release\n\nCreates a new version release with version bump and CHANGELOG update.\n\n## Arguments\n\n- `--type {patch,minor,major}` (default: minor): Version bump type\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Get Current Version\n```bash\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\n### 2. Calculate New Version\nParse current version and calculate new version using semantic versioning:\n- `patch`: increment Z (e.g., 1.2.3 → 1.2.4)\n- `minor`: increment Y, reset Z (e.g., 1.2.3 → 1.3.0)\n- `major`: increment X, reset Y, Z (e.g., 1.2.3 → 2.0.0)\n\n### 3. Update Version Files\nUpdate version in `pyproject.toml`:\n```toml\nversion = \"X.Y.Z\"\n```\nIf `__init__.py` has `__version__`, update it.\n\n### 4. Update CHANGELOG.md\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features]\n\n### Changed\n- [Changes]\n\n### Fixed\n- [Bug fixes]\n```\nIf release message provided, use it as-is.\n\n### 5. Commit Release\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"chore: release vX.Y.Z\"\n```\n\n### 6. Create Tag\n```bash\ngit tag vX.Y.Z\n```\n\n### 7. Push\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm\nShow new version number and CHANGELOG entry.\n\n## When to Release\n- **Patch**: Bug fixes, minor improvements\n- **Minor**: New features, non-breaking changes\n- **Major**: Breaking changes\n\n## Related Skills\n- `/done` - Consider version bump before marking done"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```",
+          "replacement_text": "Make sure you are on the main branch with no uncommitted changes.",
+          "rationale": "Removes the explicit commands for checking branch status, pulling latest, and extracting the current version, leaving the user without the concrete steps needed to verify state.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Update version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.",
+          "replacement_text": "Update the version number in your project's configuration files (e.g., pyproject.toml, __init__.py).",
+          "rationale": "Replaces the specific file edit instructions with a vague directive, so the user lacks the exact format and location to bump the version consistently.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Add new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.",
+          "replacement_text": "Add a new release entry to your CHANGELOG.md with the current date and a summary of changes.",
+          "rationale": "Omits the required markdown format and the instruction to include the release message, making it impossible for the user to produce the exact changelog structure they need.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\nMake sure you are on the main branch with no uncommitted changes.\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate the version number in your project's configuration files (e.g., pyproject.toml, __init__.py).\n\n### 4. Update CHANGELOG.md\n\nAdd a new release entry to your CHANGELOG.md with the current date and a summary of changes.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.\n",
+          "replacement_text": "",
+          "rationale": "The skill skips the version file update, so the version is never bumped despite the release steps.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "git commit -m \"chore: release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"",
+          "replacement_text": "git commit -m \"Release vX.Y.Z - [Release description]\"",
+          "rationale": "Replaces conventional commit format with a simple message, so the commit will not meet the user's requirement for a conventional commit message.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"Release vX.Y.Z - [Release description]\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`patch` (default): Bug fixes, minor improvements (0.9.0 → 0.9.1)",
+          "replacement_text": "`minor` (default): New features, non-breaking changes (0.9.0 → 0.10.0); `patch` available with explicit flag",
+          "rationale": "Changes the default bump type from patch to minor, so the skill would bump 1.2.3 to 1.3.0 instead of the required 1.2.4.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "git commit -m \"chore: release vX.Y.Z",
+          "replacement_text": "git commit -m \"Release vX.Y.Z",
+          "rationale": "Removes the conventional commit prefix, causing the commit message to not match the user's requirement for a 'chore:' prefix.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Release\n\nCreate a new version release with semantic versioning, git tag, and CHANGELOG update.\n\n## Arguments\n\n- `minor` (default): New features, non-breaking changes (0.9.0 → 0.10.0); `patch` available with explicit flag\n- `minor`: New features, non-breaking changes (0.9.0 → 0.10.0)\n- `major`: Breaking changes (0.9.0 → 1.0.0)\n- `--message \"Description\"`: Optional release description\n\n## Steps\n\n### 1. Check Current State\n\n```bash\n# Ensure on main and up to date\ngit checkout main\ngit pull origin main\n\n# Check for uncommitted changes\ngit status\n\n# Get current version (check common locations)\ngrep -h \"version\" pyproject.toml | head -1\n# or\ngrep \"__version__\" */__init__.py 2>/dev/null | head -1\n```\n\nFail if there are uncommitted changes. All work must be committed first.\n\n### 2. Calculate New Version\n\nParse current version and calculate new version:\n\n| Current | Bump Type | New Version |\n|---------|-----------|-------------|\n| 1.1.0 | patch | 1.1.1 |\n| 1.1.0 | minor | 1.2.0 |\n| 1.1.0 | major | 2.0.0 |\n\n### 3. Update Version Files\n\nUpdate version in `pyproject.toml`:\n\n```toml\nversion = \"X.Y.Z\"\n```\n\nIf project has `__init__.py` with `__version__`, update that too.\n\n### 4. Update CHANGELOG.md\n\nAdd new entry at top of CHANGELOG.md (create if doesn't exist):\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n\n### Added\n- [New features if any]\n\n### Changed\n- [Changes if any]\n\n### Fixed\n- [Bug fixes if any]\n```\n\nIf release message was provided, include it.\n\n### 5. Commit Release\n\n```bash\ngit add pyproject.toml CHANGELOG.md\ngit commit -m \"Release vX.Y.Z\n\n[Release description]\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\"\n```\n\n### 6. Create Git Tag\n\n```bash\ngit tag -a vX.Y.Z -m \"Release vX.Y.Z\n\n[Release description]\"\n```\n\n### 7. Push Release\n\n```bash\ngit push origin main\ngit push origin vX.Y.Z\n```\n\n### 8. Confirm Release\n\nShow:\n- New version number\n- Tag created\n- CHANGELOG entry\n- Next steps (e.g., PyPI publish if applicable)\n\n## When to Release\n\n- **Patch (x.y.Z)**: Bug fixes, documentation updates\n- **Minor (x.Y.0)**: New features, new skills added\n- **Major (X.0.0)**: Breaking API changes\n\n## Related Skills\n\n- `/done` - Complete work (should consider version bump)"
+    }
+  ],
+  "finished_at": "2026-07-28T18:09:35",
+  "elapsed_seconds": 163.031,
+  "generated_variants": 9
+}

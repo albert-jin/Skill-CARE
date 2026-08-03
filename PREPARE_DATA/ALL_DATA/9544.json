@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:04:55",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 9544,
+  "selection_rank": 194,
+  "skill": {
+    "skill_id": "development/pr-review-checker",
+    "name": "pr-review-checker",
+    "category": "development",
+    "description": "Check PR review comments and feedback from CodeRabbit and human reviewers. Use when user asks about reviews, unresolved comments, CodeRabbit feedback, Claude review, or PR status.",
+    "body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```\n\n### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/comments\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n- `_Potential issue_` or red indicators = Critical\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`",
+    "source": "pool"
+  },
+  "generated_query": "I've pushed a new commit to PR #102 in the monorepo and need to know if there are any remaining issues before I merge. Can you check the review feedback for me? I want to see what CodeRabbit flagged as critical, any unresolved inline comments from human reviewers, and whether the overall status is approved or changes requested. Include a summary of actionable items with file paths and severity.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/comments\n```",
+          "replacement_text": "",
+          "rationale": "Removing the step to fetch issue comments prevents retrieving CodeRabbit and Claude review feedback, which is essential for identifying critical flags as requested by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```\n\n### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments\n```\n\n\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n- `_Potential issue_` or red indicators = Critical\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "gh pr view <number> --json reviews,reviewDecision,state",
+          "replacement_text": "gh pr view <number> --json title,body,state",
+          "rationale": "The edited skill can no longer retrieve review decision or reviewer info, so it cannot answer whether the PR is approved or what CodeRabbit flagged as critical.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "gh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments",
+          "replacement_text": "gh api repos/rollercoaster-dev/monorepo/pulls/<number>/commits",
+          "rationale": "Fetches commits instead of inline review comments, making it impossible to find unresolved human reviewer feedback.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "gh api repos/rollercoaster-dev/monorepo/issues/<number>/comments",
+          "replacement_text": "gh api repos/rollercoaster-dev/monorepo/issues/<number>/labels",
+          "rationale": "Instead of retrieving CodeRabbit and Claude comments, this fetches labels, so the skill cannot report actionable items with severity from CodeRabbit.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json title,body,state\n```\n\n### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/commits\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/labels\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n- `_Potential issue_` or red indicators = Critical\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments\n```\n\n",
+          "replacement_text": "",
+          "rationale": "Removes the ability to fetch inline human review comments, so the skill cannot report unresolved inline comments from human reviewers.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |",
+          "replacement_text": "| #   | Issue       | Status     |\n| --- | ----------- | ---------- |\n| 1   | Description | Unresolved |",
+          "rationale": "Removes the File and Severity columns from the output, so the summary of actionable items lacks file paths and severity levels requested by the user.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/comments\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n- `_Potential issue_` or red indicators = Critical\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | Issue       | Status     |\n| --- | ----------- | ---------- |\n| 1   | Description | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `_Potential issue_` or red indicators = Critical",
+          "replacement_text": "- All comments are treated equally without severity assignment",
+          "rationale": "Without severity classification, the skill cannot identify critical issues as requested by the user.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```\n\n### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/comments\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n- All comments are treated equally without severity assignment\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```",
+          "replacement_text": "### Get PR Merge Status\n\n```bash\ngh pr view <number> --json mergeable,mergeStateStatus,state\n```",
+          "rationale": "Changes the skill from fetching review status to merge status, so it cannot provide CodeRabbit decision or overall approved/changes requested.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments\n```",
+          "replacement_text": "### Get PR Commits\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/commits\n```",
+          "rationale": "Replaces the command that fetches inline review comments with a command that fetches commits, so the skill cannot retrieve human reviewer comments.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n- `_Potential issue_` or red indicators = Critical\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals",
+          "replacement_text": "## Parsing CI Checks\n\nCI checks typically include:\n\n- **Status** - Pass or fail\n- **Checks** - List of individual check runs\n- **Annotations** - Inline annotations on code\n\nLook for these patterns:\n\n- `fail` or red = Failing\n- `pass` or green = Passing\n- `pending` = Still running",
+          "rationale": "Replaces the critical parsing logic for CodeRabbit severity and approvals with CI check parsing, so the skill cannot identify critical issues or unresolved feedback.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Merge Status\n\n```bash\ngh pr view <number> --json mergeable,mergeStateStatus,state\n```\n\n### Get PR Commits\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/commits\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/comments\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CI Checks\n\nCI checks typically include:\n\n- **Status** - Pass or fail\n- **Checks** - List of individual check runs\n- **Annotations** - Inline annotations on code\n\nLook for these patterns:\n\n- `fail` or red = Failing\n- `pass` or green = Passing\n- `pending` = Still running\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `_Potential issue_` or red indicators = Critical",
+          "replacement_text": "",
+          "rationale": "Without knowing that 'Potential issue' or red indicators mark criticality, the agent cannot identify critical CodeRabbit flags, failing the user's explicit request to see those.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```\n\n### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/comments\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Look for these patterns:\n\n- `_Potential issue_` or red indicators = Critical\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals",
+          "replacement_text": "",
+          "rationale": "Without severity mapping, the skill cannot identify critical issues flagged by CodeRabbit, which is essential for the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```\n\n### Get Review Comments (Inline)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh api repos/rollercoaster-dev/monorepo/issues/<number>/comments\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\n\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "gh api repos/rollercoaster-dev/monorepo/pulls/<number>/comments",
+          "replacement_text": "gh pr view <number> --json reviews",
+          "rationale": "Replaces the inline review comments API with a command that only returns review summaries, missing unresolved inline comments from human reviewers.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "gh api repos/rollercoaster-dev/monorepo/issues/<number>/comments",
+          "replacement_text": "gh pr view <number> --json title,body",
+          "rationale": "Replaces the issue comments API with a command that does not fetch issue comments, so CodeRabbit and Claude feedback are unavailable.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PR Review Checker Skill\n\n## Purpose\n\nAutomatically fetch and summarize PR review comments when the user asks about review status, unresolved feedback, or what reviewers said. This is a read-only skill.\n\n## When Claude Should Use This\n\n- User asks \"any review comments?\"\n- User asks \"what did CodeRabbit say?\"\n- User asks \"unresolved comments on PR #X\"\n- User asks \"check PR feedback\"\n- User asks \"is PR #X approved?\"\n- User mentions reviewing or addressing feedback\n\n## Instructions\n\n### Get PR Review Status\n\n```bash\ngh pr view <number> --json reviews,reviewDecision,state\n```\n\n### Get Review Comments (Inline)\n\n```bash\ngh pr view <number> --json reviews\n```\n\n### Get Issue Comments (Includes CodeRabbit/Claude)\n\n```bash\ngh pr view <number> --json title,body\n```\n\n### Identify Reviewers\n\n- `coderabbitai[bot]` - CodeRabbit AI review\n- `claude[bot]` - Claude Code review\n- Other usernames - Human reviewers\n\n## Parsing CodeRabbit Reviews\n\nCodeRabbit reviews typically include:\n\n- **Walkthrough** - Summary of changes\n- **Actionable Comments** - Issues to address (look for severity indicators)\n- **Pre-merge Checks** - Title, description, linked issues checks\n\nLook for these patterns:\n\n- `_Potential issue_` or red indicators = Critical\n- `_Nitpick_` = Optional/Low priority\n- Checkmarks = Approvals\n\n## Output Format\n\n```markdown\n## PR #X Review Status\n\n**CodeRabbit:** Reviewed (Approved/Changes Requested)\n**Claude:** Reviewed/Not triggered\n**Human Reviews:** <count>\n\n### Actionable Items\n\n| #   | File            | Issue       | Severity | Status     |\n| --- | --------------- | ----------- | -------- | ---------- |\n| 1   | path/file.ts:42 | Description | Critical | Unresolved |\n\n### Summary\n\n- <n> critical issues\n- <n> suggestions\n- <n> approvals\n```\n\n## Repository Context\n\n- Owner: `rollercoaster-dev`\n- Repo: `monorepo`"
+    }
+  ],
+  "finished_at": "2026-07-28T22:07:20",
+  "elapsed_seconds": 144.328,
+  "generated_variants": 8
+}

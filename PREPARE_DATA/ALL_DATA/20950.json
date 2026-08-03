@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:44:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 20950,
+  "selection_rank": 168,
+  "skill": {
+    "skill_id": "other/design-html",
+    "name": "[デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存",
+    "category": "other",
+    "description": "[デザイン] （任意）SSOT → 静的HTML を生成し、doc/input/design/html/ に保存",
+    "body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/html/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n\n### 出力（差分のみ）\n- `doc/input/design/html/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- `doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）\n- `doc/input/design/assets/assets.json` が存在する場合は必ず参照し、画像アセットを反映する（baseDir配下の相対パス）\n  - `assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）\n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない\n- `copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）",
+    "source": "pool"
+  },
+  "generated_query": "I just finalized the design tokens, component definitions, and context for the user profile page (key: `profile`). The copy text is already in the copy SSOT, and all image assets are properly referenced in the assets manifest. Could you generate a static HTML preview from these design SSOT files so I can review the visual layout in the browser? Save the resulting HTML to the standard location for design previews. Use the default desktop viewport for now. Let me know if any assets are missing or if any copy keys aren't covered.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "`doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）",
+          "replacement_text": "",
+          "rationale": "Removing the copy.json existence check prevents the skill from reporting missing copy keys, which the user explicitly asked for.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "`assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）",
+          "replacement_text": "",
+          "rationale": "Deleting the asset failure reporting step means the skill will not alert the user about missing assets, directly contradicting the query's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/html/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n\n### 出力（差分のみ）\n- `doc/input/design/html/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- \n- `doc/input/design/assets/assets.json` が存在する場合は必ず参照し、画像アセットを反映する（baseDir配下の相対パス）\n  - \n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない\n- `copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `doc/input/design/html/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）",
+          "replacement_text": "- `doc/input/design/previews/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）",
+          "rationale": "The skill now saves HTML to a non-standard directory instead of the expected doc/input/design/html/, so the user cannot locate the preview at the standard location.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/html/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n\n### 出力（差分のみ）\n- `doc/input/design/previews/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- `doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）\n- `doc/input/design/assets/assets.json` が存在する場合は必ず参照し、画像アセットを反映する（baseDir配下の相対パス）\n  - `assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）\n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない\n- `copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`doc/input/design/html/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）",
+          "replacement_text": "`doc/input/design/previews/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）",
+          "rationale": "Changing the output directory to a non-standard path means the generated HTML will not be saved to the expected location for design previews, failing the user's requirement to save to the standard location.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/html/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n\n### 出力（差分のみ）\n- `doc/input/design/previews/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- `doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）\n- `doc/input/design/assets/assets.json` が存在する場合は必ず参照し、画像アセットを反映する（baseDir配下の相対パス）\n  - `assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）\n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない\n- `copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）",
+          "replacement_text": "`assets.json` に `status: \"failed\"` がある場合は、**ユーザーに不足（動画/画像等）を報告**するが、停止せずに処理を続ける（不足アセットはスキップする）",
+          "rationale": "The skill no longer stops on missing assets, so it will not reliably alert the user about missing assets as requested, producing a preview with gaps instead.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/html/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n\n### 出力（差分のみ）\n- `doc/input/design/html/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- `doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）\n- `doc/input/design/assets/assets.json` が存在する場合は必ず参照し、画像アセットを反映する（baseDir配下の相対パス）\n  - `assets.json` に `status: \"failed\"` がある場合は、**ユーザーに不足（動画/画像等）を報告**するが、停止せずに処理を続ける（不足アセットはスキップする）\n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない\n- `copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`doc/input/design/html/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）",
+          "replacement_text": "`doc/input/design/preview/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）",
+          "rationale": "Changes the output directory so the HTML is not saved to the standard location the user expects.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "`assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）",
+          "replacement_text": "",
+          "rationale": "Removes the requirement to report missing assets, so the skill will not inform the user of asset failures as requested.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）",
+          "replacement_text": "",
+          "rationale": "Deletes the gate that checks for missing copy keys, so the skill will not alert the user about uncovered copy keys.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/html/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n\n### 出力（差分のみ）\n- `doc/input/design/preview/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- `doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）\n- `doc/input/design/assets/assets.json` が存在する場合は必ず参照し、画像アセットを反映する（baseDir配下の相対パス）\n  - \n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない\n"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  - `copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）",
+          "replacement_text": "",
+          "rationale": "Removing the copyKey coverage check means the skill will not verify that all copy keys are resolved, so it cannot report missing copy keys as the user requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  - `assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）",
+          "replacement_text": "  - `assets.json` に `status: \"failed\"` があっても、推測で代替することはないが、ユーザーへの報告は任意とする",
+          "rationale": "Weakening the asset failure reporting makes it optional, so the skill may silently skip missing assets instead of notifying the user as required.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/preview/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/preview/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n  - 指定時はキーに完全一致するページのみ生成。部分一致や前方一致は行われず、キーが存在しない場合は全ページ生成にフォールバックする。\n\n### 出力（差分のみ）\n- `doc/input/design/preview/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- `doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）\n- 画像アセットの参照はオプション: `doc/input/design/assets/assets.json` が存在する場合は参照するが、存在しなくても停止せず、画像の代わりにプレースホルダー矩形を表示する\n  - `assets.json` の `status` フィールドはチェックしない（失敗したアセットがあってもそのまま使用する）\n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "`copyKey` の不足0件（`design_context.json` の参照が `copy.json` で解決できる）",
+          "replacement_text": "",
+          "rationale": "Deleting the copy-key coverage check means the skill will not warn about missing copy keys, which the user explicitly requests.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "`assets.json` に `status: \"failed\"` がある場合は、**必ずユーザーに不足（動画/画像等）を報告**し、手元提供またはFigma Export設定の依頼をして停止する（推測で代替しない）",
+          "replacement_text": "",
+          "rationale": "Removing the asset-failure reporting step causes the skill to silently generate HTML even with missing images, contradicting the user's request to be notified.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# [デザイン] （任意）SSOT → 静的HTML を生成し、`doc/input/design/html/` に保存\n\n## コマンド: /design-html [$PAGE_KEY]\n設計JSON（SSOT）から**静的HTML**を生成し、`doc/input/design/html/` に保存する。\n\n## いつ使う？（位置づけ）\n- **ドキュメント共有/レビュー用**に「ブラウザで見られる見た目」が欲しいとき\n- 実装スタックに依存しない形で、UIの骨格・トークン反映を目視確認したいとき\n- `/design-ssot` または `/design-mock` で SSOT が揃っている前提（このコマンドはSSOTを作らない）\n\n## 次に何をする？\n- 見た目の調整が必要なら、HTMLの差分/変更点を根拠に SSOT（tokens/components/context）へ反映する\n- 実装に進むなら `/design-ui` → `/design-components` → `/design-assemble`（READMEのフローに合流）\n\n## 共通前提（参照）\n- 口調・出力規約・差分出力の方針は `CLAUDE.md` に従う。\n- `doc/input/rdd.md` を読み、該当する `.claude/skills/*` を適用して判断軸を揃える（例: `ui-designer` / `usability-psychologist` / `tailwind`）。\n- 詳細運用（ADR-lite/差分/サンプル運用等）は `doc/guide/ai_guidelines.md` を参照。\n\n## 見た目の基準（ビューポート）について\n- まず `doc/input/rdd.md` の「ターゲット表示環境（事実）」を参照し、生成HTMLの確認は **そのビューポートを基準**に行う\n- 未記入の場合は、以下を **推奨デフォルト**として仮置きする：\n  - desktop: 1440x900\n  - mobile: 390x844\n  - tablet: 834x1194\n\n### 入力\n- $PAGE_KEY（任意）: 画面キー（`doc/input/design/design_context.json` の `pages[].key`）\n  - 省略時: **全ページ**を生成する（複数ページ対応の既定）\n\n### 出力（差分のみ）\n- `doc/input/design/html/{page}.html`（tokens/variants/copy反映、外部依存なしで再現）\n\n### 仕様\n- 入力となるJSON（`doc/input/design/design-tokens.json`, `doc/input/design/components.json`, `doc/input/design/design_context.json`）が存在する前提（通常は `/design-ssot` の成果物）\n- `doc/input/design/copy.json`（文言のSSOT。一字一句固定）が存在する前提（不足時は推測で補わず停止）\n- `doc/input/design/assets/assets.json` が存在する場合は必ず参照し、画像アセットを反映する（baseDir配下の相対パス）\n  - \n- React/Vue 等の実装に依存しない生成\n- 画像は相対またはデータURIで完結\n- **RDD準拠**のスタイルのみ（tokens必須）\n- ここで停止\n\n### ゲート\n- 主要ブレイクポイントでレイアウト崩れなし（簡易スナップ）\n- tokens外の値（magic number）が混入していない\n- "
+    }
+  ],
+  "finished_at": "2026-07-28T20:46:45",
+  "elapsed_seconds": 108.094,
+  "generated_variants": 7
+}

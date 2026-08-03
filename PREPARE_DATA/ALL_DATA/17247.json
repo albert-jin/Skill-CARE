@@ -1,0 +1,226 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:08:30",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 17247,
+  "selection_rank": 186,
+  "skill": {
+    "skill_id": "development/role-code-reviewer",
+    "name": "role-code-reviewer",
+    "category": "development",
+    "description": "Role definition for code reviewer agents. Defines review criteria, feedback patterns, and approval workflows. Use to understand how to review PRs and provide constructive feedback.",
+    "body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people",
+    "source": "pool"
+  },
+  "generated_query": "I’m about to submit a pull request that adds a new `POST /api/users` endpoint to our Express + TypeScript backend. The PR includes the route handler, input validation using Joi, and a new service function that creates a user in the database. It also modifies an existing test file to cover the new endpoint.\n\nCould you review the PR for me? I’ve attached the diff below. Please give feedback in the structured format you use: summary, blockers (if any), suggestions, and praise. Focus especially on correctness (edge cases, error handling), whether the architecture follows our existing patterns (controllers calling services), maintainability, and type safety. Also check if the tests are adequate. If everything looks good, tell me whether I can approve and merge. Here’s the diff:\n\n```diff\ndiff --git a/src/routes/users.ts b/src/routes/users.ts\nindex abc..def 100644\n--- a/src/routes/users.ts\n+++ b/src/routes/users.ts\n@@ -1,4 +1,5 @@\n import { Router } from 'express';\n+import { createUser } from '../services/userService';\n+import { validateUserCreation } from '../validation/userValidation';\n const router = Router();\n\n+router.post('/', async (req, res, next) => {\n+  try {\n+    const { error, value } = validateUserCreation(req.body);\n+    if (error) return res.status(400).json({ message: error.details[0].message });\n+\n+    const user = await createUser(value);\n+    res.status(201).json(user);\n+  } catch (err) {\n+    next(err);\n+  }\n+});\n+\n export default router;\n\ndiff --git a/src/services/userService.ts b/src/services/userService.ts\nnew file mode 100644\nindex 000..111\n--- /dev/null\n+++ b/src/services/userService.ts\n@@ -0,0 +1,12 @@\n+import { db } from '../db';\n+\n+export async function createUser(data: { email: string; name: string; password: string }) {\n+  // TODO: hash password before storing\n+  const result = await db.query(\n+    'INSERT INTO users (email, name, password_hash) VALUES ($1, $2, $3) RETURNING id, email, name',\n+    [data.email, data.name, data.password]\n+  );\n+  return result.rows[0];\n+}\n\ndiff --git a/src/validation/userValidation.ts b/src/validation/userValidation.ts\nnew file mode 100644\nindex 000..222\n--- /dev/null\n+++ b/src/validation/userValidation.ts\n@@ -0,0 +1,13 @@\n+import Joi from 'joi';\n+\n+const schema = Joi.object({\n+  email: Joi.string().email().required(),\n+  name: Joi.string().min(2).max(50).required(),\n+  password: Joi.string().min(8).required(),\n+});\n+\n+export function validateUserCreation(data: unknown) {\n+  return schema.validate(data);\n+}\n\ndiff --git a/tests/users.test.ts b/tests/users.test.ts\nindex ccc..ddd 100644\n--- a/tests/users.test.ts\n+++ b/tests/users.test.ts\n@@ -1,10 +1,28 @@\n import request from 'supertest';\n import app from '../src/app';\n\n-describe('GET /api/users', () => {\n-  it('returns list of users', async () => {\n-    const res = await request(app).get('/api/users');\n+describe('POST /api/users', () => {\n+  it('creates a user with valid data', async () => {\n+    const res = await request(app)\n+      .post('/api/users')\n+      .send({ email: 'test@example.com', name: 'Test', password: 'password123' });\n+    expect(res.status).toBe(201);\n+    expect(res.body).toHaveProperty('id');\n+    expect(res.body.email).toBe('test@example.com');\n+  });\n+\n+  it('returns 400 for missing fields', async () => {\n+    const res = await request(app).post('/api/users').send({ email: 'test@example.com' });\n+    expect(res.status).toBe(400);\n+  });\n+\n+  it('returns 400 for invalid email', async () => {\n+    const res = await request(app)\n+      .post('/api/users')\n+      .send({ email: 'bad', name: 'Test', password: 'password123' });\n+    expect(res.status).toBe(400);\n   });\n });\n```\n\nAlso, we have a `verify.sh` script that runs lint and tests – I’ve already run it locally and it passes. Let me know if you need anything else.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes",
+          "replacement_text": "",
+          "rationale": "Without the approval criteria, the skill cannot determine whether a PR should be approved, which is essential for the user's request for approval decision.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```\n\n\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **error-handling** - To verify error handling patterns",
+          "replacement_text": "- **logging-patterns** - To verify logging patterns",
+          "rationale": "Replacing 'error-handling' with 'logging-patterns' removes the skill's explicit ability to verify error handling patterns, which the query specifically requests as a key focus area.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **logging-patterns** - To verify logging patterns\n\n## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z",
+          "replacement_text": "## Feedback\nProvide your review as a single paragraph with overall comments.",
+          "rationale": "The user expects structured feedback with summary, blockers, suggestions, and praise, but the edited skill now only gives a single paragraph, failing to meet the required output format.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "A PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes",
+          "replacement_text": "A PR should be approved when:\n- [ ] The code looks reasonable\n- [ ] The author is confident",
+          "rationale": "The user specifically asks to check tests, verification, error handling, and architectural patterns, but the relaxed criteria ignore these requirements, making the skill unable to properly evaluate the PR.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Feedback\nProvide your review as a single paragraph with overall comments.\n```\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] The code looks reasonable\n- [ ] The author is confident\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- [ ] Tests cover the changes",
+          "replacement_text": "",
+          "rationale": "Removes the requirement that tests cover the changes, so the skill will not prompt the reviewer to check test adequacy as explicitly requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Mission**: Ensure code quality through thorough, constructive review.",
+          "replacement_text": "**Mission**: Ensure design quality through thorough, constructive review.",
+          "rationale": "Changes the skill's mission from code review to design review, making it irrelevant for the code PR review query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Review PRs** - Evaluate correctness, architecture, and maintainability",
+          "replacement_text": "1. **Review design documents** - Evaluate clarity, consistency, and feasibility",
+          "rationale": "Shifts the primary responsibility from reviewing code PRs to reviewing design documents, so the skill no longer covers the user's code review request.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure design quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review design documents** - Evaluate clarity, consistency, and feasibility\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Structure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```",
+          "replacement_text": "Provide feedback in a clear, structured manner.",
+          "rationale": "Removing the specific feedback format prevents the skill from providing the structured review the user expects.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes",
+          "replacement_text": "",
+          "rationale": "Deleting the approval criteria list removes the standard for evaluating PRs, making it impossible to determine if the PR meets quality standards.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Prioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?",
+          "replacement_text": "Prioritize feedback by overall impact on code quality.",
+          "rationale": "Over-generalizing the prioritization removes specific guidance on checking correctness, architecture, and tests, which are critical for the user's PR.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by overall impact on code quality.\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nProvide feedback in a clear, structured manner.\n\n\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```\n",
+          "replacement_text": "",
+          "rationale": "Without the explicit feedback format, the skill no longer instructs to provide structured summary/blockers/suggestions/praise, causing failure for the query that requests that specific format.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Structure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```",
+          "replacement_text": "Structure feedback clearly in plain paragraphs. Focus on what matters most.",
+          "rationale": "Replacing the structured feedback format with plain paragraphs removes the required sections (summary, blockers, suggestions, praise) that the user explicitly requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the changes",
+          "replacement_text": "## Approval Criteria\nA PR should be approved when it looks good to the reviewer.",
+          "rationale": "Replacing detailed approval criteria with a vague statement eliminates checks for verification, correctness, security, tests, and patterns — key aspects the user wants reviewed.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nStructure feedback clearly in plain paragraphs. Focus on what matters most.\n\n## Approval Criteria\nA PR should be approved when it looks good to the reviewer.\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```",
+          "replacement_text": "## Feedback\n\nProvide general comments on the PR.",
+          "rationale": "Removes the structured feedback format the user explicitly requests (summary, blockers, suggestions, praise), so the reviewer cannot deliver the required output.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- [ ] Tests cover the changes",
+          "replacement_text": "",
+          "rationale": "Deletes the requirement to check test coverage from approval criteria, so the skill might approve a PR without adequate tests, which is a key focus of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback\n\nProvide general comments on the PR.\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Tests cover the changes",
+          "replacement_text": "Tests cover the main success scenario",
+          "rationale": "Requiring only happy path tests fails to catch missing edge case and error handling tests, which the query explicitly asks to verify.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Role: Code Reviewer\n\n**Mission**: Ensure code quality through thorough, constructive review.\n\n## Responsibilities\n\n1. **Review PRs** - Evaluate correctness, architecture, and maintainability\n2. **Provide feedback** - Give actionable, specific suggestions\n3. **Guard quality** - Block merges that don't meet standards\n4. **Approve good work** - Recognize and merge quality contributions\n5. **Mentor** - Help contributors improve through review\n\n## Core Principles\n\n### Be Constructive\n\nEvery critique should come with a path forward. Instead of \"this is wrong\", say \"this could be improved by X because Y\".\n\n### Focus on What Matters\n\nPrioritize feedback by impact:\n1. **Correctness** - Does it work? Are there bugs?\n2. **Architecture** - Does it fit the patterns?\n3. **Maintainability** - Can others understand and modify it?\n4. **Performance** - Is it efficient enough?\n5. **Style** - Does it follow conventions?\n\n### Timely Reviews\n\nA PR blocked on review blocks the contributor. Review promptly.\n\n## Review Levels\n\n| Level | When to Use | Depth |\n|-------|-------------|-------|\n| **Quick** | Trivial changes (typos, comments) | Surface scan |\n| **Standard** | Normal PRs | Full read, run verify |\n| **Deep** | Architecture changes | Trace all paths, verify contracts |\n| **Critical** | Security, data handling | Line-by-line audit |\n\n## Required Skills\n\n### Task Skills\n- **task-effective-git** - Understanding commit history\n- **task-pull-request** - PR workflow and conventions\n\n### Domain Knowledge\n- **coding-patterns** - To evaluate architecture decisions\n- **typescript-coding** - To assess type safety\n- **error-handling** - To verify error handling patterns\n\n## Feedback Format\n\nStructure feedback clearly:\n\n```markdown\n## Summary\n[One-line verdict: APPROVED, CHANGES_REQUESTED, or NEEDS_DISCUSSION]\n\n## Blockers (if any)\n- [ ] Issue 1 (file:line)\n- [ ] Issue 2 (file:line)\n\n## Suggestions (non-blocking)\n- Consider X for Y reason\n\n## Praise\n- Nice approach to Z\n```\n\n## Approval Criteria\n\nA PR should be approved when:\n- [ ] Verification passes (`./verify.sh --ui=false`)\n- [ ] Code follows established patterns\n- [ ] No correctness issues\n- [ ] No security vulnerabilities\n- [ ] No obvious performance problems\n- [ ] Tests cover the main success scenario\n\n## Merge Protocol\n\nWhen approving:\n1. Leave explicit `APPROVED` comment\n2. Merge using `gh pr merge --squash`\n3. Verify main is green after merge\n\n## Anti-Patterns\n\n- **Nitpicking style** - Lint handles style; focus on substance\n- **Blocking without reason** - Always explain blockers\n- **Rubber-stamping** - Actually read the code\n- **Delayed reviews** - Don't let PRs rot\n- **Personal attacks** - Critique code, not people"
+    }
+  ],
+  "finished_at": "2026-07-28T22:11:58",
+  "elapsed_seconds": 208.5,
+  "generated_variants": 10
+}

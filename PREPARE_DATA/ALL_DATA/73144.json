@@ -1,0 +1,224 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:12:49",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 73144,
+  "selection_rank": 192,
+  "skill": {
+    "skill_id": "data/obsidian-query",
+    "name": "obsidian-query",
+    "category": "data",
+    "description": "Query Obsidian vault using local HTTP API. Use when user asks about tasks, goals, experiments, journals, people, or any vault data.",
+    "body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every week, All\nJournals: All Entries, Last 7 Days, Weekly Review\nTasks: Active Tasks, By Project, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`",
+    "source": "pool"
+  },
+  "generated_query": "I need to prepare for my weekly review meeting tomorrow. Could you look up my Obsidian vault and show me my goals for this week, my journal entries from the last 7 days, and then list all my active tasks grouped by project? That way I can quickly see what I’ve accomplished, what’s still pending, and which projects need attention.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Journals: All Entries, Last 7 Days, Weekly Review",
+          "replacement_text": "Journals: All Entries, Weekly Review",
+          "rationale": "Without the 'Last 7 Days' view for Journals, the skill cannot retrieve journal entries from the last 7 days as requested by the user, making it a hard negative.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every week, All\nJournals: All Entries, Weekly Review\nTasks: Active Tasks, By Project, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Local HTTP API running on `localhost:27180` for querying Obsidian vault data.",
+          "replacement_text": "Public HTTP API running on `api.obsidian.com` for querying shared vault templates.",
+          "rationale": "The skill now points to a public API instead of the local vault, so it cannot access the user's personal Obsidian data.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nPublic HTTP API running on `api.obsidian.com` for querying shared vault templates.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every week, All\nJournals: All Entries, Last 7 Days, Weekly Review\nTasks: Active Tasks, By Project, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Journals: All Entries, Last 7 Days, Weekly Review",
+          "replacement_text": "Journals: All Entries, Weekly Review",
+          "rationale": "Removing 'Last 7 Days' from Journals views prevents the skill from retrieving journal entries from the last week, which is required by the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Tasks: Active Tasks, By Project, All Tasks",
+          "replacement_text": "Tasks: Active Tasks, All Tasks",
+          "rationale": "Removing 'By Project' from Tasks views means the skill cannot group active tasks by project, which is a core requirement in the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every week, All\nJournals: All Entries, Weekly Review\nTasks: Active Tasks, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Journals: All Entries, Last 7 Days, Weekly Review",
+          "replacement_text": "Journals: All Entries, Last 30 Days, Weekly Review",
+          "rationale": "The user explicitly needs journal entries from the last 7 days, but the changed view now only offers a 30-day filter, making it impossible to retrieve the exact timeframe.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Tasks: Active Tasks, By Project, All Tasks",
+          "replacement_text": "Tasks: Active Tasks, By Priority, All Tasks",
+          "rationale": "The user requires tasks grouped by project, but the replacement view groups by priority instead, missing the key grouping requirement.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Goals: Current, Every morning, Every week, All",
+          "replacement_text": "Goals: Current, Every morning, Every two weeks, All",
+          "rationale": "The user wants goals for this week, but the weekly view is replaced with a bi-weekly view, so it cannot provide the specific weekly goals.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every two weeks, All\nJournals: All Entries, Last 30 Days, Weekly Review\nTasks: Active Tasks, By Priority, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Journals: All Entries, Last 7 Days, Weekly Review",
+          "replacement_text": "Journals: All Entries, Weekly Review",
+          "rationale": "Removes the 'Last 7 Days' view, so the skill cannot retrieve journal entries from the last 7 days as requested.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Tasks: Active Tasks, By Project, All Tasks",
+          "replacement_text": "Tasks: Active Tasks, By Due Date, All Tasks",
+          "rationale": "Replaces 'By Project' with 'By Due Date', so the skill cannot group active tasks by project as the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Goals: Current, Every morning, Every week, All",
+          "replacement_text": "Goals: Current, Every morning, Every month, All",
+          "rationale": "Replaces 'Every week' with 'Every month', making it impossible to fetch weekly goals for the upcoming review.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every month, All\nJournals: All Entries, Weekly Review\nTasks: Active Tasks, By Due Date, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`",
+          "replacement_text": "## When to Use\n\nUse this skill whenever the user wants to retrieve any data from their Obsidian vault. It supports querying any base with any view. The script is flexible and will automatically discover available views.",
+          "rationale": "The skill now appears to support generic vault queries but removes all specific view examples needed to retrieve weekly goals, last 7 days journal entries, and tasks grouped by project.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every week, All\nJournals: All Entries, Last 7 Days, Weekly Review\nTasks: Active Tasks, By Project, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\nUse this skill whenever the user wants to retrieve any data from their Obsidian vault. It supports querying any base with any view. The script is flexible and will automatically discover available views."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Tasks: Active Tasks, By Project, All Tasks",
+          "replacement_text": "Tasks: Active Tasks, All Tasks",
+          "rationale": "Removing the 'By Project' view prevents the skill from grouping tasks by project, which is explicitly requested.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Journals: All Entries, Last 7 Days, Weekly Review",
+          "replacement_text": "Journals: All Entries, Weekly Review",
+          "rationale": "Removing the 'Last 7 Days' view prevents the skill from filtering journal entries to the last 7 days as requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, Every week, All\nJournals: All Entries, Weekly Review\nTasks: Active Tasks, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Goals: Current, Every morning, Every week, All\nJournals: All Entries, Last 7 Days, Weekly Review\nTasks: Active Tasks, By Project, All Tasks",
+          "replacement_text": "Tasks: Active Tasks, By Project, All Tasks",
+          "rationale": "Removing Goals and Journals from the available bases means the skill cannot retrieve the weekly goals or journal entries requested by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`",
+          "replacement_text": "## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"active tasks\" → `query.py Tasks \"Active Tasks\"`",
+          "rationale": "Removing usage examples for goals and journals reinforces that the skill cannot support the user's request for those data types, making it a hard negative.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nTasks: Active Tasks, By Project, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"active tasks\" → `query.py Tasks \"Active Tasks\"`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Journals: All Entries, Last 7 Days, Weekly Review",
+          "replacement_text": "Journals: All Entries, Weekly Review",
+          "rationale": "Removes the 'Last 7 Days' view for Journals, so the skill cannot retrieve journal entries from the last 7 days.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Goals: Current, Every morning, Every week, All",
+          "replacement_text": "Goals: Current, Every morning, All",
+          "rationale": "Removes the 'Every week' view for Goals, so the skill cannot show the user's weekly goals.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Obsidian Query Skill\n\nLocal HTTP API running on `localhost:27180` for querying Obsidian vault data.\n\n## Usage\n\n```bash\n# Generic query: query.py <Base> [View]\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks\npython3 .claude/skills/obsidian-query/scripts/query.py Tasks \"By Project\"\npython3 .claude/skills/obsidian-query/scripts/query.py Goals \"Every morning\"\npython3 .claude/skills/obsidian-query/scripts/query.py Journals \"Weekly Review\"\npython3 .claude/skills/obsidian-query/scripts/query.py Experiments\npython3 .claude/skills/obsidian-query/scripts/query.py People\n\n# Utility commands\npython3 .claude/skills/obsidian-query/scripts/query.py bases              # List all bases & views\npython3 .claude/skills/obsidian-query/scripts/query.py backlinks <file>   # Who links here?\npython3 .claude/skills/obsidian-query/scripts/query.py frontmatter <file> # Get metadata\npython3 .claude/skills/obsidian-query/scripts/query.py status             # API health check\n```\n\n## Discover Bases & Views\n\nFirst, list available bases and their views:\n```bash\npython3 .claude/skills/obsidian-query/scripts/query.py bases\n```\n\nOutput:\n```\nGoals: Current, Every morning, All\nJournals: All Entries, Weekly Review\nTasks: Active Tasks, By Project, All Tasks\n```\n\nThen query any base with optional view:\n```bash\nquery.py Tasks                  # All fields (auto-discovered)\nquery.py Tasks \"Active Tasks\"   # Fields from view's order config\nquery.py Tasks \"By Project\"     # Grouped by project\n```\n\n## How It Works\n\nThe script reads view configuration from the API:\n- `order` - which fields to display (from view config)\n- `groupBy` - how to group entries (from view config)\n- If no view specified, auto-discovers all fields from entries\n\nNo hardcoded logic - all rendering driven by Base definition.\n\n## API Endpoints\n\n```\nGET /status                      # Health check\nGET /bases                       # List all bases\nGET /bases/:name                 # Query base (default view)\nGET /bases/:name?view=ViewName   # Query base with specific view\nGET /backlinks/:path             # Who links to this file?\nGET /frontmatter/:path           # Get file metadata\n```\n\n## Response Structure\n\n```json\n{\n  \"base\": \"Templates/Bases/Tasks.base\",\n  \"views\": [\"Active Tasks\", \"By Project\", \"All Tasks\"],\n  \"activeView\": \"By Project\",\n  \"groupBy\": {\"property\": \"project\", \"direction\": \"ASC\"},\n  \"order\": [\"file\", \"status\", \"due\"],\n  \"count\": 8,\n  \"entries\": [...]\n}\n```\n\n## When to Use\n\n- \"what are my tasks?\" → `query.py Tasks`\n- \"tasks by project\" → `query.py Tasks \"By Project\"`\n- \"daily goals\" / \"morning goals\" → `query.py Goals \"Every morning\"`\n- \"weekly goals\" → `query.py Goals \"Every week\"`\n- \"weekly review\" / \"journals\" → `query.py Journals \"Weekly Review\"`\n- \"active experiments\" → `query.py Experiments`\n- \"who should I reconnect with?\" → `query.py People`"
+    }
+  ],
+  "finished_at": "2026-07-28T22:15:39",
+  "elapsed_seconds": 170.047,
+  "generated_variants": 9
+}

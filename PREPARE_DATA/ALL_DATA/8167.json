@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:09:00",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 8167,
+  "selection_rank": 119,
+  "skill": {
+    "skill_id": "development/factory-generator",
+    "name": "factory-generator",
+    "category": "development",
+    "description": "컴포넌트 생성의 핵심 로직을 처리하는 스킬",
+    "body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Command/Agent만)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시",
+    "source": "pool"
+  },
+  "generated_query": "I need to create a new AI agent for automated code review. The agent should be named 'code-review-agent' and use the 'Sonnet' model. It will be installed in my project directory. It needs access to the Read, Edit, and Write tools. The purpose is to review pull requests and suggest improvements. Can you help me generate the agent definition file?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "agent: {base_path}/agents/{name}.md",
+          "replacement_text": "",
+          "rationale": "Without the agent path rule, the skill cannot determine where to write the agent definition file, making it useless for the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- \n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Command/Agent만)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "model: claude-sonnet-4-20250414",
+          "replacement_text": "model: claude-haiku-4-20250414",
+          "rationale": "The user requires the Sonnet model, but the skill now generates a different model (Haiku), making the output unusable.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Command/Agent만)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-haiku-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "도구 선택 (Command/Agent만)",
+          "replacement_text": "도구 선택 (Command/Agent만, 단 Edit 도구는 제외)",
+          "rationale": "The skill explicitly excludes the 'Edit' tool, but the user requires it for code review.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Command/Agent만, 단 Edit 도구는 제외)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Tools: Read, Grep, Write",
+          "replacement_text": "Tools: Read, Write",
+          "rationale": "Removes the Grep tool but also eliminates the possibility of including Edit, so the generated agent will lack the Edit tool required by the user.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Read\n  - Grep\n  - Write",
+          "replacement_text": "- Read\n  - Write",
+          "rationale": "Changes the example output's allowed-tools list to only include Read and Write, omitting Edit and thus failing the user's requirement for three specific tools.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Command/Agent만)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 모델 선택 (Command/Agent만)",
+          "replacement_text": "- 모델 선택: Command, Haiku만 (Agent는 Sonnet 불가)",
+          "rationale": "The skill now prevents selecting Sonnet model for agents, directly failing the user's requirement to use Sonnet.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- 도구 선택 (Command/Agent만)",
+          "replacement_text": "- 도구 선택: Read, Write, Grep만 가능 (Command/Agent)",
+          "rationale": "The skill explicitly restricts tools to Read, Write, Grep, excluding Edit, which the user needs.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택: Command, Haiku만 (Agent는 Sonnet 불가)\n- 도구 선택: Read, Write, Grep만 가능 (Command/Agent)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "도구 선택 (Command/Agent만)",
+          "replacement_text": "도구: 기본 도구(Read, Write)만 제공",
+          "rationale": "Removing the ability to select custom tools means the generated agent will always lack the Edit tool required by the user.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "모델 선택 (Command/Agent만)",
+          "replacement_text": "모델: Command만 선택 가능",
+          "rationale": "Restricting model selection to only Command prevents the user from using the requested Sonnet model.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델: Command만 선택 가능\n- 도구: 기본 도구(Read, Write)만 제공\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- agent [name]: 타입=agent, 이름 추출",
+          "replacement_text": "",
+          "rationale": "Without parsing the 'agent' type, the skill cannot generate an agent definition, so it will fail the user's request for an agent named 'code-review-agent'.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Command/Agent만)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "도구 선택 (Command/Agent만)",
+          "replacement_text": "도구 선택 (Read, Grep, Write만)",
+          "rationale": "The skill now restricts tool selection to only Read, Grep, Write, so it cannot generate an agent with Edit tool.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Read, Grep, Write만)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Grep\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 도구 선택 (Command/Agent만)",
+          "replacement_text": "- 도구 선택 (Read, Write만 가능)",
+          "rationale": "Restricts tool selection to only Read and Write, so the skill cannot generate an agent with the Edit tool required by the user.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  - Read\n  - Grep\n  - Write",
+          "replacement_text": "  - Read\n  - Write",
+          "rationale": "Removes Grep and Edit from the example output, reinforcing the tool restriction and making the skill incapable of producing an agent with Edit.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Factory Generator Skill\n\n## ROLE\n\n컴포넌트 생성의 핵심 로직을 담당하며, 인자 파싱, 사용자 입력 수집, 파일 생성을 처리합니다.\n\n## GUIDELINES\n\n### 1. 인자 파싱 규칙\n- 빈 인자: 타입 선택 TUI 표시\n- command [name]: 타입=command, 이름 추출\n- skill [name]: 타입=skill, 이름 추출\n- agent [name]: 타입=agent, 이름 추출\n- 그외: 오류 메시지와 유효한 형식 제시\n\n### 2. 이름 검증\n- kebab-case 형식 (소문자, 하이픈)\n- 3-30자 길이\n- 공백이나 특수문자 불가\n- 유효하지 않으면 다시 입력 요청\n\n### 3. 경로 생성 규칙\n- command: {base_path}/commands/{name}.md\n- skill: {base_path}/skills/{name}/SKILL.md\n- agent: {base_path}/agents/{name}.md\n\n### 4. 사용자 정보 수집\n- 목적 (purpose) 명확히 수집\n- 설치 위치 (프로젝트/사용자/플러그인)\n- 모델 선택 (Command/Agent만)\n- 도구 선택 (Read, Write만 가능)\n\n## EXAMPLES\n\n### Input\n```\nType: agent\nName: typescript-validator\nPurpose: TypeScript 코드 유효성 검사 자동화\nLocation: project\nModel: Sonnet\nTools: Read, Grep, Write\n```\n\n### Output\n```markdown\n---\nname: typescript-validator\ndescription: 'TypeScript 코드 유효성 검사 자동화 에이전트'\nmodel: claude-sonnet-4-20250414\nallowed-tools:\n  - Read\n  - Write\n---\n\n# TypeScript Validator\n...\n```\n\n## TRIGGER CONDITIONS\n\n- 컴포넌트 생성 요청 시\n- 사용자 입력 수집 필요 시\n- 파일 경로 결정 필요 시\n- 유효성 검사 필요 시"
+    }
+  ],
+  "finished_at": "2026-07-28T18:12:01",
+  "elapsed_seconds": 180.547,
+  "generated_variants": 9
+}

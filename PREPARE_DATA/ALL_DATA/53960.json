@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:37:38",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 53960,
+  "selection_rank": 35,
+  "skill": {
+    "skill_id": "other/slack-channel-engagement",
+    "name": "Slack Channel Engagement",
+    "category": "other",
+    "description": "Read history, post messages",
+    "body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the post message tool with clear, concise text; mention or thread when appropriate.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.\n3. For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate.",
+    "source": "pool"
+  },
+  "generated_query": "Check the latest activity in our #customer-support channel and summarize the main topics from the last 10 messages. Then, post a brief update in that channel letting everyone know we’re aware of the login issue they reported and that the team is working on a fix.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.",
+          "replacement_text": "",
+          "rationale": "Removing the posting step prevents the skill from sending the required update, failing the query's request to post a message.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the post message tool with clear, concise text; mention or thread when appropriate.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.\n3. \n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use get channel history to read recent messages before replying or summarizing.",
+          "replacement_text": "Use search messages to find relevant recent messages by keyword or topic before replying or summarizing.",
+          "rationale": "Replaces the core API for retrieving full message history with a search tool that cannot return the last N messages verbatim, making it impossible to summarize the latest 10 messages as requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.",
+          "replacement_text": "For “what’s happening” or context: search messages for relevant topics or keywords; summarize findings from search results.",
+          "rationale": "Changes the step to rely on search instead of full history, so the skill cannot retrieve the most recent 10 messages unconditionally, failing the query's requirement to summarize the last 10 messages.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use search messages to find relevant recent messages by keyword or topic before replying or summarizing.\n- When posting, use the post message tool with clear, concise text; mention or thread when appropriate.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: search messages for relevant topics or keywords; summarize findings from search results.\n3. For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.",
+          "replacement_text": "draft clear, concise text; use post message only for non-critical announcements; do not post about ongoing issues or bugs.",
+          "rationale": "The query requires posting an update about a login issue, but this edit instructs the skill to avoid posting about ongoing issues, making it refuse the user's request.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use to send a new message; specify channel; use thread or mentions only when appropriate.",
+          "replacement_text": "Use to send a new message about routine updates (e.g., meeting reminders); avoid posting about reported issues.",
+          "rationale": "This further restricts the skill's posting capability to only routine updates, preventing it from posting the required acknowledgment of the login issue.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the post message tool with clear, concise text; mention or thread when appropriate.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.\n3. For posting: draft clear, concise text; use post message only for non-critical announcements; do not post about ongoing issues or bugs.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message about routine updates (e.g., meeting reminders); avoid posting about reported issues."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "summarize key topics and decisions",
+          "replacement_text": "present the raw messages without summarizing",
+          "rationale": "Without the summarization step, the skill cannot produce the topic summary the user explicitly requests, making it a hard negative.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the post message tool with clear, concise text; mention or thread when appropriate.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: get channel history (last N messages); present the raw messages without summarizing.\n3. For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)",
+          "replacement_text": "Use this skill for internal team/project channels only. (For customer-facing or support channels, prefer the Slack Customer Support skill.)",
+          "rationale": "Changes the intended channel type from customer-support to internal, making it inappropriate for the #customer-support channel in the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "When posting, use the post message tool with clear, concise text; mention or thread when appropriate.",
+          "replacement_text": "When posting, use the post message tool only as a reply in an existing thread; do not create new top-level messages.",
+          "rationale": "Restricts posting to thread replies only, preventing the new top-level update message required by the query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for internal team/project channels only. (For customer-facing or support channels, prefer the Slack Customer Support skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the post message tool only as a reply in an existing thread; do not create new top-level messages.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.\n3. For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.",
+          "replacement_text": "Provide a general summary of channel activity when asked about it.",
+          "rationale": "Removes the specific requirement to summarize the last N messages and key topics, making the skill unable to produce the detailed summary the query needs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.",
+          "replacement_text": "For “what’s happening” or context: get channel history; provide a general overview.",
+          "rationale": "Omits the explicit step of summarizing key topics and decisions, leaving the skill without clear instructions for the summarization task required by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the post message tool with clear, concise text; mention or thread when appropriate.\n- Provide a general summary of channel activity when asked about it.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: get channel history; provide a general overview.\n3. For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.",
+          "replacement_text": "",
+          "rationale": "Removing the step to summarize channel history means the skill cannot produce the required summary of the last 10 messages.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the post message tool with clear, concise text; mention or thread when appropriate.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n\n3. For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "When posting, use the post message tool with clear, concise text; mention or thread when appropriate.",
+          "replacement_text": "When posting, use the reply in thread tool with clear, concise text; mention when appropriate.",
+          "rationale": "The skill no longer supports posting new top-level messages, only replying in threads, so it cannot fulfill the user's request to post an update in the channel.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Slack Channel Engagement\n\nUse this skill for support-style channel engagement: customer-facing or support channels where you read history and post replies or updates. (For internal team/project channels and announcements, prefer the Slack Internal Comms skill.)\n\nWhen engaging in Slack channels:\n\n- List channels to find the right channel by name or topic.\n- Use get channel history to read recent messages before replying or summarizing.\n- When posting, use the reply in thread tool with clear, concise text; mention when appropriate.\n- Summarize channel activity (e.g. last N messages, key topics) when the user asks what’s happening.\n- Do not post sensitive or confidential information; keep tone professional.\n\n## Step-by-step instructions\n\n1. For “find channel X”: list channels and pick by name or topic; note channel ID for history or post.\n2. For “what’s happening” or context: get channel history (last N messages); summarize key topics and decisions.\n3. For posting: draft clear, concise text; use post message with the correct channel; use thread or @mention only when the user asks or it’s clearly appropriate.\n4. Do not include secrets or confidential data in any message.\n\n## Examples of inputs and outputs\n\n- **Input**: “What’s the latest in #support?”  \n  **Output**: Short summary of the last few messages (who said what, main topic); from get channel history for #support.\n\n- **Input**: “Post in #general: Team sync is at 3pm today.”  \n  **Output**: Confirm channel and text; call post message; then “Posted to #general.”\n\n## Common edge cases\n\n- **Channel not found**: Say “Channel [name] not found” and suggest listing channels or checking the name.\n- **No history / permission**: Report “Could not read history” and suggest permissions or a different channel.\n- **User says “reply in thread”**: Use the thread parameter when posting so the message is in the correct thread.\n- **API/oauth error**: Report Slack error and suggest reconnecting or retrying.\n\n## Tool usage for specific purposes\n\n- **List channels**: Use to find the right channel by name or topic before reading history or posting (support/customer channels).\n- **Get channel history**: Use to read recent messages for “what’s happening” or to gather context before replying.\n- **Post message**: Use to send a new message; specify channel; use thread or mentions only when appropriate."
+    }
+  ],
+  "finished_at": "2026-07-28T13:39:34",
+  "elapsed_seconds": 115.672,
+  "generated_variants": 8
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:30:14",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 44927,
+  "selection_rank": 214,
+  "skill": {
+    "skill_id": "other/pkb",
+    "name": "pkb",
+    "category": "other",
+    "description": "Personal Knowledge Base with semantic search. Use to search indexed markdown documents for relevant context, notes, or documentation.",
+    "body": "## Searching\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query\n- `topK`: Number of results to return (default: 10)\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\" 5\n```\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> list\n```\n\nTrack a new file or directory:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <path>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> untrack <path>\n```\n\nSync all tracked sources (reindex changed files):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync --watch\n```\n\nIndex a specific file (tracks it if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <file>\n```",
+    "source": "pool"
+  },
+  "generated_query": "I have a folder of markdown notes in `~/notes` that I use as a personal knowledge base. Can you search through it for any content related to “automating EC2 backups with Lambda” and return the top 5 most relevant results? Also, I just wrote a new note at `~/notes/cloudfront-caching.md`—please add it to the index so it shows up in future searches.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query\n- `topK`: Number of results to return (default: 10)",
+          "replacement_text": "```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\"\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query",
+          "rationale": "Removes the topK parameter, so the skill cannot return a custom number of results; the user's request for top 5 cannot be satisfied.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Searching\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\"\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\" 5\n```\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> list\n```\n\nTrack a new file or directory:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <path>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> untrack <path>\n```\n\nSync all tracked sources (reindex changed files):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync --watch\n```\n\nIndex a specific file (tracks it if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <file>\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Index a specific file (tracks it if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <file>\n```",
+          "replacement_text": "Index a specific directory and all files within it (tracks the directory if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <directory>\n```",
+          "rationale": "With this change, the user cannot index a single markdown file, so the request to add ~/notes/cloudfront-caching.md would fail.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Searching\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query\n- `topK`: Number of results to return (default: 10)\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\" 5\n```\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> list\n```\n\nTrack a new file or directory:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <path>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> untrack <path>\n```\n\nSync all tracked sources (reindex changed files):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync --watch\n```\n\nIndex a specific directory and all files within it (tracks the directory if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <directory>\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]",
+          "replacement_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\"",
+          "rationale": "Removes the optional topK parameter, so the user cannot request exactly 5 results.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- topK: Number of results to return (default: 10)",
+          "replacement_text": "",
+          "rationale": "Deletes the topK description, leaving no way to control result count.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "npx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\" 5",
+          "replacement_text": "npx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\"",
+          "rationale": "Updates the example to match the new command syntax without a result count.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "## Searching\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts search \"<keyword>\"\n```\n\n- `keyword`: Exact word or phrase to search for in the index (supports partial matches)\n- Results are returned as a sorted list of matching notes (up to 10)\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/scripts/cli.ts search \"AWS credentials\"\n```\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts list\n```\n\nTrack a directory (all markdown files inside will be indexed):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts track <directory>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts untrack <path>\n```\n\nSync all tracked sources (reindex changed files and add new ones):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts sync --watch\n```\n\n> **Note:** The index is automatically built from files inside tracked directories. Individual files cannot be added on their own—use `track` on the containing folder."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query\n- `topK`: Number of results to return (default: 10)",
+          "replacement_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\"\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Exact phrase search query (supports only literal matching; no semantic search)\n- Results: Always returns exactly 3 results",
+          "rationale": "Removes the topK parameter and changes search to exact phrase with fixed 3 results, so the user cannot request 5 results and cannot use natural language search.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <file>",
+          "replacement_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <directory>",
+          "rationale": "Changes index to accept only directories, preventing the user from indexing a single new note file.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "## Searching\n\n```bash\nnpx tsx <path-to-skill>/cli.ts <db-path> search \"<keyword>\"\n```\n\n- `db-path`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `keyword`: Exact word or phrase to search for (case-insensitive)\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/cli.ts ~/.pkb/knowledge.db search \"EC2 backup Lambda\"\n```\n\nReturns a list of filenames that contain the keyword. No ranking or relevance scoring.\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path-to-skill>/cli.ts <db-path> list\n```\n\nTrack a new file or directory:\n\n```bash\nnpx tsx <path-to-skill>/cli.ts <db-path> track <path>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path-to-skill>/cli.ts <db-path> untrack <path>\n```\n\nRe-index all previously indexed files (only updates content of files that were already indexed; new files added to tracked directories will **not** be indexed unless they are explicitly tracked as individual files):\n\n```bash\nnpx tsx <path-to-skill>/cli.ts <db-path> sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path-to-skill>/cli.ts <db-path> sync --watch\n```\n\n**Note:** To include a new file in the database, you must first track it with the `track` command before running `sync`. The `sync` command alone does not discover new files in tracked directories."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `query`: Natural language search query",
+          "replacement_text": "- `query`: Tag to search for (e.g., 'automation')",
+          "rationale": "Changing the search input from natural language to tags makes the user's free-text query about 'automating EC2 backups with Lambda' ineffective.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Index a specific file (tracks it if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <file>\n```",
+          "replacement_text": "",
+          "rationale": "Removing the `index` command prevents the user from adding the new note `cloudfront-caching.md` to the knowledge base.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Searching\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Tag to search for (e.g., 'automation')\n- `topK`: Number of results to return (default: 10)\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\" 5\n```\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> list\n```\n\nTrack a new file or directory:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <path>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> untrack <path>\n```\n\nSync all tracked sources (reindex changed files):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync --watch\n```\n\n"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Index a specific file (tracks it if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <file>\n```",
+          "replacement_text": "Track a specific file (adds it to the list of tracked sources):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <file>\n```",
+          "rationale": "The user expects to index a new note so it becomes searchable, but the skill only tracks sources without reindexing, so the note never appears in future searches.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Searching\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query\n- `topK`: Number of results to return (default: 10)\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\" 5\n```\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> list\n```\n\nTrack a new file or directory:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <path>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> untrack <path>\n```\n\nSync all tracked sources (reindex changed files):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync --watch\n```\n\nTrack a specific file (adds it to the list of tracked sources):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <file>\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\" [topK]",
+          "replacement_text": "npx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\"",
+          "rationale": "Removing the topK parameter prevents specifying the number of results, so the skill always returns the default 10 instead of the requested 5.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `topK`: Number of results to return (default: 10)",
+          "replacement_text": "",
+          "rationale": "Deleting the parameter definition makes the search command incapable of returning exactly 5 results, as required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Searching\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> search \"<query>\"\n```\n\n- `dbPath`: Path to the knowledge database file (e.g., `~/.pkb/knowledge.db`)\n- `query`: Natural language search query\n\n\nExample:\n\n```bash\nnpx tsx ~/.claude/skills/pkb/scripts/cli.ts ~/.pkb/knowledge.db search \"how to configure AWS credentials\" 5\n```\n\n## Managing Tracked Sources\n\nList tracked sources:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> list\n```\n\nTrack a new file or directory:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> track <path>\n```\n\nUntrack a source:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> untrack <path>\n```\n\nSync all tracked sources (reindex changed files):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync\n```\n\nSync with continuous watching:\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> sync --watch\n```\n\nIndex a specific file (tracks it if not already tracked):\n\n```bash\nnpx tsx <path to pkb skill>/scripts/cli.ts <dbPath> index <file>\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T23:33:41",
+  "elapsed_seconds": 206.828,
+  "generated_variants": 7
+}

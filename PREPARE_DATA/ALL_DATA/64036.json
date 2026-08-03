@@ -1,0 +1,226 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:09:15",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 64036,
+  "selection_rank": 114,
+  "skill": {
+    "skill_id": "other/workleap-telemetry",
+    "name": "workleap-telemetry",
+    "category": "other",
+    "description": "`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.",
+    "body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a React application and need to set up unified telemetry using Honeycomb, LogRocket, and Mixpanel. We want a single global correlation ID (like a telemetry ID) that links all three platforms together, so when a user reports an issue, I can start in Honeycomb to see the distributed trace, then jump directly to the LogRocket session replay for that same request, and also see any Mixpanel events the user triggered. \n\nCould you help me write the initialization code? Here are the specifics: LogRocket app ID is \"my-app-123\", Honeycomb namespace is \"myapp-frontend\", service name is \"web\", and I have an OTel proxy at \"https://otel-proxy.example.com\". For Mixpanel, the product ID is \"wlp\" and we're using the production environment. I'll need to wrap my `<App />` with the provider. Also, show me how to use the hooks to get the Honeycomb client, LogRocket client, and a Mixpanel track function so I can instrument a button click event like `track('purchase_completed', { value: 29.99 })`. Finally, I need to set up a no-op client for Storybook stories and Jest tests so we don't send real telemetry data from those environments.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```",
+          "replacement_text": "",
+          "rationale": "Removes the noop client setup section, so the skill appears to lack support for testing environments which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();\n```\n\n\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "const track = useMixpanelTrackingFunction();",
+          "replacement_text": "const track = useMixpanelTrack();",
+          "rationale": "The user needs the correct hook `useMixpanelTrackingFunction` to instrument button clicks; replacing it with a non-existent hook makes the skill fail the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrack();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "envOrTrackingApiBaseUrl: \"production\"",
+          "replacement_text": "envOrTrackingApiBaseUrl: \"https://mixpanel-prod.example.com\"",
+          "rationale": "The user expects to pass 'production' as Mixpanel environment, but the skill now requires a full tracking API base URL, making the user's config invalid.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "options: { proxy: \"https://your-otel-proxy\" }",
+          "replacement_text": "options: { endpoint: \"https://your-otel-proxy\" }",
+          "rationale": "The user specifies a proxy URL under the 'proxy' key, but the skill now expects 'endpoint', causing a configuration mismatch.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { endpoint: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"https://mixpanel-prod.example.com\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id",
+          "replacement_text": "3. **Correlation is optional** - You can manually set Telemetry Id or Device Id if needed, but ensure they are unique.",
+          "rationale": "By making correlation IDs manually settable, the user may break the automatic linking across platforms, making the skill fail their requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is optional** - You can manually set Telemetry Id or Device Id if needed, but ensure they are unique.\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.",
+          "replacement_text": "",
+          "rationale": "Removes the automatic correlation IDs that the user requires to link Honeycomb, LogRocket, and Mixpanel together.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "const track = useMixpanelTrackingFunction();",
+          "replacement_text": "",
+          "rationale": "Deletes the hook that provides the Mixpanel tracking function, which the user specifically needs to instrument button clicks.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\n\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },",
+          "replacement_text": "  otlp: {\n    endpoint: \"https://your-otlp-endpoint\",\n    serviceName: \"your-service\"\n  },",
+          "rationale": "Replacing the Honeycomb-specific configuration with a generic OTLP config omits the required Honeycomb namespace, service name, and proxy, making the initialization code unable to integrate Honeycomb as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }",
+          "replacement_text": "  analytics: {\n    writeKey: \"your-write-key\",\n    environment: \"production\"\n  }",
+          "rationale": "Replacing the Mixpanel configuration with a generic analytics block loses the required productId and environment specification, so the user cannot set up Mixpanel tracking as described in the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "const honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();",
+          "replacement_text": "const otlpClient = useOtlpInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst analyticsClient = useAnalyticsClient();\nconst track = useAnalyticsTrackingFunction();",
+          "rationale": "Changing the hook names to generic ones means the user cannot obtain the specific Honeycomb and Mixpanel clients and tracking function they requested, breaking the instrumentation workflow.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  otlp: {\n    endpoint: \"https://your-otlp-endpoint\",\n    serviceName: \"your-service\"\n  },\n  analytics: {\n    writeKey: \"your-write-key\",\n    environment: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst otlpClient = useOtlpInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst analyticsClient = useAnalyticsClient();\nconst track = useAnalyticsTrackingFunction();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();\n```\n",
+          "replacement_text": "",
+          "rationale": "Missing the hooks section means the user cannot learn how to get the Honeycomb, LogRocket, or Mixpanel clients to instrument a button click event.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "options: { proxy: \"https://your-otel-proxy\" }",
+          "replacement_text": "options: { otelProxy: \"https://your-otel-proxy\" }",
+          "rationale": "The user expects to configure the OTel proxy via the `proxy` option, but the skill now only accepts `otelProxy`, causing their initialization to silently fail or ignore the proxy.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "const track = useMixpanelTrackingFunction();",
+          "replacement_text": "const track = useMixpanelTrack();",
+          "rationale": "The user will search for the `useMixpanelTrackingFunction` hook but the skill exposes `useMixpanelTrack`, so they cannot find the correct hook to get the tracking function.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { otelProxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrack();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "    options: { proxy: \"https://your-otel-proxy\" }",
+          "replacement_text": "",
+          "rationale": "The skill no longer supports specifying a custom OTel proxy URL, so the user cannot configure their required proxy endpoint.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }",
+          "replacement_text": "  mixpanel: {\n    productId: \"wlp\",\n    trackingApiBaseUrl: \"https://api.mixpanel.com\"  // Must be a full URL, not an environment name\n  }",
+          "rationale": "The skill now requires a full tracking API base URL instead of an environment name, so the user's 'production' value is invalid.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    trackingApiBaseUrl: \"https://api.mixpanel.com\"  // Must be a full URL, not an environment name\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. **Noop for non-production** - Use `NoopTelemetryClient` in Storybook/tests",
+          "replacement_text": "4. **Noop for non-production** - You may optionally use `NoopTelemetryClient` in Storybook/tests, but it's not required.",
+          "rationale": "The user explicitly requires a no-op client for Storybook and tests to avoid sending real telemetry data; weakening the requirement to optional makes the skill unreliable for that need.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workleap Telemetry (wl-telemetry)\n\n`@workleap/telemetry` is an umbrella package that integrates Honeycomb, LogRocket, and Mixpanel with consistent correlation IDs for unified debugging and analysis.\n\n## Core Concepts\n\n### Correlation Values\n\nTwo automatic correlation IDs unify all telemetry platforms:\n\n| ID | Purpose | Honeycomb | LogRocket/Mixpanel |\n|---|---|---|---|\n| **Telemetry Id** | Single app load | `app.telemetry_id` | `Telemetry Id` |\n| **Device Id** | Device across sessions | `app.device_id` | `Device Id` |\n\nIf LogRocket is enabled, Honeycomb and Mixpanel automatically receive `app.logrocket_session_url` / `LogRocket Session URL`.\n\n### Platform Roles\n\n- **Honeycomb**: Distributed traces, performance monitoring, RUM metrics (LCP, CLS, INP)\n- **LogRocket**: Session replay, frontend debugging, user experience investigation\n- **Mixpanel**: Product analytics, event tracking, user behavior insights\n\n## Quick Start\n\n```typescript\nimport { initializeTelemetry, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = initializeTelemetry({\n  logRocket: { appId: \"your-app-id\" },\n  honeycomb: {\n    namespace: \"your-namespace\",\n    serviceName: \"your-service\",\n    apiServiceUrls: [/.+/g],\n    options: { proxy: \"https://your-otel-proxy\" }\n  },\n  mixpanel: {\n    productId: \"wlp\",\n    envOrTrackingApiBaseUrl: \"production\"\n  }\n});\n\n// Wrap application\n<TelemetryProvider client={telemetryClient}>\n  <App />\n</TelemetryProvider>\n```\n\n## Using Platform Clients\n\n```typescript\n// Access via hooks\nconst telemetryClient = useTelemetryClient();\nconst honeycombClient = useHoneycombInstrumentationClient();\nconst logRocketClient = useLogRocketInstrumentationClient();\nconst mixpanelClient = useMixpanelClient();\nconst track = useMixpanelTrackingFunction();\n```\n\n## Storybook/Testing (Noop Clients)\n\n```typescript\nimport { NoopTelemetryClient, TelemetryProvider } from \"@workleap/telemetry/react\";\n\nconst telemetryClient = new NoopTelemetryClient();\n\n<TelemetryProvider client={telemetryClient}>\n  <Story />\n</TelemetryProvider>\n```\n\n## Detailed References\n\n- **Full API Reference**: See [references/api.md](references/api.md) for complete APIs\n- **Integration Patterns**: See [references/integrations.md](references/integrations.md) for platform-specific patterns\n- **Usage Examples**: See [references/examples.md](references/examples.md) for common patterns\n\n## Critical Rules\n\n1. **Use umbrella package** - Always use `@workleap/telemetry`, not standalone packages\n2. **Do not invent APIs** - Only use documented APIs from references\n3. **Correlation is automatic** - Never manually set Telemetry Id or Device Id\n4. **Noop for non-production** - You may optionally use `NoopTelemetryClient` in Storybook/tests, but it's not required.\n5. **Privacy matters** - Never log PII to LogRocket; use `data-public`/`data-private` attributes"
+    }
+  ],
+  "finished_at": "2026-07-28T18:12:08",
+  "elapsed_seconds": 172.829,
+  "generated_variants": 10
+}

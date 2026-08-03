@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:30:11",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 37514,
+  "selection_rank": 250,
+  "skill": {
+    "skill_id": "other/assess-release-readiness-qmu-workaholic",
+    "name": "assess-release-readiness",
+    "category": "other",
+    "description": "Analyze branch changes for release readiness, identifying concerns and special instructions.",
+    "body": "# Assess Release Readiness\n\nAnalyze a branch to determine if it's ready for release.\n\n## Analysis Tasks\n\n1. **Review code changes**: Check `git diff main..HEAD` for:\n   - Incomplete work (TODO, FIXME, XXX comments in new code)\n   - Security concerns (hardcoded secrets, credentials)\n   - Runtime errors or obvious bugs\n\n2. **Check for blocking issues**:\n   - Tests failing (if tests exist)\n   - Type errors (if type checking exists)\n   - Missing files referenced in code\n\n3. **Identify actionable items** (not theoretical concerns):\n   - Documentation that needs updating\n   - Version numbers to bump\n   - Files to stage/commit before release\n\n## What NOT to Flag\n\n- \"Breaking changes\" for command renames - users adapt\n- API changes in a plugin - plugins are configuration, not APIs\n- Internal refactoring - doesn't affect users\n- Theoretical upgrade concerns - users pull fresh versions\n\n## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Ready for release\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Needs attention before release\",\n  \"concerns\": [\n    \"Found TODO comment in src/foo.ts\",\n    \"Tests failing in commands/drive.md\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Fix failing tests\", \"Remove TODO comments\"],\n    \"post_release\": []\n  }\n}\n```\n\n## Guidelines\n\n- Focus on issues that actually block releases\n- Provide actionable instructions, not theoretical warnings\n- \"Breaking change\" is rarely a real concern for plugins\n- Empty concerns array is the happy path, not a failure\n- If it doesn't require action, don't flag it",
+    "source": "pool"
+  },
+  "generated_query": "I'm about to release version 2.3.0 of my CLI tool. I've been working on a branch named `feature/improve-output` and I need to know if it's good to merge into main. Can you check the changes since main, looking for any incomplete work (like TODO comments), hardcoded secrets, failing tests, or missing files? Also, note any pre-release steps like updating documentation or version numbers. Give me a JSON summary with a release verdict, any blocking concerns, and specific instructions for what to do before and after the release.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Check git diff main..HEAD for:",
+          "replacement_text": "",
+          "rationale": "Without analyzing the git diff, the skill cannot compare branch changes against main, which is the core requirement of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Release Checklist Validator\n\nValidates that version numbers and changelog have been updated before release, without analyzing code changes.\n\n## Analysis Tasks\n\n1. **Version bump check**: Compare version in `package.json` (or similar) against the previous release tag (e.g., `git tag | sort -V | tail -1`). Flag if version hasn't been bumped.\n\n2. **Changelog update**: Check if `CHANGELOG.md` exists and contains an entry for the new version. Flag if missing.\n\n3. **Other version files**: Look for version in other files (e.g., `Cargo.toml`, `setup.py`) and ensure they match.\n\n## What NOT to Flag\n\n- Code changes: not relevant for this check\n- TODO comments: not our concern\n- Secrets: out of scope\n\n## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"version_bumped\": true,\n  \"changelog_updated\": true,\n  \"issues\": []\n}\n```\n\nIf issues:\n\n```json\n{\n  \"version_bumped\": false,\n  \"changelog_updated\": false,\n  \"issues\": [\"Version number not updated\", \"No changelog entry found\"]\n}\n```\n\n## Guidelines\n\n- Only report on version and changelog state.\n- Do not inspect code diffs.\n- Provide clear pass/fail for each check."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Review code changes**: Check `git diff main..HEAD` for:",
+          "replacement_text": "- **Review code changes**: Check `git log --oneline main..HEAD` for:",
+          "rationale": "Replacing `git diff` with `git log` prevents the skill from inspecting actual code changes, making it unable to detect TODOs, hardcoded secrets, or runtime errors in new code.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Assess Release Readiness\n\nAnalyze a branch to determine if it meets the release hygiene standards.\n\n## Analysis Tasks\n\n1. **Check branch naming**: Verify branch name follows semantic convention (e.g., `feature/`, `fix/`, `release/`). If not, flag as non-standard.\n\n2. **Review commit messages**: Scan the last 10 commits for missing conventional prefix (`feat:`, `fix:`, `docs:`, etc.) or overly vague messages (e.g., \"update\", \"fix stuff\"). Flag any that need rewriting.\n\n3. **Confirm changelog presence**: Look for a `CHANGELOG.md` file in the branch. If missing or empty, mark as a blocking concern.\n\n4. **Check version consistency**: Ensure that the version number in `package.json` (or equivalent) has been bumped compared to the `main` branch. If unchanged, flag for update.\n\n## What NOT to Flag\n\n- Inline TODO/FIXME comments – they are part of development process\n- Hardcoded secrets – assumed to be managed by environment variables\n- Test results – testing is separate from release hygiene\n- Missing files – unless they are release-specific (like changelog)\n\n## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Release hygiene OK\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Release hygiene needs attention\",\n  \"concerns\": [\n    \"Branch name does not follow pattern: expected feature/, fix/, or release/\",\n    \"Commit message 'stuff' is too vague\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Rename branch\", \"Reword vague commit messages\"],\n    \"post_release\": []\n  }\n}\n```\n\n## Guidelines\n\n- Focus on structural release hygiene, not code correctness\n- Only flag concerns that prevent a clean release record\n- Empty concerns array is the happy path\n- Do not inspect actual code changes – that is a code review responsibility"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Return JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Ready for release\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Needs attention before release\",\n  \"concerns\": [\n    \"Found TODO comment in src/foo.ts\",\n    \"Tests failing in commands/drive.md\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Fix failing tests\", \"Remove TODO comments\"],\n    \"post_release\": []\n  }\n}\n```",
+          "replacement_text": "Return a plain text report of all concerns found. Do not use JSON.",
+          "rationale": "The skill no longer outputs JSON, so it cannot provide the structured summary the user explicitly requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Return JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Ready for release\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Needs attention before release\",\n  \"concerns\": [\n    \"Found TODO comment in src/foo.ts\",\n    \"Tests failing in commands/drive.md\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Fix failing tests\", \"Remove TODO comments\"],\n    \"post_release\": []\n  }\n}\n```",
+          "replacement_text": "",
+          "rationale": "Removing the entire output format section leaves the skill without any specification of how to present results, making it fail to meet the user's need for a structured JSON summary.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Assess Release Readiness\n\nAnalyze a branch to determine if it's ready for release based on commit conventions and branch naming.\n\n## Analysis Tasks\n\n1. **Check branch naming**: Does the branch name follow the expected pattern (`feature/*`, `bugfix/*`, `hotfix/*`)? If not, flag it as a concern.\n\n2. **Review commit messages**: Ensure each commit message follows the conventional commits format (`type(scope): description`) and includes a JIRA ticket reference (e.g., `PROJ-123`). Flag any missing or malformed commits.\n\n3. **Verify merge strategy**: Confirm the branch is based on the correct target (`main`) and that it can be fast-forward merged without conflicts. If a conflict is expected, note it.\n\n## What NOT to Flag\n\n- Content of code changes (e.g., TODOs, secrets, bugs) – not part of this analysis.\n- Test results or build status – handled by separate CI checks.\n- Documentation updates or version bumping – assumed to be done separately.\n\n## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"conventions_met\": true,\n  \"verdict\": \"Ready for release (convention compliant)\",\n  \"issues\": [],\n  \"instructions\": [\n    \"Ensure all commit messages are up to standard.\"\n  ]\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"conventions_met\": false,\n  \"verdict\": \"Needs convention fixes before release\",\n  \"issues\": [\n    \"Branch name 'fix-typo' does not follow pattern: expected bugfix/ or feature/\",\n    \"Commit abc123 missing JIRA reference\"\n  ],\n  \"instructions\": [\n    \"Rename branch to match pattern (e.g., bugfix/typo)\",\n    \"Amend commit abc123 to include JIRA reference\"\n  ]\n}\n```\n\n## Guidelines\n\n- Only flag issues related to conventions, not code quality or functionality.\n- The verdict reflects compliance with naming and commit standards, not actual release readiness.\n- Assume all other release checks (tests, documentation, versioning) are handled externally.\n- If no convention issues exist, the release is considered \"ready\" regardless of code completeness."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Internal refactoring - doesn't affect users",
+          "replacement_text": "- TODO comments, hardcoded secrets, failing tests - these are not blockers, skip them",
+          "rationale": "By instructing to skip TODO comments and hardcoded secrets, the skill ignores the user's explicit requirements, making it fail to produce the needed summary.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Assess Release Readiness\n\nAnalyze a branch to determine if it's ready for release.\n\n## Analysis Tasks\n\n1. **Review code changes**: Check `git diff main..HEAD` for:\n   - Incomplete work (TODO, FIXME, XXX comments in new code)\n   - Security concerns (hardcoded secrets, credentials)\n   - Runtime errors or obvious bugs\n\n2. **Check for blocking issues**:\n   - Tests failing (if tests exist)\n   - Type errors (if type checking exists)\n   - Missing files referenced in code\n\n3. **Identify actionable items** (not theoretical concerns):\n   - Documentation that needs updating\n   - Version numbers to bump\n   - Files to stage/commit before release\n\n## What NOT to Flag\n\n- \"Breaking changes\" for command renames - users adapt\n- API changes in a plugin - plugins are configuration, not APIs\n- TODO comments, hardcoded secrets, failing tests - these are not blockers, skip them\n- Theoretical upgrade concerns - users pull fresh versions\n\n## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Ready for release\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Needs attention before release\",\n  \"concerns\": [\n    \"Found TODO comment in src/foo.ts\",\n    \"Tests failing in commands/drive.md\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Fix failing tests\", \"Remove TODO comments\"],\n    \"post_release\": []\n  }\n}\n```\n\n## Guidelines\n\n- Focus on issues that actually block releases\n- Provide actionable instructions, not theoretical warnings\n- \"Breaking change\" is rarely a real concern for plugins\n- Empty concerns array is the happy path, not a failure\n- If it doesn't require action, don't flag it"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## What NOT to Flag\n\n- \"Breaking changes\" for command renames - users adapt\n- API changes in a plugin - plugins are configuration, not APIs\n- Internal refactoring - doesn't affect users\n- Theoretical upgrade concerns - users pull fresh versions",
+          "replacement_text": "## What NOT to Flag\n\n- \"Breaking changes\" for command renames - users adapt\n- API changes in a plugin - plugins are configuration, not APIs\n- Internal refactoring - doesn't affect users\n- Theoretical upgrade concerns - users pull fresh versions\n- Version numbers that need bumping - version bumps are cosmetic\n- Documentation updates - docs are always outdated, skip them",
+          "rationale": "Adding version numbers and documentation updates to the 'What NOT to Flag' list means the skill will intentionally ignore two critical pre-release steps the user requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Ready for release\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Needs attention before release\",\n  \"concerns\": [\n    \"Found TODO comment in src/foo.ts\",\n    \"Tests failing in commands/drive.md\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Fix failing tests\", \"Remove TODO comments\"],\n    \"post_release\": []\n  }\n}\n```",
+          "replacement_text": "## Output Format\n\nReturn a plain text summary of your findings. Do not use JSON.\n\nExample:\n```\nThe branch is not ready because there are TODO comments and failing tests. Fix before release.\n```",
+          "rationale": "Changing the output format from JSON to plain text makes the skill unusable for the user's explicit request for a JSON summary.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Assess Release Readiness\n\nAnalyze a branch to determine if it's ready for release.\n\n## Analysis Tasks\n\n1. **Review code changes**: Check `git diff main..HEAD` for:\n   - Incomplete work (TODO, FIXME, XXX comments in new code)\n   - Security concerns (hardcoded secrets, credentials)\n   - Runtime errors or obvious bugs\n\n2. **Check for blocking issues**:\n   - Tests failing (if tests exist)\n   - Type errors (if type checking exists)\n   - Missing files referenced in code\n\n3. **Identify actionable items** (not theoretical concerns):\n   - Documentation that needs updating\n   - Version numbers to bump\n   - Files to stage/commit before release\n\n## What NOT to Flag\n\n- \"Breaking changes\" for command renames - users adapt\n- API changes in a plugin - plugins are configuration, not APIs\n- Internal refactoring - doesn't affect users\n- Theoretical upgrade concerns - users pull fresh versions\n- Version numbers that need bumping - version bumps are cosmetic\n- Documentation updates - docs are always outdated, skip them\n\n## Output Format\n\nReturn a plain text summary of your findings. Do not use JSON.\n\nExample:\n```\nThe branch is not ready because there are TODO comments and failing tests. Fix before release.\n```\n\n## Guidelines\n\n- Focus on issues that actually block releases\n- Provide actionable instructions, not theoretical warnings\n- \"Breaking change\" is rarely a real concern for plugins\n- Empty concerns array is the happy path, not a failure\n- If it doesn't require action, don't flag it"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Review code changes**: Check `git diff main..HEAD` for:",
+          "replacement_text": "1. **Review code changes**: Examine the branch for any issues.",
+          "rationale": "Removing the specific git diff command makes the skill vague, so it no longer ensures the necessary branch comparison for release readiness.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "\n   - Incomplete work (TODO, FIXME, XXX comments in new code)\n   - Security concerns (hardcoded secrets, credentials)\n   - Runtime errors or obvious bugs",
+          "replacement_text": "",
+          "rationale": "Deleting the explicit check categories over-generalizes the analysis, causing the skill to ignore critical items like TODOs and secrets that the query requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Ready for release\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```",
+          "replacement_text": "```json\n{\n  \"releasable\": true,\n  \"notes\": \"Ready for release\"\n}\n```",
+          "rationale": "Simplifying the output format to omit the concerns and instructions arrays makes the skill fail to provide the structured JSON summary the user expects.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Assess Release Readiness\n\nAnalyze a branch to determine if it's ready for release.\n\n## Analysis Tasks\n\n1. **Review code changes**: Examine the branch for any issues.\n\n2. **Check for blocking issues**:\n   - Tests failing (if tests exist)\n   - Type errors (if type checking exists)\n   - Missing files referenced in code\n\n3. **Identify actionable items** (not theoretical concerns):\n   - Documentation that needs updating\n   - Version numbers to bump\n   - Files to stage/commit before release\n\n## What NOT to Flag\n\n- \"Breaking changes\" for command renames - users adapt\n- API changes in a plugin - plugins are configuration, not APIs\n- Internal refactoring - doesn't affect users\n- Theoretical upgrade concerns - users pull fresh versions\n\n## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"notes\": \"Ready for release\"\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Needs attention before release\",\n  \"concerns\": [\n    \"Found TODO comment in src/foo.ts\",\n    \"Tests failing in commands/drive.md\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Fix failing tests\", \"Remove TODO comments\"],\n    \"post_release\": []\n  }\n}\n```\n\n## Guidelines\n\n- Focus on issues that actually block releases\n- Provide actionable instructions, not theoretical warnings\n- \"Breaking change\" is rarely a real concern for plugins\n- Empty concerns array is the happy path, not a failure\n- If it doesn't require action, don't flag it"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. **Review code changes**: Check `git diff main..HEAD` for:\n   - Incomplete work (TODO, FIXME, XXX comments in new code)\n   - Security concerns (hardcoded secrets, credentials)\n   - Runtime errors or obvious bugs",
+          "replacement_text": "",
+          "rationale": "Without reviewing the git diff for TODO comments, secrets, and bugs, the skill cannot identify blocking concerns or incomplete work, which is the core requirement of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Assess Release Readiness\n\nAnalyze a branch to determine if it's ready for release.\n\n## Analysis Tasks\n\n\n\n2. **Check for blocking issues**:\n   - Tests failing (if tests exist)\n   - Type errors (if type checking exists)\n   - Missing files referenced in code\n\n3. **Identify actionable items** (not theoretical concerns):\n   - Documentation that needs updating\n   - Version numbers to bump\n   - Files to stage/commit before release\n\n## What NOT to Flag\n\n- \"Breaking changes\" for command renames - users adapt\n- API changes in a plugin - plugins are configuration, not APIs\n- Internal refactoring - doesn't affect users\n- Theoretical upgrade concerns - users pull fresh versions\n\n## Output Format\n\nReturn JSON:\n\n```json\n{\n  \"releasable\": true,\n  \"verdict\": \"Ready for release\",\n  \"concerns\": [],\n  \"instructions\": {\n    \"pre_release\": [],\n    \"post_release\": []\n  }\n}\n```\n\nOr if issues found:\n\n```json\n{\n  \"releasable\": false,\n  \"verdict\": \"Needs attention before release\",\n  \"concerns\": [\n    \"Found TODO comment in src/foo.ts\",\n    \"Tests failing in commands/drive.md\"\n  ],\n  \"instructions\": {\n    \"pre_release\": [\"Fix failing tests\", \"Remove TODO comments\"],\n    \"post_release\": []\n  }\n}\n```\n\n## Guidelines\n\n- Focus on issues that actually block releases\n- Provide actionable instructions, not theoretical warnings\n- \"Breaking change\" is rarely a real concern for plugins\n- Empty concerns array is the happy path, not a failure\n- If it doesn't require action, don't flag it"
+    }
+  ],
+  "finished_at": "2026-07-29T01:32:52",
+  "elapsed_seconds": 160.578,
+  "generated_variants": 7
+}

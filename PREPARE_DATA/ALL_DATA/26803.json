@@ -1,0 +1,224 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:14:58",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 26803,
+  "selection_rank": 81,
+  "skill": {
+    "skill_id": "other/picoruby-constraints",
+    "name": "PicoRuby Development Constraints",
+    "category": "other",
+    "description": "Documents memory limits and stdlib constraints for PicoRuby on ESP32. Use this when writing code that will run on ESP32 hardware or designing features for PicoRuby applications.",
+    "body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Avoid deep recursion; prefer iterative solutions\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)\n- `Hash` (simple key-value)\n- `String` (basic methods, avoid regex for embedded)\n- `Time` (limited; ESP32 time depends on system clock)\n- `File` (via R2P2-ESP32 abstraction)\n\n**Unavailable**:\n- Regex (use string matching instead)\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a small ESP32-based IoT sensor node that logs temperature readings every 10 seconds and sends them via WiFi to a server. The device will store the last 60 readings in memory and then transmit them in batches. I need help writing the PicoRuby code for the data buffer and transmission logic.\n\nConstraints: I only have about 520KB of heap total, and the system is single-threaded. I need to:\n- Store up to 60 float temperature values (each maybe 4 bytes) in a fixed-size array to avoid dynamic growth.\n- Avoid using regex for parsing server responses – use simple string matching like `include?` or `start_with?`.\n- No recursion – use a loop to process the readings.\n- Use the R2P2 file abstraction to log errors to a tiny file if transmission fails.\n- The batch send should iterate over the array using `Array#each` (not `each_with_index`) to save memory.\n\nConcrete example: The sensor reads `23.5`, then `23.7`, … up to 60 values. The batch payload is a comma-separated string. Send via HTTP POST to `http://192.168.1.100:8080/data`. On success, clear the buffer.\n\nPlease provide the PicoRuby code that implements this, keeping memory constraints in mind.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops",
+          "replacement_text": "",
+          "rationale": "Removing the fixed-size array guidance leaves the developer without a crucial optimization for memory-constrained buffer.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `File` (via R2P2-ESP32 abstraction)",
+          "replacement_text": "",
+          "rationale": "Without the R2P2 file abstraction, the developer cannot log errors as required by the query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Regex (use string matching instead)",
+          "replacement_text": "",
+          "rationale": "Removing the regex unavailability makes the document suggest regex is allowed, contradicting the user's explicit no-regex constraint.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Avoid deep recursion; prefer iterative solutions\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)\n- `Hash` (simple key-value)\n- `String` (basic methods, avoid regex for embedded)\n- `Time` (limited; ESP32 time depends on system clock)\n\n\n**Unavailable**:\n\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)",
+          "replacement_text": "`Array#each_with_index`, `#map`, `#select` (avoid `#each` in tight loops)",
+          "rationale": "The skill now recommends using each_with_index, contradicting the user's explicit requirement to use Array#each for memory savings.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Avoid deep recursion; prefer iterative solutions\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each_with_index`, `#map`, `#select` (avoid `#each` in tight loops)\n- `Hash` (simple key-value)\n- `String` (basic methods, avoid regex for embedded)\n- `Time` (limited; ESP32 time depends on system clock)\n- `File` (via R2P2-ESP32 abstraction)\n\n**Unavailable**:\n- Regex (use string matching instead)\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Float math: ⚠️ Limited precision",
+          "replacement_text": "Float math: ❌ Not supported; only integer arithmetic",
+          "rationale": "Replaces float math support with only integers, making temperature readings impossible.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "File (via R2P2-ESP32 abstraction)",
+          "replacement_text": "",
+          "rationale": "Deletes the R2P2 file abstraction, preventing error logging to file.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# PicoRuby IoT Data Handling Best Practices\n\nBest practices for managing sensor data buffers and WiFi transmission on constrained ESP32 devices.\n\n## Memory-Efficient Data Buffering\n\n- **Ring buffer**: Use a ring buffer with a fixed capacity to avoid frequent memory allocation. Wrap around when full.\n- **Dynamic array**: If the number of readings is unknown, use `Array#push` and `Array#shift` to maintain a sliding window. This consumes more heap but is simpler.\n- **Float packing**: Store readings as raw bytes using `Array#pack` to reduce memory footprint.\n\n## Batch Transmission Strategies\n\n- **Payload construction**: Build the CSV payload by iterating with `Array#each_with_index` to easily insert commas between values.\n- **HTTP POST**: Use `Net::HTTP.post_form` (if available) or manual socket writes. Parse the server response with a simple regex like `/OK/i`.\n- **Clear on success**: After a successful send, set the buffer to `[]` to free memory.\n\n## Error Logging (No Filesystem)\n\n- **STDOUT**: Log errors to serial output using `$stdout.puts` – no file I/O overhead.\n- **Count retries**: Instead of logging to file, increment a retry counter and reset after a successful send.\n\n## Example Code Snippet (Ring Buffer)\n\n```pikoruby\nclass SensorBuffer\n  CAPACITY = 60\n  def initialize\n    @buffer = []\n    @head = 0\n  end\n\n  def push(value)\n    if @buffer.size < CAPACITY\n      @buffer.push(value)\n    else\n      @buffer[@head] = value\n      @head = (@head + 1) % CAPACITY\n    end\n  end\n\n  def send_batch\n    payload = @buffer.each_with_index.map { |v, i| i == 0 ? v.to_s : \",#{v}\" }.join\n    # POST payload, then clear\n    if post(payload) =~ /^OK/\n      @buffer = []\n      @head = 0\n    else\n      $stdout.puts \"Send failed\"\n    end\n  end\n\n  private\n\n  def post(data)\n    # Simplified – use socket\n    require 'socket'\n    s = TCPSocket.new(\"192.168.1.100\", 8080)\n    s.write(\"POST /data HTTP/1.0\\r\\nContent-Type: text/plain\\r\\nContent-Length: #{data.bytesize}\\r\\n\\r\\n#{data}\")\n    response = s.read\n    s.close\n    response\n  end\nend\n```\n\n## Important Notes\n\n- Always prefer `each_with_index` over `each` when generating delimited strings – it avoids extra conditions.\n- Recursive flood‑fill algorithms may be used for initial buffer structure.\n- Use `gsub` (regex) for cleaning malformed responses.\n\nThis pattern keeps memory usage under control while providing clear send‑and‑clear semantics."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Nesting depth: Avoid deep recursion; prefer iterative solutions",
+          "replacement_text": "Nesting depth: Avoid deep recursion; recursion is acceptable for small depths",
+          "rationale": "The skill now suggests recursion is acceptable, contradicting the query's explicit requirement to avoid recursion entirely.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# PicoRuby Development Constraints for ESP32 Networking\n\nMemory-safe patterns and stdlib limitations for IoT sensor nodes using PicoRuby on ESP32. This reference is intended for logging sensor data with batched HTTP transmission.\n\n## Memory & Runtime Considerations\n\n- **Heap limit**: 520KB total – be mindful of repeated string allocations.\n- **Array sizing**: Use fixed-size arrays when possible; `Array#<<` for dynamic growth is acceptable as long as total element count is bounded.\n- **String building**: Concatenating values with `+` inside a loop is memory‑intensive. Prefer building the payload using `Array#join` for a single allocation.\n- **No recursion**: Use loops for processing collected values.\n\n## stdlib Availability for Wi‑Fi & HTTP\n\n| Operation | PicoRuby Support |\n|-----------|------------------|\n| HTTP POST | `http_post(url, body)` from R2P2‑ESP32 |\n| Wi‑Fi | `WiFi.start` with SSID/passphrase |\n| File I/O | `R2P2::FS.open` for error logging |\n| String matching | `String#include?` or `String#start_with?` – avoid `Regexp` (unavailable) |\n| Iteration | `Array#each` or `Array#each_with_index` – both are safe for small arrays |\n\n## Practical Guidance for Batched Transmissions\n\n1. **Buffer design** – Allocate a fixed array of 60 floats (e.g., `arr = Array.new(60, 0.0)`) and use an index counter to write new readings. Clearing the buffer after a successful send can be done by resetting the index.\n2. **Payload formatting** – Use `arr.join(\",\")` to produce a comma-separated string. This compacts all floats into one immutable string.\n3. **Error logging** – On transmission failure, write a timestamp and error message to a file using `R2P2::FS.open(\"/data/error.log\", \"a\")`. The `File` abstraction behaves like Ruby’s standard file API.\n4. **Loop processing** – A simple `while` loop that calls `sensor.read` every 10 seconds and appends to the buffer is acceptable. Use `sleep(10)` to avoid busy‑wait.\n5. **Server response parsing** – After `http_post`, check the HTTP response body using `if response.include?(\"OK\")` to confirm success.\n\n## Example Snippet (Partial)\n\n```ruby\nbuffer = Array.new(60, 0.0)\nidx = 0\n\nloop do\n  reading = sensor.read  # returns float\n  buffer[idx] = reading\n  idx += 1\n\n  if idx >= 60\n    payload = buffer.join(\",\")\n    response = http_post(\"http://192.168.1.100:8080/data\", payload)\n    if response.start_with?(\"2\")\n      idx = 0\n    else\n      log_error(\"Transmission failed: #{response[0, 20]}\")\n    end\n  end\n\n  sleep(10)\nend\n```\n\n**Note**: `http_post` may accept a `body:` keyword – check R2P2 docs. For maximum heap efficiency, avoid building intermediate strings; the `join` call allocates once."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)",
+          "replacement_text": "- `Array#each_with_index`, `#map`, `#select` (avoid `#each` in tight loops)",
+          "rationale": "This changes the recommended iteration method to `each_with_index`, which the user explicitly wants to avoid to save memory, making the skill unsuitable.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Nesting depth**: Avoid deep recursion; prefer iterative solutions",
+          "replacement_text": "- **Nesting depth**: Recursion is acceptable up to 60 levels; iterative solutions also fine",
+          "rationale": "The user explicitly requires no recursion, so relaxing this constraint makes the skill's guidance contradict the user's needs.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Recursion is acceptable up to 60 levels; iterative solutions also fine\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each_with_index`, `#map`, `#select` (avoid `#each` in tight loops)\n- `Hash` (simple key-value)\n- `String` (basic methods, avoid regex for embedded)\n- `Time` (limited; ESP32 time depends on system clock)\n- `File` (via R2P2-ESP32 abstraction)\n\n**Unavailable**:\n- Regex (use string matching instead)\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops",
+          "replacement_text": "- **Arrays**: Use arrays efficiently where possible",
+          "rationale": "The query requires a fixed-size array of 60 floats, but the replacement generalises the guidance, removing the specific instruction to avoid dynamic growth.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `String` (basic methods, avoid regex for embedded)",
+          "replacement_text": "- `String` (basic methods)",
+          "rationale": "The query bans regex usage and specifically needs simple string matching, but this edit removes the explicit 'avoid regex' warning, making the skill less helpful for that constraint.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `File` (via R2P2-ESP32 abstraction)",
+          "replacement_text": "- `File` (basic I/O available)",
+          "rationale": "The query requires using the R2P2 file abstraction for error logging, but the replacement omits the R2P2 mention, failing to guide the user toward the correct API.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Avoid deep recursion; prefer iterative solutions\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n- **Arrays**: Use arrays efficiently where possible\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)\n- `Hash` (simple key-value)\n- `String` (basic methods)\n- `Time` (limited; ESP32 time depends on system clock)\n- `File` (basic I/O available)\n\n**Unavailable**:\n- Regex (use string matching instead)\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Regex (use string matching instead)",
+          "replacement_text": "",
+          "rationale": "Removing the constraint that regex is unavailable leads the user to believe they can use regex, violating the query's requirement to avoid regex.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Avoid deep recursion; prefer iterative solutions\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)\n- `Hash` (simple key-value)\n- `String` (basic methods, avoid regex for embedded)\n- `Time` (limited; ESP32 time depends on system clock)\n- `File` (via R2P2-ESP32 abstraction)\n\n**Unavailable**:\n\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)",
+          "replacement_text": "- `Array#each`, `#each_with_index`, `#map`, `#select` (prefer `each_with_index` for index access)",
+          "rationale": "Changing the recommendation to prefer `each_with_index` contradicts the query's explicit memory‑saving requirement to use only `Array#each`.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `File` (via R2P2-ESP32 abstraction)",
+          "replacement_text": "- `File` (not available; use serial/log output instead)",
+          "rationale": "Removing the availability of the R2P2 file abstraction prevents the user from logging errors to a file as required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Avoid deep recursion; prefer iterative solutions\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each`, `#each_with_index`, `#map`, `#select` (prefer `each_with_index` for index access)\n- `Hash` (simple key-value)\n- `String` (basic methods, avoid regex for embedded)\n- `Time` (limited; ESP32 time depends on system clock)\n- `File` (not available; use serial/log output instead)\n\n**Unavailable**:\n- Regex (use string matching instead)\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`Array#each`, `#map`, `#select` (avoid `#each_with_index` in tight loops)",
+          "replacement_text": "`Array#each_with_index`, `#map`, `#select` (avoid `#each` in tight loops to save memory)",
+          "rationale": "This misleads the user into using `each_with_index` which consumes extra memory for the index, violating the query's explicit requirement to use `Array#each` to save memory.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`File` (via R2P2-ESP32 abstraction)",
+          "replacement_text": "`File` (via R2P2-ESP32 abstraction, read-only)",
+          "rationale": "By changing the file abstraction to read-only, the user cannot write error logs to a file as required, causing the error logging requirement to fail.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PicoRuby Development Constraints\n\nMemory constraints and stdlib limitations for ESP32 PicoRuby development.\n\n## Memory & Runtime Limits\n\n- **Total heap**: 520KB (strict limit)\n- **Nesting depth**: Avoid deep recursion; prefer iterative solutions\n- **String handling**: Pre-allocate when possible; avoid repeated concatenation\n- **Arrays**: Use fixed-size when known; minimize dynamic growth during tight loops\n\n## PicoRuby vs CRuby\n\n| Feature | PicoRuby | CRuby |\n|---------|----------|-------|\n| Gems | ❌ No bundler/gems | ✅ Full ecosystem |\n| stdlib | Minimal (R2P2-ESP32 only) | Complete stdlib |\n| Memory | ~520KB heap | GB+ available |\n| GC | Simple mark-sweep | Complex generational |\n| Float math | ⚠️ Limited precision | Full IEEE 754 |\n\n## PicoRuby-safe stdlib\n\n**Available**:\n- `Array#each_with_index`, `#map`, `#select` (avoid `#each` in tight loops to save memory)\n- `Hash` (simple key-value)\n- `String` (basic methods, avoid regex for embedded)\n- `Time` (limited; ESP32 time depends on system clock)\n- `File` (via R2P2-ESP32 abstraction, read-only)\n\n**Unavailable**:\n- Regex (use string matching instead)\n- Threads (single-threaded runtime)\n- Fiber/Enumerator (complex control flow not needed)"
+    }
+  ],
+  "finished_at": "2026-07-28T16:18:12",
+  "elapsed_seconds": 194.313,
+  "generated_variants": 9
+}

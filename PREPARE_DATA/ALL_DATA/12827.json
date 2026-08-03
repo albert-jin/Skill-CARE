@@ -1,0 +1,203 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:25:19",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 12827,
+  "selection_rank": 171,
+  "skill": {
+    "skill_id": "development/managing-tags",
+    "name": "managing-tags",
+    "category": "development",
+    "description": "Manage and consolidate tags. Use when asked to \"clean up tags\", \"consolidate tags\", \"tag audit\", \"merge tags\", or \"rename tag\".",
+    "body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nUse the Edit tool to update each file's frontmatter.\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions",
+    "source": "pool"
+  },
+  "generated_query": "I have a collection of markdown notes for my personal knowledge base, and my tagging has become a mess. For instance, I use \"AI\", \"artificial-intelligence\", and \"ai\" interchangeably; \"js\" and \"javascript\" appear in different files; and some tags are capitalized (e.g., \"Vue\") while others are lowercase (\"vue\"). I also spot camelCase like \"localFirst\" alongside kebab-case \"local-first\". Could you scan all my notes, list every tag with its usage count, flag inconsistencies (similar tags, naming violations, very rare tags), and suggest a unified naming convention? After that, I'd like you to automatically merge the tags I approve—for example, replace all instances of \"artificial-intelligence\" and \"AI\" with \"ai\", and rename \"localFirst\" to \"local-first\"—by updating the frontmatter of each affected file.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nUse the Edit tool to update each file's frontmatter.",
+          "replacement_text": "",
+          "rationale": "Removing the merge step fails the query because the user explicitly requests automatic merging of approved tags.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "grep -h \"^tags:\" content/*.md",
+          "replacement_text": "cat tags.txt   # assumes pre-existing tag list",
+          "rationale": "The skill now relies on a pre-existing tag list instead of scanning the user's actual notes, making it unable to discover current tags.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use the Edit tool to update each file's frontmatter.",
+          "replacement_text": "Provide a list of changes for the user to manually update each file's frontmatter.",
+          "rationale": "The skill no longer performs automatic merges, failing the user's request for automatic tag replacement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ncat tags.txt   # assumes pre-existing tag list\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nProvide a list of changes for the user to manually update each file's frontmatter.\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "To merge tags, edit the frontmatter of affected files:",
+          "replacement_text": "To merge tags, provide the user with a list of files and the required frontmatter changes.",
+          "rationale": "The skill now only suggests changes instead of performing automatic merges, failing the user's request to automatically update frontmatter.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Use the Edit tool to update each file's frontmatter.",
+          "replacement_text": "",
+          "rationale": "Removing the instruction to use the Edit tool ensures no automatic merging is executed, making the skill unable to fulfill the merge action.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Perform Merges (When Requested)\n\nTo merge tags, provide the user with a list of files and the required frontmatter changes.\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\n\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "All tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`",
+          "replacement_text": "All tags should be:\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n- No case or separator enforcement: tags may use any casing (Upper, lower, camelCase) and any separator (hyphen, underscore, space).",
+          "rationale": "By relaxing the naming convention to allow any case and separator, the skill no longer enforces a unified format, failing the user's request to flag and fix inconsistent casing and hyphenation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nUse the Edit tool to update each file's frontmatter.\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n- No case or separator enforcement: tags may use any casing (Upper, lower, camelCase) and any separator (hyphen, underscore, space).\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the Edit tool to update each file's frontmatter.",
+          "replacement_text": "Output the proposed changes in a report for you to apply manually using the Edit tool.",
+          "rationale": "The user requires automatic merging, but this skill only provides a report and leaves the user to manually edit, failing the query's request for automated consolidation.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nOutput the proposed changes in a report for you to apply manually using the Edit tool.\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nUse the Edit tool to update each file's frontmatter.",
+          "replacement_text": "### 4. Recommend Merges\n\nProvide the user with a clear list of tag replacements to apply manually. No automatic editing is performed.",
+          "rationale": "The skill no longer includes automated frontmatter editing, so it cannot fulfill the user's request to automatically merge approved tags.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- [ ] Proposed specific merge actions",
+          "replacement_text": "- [ ] Suggested merge actions (user to execute manually)",
+          "rationale": "Removes the expectation of proposing actionable merge steps, reinforcing that the skill does not automate merging.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Recommend Merges\n\nProvide the user with a clear list of tag replacements to apply manually. No automatic editing is performed.\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Suggested merge actions (user to execute manually)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nUse the Edit tool to update each file's frontmatter.\n",
+          "replacement_text": "",
+          "rationale": "Deleting the entire merge step means the skill only audits and reports inconsistencies but never actually performs the requested automatic tag merging via frontmatter updates, failing the core user requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "grep -h \"^tags:\" content/*.md",
+          "replacement_text": "grep -oE '#\\w+' content/*.md",
+          "rationale": "Replacing frontmatter tag extraction with hashtag extraction from body text misses all frontmatter tags, making the tag inventory incomplete.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use the Edit tool to update each file's frontmatter.",
+          "replacement_text": "Use the Search tool to find tags, then ask the user to manually update each file.",
+          "rationale": "Removing the automatic editing capability means the skill cannot perform the requested automatic merges, requiring manual work instead.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -oE '#\\w+' content/*.md\n```\n\nBuild a complete tag inventory with usage counts.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nUse the Search tool to find tags, then ask the user to manually update each file.\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Build a complete tag inventory with usage counts.",
+          "replacement_text": "Build a list of unique tags.",
+          "rationale": "Removes usage counts from the output, so the skill cannot fulfill the user's requirement to list every tag with its usage count.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use the Edit tool to update each file's frontmatter.",
+          "replacement_text": "Provide a list of files and the necessary frontmatter edits for the user to apply manually.",
+          "rationale": "Changes automatic merging to manual suggestions, failing the user's explicit request to automatically merge approved tags.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Managing Tags\n\nThis skill helps maintain tag hygiene by finding inconsistencies and consolidating similar tags.\n\n## Workflow\n\n### 1. Extract All Tags\n\n```bash\n# Find all tags across content\ngrep -h \"^tags:\" content/*.md\n```\n\nBuild a list of unique tags.\n\n### 2. Identify Issues\n\n#### Similar Tags (Candidates for Merge)\nLook for tags that likely mean the same thing:\n- `ai` vs `artificial-intelligence`\n- `dev` vs `development`\n- `js` vs `javascript`\n- Plural vs singular: `habit` vs `habits`\n\n#### Inconsistent Naming\nCheck for violations of kebab-case convention:\n- `camelCase` tags\n- `Capitalized` tags\n- `under_score` tags\n- Tags with spaces\n\n#### Rarely Used Tags\n- Tags appearing only once (may indicate typo)\n- Tags used 2-3 times (consider consolidation)\n\n### 3. Generate Report\n\n```markdown\n## Tag Audit Report\n\n### Tag Inventory (by frequency)\n| Tag | Count |\n|-----|-------|\n| vue | 5 |\n| testing | 4 |\n| ai | 3 |\n| ...\n\n### Similar Tags (Merge Candidates)\n- `ai` (3) + `artificial-intelligence` (1) → suggest: `ai`\n- `habit` (2) + `habits` (1) → suggest: `habits`\n\n### Naming Issues\n- `JavaScript` → should be `javascript`\n- `local_first` → should be `local-first`\n\n### Rarely Used (1 occurrence)\n- `obscure-tag` - only in `one-note.md`\n```\n\n### 4. Perform Merges (When Requested)\n\nTo merge tags, edit the frontmatter of affected files:\n\n```yaml\n# Before\ntags:\n  - artificial-intelligence\n  - machine-learning\n\n# After\ntags:\n  - ai\n  - machine-learning\n```\n\nProvide a list of files and the necessary frontmatter edits for the user to apply manually.\n\n## Tag Naming Convention\n\nAll tags should be:\n- **Lowercase**: `vue` not `Vue`\n- **Kebab-case**: `local-first` not `local_first` or `localFirst`\n- **Singular or plural consistently**: Pick one and stick to it\n- **Meaningful**: Avoid overly generic tags like `stuff` or `misc`\n\n## Common Merge Patterns\n\n| Variations | Preferred |\n|------------|-----------|\n| `ai`, `artificial-intelligence`, `AI` | `ai` |\n| `js`, `javascript`, `JavaScript` | `javascript` |\n| `vue`, `vuejs`, `vue-js` | `vue` |\n| `dev`, `development`, `developer` | `development` |\n| `test`, `testing`, `tests` | `testing` |\n\n## Quality Checklist\n\nBefore suggesting changes:\n- [ ] Extracted all tags from all files\n- [ ] Counted usage per tag\n- [ ] Identified similar tags\n- [ ] Checked naming consistency\n- [ ] Flagged rarely used tags\n- [ ] Proposed specific merge actions"
+    }
+  ],
+  "finished_at": "2026-07-28T21:27:56",
+  "elapsed_seconds": 157.187,
+  "generated_variants": 9
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:24:27",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 7775,
+  "selection_rank": 175,
+  "skill": {
+    "skill_id": "development/unsloth-stt",
+    "name": "unsloth-stt",
+    "category": "development",
+    "description": "Fine-tuning Speech-to-Text models like Whisper using Unsloth's optimized LoRA pipeline. Triggers: stt, whisper, transcription, audio fine-tuning, speech-to-text, audio normalization.",
+    "body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to specific accents or dialects.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Resample all training audio to 16kHz to avoid sample rate mismatch.\n3. Normalize transcripts to remove characters not present in Whisper's vocabulary.\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]",
+    "source": "pool"
+  },
+  "generated_query": "I have about 50 hours of audio recordings from emergency room consultations, in .wav format at various sample rates, paired with typed medical notes. The base Whisper large-v3 model often mishears critical terms like \"hemothorax,\" \"intubation,\" and \"STAT\" and struggles with the fast, accented speech of some attending physicians. I need to fine-tune Whisper large-v3 on this dataset to produce accurate transcripts for our clinical documentation system. My only available GPU has 12GB of VRAM, so I need a memory-efficient approach that can handle the model size and includes proper preprocessing: resampling all audio to 16 kHz and cleaning the transcriptions to match Whisper’s tokenizer. Could you walk me through the steps to prepare the data, set up fine-tuning with LoRA on the cross-attention layers, and train a model that retains the general transcription ability while drastically improving medical and accent accuracy?",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.",
+          "replacement_text": "Apply LoRA weights to self-attention layers of the encoder and decoder.",
+          "rationale": "The user specifically requires LoRA on cross-attention layers for memory-efficient fine-tuning; removing this critical step makes the skill fail to meet their needs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to specific accents or dialects.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Resample all training audio to 16kHz to avoid sample rate mismatch.\n3. Normalize transcripts to remove characters not present in Whisper's vocabulary.\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to self-attention layers of the encoder and decoder.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Resample all training audio to 16kHz to avoid sample rate mismatch.",
+          "replacement_text": "Resample all training audio to 22.05kHz to improve audio fidelity.",
+          "rationale": "Changing the resampling target to 22.05kHz breaks Whisper's hard-coded 16kHz expectation, causing severe audio-text misalignment.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.",
+          "replacement_text": "Apply LoRA weights to self-attention layers of the encoder only.",
+          "rationale": "Omitting cross-attention layers prevents the model from learning the critical acoustic-to-text mapping needed for medical terms and accented speech.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to specific accents or dialects.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Resample all training audio to 22.05kHz to improve audio fidelity.\n3. Normalize transcripts to remove characters not present in Whisper's vocabulary.\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to self-attention layers of the encoder only.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Resample all training audio to 16kHz to avoid sample rate mismatch.",
+          "replacement_text": "Resample all training audio to 8kHz to avoid sample rate mismatch.",
+          "rationale": "Changing the target sample rate to 8kHz breaks Whisper's required 16kHz input, causing misalignment in training.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.",
+          "replacement_text": "Apply LoRA weights to self-attention layers of the encoder and decoder only.",
+          "rationale": "Removing cross-attention LoRA prevents the memory-efficient fine-tuning that the user explicitly needs for medical accent adaptation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to specific accents or dialects.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Resample all training audio to 8kHz to avoid sample rate mismatch.\n3. Normalize transcripts to remove characters not present in Whisper's vocabulary.\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to self-attention layers of the encoder and decoder only.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Resample all training audio to 16kHz to avoid sample rate mismatch.",
+          "replacement_text": "2. Optionally resample training audio to 16kHz if desired; Whisper can handle mixed sample rates with minimal degradation.",
+          "rationale": "Weakening the resampling requirement misleads the user into thinking they can skip a critical preprocessing step, causing poor transcription accuracy on their varied-sample-rate audio.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to specific accents or dialects.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Optionally resample training audio to 16kHz if desired; Whisper can handle mixed sample rates with minimal degradation.\n3. Normalize transcripts to remove characters not present in Whisper's vocabulary.\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- When adapting models to specific accents or dialects.",
+          "replacement_text": "- When adapting models to transcribe musical notes or instrument sounds.",
+          "rationale": "Changes the use case from medical/accent adaptation to music transcription, making the skill irrelevant for the user's clinical and accented speech fine-tuning.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.",
+          "replacement_text": "Using a smaller model?\n   - Yes: Load in 4-bit and apply LoRA only to self-attention layers.",
+          "rationale": "Removes the critical cross-attention LoRA targeting, which is essential for accent and medical term accuracy, and suggests a smaller model instead of large-v3.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Normalize transcripts to remove characters not present in Whisper's vocabulary.",
+          "replacement_text": "Normalize transcripts by converting all text to lowercase and removing punctuation.",
+          "rationale": "Alters preprocessing to a generic lowercasing that does not align with Whisper's case‑sensitive tokenizer, breaking the required tokenizer alignment.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to transcribe musical notes or instrument sounds.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using a smaller model?\n   - Yes: Load in 4-bit and apply LoRA only to self-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Resample all training audio to 16kHz to avoid sample rate mismatch.\n3. Normalize transcripts by converting all text to lowercase and removing punctuation.\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Resample all training audio to 16kHz to avoid sample rate mismatch.",
+          "replacement_text": "2. Resample all training audio to a common sample rate to avoid mismatch.",
+          "rationale": "Removing the specific 16kHz requirement makes the preprocessing step too vague; the user's pipeline critically depends on exact 16kHz resampling for Whisper.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Normalize transcripts to remove characters not present in Whisper's vocabulary.",
+          "replacement_text": "3. Clean transcripts of any unwanted characters.",
+          "rationale": "Generalizing the transcript normalization step omits the crucial tokenizer alignment, which can cause tokenization mismatches and degrade fine-tuning accuracy for medical terms.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to specific accents or dialects.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Resample all training audio to a common sample rate to avoid mismatch.\n3. Clean transcripts of any unwanted characters.\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Normalize transcripts to remove characters not present in Whisper's vocabulary.",
+          "replacement_text": "",
+          "rationale": "Deleting transcript normalization means the training data will contain characters that Whisper's tokenizer cannot handle, causing training failures or garbled outputs, so the skill fails the user's need for proper preprocessing.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\nUnsloth supports fine-tuning for Speech-to-Text (STT) models like OpenAI Whisper. By applying its optimized LoRA pipeline to Whisper architecture, Unsloth achieves 1.5x faster training with 50% less memory usage compared to standard methods.\n\n## When to Use\n- When you need to capture specialized terminology (medical, legal) that base Whisper misses.\n- When adapting models to specific accents or dialects.\n- When fine-tuning large models (like whisper-large-v3) on limited consumer hardware.\n\n## Decision Tree\n1. Is transcription accuracy low on zero-shot inference?\n   - Yes: Proceed with STT fine-tuning.\n2. Is audio recorded at a non-standard sample rate?\n   - Yes: Resample to 16kHz before training.\n3. Using large-v3?\n   - Yes: Load in 4-bit and apply LoRA to cross-attention layers.\n\n## Workflows\n\n### Whisper STT Data Preprocessing\n1. Load audio files using `datasets.Audio` feature to handle on-the-fly decoding.\n2. Resample all training audio to 16kHz to avoid sample rate mismatch.\n\n\n### Fine-tuning Whisper with Unsloth\n1. Load `whisper-large-v3` using `FastLanguageModel.from_pretrained` with `load_in_4bit=True`.\n2. Apply LoRA weights to cross-attention and self-attention layers of the encoder and decoder.\n3. Train using `Seq2SeqTrainer` or standard `Trainer` if audio is flattened to tokens.\n\n## Non-Obvious Insights\n- Whisper fine-tuning in Unsloth uses the same PEFT/LoRA pipeline as LLMs, which is why it can handle large models on consumer GPUs.\n- Capturing vocal nuances like accents is significantly more effective through fine-tuning than zero-shot, as the model learns to map specific acoustic features to text tokens.\n- Proper audio normalization (16kHz resampling) is the single most important preprocessing step; Whisper's architecture is hard-coded for this sample rate.\n\n## Evidence\n- \"Unsloth supports any transformers compatible TTS/STT model... 1.5x faster with 50% less memory.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n- \"Fine-tuning delivers far more accurate and realistic voice replication than zero-shot.\" [Source](https://docs.unsloth.ai/basics/text-to-speech-tts-fine-tuning)\n\n## Scripts\n- `scripts/unsloth-stt_tool.py`: Script for resampling and preprocessing audio datasets for Whisper.\n- `scripts/unsloth-stt_tool.js`: Utility for cleaning transcription strings.\n\n## Dependencies\n- unsloth\n- datasets\n- librosa\n- transformers\n\n## References\n- [[references/README.md]]"
+    }
+  ],
+  "finished_at": "2026-07-28T21:26:11",
+  "elapsed_seconds": 104.906,
+  "generated_variants": 7
+}

@@ -1,0 +1,254 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:40:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 39339,
+  "selection_rank": 34,
+  "skill": {
+    "skill_id": "other/spec-miner-alexander-danilenko-ai-skills",
+    "name": "spec-miner",
+    "category": "other",
+    "description": "Use when understanding legacy or undocumented systems, creating documentation for existing code, or extracting specifications from implementations. Invoke for legacy analysis, code archaeology, undocumented features.",
+    "body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n3. **Trace** - Follow data flows and request paths\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground all observations in actual code evidence\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a legacy internal tool that handles user permission management, but there's zero documentation. We need to add a feature to allow temporary role elevation for admins, but first I need to understand the existing permission-checking logic. Could you analyze the code in the `auth/permissions` directory, trace how permission decisions are made for each API endpoint (especially the PATCH and DELETE routes in the admin controller), and document the observed requirements? I need a specification covering:\n- The data flow from request to permission decision (which tables, stored procedures, or services are involved)\n- All observed permission rules (e.g., which roles can access which endpoints, any tier-based restrictions)\n- Edge cases in the current implementation (e.g., what happens when a user has multiple roles, how expired tokens affect permissions)\n- Any undeclared dependencies or hidden side effects\n\nOutput the spec as a markdown file saved as `legacy_permissions_reverse_spec.md`. Use the findings to highlight any potential risks before we start coding the new feature.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Trace** - Follow data flows and request paths",
+          "replacement_text": "",
+          "rationale": "The skill can no longer follow data flows and request paths, which is essential for the user's request to trace permission decisions from code.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground all observations in actual code evidence\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Explore** - Map structure using Glob, Grep, Read tools",
+          "replacement_text": "2. **Explore** - Map structure using directory listing and file reading",
+          "rationale": "Removing grep and glob capabilities cripples the ability to efficiently search for permission-related patterns across many files, a core need for the user's query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "3. **Trace** - Follow data flows and request paths",
+          "replacement_text": "",
+          "rationale": "Deleting the trace step means the skill no longer explicitly follows how a request reaches permission decisions, making it unable to produce the data flow specification the user requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using directory listing and file reading\n\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground all observations in actual code evidence\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Trace** - Follow data flows and request paths",
+          "replacement_text": "3. **Trace** - Follow data flows",
+          "rationale": "The user query requires analyzing specific API endpoints (PATCH and DELETE routes); removing the ability to trace request paths makes the skill unable to fulfill that requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Save specification as: `specs/{project_name}_reverse_spec.md`",
+          "replacement_text": "Save specification as: `specs/{project_name}_reverse_spec.json`",
+          "rationale": "The user explicitly requests a markdown file; changing output format to JSON makes the skill produce an incorrect output type.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n3. **Trace** - Follow data flows\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground all observations in actual code evidence\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.json`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Ground all observations in actual code evidence",
+          "replacement_text": "Ground observations in common patterns and assumptions where direct evidence is unavailable",
+          "rationale": "Weakening the evidence requirement allows the skill to speculate, producing a risk-laden spec that may misrepresent the actual permission logic.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Distinguish between observed facts and inferences",
+          "replacement_text": "",
+          "rationale": "Removing the fact/inference distinction means the spec will blend guesses with real findings, undermining the documented edge cases and requirements.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n3. **Trace** - Follow data flows and request paths\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground observations in common patterns and assumptions where direct evidence is unavailable\n- Use Read, Grep, Glob extensively to explore\n- \n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Reverse-engineering specialist who extracts specifications from existing codebases.",
+          "replacement_text": "Forward-engineering specialist who crafts specifications for new features from design discussions.",
+          "rationale": "Changes the core purpose from extracting specs from existing code to designing specs for new code, making the skill useless for analyzing legacy undocumented systems.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation",
+          "replacement_text": "- Designing new features from scratch\n- Writing specifications for greenfield projects\n- Facilitating stakeholder requirement sessions\n- Creating user stories for new development\n- Planning feature roadmaps",
+          "rationale": "Replaces all use cases that involve existing code with forward-looking activities, so the skill no longer supports the legacy analysis needed by the user query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n3. **Trace** - Follow data flows and request paths\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification",
+          "replacement_text": "1. **Scope** - Define feature boundaries based on stakeholder input\n2. **Design** - Sketch high-level architecture and data flow\n3. **Refine** - Iterate specification with examples and edge cases\n4. **Document** - Write functional requirements in standard prose\n5. **Review** - Validate with team for completeness",
+          "rationale": "Replaces the exploration and trace steps with design and refinement, removing the capability to analyze existing code, which is critical for the user's reverse-engineering task.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nForward-engineering specialist who crafts specifications for new features from design discussions.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Designing new features from scratch\n- Writing specifications for greenfield projects\n- Facilitating stakeholder requirement sessions\n- Creating user stories for new development\n- Planning feature roadmaps\n\n## Core Workflow\n\n1. **Scope** - Define feature boundaries based on stakeholder input\n2. **Design** - Sketch high-level architecture and data flow\n3. **Refine** - Iterate specification with examples and edge cases\n4. **Document** - Write functional requirements in standard prose\n5. **Review** - Validate with team for completeness\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground all observations in actual code evidence\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Explore** - Map structure using Glob, Grep, Read tools",
+          "replacement_text": "2. **Explore** - Gather information from available sources (documentation, interviews, code comments)",
+          "rationale": "Removes the specific code exploration tools (Glob, Grep, Read), making the skill unable to perform the code archaeology required by the user query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Ground all observations in actual code evidence",
+          "replacement_text": "- Use logical inference and available documentation as primary sources",
+          "rationale": "Weakens the evidence requirement, so the skill may produce spec without thorough code analysis, failing the query's need for observed evidence.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Gather information from available sources (documentation, interviews, code comments)\n3. **Trace** - Follow data flows and request paths\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Use logical inference and available documentation as primary sources\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Trace** - Follow data flows and request paths",
+          "replacement_text": "",
+          "rationale": "Without the Trace step, the skill cannot follow data flows or request paths, which is essential for the user's request to trace permission decisions for API endpoints.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground all observations in actual code evidence\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use Read, Grep, Glob extensively to explore",
+          "replacement_text": "Use Read only on files listed in the project index, avoid searching for patterns",
+          "rationale": "Without Grep and Glob, the skill cannot efficiently find relevant code in a large directory, making reverse-engineering impractical.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Trace - Follow data flows and request paths",
+          "replacement_text": "3. Summarize - Provide high-level overviews from file comments and directory structure",
+          "rationale": "Without tracing data flows, the skill cannot produce the detailed permission decision flow required by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Permission Mapper\n\nReverse-engineering specialist who maps permission structures from existing codebases.\n\n## Role Definition\n\nYou are a senior infrastructure analyst with 10+ years of experience. You operate with two perspectives: **Structure Hat** for code organization and naming conventions, and **Role Hat** for user role definitions and endpoint associations.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented permission systems\n- Creating access control documentation\n- Onboarding to a new RBAC implementation\n- Planning permission schema changes\n- Extracting role hierarchies from existing code\n\n## Core Workflow\n\n1. **Scope** – Identify the permission domain (e.g., admin, user) from the query\n2. **Map Roles** – Use Glob and Grep to find role constants, enums, and role-checking patterns\n3. **List Endpoints** – Discover all API routes that have permission annotations or middleware\n4. **Document** – Write a consolidated permission map detailing which roles can access which endpoints\n5. **Flag** – Highlight ambiguous role definitions or missing checks\n\n## Reference Guide\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Grep Patterns | `references/grep-patterns.md` | Searching for role definitions |\n| Endpoint Discovery | `references/endpoint-discovery.md` | Glob patterns for route files |\n| Permission Mapping Template | `references/permission-map-template.md` | Creating final output |\n| Role Hierarchy Patterns | `references/role-hierarchy.md` | Understanding inheritance |\n\n## Constraints\n\n### MUST DO\n- Base all mappings on Grep and Glob evidence from the codebase\n- Use exact endpoint paths as found in route definitions\n- Distinguish between explicit role checks and implied checks\n- Include file locations for every role and route\n- Note any hardcoded role strings\n\n### MUST NOT DO\n- Infer role behavior from comments alone\n- Skip trivial or obvious endpoints (e.g., health checks)\n- Assume role inheritance without code evidence\n- Document unused role constants\n\n## Output Templates\n\nSave permission map as: `specs/{project_name}_permissions_map.md`\n\nInclude:\n1. Project and technology stack overview\n2. Complete list of recognized roles (with source file paths)\n3. Endpoint-to-role matrix (verb, path, allowed roles)\n4. Role hierarchy (if deducible from code)\n5. Ambiguities (e.g., roles referenced outside permission module)\n6. Recommendations for role consolidation\n\n## Knowledge Reference\n\nRBAC patterns, static analysis of middleware, route annotation scanning, role enumeration, permission consolidation"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Save specification as: `specs/{project_name}_reverse_spec.md`",
+          "replacement_text": "Save specification as: `specs/{project_name}_reverse_spec.txt` (plain text format)",
+          "rationale": "The skill no longer produces a markdown file as requested; the user specifically requires a .md output.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. **Document** - Write observed requirements in EARS format",
+          "replacement_text": "4. **Summarize** - Write a brief summary of observed behaviors",
+          "rationale": "The skill stops fully documenting requirements, which is a key deliverable for the user's query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n3. **Trace** - Follow data flows and request paths\n4. **Summarize** - Write a brief summary of observed behaviors\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Ground all observations in actual code evidence\n- Use Read, Grep, Glob extensively to explore\n- Distinguish between observed facts and inferences\n- Document uncertainties in dedicated section\n- Include code locations for each observation\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.txt` (plain text format)\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Ground all observations in actual code evidence",
+          "replacement_text": "Base observations on code evidence when possible, but reasonable assumptions are acceptable if evidence is scarce",
+          "rationale": "Weakening the evidence requirement allows the skill to produce speculative documentation, which fails the user's need for a reliable, evidence-based risk analysis.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Distinguish between observed facts and inferences",
+          "replacement_text": "Inferences and facts may be presented together without explicit distinction",
+          "rationale": "Removing the distinction between facts and inferences makes the spec less trustworthy, which is critical for identifying risks in legacy permission logic.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Include code locations for each observation",
+          "replacement_text": "Include code locations if available",
+          "rationale": "Making code locations optional weakens traceability, making it hard for the user to verify permission decisions and side effects.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Spec Miner\n\nReverse-engineering specialist who extracts specifications from existing codebases.\n\n## Role Definition\n\nYou are a senior software archaeologist with 10+ years of experience. You operate with two perspectives: **Arch Hat** for system architecture and data flows, and **QA Hat** for observable behaviors and edge cases.\n\n## When to Use This Skill\n\n- Understanding legacy or undocumented systems\n- Creating documentation for existing code\n- Onboarding to a new codebase\n- Planning enhancements to existing features\n- Extracting requirements from implementation\n\n## Core Workflow\n\n1. **Scope** - Identify analysis boundaries (full system or specific feature)\n2. **Explore** - Map structure using Glob, Grep, Read tools\n3. **Trace** - Follow data flows and request paths\n4. **Document** - Write observed requirements in EARS format\n5. **Flag** - Mark areas needing clarification\n\n## Reference Guide\n\nLoad detailed guidance based on context:\n\n| Topic | Reference | Load When |\n|-------|-----------|-----------|\n| Analysis Process | `references/analysis-process.md` | Starting exploration, Glob/Grep patterns |\n| EARS Format | `references/ears-format.md` | Writing observed requirements |\n| Specification Template | `references/specification-template.md` | Creating final specification document |\n| Analysis Checklist | `references/analysis-checklist.md` | Ensuring thorough analysis |\n\n## Constraints\n\n### MUST DO\n- Base observations on code evidence when possible, but reasonable assumptions are acceptable if evidence is scarce\n- Use Read, Grep, Glob extensively to explore\n- Inferences and facts may be presented together without explicit distinction\n- Document uncertainties in dedicated section\n- Include code locations if available\n\n### MUST NOT DO\n- Make assumptions without code evidence\n- Skip security pattern analysis\n- Ignore error handling patterns\n- Generate spec without thorough exploration\n\n## Output Templates\n\nSave specification as: `specs/{project_name}_reverse_spec.md`\n\nInclude:\n1. Technology stack and architecture\n2. Module/directory structure\n3. Observed requirements (EARS format)\n4. Non-functional observations\n5. Inferred acceptance criteria\n6. Uncertainties and questions\n7. Recommendations\n\n## Knowledge Reference\n\nCode archaeology, static analysis, design patterns, architectural patterns, EARS syntax, API documentation inference"
+    }
+  ],
+  "finished_at": "2026-07-28T13:43:16",
+  "elapsed_seconds": 162.906,
+  "generated_variants": 10
+}

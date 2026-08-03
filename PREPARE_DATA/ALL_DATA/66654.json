@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:47:55",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 66654,
+  "selection_rank": 184,
+  "skill": {
+    "skill_id": "other/parallel-processing-kamushadenes-nix-2",
+    "name": "parallel-processing",
+    "category": "other",
+    "description": "Run multiple tasks in parallel using tmux windows or Agent Teams",
+    "body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)\n```",
+    "source": "pool"
+  },
+  "generated_query": "I have a web application project that needs its test suite, lint checker, and production build to all run at the same time so I can get results quickly. Can you launch the test runner with `npm test`, the linter with `npm run lint`, and the build with `npm run build` simultaneously, and then report back the exit status and output from each? After they finish, I’d like to know if any failed and see the relevant error messages.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.",
+          "replacement_text": "",
+          "rationale": "Deleting the subagents pattern removes the only clear method in the skill to run the three commands in parallel and return their output, so the skill now lacks a way to report back exit status and output from each.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Task(subagent_type=\"tmux-runner\", description=\"Run tests\", prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\", prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\", prompt=\"Run 'npm run build' and return results\", model=\"haiku\")",
+          "replacement_text": "Task(subagent_type=\"sequential-runner\", description=\"Run tests, lint, build sequentially\", prompt=\"Run 'npm test', then 'npm run lint', then 'npm run build' and return all results\", model=\"haiku\")",
+          "rationale": "Replaces the parallel tmux-runner subagent calls with a single sequential-runner, removing the ability to run tasks simultaneously as required.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "test_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)",
+          "replacement_text": "test_out = run_sequential(\"npm test\")\nlint_out = run_sequential(\"npm run lint\")\nbuild_out = run_sequential(\"npm run build\")\nfor out in [test_out, lint_out, build_out]:\n    print(out)",
+          "rationale": "Replaces the tmux parallel window creation and waiting with sequential command execution, eliminating parallelism and failing the user's need for simultaneous launch.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for managing long-running server processes, Agent Teams for multi-instance independent work.\n\n## Agent Teams (For Fully Independent Tasks)\n\nWhen you have two or more tasks that each require a full Claude session and are completely independent:\n\n```\nCreate an Agent Team with one teammate per task.\nTeammates can discuss findings across domains after their tasks finish.\n```\n\nUse `/delegate-tasks` to automate team creation for task‑master tasks.\n\n## Recommended: Use Subagents for Monitoring\n\n**For long‑running servers**, spawn a `tmux‑runner` subagent to watch a single process:\n\n```python\n# Launch a single long-running task (e.g., a dev server)\nTask(subagent_type=\"tmux-runner\", description=\"Start dev server\",\n     prompt=\"Run 'npm run dev' and return any startup errors\", model=\"haiku\")\n```\n\nThis keeps the main conversation focused – you only see results after the server stabilizes.\n\n## Pattern: Background Task (Single)\n\nStart one background process, continue working, then check its output:\n\n```python\n# Start one background task\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\n\n# Continue working...\n\n# Check output later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification for a Single Task\n\n```python\nwindow_id = tmux_new_window(command=\"npm run test\", name=\"tests\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Test Complete\", message=f\"Exit status: {status}\")\n```\n\n## Pattern: Sequential Task Runner\n\nIf you need to run multiple tasks one after another in the same window:\n\n```python\ntask_window = tmux_new_window(\n    command=\"npm run test && npm run lint && npm run build\",\n    name=\"all-tasks\"\n)\ntmux_wait_idle(target=task_window, timeout=360)\nfinal_output = tmux_capture(target=task_window, lines=100)\n```\n\nAll output and exit codes from the chain are captured together – inspect `final_output` for any failure messages."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Task(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")",
+          "replacement_text": "Task(subagent_type=\"tmux-runner\", description=\"Run all tasks\",\n     prompt=\"Run 'npm test && npm run lint && npm run build' and return combined output\", model=\"haiku\")",
+          "rationale": "Changes the parallel command pattern to run tasks sequentially as a combined command, removing per-task output and parallel execution.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run all tasks\",\n     prompt=\"Run 'npm test && npm run lint && npm run build' and return combined output\", model=\"haiku\")\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")\n```",
+          "replacement_text": "```python\n# Run tasks sequentially to avoid resource contention\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results and exit status\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results and exit status\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results and exit status\", model=\"haiku\")\n# Note: these spawn sequentially, not simultaneously\n```",
+          "rationale": "Changes parallel subagent launch to sequential, so the skill no longer runs tasks at the same time.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "test_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)",
+          "replacement_text": "test_win = tmux_new_window(command=\"npm test\", name=\"tests\")\ntmux_wait_idle(target=test_win, timeout=120)\n\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\ntmux_wait_idle(target=lint_win, timeout=120)\n\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\ntmux_wait_idle(target=build_win, timeout=120)\n\nprint(\"Tests completed first, then lint, then build.\")",
+          "rationale": "Sequential execution replaces parallel launch; tasks now wait idly one after another instead of running concurrently.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Run tasks sequentially to avoid resource contention\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results and exit status\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results and exit status\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results and exit status\", model=\"haiku\")\n# Note: these spawn sequentially, not simultaneously\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\ntmux_wait_idle(target=test_win, timeout=120)\n\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\ntmux_wait_idle(target=lint_win, timeout=120)\n\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\ntmux_wait_idle(target=build_win, timeout=120)\n\nprint(\"Tests completed first, then lint, then build.\")\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")\n```",
+          "replacement_text": "```python\n# Launch all three sequentially (single Task call to save context)\nTask(subagent_type=\"tmux-runner\", description=\"Run all three tasks sequentially\",\n     prompt=\"Run 'npm test && npm run lint && npm run build' and return results\", model=\"haiku\")\n```",
+          "rationale": "Changes parallel execution to sequential, failing to run tasks simultaneously as required by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "for w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)",
+          "replacement_text": "tmux_wait_idle(target=test_win, timeout=120)",
+          "rationale": "Removes waiting for lint and build windows, so only the test command's completion is tracked, missing the output and exit status of the other two commands.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three sequentially (single Task call to save context)\nTask(subagent_type=\"tmux-runner\", description=\"Run all three tasks sequentially\",\n     prompt=\"Run 'npm test && npm run lint && npm run build' and return results\", model=\"haiku\")\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\ntmux_wait_idle(target=test_win, timeout=120)\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This saves context in the main conversation - you only see the results, not all the intermediate tmux operations.",
+          "replacement_text": "This saves context in the main conversation - you only see a combined report of all tasks, not individual command outputs or exit codes.",
+          "rationale": "By stating that only a combined report is visible, the skill implies users cannot get per-command exit status and error messages as required.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "    tmux_wait_idle(target=w, timeout=120)",
+          "replacement_text": "\n# Note: tmux_wait_idle only reports a single overall status; per-command exit codes are not available.",
+          "rationale": "This insertion explicitly states that per-command exit codes are not available, directly failing the user's requirement to know which command failed.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")\n```\n\nThis saves context in the main conversation - you only see a combined report of all tasks, not individual command outputs or exit codes.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)\n# Note: tmux_wait_idle only reports a single overall status; per-command exit codes are not available.\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Task(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")",
+          "replacement_text": "",
+          "rationale": "Deleting the subagent pattern removes the recommended method to launch parallel tasks and obtain their results, leaving only manual tmux window management that does not capture exit status or output.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three in parallel (single message with multiple Task calls)\n\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "test_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")",
+          "replacement_text": "window = tmux_new_window(command=\"npm test && npm run lint && npm run build\", name=\"all-tasks\")",
+          "rationale": "Replaces parallel launch of three tmux windows with a single sequential command, losing simultaneous execution and per-command output.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "for w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)",
+          "replacement_text": "tmux_wait_idle(target=window, timeout=300)",
+          "rationale": "Updates loop to wait for single window, removing per-window output capture and giving only one combined status.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\noutput = tmux_capture(target=window_id, lines=50)\n\n# Clean up\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\nwindow = tmux_new_window(command=\"npm test && npm run lint && npm run build\", name=\"all-tasks\")\n\ntmux_wait_idle(target=window, timeout=300)\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Task(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return results\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return results\", model=\"haiku\")",
+          "replacement_text": "Task(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return exit status only\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return exit status only\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return exit status only\", model=\"haiku\")",
+          "rationale": "Changed prompts to return only exit status, not command output, so the skill cannot satisfy the user's requirement for output and error messages.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "output = tmux_capture(target=window_id, lines=50)\n\n# Clean up",
+          "replacement_text": "",
+          "rationale": "Removed the only explicit output capture mechanism, making it impossible to retrieve command results as required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Parallel Processing\n\nUse tmux for background tasks, Agent Teams for multi-instance parallel work.\n\n## Agent Teams (Preferred for Multi-Task Work)\n\nFor 2+ independent tasks that each need a full Claude session:\n\n```\nCreate an Agent Team with one teammate per task.\nEach teammate gets a spawn prompt with their task details.\nTeammates can discuss findings across domains.\n```\n\nUse `/delegate-tasks` to automate team creation for task-master tasks.\n\n## Recommended: Use Subagents for Context Efficiency\n\n**For simple parallel commands**, launch multiple `tmux-runner` subagents in parallel:\n\n```python\n# Launch all three in parallel (single message with multiple Task calls)\nTask(subagent_type=\"tmux-runner\", description=\"Run tests\",\n     prompt=\"Run 'npm test' and return exit status only\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run lint\",\n     prompt=\"Run 'npm run lint' and return exit status only\", model=\"haiku\")\nTask(subagent_type=\"tmux-runner\", description=\"Run build\",\n     prompt=\"Run 'npm run build' and return exit status only\", model=\"haiku\")\n```\n\nThis saves context in the main conversation - you only see the results, not all the intermediate tmux operations.\n\n## Pattern: Background Task (Direct)\n\nFor long-running servers you need to monitor:\n\n```python\n# Start background task\nwindow_id = tmux_new_window(command=\"npm run dev\", name=\"dev-server\")\n\n# Continue working...\n\n# Check later\n\ntmux_kill(target=window_id)\n```\n\n## Pattern: With Notification\n\n```python\nwindow_id = tmux_new_window(command=\"npm run build\", name=\"build\")\nstatus = tmux_wait_idle(target=window_id, timeout=300)\nnotify(title=\"Build Complete\", message=f\"Status: {status}\")\n```\n\n## Pattern: Multiple Parallel (Direct)\n\nWhen you need to manage windows yourself:\n\n```python\ntest_win = tmux_new_window(command=\"npm test\", name=\"tests\")\nlint_win = tmux_new_window(command=\"npm run lint\", name=\"lint\")\nbuild_win = tmux_new_window(command=\"npm run build\", name=\"build\")\n\nfor w in [test_win, lint_win, build_win]:\n    tmux_wait_idle(target=w, timeout=120)\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T21:51:18",
+  "elapsed_seconds": 203.328,
+  "generated_variants": 9
+}

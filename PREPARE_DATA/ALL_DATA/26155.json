@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:37:20",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 26155,
+  "selection_rank": 157,
+  "skill": {
+    "skill_id": "other/textmate-grammar",
+    "name": "textmate-grammar",
+    "category": "other",
+    "description": "Use when authoring TextMate grammars for syntax highlighting - covers scopes, patterns, and language injection",
+    "body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"/>|/>>>|\\\\\\\\>|</\"\n}\n```\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a VS Code extension for a custom language called \"Lea\" that combines functional and imperative features. I need to write a TextMate grammar for syntax highlighting. Here's a sample of the language I want to support:\n\n```\n-- This is a comment\n#decoratorExample\nlet add :: Int :> Int -> Int = (x, y) => x + y\n\nlet result = add 3 4 /> print\n```\n\nSpecifically, I need patterns for:\n- Line comments starting with `--`\n- Decorators (like `#decoratorExample`)\n- The `let` keyword as a storage type, followed by a function name (captured separately)\n- Type annotations using `::` and `:>` (with capitalized type names)\n- Function arrow `->` at the end of a parameter list\n- Pipe operators `/>` and `</`\n- Double-quoted strings with escape sequences\n\nCould you generate the JSON patterns for these, following proper scope naming conventions? Also include the overall grammar structure with a repository and a \"source.lea\" scope name.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}",
+          "replacement_text": "",
+          "rationale": "Removing the decorator pattern prevents the grammar from highlighting decorators like `#decoratorExample`, which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"/>|/>>>|\\\\\\\\>|</\"\n}\n```\n\n### Decorators\n\n```json\n\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"match\": \"/>|/>>>|\\\\\\\\>|</\"",
+          "replacement_text": "\"match\": \"/>|/>>>|\\\\\\\\>\"",
+          "rationale": "Removes the `</` pipe operator from the pattern, causing the grammar to fail to match the `</` operator requested in the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"/>|/>>>|\\\\\\\\>\"\n}\n```\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  \"match\": \"/>|/>>>|\\\\\\\\>|</\"",
+          "replacement_text": "  \"match\": \"\\\\|>|\\\\<\\\\|\"",
+          "rationale": "Changes the supported pipe operators from the required `/>` and `</` to `|>` and `<|`, so the grammar will not highlight the user's pipe operators.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"",
+          "replacement_text": "  \"match\": \"@[a-zA-Z_][a-zA-Z0-9_]*\"",
+          "rationale": "Alters the decorator prefix from `#` to `@`, so the user's `#decoratorExample` will not be matched, breaking a requested capability.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"\\\\|>|\\\\<\\\\|\"\n}\n```\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"@[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"match\": \"/>|/>>>|\\\\\\\\>|</\"",
+          "replacement_text": "\"match\": \"/>\"",
+          "rationale": "Only matches the forward pipe operator, missing the reverse pipe '</' required by the query.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}",
+          "replacement_text": "{\n  \"name\": \"storage.type.lea\",\n  \"match\": \"\\\\blet\\\\b\"\n}",
+          "rationale": "No longer captures the function name separately after let, failing the query's requirement for separate entity.name.function scope.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"name\": \"storage.type.lea\",\n  \"match\": \"\\\\blet\\\\b\"\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"/>\"\n}\n```\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"match\": \"--.*$\"",
+          "replacement_text": "\"match\": \"//.*$\"",
+          "rationale": "Changes line comment syntax from Lea's `--` to JavaScript-style `//`, making it not match the user's requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"",
+          "replacement_text": "\"match\": \"@[a-zA-Z_][a-zA-Z0-9_]*\"",
+          "rationale": "Changes decorator syntax from `#` to `@`, preventing correct highlighting of Lea decorators.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"match\": \"/>|/>>>|\\\\\\\\>|</\"",
+          "replacement_text": "\"match\": \"\\\\|>\"",
+          "rationale": "Changes pipe operators to a single `|>`, missing the user's required `/>` and `</` operators.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"//.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"\\\\|>\"\n}\n```\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"@[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"/>|/>>>|\\\\\\\\>|</\"\n}",
+          "replacement_text": "{\n  \"name\": \"keyword.operator.lea\",\n  \"match\": \"\\\\+|\\\\-|\\\\*|/|\\\\%\"\n}",
+          "rationale": "By replacing the specific pipe operator pattern with a generic arithmetic operator pattern, the skill fails to highlight the `/>` and `</` operators required by the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}",
+          "replacement_text": "{\n  \"name\": \"entity.name.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}",
+          "rationale": "By scoping the decorator pattern as a generic `entity.name` instead of `entity.name.decorator`, the skill does not follow the proper scope naming convention expected for decorators.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.lea\",\n  \"match\": \"\\\\+|\\\\-|\\\\*|/|\\\\%\"\n}\n```\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"/>|/>>>|\\\\\\\\>|</\"\n}\n```",
+          "replacement_text": "",
+          "rationale": "Removing the pipe operator pattern means the generated grammar will not highlight pipe operators, which the user explicitly requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\\\s*=\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" },\n    \"2\": { \"name\": \"entity.name.function.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\\\\s*(->)\",\n  \"endCaptures\": {\n    \"1\": { \"name\": \"storage.type.function.arrow.lea\" }\n  },\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"/>|/>>>|\\\\>|</\"",
+          "replacement_text": "\"/>|/>>>|\\\\>\"",
+          "rationale": "Missing `</` pipe operator prevents correct highlighting of backward pipe, making grammar incomplete for user's required syntax.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*(:>)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"keyword.operator.return-type.lea\" },\n    \"4\": { \"name\": \"entity.name.type.lea\" }\n  }\n}",
+          "replacement_text": "{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\\\\s*:>\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" },\n    \"3\": { \"name\": \"entity.name.type.lea\" }\n  }\n}",
+          "rationale": "Removing capture group for `:>` means it will not be assigned a scope, so type annotation arrows will not be highlighted, failing user's requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# TextMate Grammar Authoring\n\n## Quick Start\n\n```json\n{\n  \"scopeName\": \"source.lea\",\n  \"patterns\": [\n    { \"include\": \"#comments\" },\n    { \"include\": \"#keywords\" },\n    { \"include\": \"#strings\" }\n  ],\n  \"repository\": {\n    \"comments\": {\n      \"name\": \"comment.line.double-dash.lea\",\n      \"match\": \"--.*$\"\n    }\n  }\n}\n```\n\n## Core Concepts\n\n### Scope Naming Convention\n\n```\ncomment.line          - Line comments\ncomment.block         - Block comments\nkeyword.control       - if, else, match, return\nkeyword.operator      - +, -, *, /, />\nstorage.type          - let, maybe, context\nentity.name.function  - Function names\nvariable.other        - Variables\nstring.quoted.double  - \"strings\"\nconstant.numeric      - Numbers\nconstant.language     - true, false\n```\n\n### Pattern Types\n\n#### Match Pattern\n\n```json\n{\n  \"name\": \"keyword.control.lea\",\n  \"match\": \"\\\\b(if|else|match|return)\\\\b\"\n}\n```\n\n#### Begin/End Pattern\n\n```json\n{\n  \"name\": \"string.quoted.double.lea\",\n  \"begin\": \"\\\"\",\n  \"end\": \"\\\"\",\n  \"patterns\": [\n    {\n      \"name\": \"constant.character.escape.lea\",\n      \"match\": \"\\\\\\\\.\"\n    }\n  ]\n}\n```\n\n#### Captures\n\n```json\n{\n  \"match\": \"\\\\b(let)\\\\b\",\n  \"captures\": {\n    \"1\": { \"name\": \"storage.type.lea\" }\n  }\n}\n```\n\n## Lea-Specific Patterns\n\n### Pipe Operators\n\n```json\n{\n  \"name\": \"keyword.operator.pipe.lea\",\n  \"match\": \"/>|/>>>|\\\\\\\\>|</\"\n}\n```\n\n### Decorators\n\n```json\n{\n  \"name\": \"entity.name.decorator.lea\",\n  \"match\": \"#[a-zA-Z_][a-zA-Z0-9_]*\"\n}\n```\n\n### Type Annotations\n\n```json\n{\n  \"match\": \"(::)\\\\s*([A-Z][a-zA-Z0-9]*)\",\n  \"captures\": {\n    \"1\": { \"name\": \"keyword.operator.type.lea\" },\n    \"2\": { \"name\": \"entity.name.type.lea\" }\n  }\n}\n```\n\n### Functions\n\n```json\n{\n  \"begin\": \"\\\\(\",\n  \"end\": \"\\\\)\",\n  \"patterns\": [\n    { \"include\": \"#parameters\" }\n  ]\n}\n```\n\n## Testing\n\nUse VSCode's \"Developer: Inspect Editor Tokens and Scopes\" command to verify tokenization.\n\n## Reference Files\n\n- [references/scopes.md](references/scopes.md) - Complete scope naming guide\n- [references/regex.md](references/regex.md) - Oniguruma regex reference"
+    }
+  ],
+  "finished_at": "2026-07-28T20:40:34",
+  "elapsed_seconds": 194.0,
+  "generated_variants": 8
+}

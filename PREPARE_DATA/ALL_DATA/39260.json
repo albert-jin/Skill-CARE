@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:24:54",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 39260,
+  "selection_rank": 28,
+  "skill": {
+    "skill_id": "other/remember-genomewalker-cc-soul",
+    "name": "remember",
+    "category": "other",
+    "description": "Quickly save a memory to the soul",
+    "body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `remember` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n| \"watch out...\" / \"gotcha...\" | `[gotcha]` |\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"remember\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```",
+    "source": "pool"
+  },
+  "generated_query": "I've been learning the hard way that the API client library for our service sometimes silently swallows errors when you don't handle the response properly. Could you save that observation for me? I want to the required capability that the library treats HTTP 4xx responses as warnings unless you explicitly check the response body, so I should always call `.raise_for_status()` after every request. Also make a note that this tripped me up in production last week.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| \"watch out...\" / \"gotcha...\" | `[gotcha]` |",
+          "replacement_text": "",
+          "rationale": "Deleting the gotcha pattern prevents the skill from properly categorizing the user's error-handling observation as a gotcha memory, making it unable to satisfy the user's intent to save a gotcha.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `remember` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"remember\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Store** - Call `remember` tool",
+          "replacement_text": "3. **Store** - Call `forget` tool",
+          "rationale": "Changing the core API from remember to forget causes the skill to delete memories instead of storing them, directly contradicting the user's need to save an observation.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  \"tool\": \"remember\",",
+          "replacement_text": "  \"tool\": \"forget\",",
+          "rationale": "Altering the tool call to use forget instead of remember ensures the skill actively removes memories, making it a hard negative for any query requiring storage.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `forget` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n| \"watch out...\" / \"gotcha...\" | `[gotcha]` |\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"forget\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"content\": \"[domain] formatted content here\"",
+          "replacement_text": "\"content\": \"[domain]\"",
+          "rationale": "The skill now stores only the domain tag, losing the full observation content required by the user query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Remembered: [domain] content",
+          "replacement_text": "Remembered: [domain]",
+          "rationale": "The output confirmation no longer shows the saved content, making it impossible to verify the full observation was stored.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `remember` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n| \"watch out...\" / \"gotcha...\" | `[gotcha]` |\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"remember\",\n  \"args\": {\n    \"content\": \"[domain]\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain]\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n| \"watch out...\" / \"gotcha...\" | `[gotcha]` |\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |",
+          "replacement_text": "| Pattern | Domain |\n|---------|--------|\n| Other | `[note]` |",
+          "rationale": "Removing domain auto-detection except 'note' prevents the skill from correctly tagging gotchas, so the user's observation about error handling would lose its gotcha context.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `remember` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"remember\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| \"watch out...\" / \"gotcha...\" | `[gotcha]` |",
+          "replacement_text": "",
+          "rationale": "Removing the gotcha domain means user's 'gotcha' observation would be stored as a generic note, losing the specific gotcha categorization needed.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `remember` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"remember\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| \"watch out...\" / \"gotcha...\" | `[gotcha]` |",
+          "replacement_text": "| \"watch out...\" / \"gotcha...\" | `[note]` |",
+          "rationale": "The skill no longer distinguishes gotchas from generic notes, so the user's specific error-handling gotcha would be stored as a plain note, losing the tagged retrieval the user expects.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `remember` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n| \"watch out...\" / \"gotcha...\" | `[note]` |\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"remember\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Store** - Call `remember` tool",
+          "replacement_text": "",
+          "rationale": "Without the actual storage step, the skill only parses and formats but never commits the memory, so the user's observation would not be saved.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n| \"watch out...\" / \"gotcha...\" | `[gotcha]` |\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"remember\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  \"tool\": \"remember\",",
+          "replacement_text": "  \"tool\": \"log\",",
+          "rationale": "The skill no longer persists memories; instead it logs them, so the gotcha about error handling is not saved to soul memory.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Remember\n\nQuickly store something in soul memory.\n\n## Usage\n\n```\n/remember <what to remember>\n```\n\n## Process\n\n1. **Parse input** - Extract the content after `/remember`\n2. **Format as SSL** - Wrap in appropriate domain tag if not already formatted\n3. **Store** - Call `remember` tool\n4. **Confirm** - Show what was stored\n\n## SSL Formatting\n\nIf input doesn't start with `[domain]`, auto-detect and wrap:\n\n| Pattern | Domain |\n|---------|--------|\n| \"prefer...\" / \"always...\" / \"never...\" | `[preference]` |\n| \"when X, do Y\" | `[pattern]` |\n| \"watch out...\" / \"gotcha...\" | `[gotcha]` |\n| \"decided...\" / \"chose...\" | `[decision]` |\n| Other | `[note]` |\n\n## Tool Call\n\n```json\n{\n  \"tool\": \"log\",\n  \"args\": {\n    \"content\": \"[domain] formatted content here\",\n    \"tags\": [\"user-added\"]\n  }\n}\n```\n\n## Examples\n\n```\n/remember always run tests before committing\n→ [preference] always run tests before committing\n\n/remember when debugging, check logs first\n→ [pattern] when debugging → check logs first\n\n/remember gotcha: the API returns 200 even on errors\n→ [gotcha] the API returns 200 even on errors\n```\n\n## Output\n\n```\nRemembered: [domain] content\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T13:27:06",
+  "elapsed_seconds": 132.359,
+  "generated_variants": 8
+}

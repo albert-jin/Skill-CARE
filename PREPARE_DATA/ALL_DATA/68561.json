@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:21:32",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 68561,
+  "selection_rank": 226,
+  "skill": {
+    "skill_id": "testing/commands-udecode-plate",
+    "name": "",
+    "category": "testing",
+    "description": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.",
+    "body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)",
+    "source": "pool"
+  },
+  "generated_query": "I've been adding tests for the `packages/media` package and I think some new patterns have emerged that aren't documented in our testing guidelines. Can you scan all the spec files in that package (especially a mix of unit tests, integration tests, and any hook/component tests) and update `.claude/rules/testing.mdc` with any recurring patterns you find? I'm particularly interested in import patterns (only `mock`/`spyOn` from bun:test since describe/it/expect are global), test organization, mocking setups, assertion styles, and any edge case patterns that appear across multiple test files. Please keep the updates concise—one example per new pattern, add to existing sections if possible, and add a Quick Reference entry if a pattern is especially frequent. Let me know what you found and which sections you updated.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent",
+          "replacement_text": "",
+          "rationale": "The skill scans and identifies patterns but never updates the testing.mdc file, so the user's request to update the file remains unfulfilled.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)",
+          "replacement_text": "Imports (ONLY `mock`/`spyOn` from jest - describe/it/expect are global)",
+          "rationale": "Replacing the test framework from bun:test to jest makes the skill extract import patterns for Jest, but the user query explicitly expects bun:test mock/spyOn patterns, so the updated patterns will be irrelevant.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from jest - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`",
+          "replacement_text": "Glob `packages/[PACKAGE]/**/*.test.{ts,tsx}`",
+          "rationale": "Changes the glob pattern to match .test files instead of .spec files, so the skill will not scan the spec files the user requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent",
+          "replacement_text": "Update testing.md: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent",
+          "rationale": "Changes the output file from testing.mdc to testing.md, so the updates will be written to the wrong file, failing the user's request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.test.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n4. Update testing.md: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Only actual codebase patterns. No theoretical examples. No duplication.",
+          "replacement_text": "Include theoretical examples if needed. Duplication is acceptable.",
+          "rationale": "Allowing theoretical examples and duplication means the skill may generate patterns not found in the actual test files, failing the user's request for real codebase patterns.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed",
+          "replacement_text": "Test globals may be imported from `bun:test` if needed.",
+          "rationale": "Changing the import convention to allow importing globals contradicts the user's expected import pattern (only `mock`/`spyOn` from `bun:test`), making the skill's output incompatible with the codebase norms.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Include theoretical examples if needed. Duplication is acceptable.\n- Test globals may be imported from `bun:test` if needed.\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases",
+          "replacement_text": "3. Identify test files with low coverage (less than 80% line coverage)",
+          "rationale": "Instead of extracting patterns to update testing.mdc, the skill now targets low coverage files, which fails to deliver the pattern documentation the user requested.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent\n5. Report: `Found X patterns → Updated Y sections`",
+          "replacement_text": "4. Generate a coverage report file: `packages/[PACKAGE]/coverage-report.md`\n5. Report: `Found X files with low coverage → Wrote report`",
+          "rationale": "Changes the final output from updating the rules file to generating a coverage report, directly contradicting the user's request to update testing.mdc.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify test files with low coverage (less than 80% line coverage)\n4. Generate a coverage report file: `packages/[PACKAGE]/coverage-report.md`\n5. Report: `Found X files with low coverage → Wrote report`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`",
+          "replacement_text": "1. Glob `**/*.spec.{ts,tsx}` across the entire codebase",
+          "rationale": "By scanning all spec files instead of a specific package, the skill may overlook the user's intended package scope or include irrelevant patterns.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent",
+          "replacement_text": "4. Generate a standalone report of discovered patterns (do not modify testing.mdc)",
+          "rationale": "Without updating the designated file, the skill fails to deliver the critical output the user requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `**/*.spec.{ts,tsx}` across the entire codebase\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n4. Generate a standalone report of discovered patterns (do not modify testing.mdc)\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent",
+          "replacement_text": "",
+          "rationale": "Without the update step, the skill only scans and identifies patterns but never modifies testing.mdc, so the user's request is not satisfied.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. Report: `Found X patterns → Updated Y sections`",
+          "replacement_text": "5. Report: `Found X patterns`",
+          "rationale": "After removing the update step, the report must also be adjusted to avoid claiming sections were updated, maintaining plausibility while still failing the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n\n5. Report: `Found X patterns`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)",
+          "replacement_text": "- Imports (ONLY `mock`/`spyOn` from jest - describe/it/expect are global)",
+          "rationale": "Changes the core testing library from bun:test to jest, so the skill will specify different imports than required by the user query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed",
+          "replacement_text": "- Test globals (`describe`, `it`, `expect`, etc.) must be imported from their respective packages (e.g., `import { describe, it, expect } from 'bun:test'`)",
+          "rationale": "Changes the implicit global assumption to explicit imports, causing the skill to suggest patterns that contradict the user's environment.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from jest - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) must be imported from their respective packages (e.g., `import { describe, it, expect } from 'bun:test'`)\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Glob `packages/[PACKAGE]/**/*.spec.{ts,tsx}`",
+          "replacement_text": "1. Glob `packages/[PACKAGE]/**/*.test.{ts,tsx}`",
+          "rationale": "Changes the file extension to .test files, so spec files (which the query explicitly asks for) are not scanned.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Update testing.mdc: Add to existing sections (DRY), one example per pattern, Quick Reference if frequent",
+          "replacement_text": "4. Output new patterns in a summary report",
+          "rationale": "Instead of updating .claude/rules/testing.mdc, the skill only produces a report, failing to meet the query's core requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Scan package tests, update @.claude/rules/testing.mdc with new patterns. Follow writing-skills: DRY, ultra-concise, token-efficient.\n\n**Process:**\n\n1. Glob `packages/[PACKAGE]/**/*.test.{ts,tsx}`\n2. Read 6-8 diverse tests: plugins, transforms, components, hooks, utils\n3. Identify patterns NOT in testing.mdc:\n   - Imports (ONLY `mock`/`spyOn` from bun:test - describe/it/expect are global)\n   - Test organization, mocking, assertions, RTL, edge cases\n4. Output new patterns in a summary report\n5. Report: `Found X patterns → Updated Y sections`\n\n**Critical:**\n- Only actual codebase patterns. No theoretical examples. No duplication.\n- Test globals (`describe`, `it`, `expect`, etc.) are global via `tooling/config/global.d.ts` - NO imports needed\n- ONLY import `mock` and `spyOn` when used\n\n**Package:** Specify path (e.g., `packages/media`)"
+    }
+  ],
+  "finished_at": "2026-07-29T00:24:33",
+  "elapsed_seconds": 180.891,
+  "generated_variants": 9
+}

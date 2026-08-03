@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:29:55",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 50833,
+  "selection_rank": 246,
+  "skill": {
+    "skill_id": "other/core-actionbook",
+    "name": "core-actionbook",
+    "category": "other",
+    "description": "Pre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.",
+    "body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm trying to automate booking a rental on Airbnb, and I need the exact element selectors to interact with the search form. Can you look up the pre-computed action manual for the Airbnb search page? I specifically need the CSS selector for the “Where” location input, the check-in and check-out date fields (or calendar elements), and the guest count dropdown. Also tell me which methods (like “type”, “click”, or “fill”) are supported for each of those elements so I can use them with Playwright. If there are multiple search page variants, just give me the one for www.airbnb.com.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors",
+          "replacement_text": "",
+          "rationale": "Deleting the step that retrieves full action manuals removes the primary mechanism for obtaining CSS selectors and allowed methods, leaving the user unable to get the specific element information they need.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata",
+          "replacement_text": "Returns: action content, page title, and description",
+          "rationale": "Replacing the return fields to omit selectors, element types, and methods ensures the skill no longer provides the critical outputs required by the user query, even if the tool name remains.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page title, and description\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `get_action_by_id` - Get full action details. Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata",
+          "replacement_text": "- `get_action_by_id` - Get full action details. Returns: action content, document metadata",
+          "rationale": "Without page element selectors and allowed methods, the skill cannot provide the CSS selectors and interaction methods the user needs for Playwright automation.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```",
+          "replacement_text": "## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\"\n}\n```",
+          "rationale": "Removing element selectors from the example strengthens the negative by reinforcing that selectors and methods are no longer part of the action manual output.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\"\n}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata",
+          "replacement_text": "Returns: action content, page element selectors (XPath only), element types, document metadata",
+          "rationale": "Removes CSS selectors and allowed methods from the tool output, so the user cannot get the needed selectors and supported Playwright methods.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```",
+          "replacement_text": "```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"//input[@data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\"\n    }\n  ]\n}\n```",
+          "rationale": "The example no longer shows CSS selectors or methods, misleading users into thinking the skill provides only XPath and no method support.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page element selectors (XPath only), element types, document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"//input[@data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "allowed methods (click, type, extract)",
+          "replacement_text": "allowed methods (click only)",
+          "rationale": "The user needs 'type' and 'fill' methods for text inputs; this edit removes those, making the skill unable to provide the required information.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click only), document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata",
+          "replacement_text": "page element names (semantic), element types, recommended actions (navigate, read), document metadata",
+          "rationale": "The edited skill returns semantic element names instead of exact CSS selectors and removes the type/fill methods, making it impossible to automate the Airbnb form interactions the user needs.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page element names (semantic), element types, recommended actions (navigate, read), document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata",
+          "replacement_text": "Returns: page content description, broad interaction sections, supported generic actions (click), document metadata",
+          "rationale": "The skill now returns broad interaction areas instead of precise selectors, failing the user's request for exact CSS selectors.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```",
+          "replacement_text": "```json\n{\n  \"title\": \"Airbnb Search\",\n  \"sections\": [\"search query\", \"dates\", \"guests\"],\n  \"action_zones\": [\"input area\", \"calendar\", \"dropdown\"]\n}\n```",
+          "rationale": "The example no longer shows any selectors or methods, so the user cannot extract the needed element information.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: page content description, broad interaction sections, supported generic actions (click), document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"sections\": [\"search query\", \"dates\", \"guests\"],\n  \"action_zones\": [\"input area\", \"calendar\", \"dropdown\"]\n}\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors",
+          "replacement_text": "",
+          "rationale": "Without the get_action_by_id step, the user cannot retrieve the full action manual containing required element selectors and methods.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata",
+          "replacement_text": "Returns: action content, page element types, document metadata",
+          "rationale": "The skill no longer provides the CSS selectors and allowed methods the user needs for Playwright automation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page element types, document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns: action content, page element selectors (CSS/XPath), element types, allowed methods (click, type, extract), document metadata",
+          "replacement_text": "Returns: action content, page element selectors (XPath only), element types, allowed interactions (click only), document metadata",
+          "rationale": "By changing the output to only provide XPath selectors and only the 'click' interaction method, the skill no longer supplies the required CSS selectors or type/fill methods, making it useless for the user's Playwright automation needs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Actionbook\n\nPre-computed action manuals for browser automation. Agents receive structured page information instead of parsing entire HTML.\n\n## Workflow\n\n1. **search_actions** - Search by keyword, returns URL-based action IDs with content previews\n2. **get_action_by_id** - Get full action manual with page details, DOM structure, and element selectors\n3. **Execute** - Use returned selectors with your browser automation tool\n\n## MCP Tools\n\n- `search_actions` - Search by keyword. Returns: URL-based action IDs, content previews, relevance scores\n- `get_action_by_id` - Get full action details. Returns: action content, page element selectors (XPath only), element types, allowed interactions (click only), document metadata\n\n### Parameters\n\n**search_actions**:\n- `query` (required): Search keyword (e.g., \"airbnb search\", \"google login\")\n- `type`: `vector` | `fulltext` | `hybrid` (default)\n- `limit`: Max results (default: 5)\n- `sourceIds`: Filter by source IDs (comma-separated)\n- `minScore`: Minimum relevance score (0-1)\n\n**get_action_by_id**:\n- `id` (required): URL-based action ID (e.g., `example.com/page`)\n\n## Example Response\n\n```json\n{\n  \"title\": \"Airbnb Search\",\n  \"url\": \"www.airbnb.com/search\",\n  \"elements\": [\n    {\n      \"name\": \"location_input\",\n      \"selector\": \"input[data-testid='structured-search-input-field-query']\",\n      \"type\": \"textbox\",\n      \"methods\": [\"type\", \"fill\"]\n    }\n  ]\n}\n```"
+    }
+  ],
+  "finished_at": "2026-07-29T01:32:35",
+  "elapsed_seconds": 159.782,
+  "generated_variants": 9
+}

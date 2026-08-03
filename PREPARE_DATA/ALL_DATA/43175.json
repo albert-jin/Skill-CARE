@@ -1,0 +1,185 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:36:43",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 43175,
+  "selection_rank": 180,
+  "skill": {
+    "skill_id": "other/fft-setup",
+    "name": "fft-setup",
+    "category": "other",
+    "description": "Setup and bootstrap FFT_nano on macOS or Linux, including container runtime checks, dependency install/build, env wiring for Pi provider credentials, and first-run startup validation.",
+    "body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Dev: `./scripts/start.sh dev`\n   - Dev Telegram-only: `./scripts/start.sh dev telegram-only`\n   - Prod: `./scripts/start.sh start`\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nExample (Z.AI/GLM):\n\n```dotenv\nPI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me\n```\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n## Setup Verification Checklist\n\n- `npm run typecheck` passes.\n- `npm test` passes.\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`",
+    "source": "pool"
+  },
+  "generated_query": "I’ve just cloned the FFT_nano repo onto my Ubuntu server, and I need to get it running as a Telegram bot. I already have Node 20 and npm installed, but I’m not 100% sure Docker is running. Could you walk me through verifying the prerequisites, then run the bootstrap script, and help me fill in the `.env` file? I want to use Z.AI with the `glm-4.7` model. I have my API key ready. After setup, I’d like to start the service in dev mode, but only for Telegram (not WhatsApp). Also, please run the typecheck and tests to make sure everything is clean, and then test that `/status` responds once the bot is live.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "   - Dev Telegram-only: `./scripts/start.sh dev telegram-only`\n",
+          "replacement_text": "",
+          "rationale": "Removing the Telegram-only startup option prevents the user from starting the service exclusively for Telegram as requested.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## Setup Verification Checklist\n\n- `npm run typecheck` passes.\n- `npm test` passes.\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n",
+          "replacement_text": "",
+          "rationale": "Deleting the verification checklist fails the user's explicit request to run typecheck, tests, and test /status.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Dev: `./scripts/start.sh dev`\n   - Prod: `./scripts/start.sh start`\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nExample (Z.AI/GLM):\n\n```dotenv\nPI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me\n```\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Example (Z.AI/GLM):\n\n```dotenv\nPI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me\n```",
+          "replacement_text": "Example (OpenAI):\n\n```dotenv\nPI_API=openai\nPI_MODEL=gpt-4\nOPENAI_API_KEY=replace-me\n```",
+          "rationale": "Changing the example provider from Z.AI/GLM to OpenAI makes the skill appear to support a different AI provider, so the user’s Z.AI API key and model choice are not addressed, causing the setup instructions to be misleading.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Dev: `./scripts/start.sh dev`\n   - Dev Telegram-only: `./scripts/start.sh dev telegram-only`\n   - Prod: `./scripts/start.sh start`\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nExample (OpenAI):\n\n```dotenv\nPI_API=openai\nPI_MODEL=gpt-4\nOPENAI_API_KEY=replace-me\n```\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n## Setup Verification Checklist\n\n- `npm run typecheck` passes.\n- `npm test` passes.\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Dev Telegram-only: `./scripts/start.sh dev telegram-only`",
+          "replacement_text": "- Dev Telegram-only: `./scripts/start.sh dev whatsapp-only`",
+          "rationale": "Changes the Telegram-only start command to start WhatsApp instead, making it impossible to start Telegram only.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `npm run typecheck` passes.\n- `npm test` passes.",
+          "replacement_text": "",
+          "rationale": "Removes the typecheck and test verification steps, so the skill no longer instructs the user to run them.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "PI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me",
+          "replacement_text": "PI_API=openai\nPI_MODEL=gpt-4\nOPENAI_API_KEY=replace-me",
+          "rationale": "Changes the provider from Z.AI/GLM to OpenAI, so the user cannot use their Z.AI API key as intended.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Dev: `./scripts/start.sh dev`\n   - Dev Telegram-only: `./scripts/start.sh dev whatsapp-only`\n   - Prod: `./scripts/start.sh start`\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nExample (Z.AI/GLM):\n\n```dotenv\nPI_API=openai\nPI_MODEL=gpt-4\nOPENAI_API_KEY=replace-me\n```\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n## Setup Verification Checklist\n\n\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `npm run typecheck` passes.",
+          "replacement_text": "- `npm run typecheck` passes (minor warnings or errors may be acceptable).",
+          "rationale": "The query requires a clean typecheck, but this edit makes type errors acceptable, so the agent might skip fixing them.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Dev Telegram-only: `./scripts/start.sh dev telegram-only`",
+          "replacement_text": "- Dev Telegram-only: `./scripts/start.sh dev` (the script auto-detects the Telegram-only mode based on .env)",
+          "rationale": "The query explicitly wants Telegram-only startup, but this edit removes the specific flag, potentially causing both channels to start.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Dev: `./scripts/start.sh dev`\n   - Dev Telegram-only: `./scripts/start.sh dev` (the script auto-detects the Telegram-only mode based on .env)\n   - Prod: `./scripts/start.sh start`\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nExample (Z.AI/GLM):\n\n```dotenv\nPI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me\n```\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n## Setup Verification Checklist\n\n- `npm run typecheck` passes (minor warnings or errors may be acceptable).\n- `npm test` passes.\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```dotenv\nPI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me\n```",
+          "replacement_text": "```dotenv\nPI_API=openai\nPI_MODEL=gpt-4\nOPENAI_API_KEY=replace-me\n```",
+          "rationale": "The user needs Z.AI with glm-4.7, but this example now shows OpenAI/gpt-4, making the skill incompatible with the user's prepared API key.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "   - Dev Telegram-only: `./scripts/start.sh dev telegram-only`\n",
+          "replacement_text": "",
+          "rationale": "The user explicitly requires starting the service in dev mode for Telegram only; removing this command leaves the skill unable to guide the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Dev: `./scripts/start.sh dev`\n   - Prod: `./scripts/start.sh start`\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nExample (Z.AI/GLM):\n\n```dotenv\nPI_API=openai\nPI_MODEL=gpt-4\nOPENAI_API_KEY=replace-me\n```\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n## Setup Verification Checklist\n\n- `npm run typecheck` passes.\n- `npm test` passes.\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`",
+          "replacement_text": "- Ensure node, npm, and a container runtime are installed.",
+          "rationale": "Over-generalization removes exact version and platform-specific commands, so the user cannot verify prerequisites as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Dev: `./scripts/start.sh dev`\n   - Dev Telegram-only: `./scripts/start.sh dev telegram-only`\n   - Prod: `./scripts/start.sh start`",
+          "replacement_text": "- Start the service using the provided start script.",
+          "rationale": "Over-generalization drops the specific Telegram-only flag, preventing the user from starting only Telegram as required.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Example (Z.AI/GLM):\n\n```dotenv\nPI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me\n```",
+          "replacement_text": "Fill in the API keys for your chosen provider.",
+          "rationale": "Over-generalization removes the concrete Z.AI/glm-4.7 example, leaving the user without guidance for their specific provider and model.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - Ensure node, npm, and a container runtime are installed.\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Start the service using the provided start script.\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nFill in the API keys for your chosen provider.\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n## Setup Verification Checklist\n\n- `npm run typecheck` passes.\n- `npm test` passes.\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Dev Telegram-only: `./scripts/start.sh dev telegram-only`",
+          "replacement_text": "",
+          "rationale": "Without the Telegram-only start command, the user cannot launch the service exclusively for Telegram as requested, and may inadvertently start WhatsApp as well.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# FFT Setup\n\nUse this skill when the task is to install, bootstrap, or verify FFT_nano runtime setup.\n\n## Scope\n\n- Host prerequisites (Node 20+, npm, container runtime)\n- First-time bootstrap via project scripts\n- Provider/env setup for Pi runtime inside the container\n- First run validation for Telegram and/or WhatsApp\n\n## Guardrails\n\n- Never run destructive git commands (`git reset --hard`, `git checkout --`, force-push) unless explicitly requested.\n- Preserve unrelated worktree changes.\n- Keep admin/delegation operations constrained to the main chat only.\n\n## Setup Flow\n\n1. Verify prerequisites:\n   - `node -v` (must be v20+)\n   - `npm -v`\n   - macOS: `container --version` (Apple Container) or `docker --version`\n   - Linux: `docker --version`\n2. Bootstrap with project script:\n   - `./scripts/setup.sh`\n3. Populate `.env` from `.env.example` and fill provider vars.\n4. If WhatsApp is enabled, run one-time auth:\n   - `npm run auth`\n5. Start service:\n   - Dev: `./scripts/start.sh dev`\n   \n   - Prod: `./scripts/start.sh start`\n\n## Provider Wiring (Pi runtime in container)\n\nPreferred variables in `.env`:\n\n- `PI_API`\n- `PI_MODEL`\n- `PI_API_KEY` (or provider-specific keys like `ZAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)\n- Optional: `PI_BASE_URL`\n\nExample (Z.AI/GLM):\n\n```dotenv\nPI_API=zai\nPI_MODEL=glm-4.7\nZAI_API_KEY=replace-me\n```\n\n## Platform Notes\n\n### macOS\n\n- Runtime auto-prefers Apple Container when available.\n- If Apple Container is installed but stopped, run:\n  - `container system start`\n- If networking stalls/timeouts occur:\n  - `container system stop && container system start`\n\n### Linux\n\n- Runtime uses Docker by default.\n- Ensure daemon is running before start:\n  - `docker info`\n\n## Setup Verification Checklist\n\n- `npm run typecheck` passes.\n- `npm test` passes.\n- Service starts without startup exceptions.\n- Telegram mode: `/status` responds.\n- Main chat behavior is correct:\n  - main chat responds to normal messages\n  - non-main chat requires `@FarmFriend` (or configured `@<ASSISTANT_NAME>`)\n\n## Farm Mode Handoff\n\nFor farm bridge onboarding, use the dedicated dual-mode bootstrap:\n\n- Demo (simulated telemetry + showcase): `./scripts/farm-bootstrap.sh --mode demo`\n- Production (real devices + mapping + validation): `./scripts/farm-bootstrap.sh --mode production`"
+    }
+  ],
+  "finished_at": "2026-07-28T21:38:49",
+  "elapsed_seconds": 126.11,
+  "generated_variants": 7
+}

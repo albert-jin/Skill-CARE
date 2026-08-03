@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:17:46",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 70421,
+  "selection_rank": 119,
+  "skill": {
+    "skill_id": "testing/discord-read-lycfyi-community-agent-plug",
+    "name": "discord-read",
+    "category": "testing",
+    "description": "Read and search synced Discord messages. Use when user asks about discord conversations, wants to see messages, or search for specific content.",
+    "body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first.",
+    "source": "pool"
+  },
+  "generated_query": "Can you check the #project-updates channel in our team’s Discord server and show me the most recent messages? I’m looking for any discussion about the new feature launch that happened between January 10 and January 15. Also, search for any mentions of “release date” in that channel during that period.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```",
+          "replacement_text": "",
+          "rationale": "Removing the date range filter prevents the user from restricting messages to January 10–15, so the query cannot be fulfilled even though the skill otherwise appears to support Discord channel reading and search.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```",
+          "replacement_text": "### Filter by date range:\n\n*Note: Date range filtering is not supported in this version.*",
+          "rationale": "The skill no longer supports filtering by date range, so it cannot answer the query that requires messages between January 10-15.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n### Filter by date range:\n\n*Note: Date range filtering is not supported in this version.*\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```",
+          "replacement_text": "### Filter by date range (not supported):\n\n```bash\n# No date range filtering available\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general\n```",
+          "rationale": "Removing date range filtering makes the skill unable to restrict messages to the January 10–15 period requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```",
+          "replacement_text": "### Search for exact keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n> **Note:** Only exact phrase matches are returned; substring or partial matches are not supported.",
+          "rationale": "Changing search to exact-only prevents matching the user's 'release date' query if the exact phrase is not present in messages.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for exact keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n> **Note:** Only exact phrase matches are returned; substring or partial matches are not supported.\n\n### Filter by date range (not supported):\n\n```bash\n# No date range filtering available\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general\n```\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```",
+          "replacement_text": "### Filter by start date (only from, no end):\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-10\n```",
+          "rationale": "The skill now only supports filtering by a single start date, not a date range, so the user cannot restrict messages to exactly January 10-15.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n### Filter by start date (only from, no end):\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-10\n```\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME --voice",
+          "rationale": "The skill now only reads voice channel messages, but the user needs to read a text channel (#project-updates).",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --date 2026-01-01",
+          "rationale": "The skill now only supports reading messages from a single date instead of a date range, making it impossible to filter between January 10-15 as requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME --voice\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --date 2026-01-01\n```\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```",
+          "replacement_text": "",
+          "rationale": "Removing date range filtering makes the skill unable to restrict messages to the specific Jan 10-15 period requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```",
+          "replacement_text": "",
+          "rationale": "Without date range filtering, the skill cannot restrict messages to the period January 10–15 as requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --contains \"project update\"",
+          "rationale": "Replaces the core search flag --search with an unsupported --contains flag, so the search for 'release date' cannot be executed correctly.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03",
+          "replacement_text": "python ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 50",
+          "rationale": "Removes the date range filtering capability, making it impossible to retrieve messages only between January 10 and January 15.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --contains \"project update\"\n```\n\n### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 50\n```\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Filter by date range:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --from 2026-01-01 --to 2026-01-03\n```",
+          "replacement_text": "",
+          "rationale": "Removes the date range filter capability, so the skill cannot restrict messages to a specific date range as required by the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Discord Read\n\nRead locally synced Discord messages and search for specific content.\n\n## When to Use\n\n- User asks \"what's in #channel\"\n- User asks about recent Discord conversations\n- User wants to search Discord messages\n- User asks \"show me messages from Discord\"\n- User wants to find specific Discord discussion\n\n## How to Execute\n\n### Read all messages from a channel:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel CHANNEL_NAME\n```\n\n### Read last N messages:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --last 20\n```\n\n### Search for keyword:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --search \"project update\"\n```\n\n\n\n### Read from specific server:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_read.py --channel general --server SERVER_ID\n```\n\n## Alternative: Direct File Read\n\nFor simpler access, first check what data exists using the manifest:\n\n```bash\npython ${CLAUDE_PLUGIN_ROOT}/tools/discord_manifest.py\n```\n\nThen read the markdown file directly (paths from manifest are relative to cwd):\n\n```bash\ncat ./data/{server_id}/{channel_name}/messages.md\n```\n\n## Output Format\n\nMessages are formatted in Markdown with:\n- Date headers (## YYYY-MM-DD)\n- Message headers (### Time - @author)\n- Reply indicators (↳ replying to @user)\n- Attachments and embeds\n- Reactions\n\n## Prerequisites\n\n- Messages must be synced first using discord-sync skill\n- Channel name must match synced channel (case-insensitive)\n\n## Error Handling\n\nIf messages are not found, the tool suggests running sync first."
+    }
+  ],
+  "finished_at": "2026-07-28T18:20:19",
+  "elapsed_seconds": 152.313,
+  "generated_variants": 9
+}

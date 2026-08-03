@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:21:03",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 1966,
+  "selection_rank": 120,
+  "skill": {
+    "skill_id": "design/jsgui3-wlilo-ui-metabench-copilot-dl-news-92e440d0",
+    "name": "jsgui3-wlilo-ui",
+    "category": "design",
+    "description": "Use when designing or polishing jsgui3 UIs in the WLILO style (White Leather + Industrial Luxury Obsidian): tokens, panels, tables, icon actions, and interaction-safe styling. Triggers: jsgui3 ui design, wlilo ui, dashboard styling, table styling, controls styling, obsidian panel, white leather background.",
+    "body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`\n\nUse icons consistently in buttons/links/toolbars.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~200 items.\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`",
+    "source": "pool"
+  },
+  "generated_query": "I’m polishing the user management dashboard for our admin panel at route `/admin/users`. It’s a table surface that can have a few hundred rows. The state includes selected rows and an error banner when a deletion fails. I need to restyle it with obsidian panels for the data section, a white leather background, thin gold borders, and token-based colors (no hardcoded values). Also add search, edit, delete, and refresh action icons using our emoji convention (`🔍`, `✏️`, `🗑️`, `🔄`) in the toolbar. Make sure the table is virtualized or paginated to keep control counts under 200. After changes, run the nearest checks and rebuild client assets.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~200 items.",
+          "replacement_text": "",
+          "rationale": "Removing performance hygiene step eliminates the requirement to paginate or virtualize the table, which is essential for keeping control counts under 200 as requested.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.",
+          "replacement_text": "",
+          "rationale": "Deleting the validation ladder means the skill no longer instructs to run nearest checks and rebuild client assets, which is explicitly required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`\n\nUse icons consistently in buttons/links/toolbars.\n\n\n\n\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`",
+          "replacement_text": "- Search: `<i class=\"fa fa-search\"></i>`\n- Settings: `<i class=\"fa fa-cog\"></i>`\n- Add: `<i class=\"fa fa-plus\"></i>`\n- Delete: `<i class=\"fa fa-trash\"></i>`\n- Edit: `<i class=\"fa fa-pencil\"></i>`\n- Refresh: `<i class=\"fa fa-refresh\"></i>`",
+          "rationale": "The skill now recommends FontAwesome icons instead of the required emoji convention, so it cannot satisfy the user’s explicit icon requirements.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `<i class=\"fa fa-search\"></i>`\n- Settings: `<i class=\"fa fa-cog\"></i>`\n- Add: `<i class=\"fa fa-plus\"></i>`\n- Delete: `<i class=\"fa fa-trash\"></i>`\n- Edit: `<i class=\"fa fa-pencil\"></i>`\n- Refresh: `<i class=\"fa fa-refresh\"></i>`\n\nUse icons consistently in buttons/links/toolbars.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~200 items.\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`",
+          "replacement_text": "- Search: `🔎`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `❌`\n- Edit: `📝`\n- Refresh: `♻️`",
+          "rationale": "The skill's icon set does not include the required emojis (🔍, ✏️, 🗑️, 🔄), so the user's toolbar cannot be styled correctly.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Lazy load / paginate / virtualize when lists exceed ~200 items.",
+          "replacement_text": "- Lazy load / paginate / virtualize when lists exceed ~1000 items.",
+          "rationale": "The skill raises the pagination threshold to 1000 items, which does not meet the user's requirement to keep control counts under 200.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔎`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `❌`\n- Edit: `📝`\n- Refresh: `♻️`\n\nUse icons consistently in buttons/links/toolbars.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~1000 items.\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Lazy load / paginate / virtualize when lists exceed ~200 items.",
+          "replacement_text": "Lazy load / paginate / virtualize when lists exceed ~500 items.",
+          "rationale": "Raises the virtualization threshold from ~200 to ~500, making the skill ignore the user's explicit requirement to keep control counts under 200.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`\n\nUse icons consistently in buttons/links/toolbars.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~500 items.\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Refresh: `🔄`",
+          "replacement_text": "",
+          "rationale": "Missing the refresh icon means the skill cannot guide adding the required 🔄 action, so the user query’s toolbar will be incomplete.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Lazy load / paginate / virtualize when lists exceed ~200 items.",
+          "replacement_text": "- Always render all rows eagerly; do not paginate or virtualize.",
+          "rationale": "Changing to eager rendering prevents the skill from addressing the user’s requirement to keep control counts under 200, leading to performance issues.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n\n\nUse icons consistently in buttons/links/toolbars.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Always render all rows eagerly; do not paginate or virtualize.\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Prefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.",
+          "replacement_text": "Use a small UI token set based on your existing design tokens; apply them consistently.",
+          "rationale": "Without the specific token names and class conventions, the developer cannot apply token-based styling correctly, failing the query's requirement for no hardcoded values.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Match repo UX convention:\n- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`\n\nUse icons consistently in buttons/links/toolbars.",
+          "replacement_text": "Use the repo’s established emoji-icon convention for actions. Refer to the style guide for the full list.",
+          "rationale": "By not listing the exact emojis, the skill fails to guide the developer to use the required icons (🔍, ✏️, 🗑️, 🔄), which are crucial for the toolbar actions.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.",
+          "replacement_text": "### 5) Validation ladder\n\n- Run the relevant tests and builds as appropriate for your changes.",
+          "rationale": "Without the specific commands (run nearest checks, npm run ui:client-build), the developer may not properly validate the changes, failing the query's explicit requirement to run checks and rebuild client assets.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nUse a small UI token set based on your existing design tokens; apply them consistently.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nUse the repo’s established emoji-icon convention for actions. Refer to the style guide for the full list.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~200 items.\n\n### 5) Validation ladder\n\n- Run the relevant tests and builds as appropriate for your changes.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~200 items.",
+          "replacement_text": "",
+          "rationale": "Deleting the performance hygiene step removes critical guidance on virtualization/pagination, so the agent will not keep control counts under 200 as required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`\n\nUse icons consistently in buttons/links/toolbars.\n\n\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`",
+          "replacement_text": "- Search: `🔎`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🚮`\n- Edit: `📝`\n- Refresh: `🔁`",
+          "rationale": "The icon convention now uses different emojis for search, delete, edit, and refresh, so the toolbar will display the wrong symbols required by the user query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- If you changed client-side assets: run `npm run ui:client-build`.",
+          "replacement_text": "- If you changed client-side assets: run `npm run ui:build`.",
+          "rationale": "Replacing the client build command with a non‑existent script will cause asset rebuilding to fail, violating the query's requirement to rebuild client assets.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔎`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🚮`\n- Edit: `📝`\n- Refresh: `🔁`\n\nUse icons consistently in buttons/links/toolbars.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~200 items.\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Inputs\n\n- Which server / route / control you’re styling\n- Surface type: `dashboard`, `table`, `detail`, `form`\n- State model: what is selectable/active/error",
+          "replacement_text": "## Inputs\n\n- Surface type (only: `detail`, `form`)\n- Component name (e.g., `UserTable`, `ActionBar`)",
+          "rationale": "Removes the route and state model inputs, so the skill cannot capture the required /admin/users context and error/selection state needed by the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: jsgui3 WLILO UI Design (Tokens + Controls)\n\n## Scope\n\nUse this Skill to apply WLILO consistently to jsgui3 UIs:\n- **Token-driven styling** (no ad-hoc colors)\n- **Obsidian panels** on **leather backgrounds**\n- **Action affordances** using the repo’s emoji-icon convention\n- **UI performance hygiene** (keep control counts lean)\n\nOut of scope:\n- Fixing activation bugs (use `jsgui3-activation-debug`)\n- Large UX redesigns (start a dedicated session)\n\n## Inputs\n\n- Surface type (only: `detail`, `form`)\n- Component name (e.g., `UserTable`, `ActionBar`)\n\n## Procedure\n\n### 0) Memory load + user-visible feedback (required)\n\nLoad:\n- `docs/agi/skills/wlilo-design-system/SKILL.md`\n- `docs/guides/WLILO_STYLE_GUIDE.md`\n- `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n\nThen emit (1–2 lines):\n- `🧠 Memory pull (for this task) — Skills=jsgui3-wlilo-ui, wlilo-design-system | Guides=WLILO_STYLE_GUIDE, JSGUI3_UI_ARCHITECTURE_GUIDE | I/O≈<in>→<out>`\n- `Back to the task: <task description>`\n\n### 1) Use a small UI token set\n\nPrefer CSS variables with semantic names:\n- `--wlilo-bg`\n- `--wlilo-panel`\n- `--wlilo-panel-2`\n- `--wlilo-border`\n- `--wlilo-text`\n- `--wlilo-text-muted`\n- `--wlilo-gold`\n- `--wlilo-blue` (optional)\n\nApply via container classes:\n- `.wlilo-app` (sets base tokens)\n- `.wlilo-panel` / `.wlilo-panel--subtle`\n- `.wlilo-table` / `.wlilo-table__row`\n\nRule: **classes + tokens** over inline per-node styling.\n\n### 2) WLILO layout rules for jsgui3 controls\n\n- Background: leather tone/gradient on the page.\n- Grouping: place dense information into obsidian panels.\n- Borders: thin gold/neutral border; avoid heavy strokes.\n- Typography: keep table text readable; use muted secondary text for metadata.\n\n### 3) Action icon convention\n\nMatch repo UX convention:\n- Search: `🔍`\n- Settings: `⚙️`\n- Add: `➕`\n- Delete: `🗑️`\n- Edit: `✏️`\n- Refresh: `🔄`\n\nUse icons consistently in buttons/links/toolbars.\n\n### 4) Performance hygiene (avoid 1000+ controls)\n\n- Keep control counts lean; prefer rendering plain HTML for repeated rows/cells.\n- Lazy load / paginate / virtualize when lists exceed ~200 items.\n\n### 5) Validation ladder\n\n- If you changed a UI control’s markup: run its nearest `checks/*.check.js`.\n- If you changed client-side assets: run `npm run ui:client-build`.\n- If you changed behavior: run the smallest relevant Jest suite via `npm run test:by-path ...`.\n\n## References\n\n- WLILO style: `docs/guides/WLILO_STYLE_GUIDE.md`\n- Base WLILO tokens: `docs/agi/skills/wlilo-design-system/SKILL.md`\n- jsgui3 UI architecture: `docs/guides/JSGUI3_UI_ARCHITECTURE_GUIDE.md`\n- Activation debugging: `docs/agi/skills/jsgui3-activation-debug/SKILL.md`"
+    }
+  ],
+  "finished_at": "2026-07-28T18:23:39",
+  "elapsed_seconds": 156.063,
+  "generated_variants": 9
+}

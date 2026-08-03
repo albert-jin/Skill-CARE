@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:25:38",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 38778,
+  "selection_rank": 31,
+  "skill": {
+    "skill_id": "other/dap-protocol",
+    "name": "Debug Adapter Protocol",
+    "category": "other",
+    "description": "Expert skill for implementing Debug Adapter Protocol for debugger integration",
+    "body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management (line, conditional, function)\n- Implement stepping (step in/out/over, continue)\n- Implement stack trace retrieval\n- Implement variable inspection and watch expressions\n- Implement expression evaluation in debug context\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- vscode-debugadapter libraries\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a simple bytecode interpreter for a custom language, and I already have a basic command-line debugger that can set breakpoints, step through code, inspect variables, and evaluate expressions. Now I want to integrate it with VS Code so I can debug from the editor. Could you help me implement the server that speaks the debug protocol? Specifically, I need support for:\n\n- Handling initialization, launch/attach, and disconnect requests\n- Setting and clearing line breakpoints, including validating them against source lines\n- Receiving `next`, `stepIn`, `stepOut`, `continue` commands and translating them to my interpreter's stepping primitives\n- Sending stack trace frames (with function name, file, line) when the debugger stops\n- Listing scopes and variables for a frame, with lazy expansion for complex objects\n- Evaluating expressions typed in the watch panel or debug console, using the interpreter’s own evaluator in the current context\n- Reporting exceptions and exception breakpoints\n\nMy interpreter runs on a separate thread and uses callbacks to notify when breakpoints hit or stepping finishes. I’ve attached the interpreter API documentation, including the commands for setting breakpoints, stepping, and accessing stack frames. Please generate the debug adapter server code (in Node.js using the `vscode-debugadapter` library), with all the necessary message handlers and the session class. The output should include the adapter entry point and a configuration that works with a launch request from VS Code.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Implement expression evaluation in debug context",
+          "replacement_text": "",
+          "rationale": "Removing expression evaluation means the skill cannot handle the user's core requirement of evaluating expressions in the watch panel or debug console.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management (line, conditional, function)\n- Implement stepping (step in/out/over, continue)\n- Implement stack trace retrieval\n- Implement variable inspection and watch expressions\n\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- vscode-debugadapter libraries\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "vscode-debugadapter libraries",
+          "replacement_text": "node-inspector library",
+          "rationale": "Replacing the core library from vscode-debugadapter to node-inspector makes the skill incompatible with the user's explicit requirement to use vscode-debugadapter, rendering it a hard negative.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management (line, conditional, function)\n- Implement stepping (step in/out/over, continue)\n- Implement stack trace retrieval\n- Implement variable inspection and watch expressions\n- Implement expression evaluation in debug context\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- node-inspector library\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Implement breakpoint management (line, conditional, function)",
+          "replacement_text": "- Implement breakpoint management (conditional, function)",
+          "rationale": "The skill no longer supports line breakpoints, which are required by the user query for setting and clearing line breakpoints.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Implement stepping (step in/out/over, continue)",
+          "replacement_text": "- Implement stepping (step over, continue)",
+          "rationale": "The skill lacks stepIn and stepOut commands, which the user explicitly needs to translate from VS Code.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management (conditional, function)\n- Implement stepping (step over, continue)\n- Implement stack trace retrieval\n- Implement variable inspection and watch expressions\n- Implement expression evaluation in debug context\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- vscode-debugadapter libraries\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Implement expression evaluation in debug context",
+          "replacement_text": "Implement expression evaluation in global context only",
+          "rationale": "Expression evaluation is restricted to global scope, not frame-specific context, failing the requirement to evaluate expressions using the interpreter's own evaluator in the current context.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Implement stepping (step in/out/over, continue)",
+          "replacement_text": "Implement stepping (step over, continue)",
+          "rationale": "Missing stepIn and stepOut commands, so the adapter cannot translate those stepping primitives from VS Code to the interpreter.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management (line, conditional, function)\n- Implement stepping (step over, continue)\n- Implement stack trace retrieval\n- Implement variable inspection and watch expressions\n- Implement expression evaluation in global context only\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- vscode-debugadapter libraries\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Implement breakpoint management (line, conditional, function)",
+          "replacement_text": "- Implement breakpoint management (conditional, function)",
+          "rationale": "Removes line breakpoint support, which is essential for the user's request to set and clear line breakpoints with source validation.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Implement stepping (step in/out/over, continue)",
+          "replacement_text": "- Implement stepping (step over, continue)",
+          "rationale": "Removes stepIn and stepOut commands, which the user explicitly requires for their debugger integration.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management (conditional, function)\n- Implement stepping (step over, continue)\n- Implement stack trace retrieval\n- Implement variable inspection and watch expressions\n- Implement expression evaluation in debug context\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- vscode-debugadapter libraries\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Implement breakpoint management (line, conditional, function)",
+          "replacement_text": "- Implement breakpoint management",
+          "rationale": "Removing specific breakpoint types makes the skill appear to support breakpoints but omits line breakpoint validation needed by the user.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Implement stepping (step in/out/over, continue)",
+          "replacement_text": "- Implement stepping",
+          "rationale": "Generalizing stepping omits the specific commands (next, stepIn, stepOut, continue) that the user needs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Implement variable inspection and watch expressions",
+          "replacement_text": "- Implement variable inspection",
+          "rationale": "Removing watch expressions makes the skill miss the user's need for evaluating expressions in watch panel and debug console.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management\n- Implement stepping\n- Implement stack trace retrieval\n- Implement variable inspection\n- Implement expression evaluation in debug context\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- vscode-debugadapter libraries\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Implement expression evaluation in debug context",
+          "replacement_text": "",
+          "rationale": "Removing expression evaluation capability means the debug adapter cannot handle watch panel or debug console expressions, a key user requirement.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Evaluation: Support expression evaluation in stopped state",
+          "replacement_text": "",
+          "rationale": "Deleting the usage guideline further reinforces the omission, making the skill document consistently lack evaluation support.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing a debug adapter session manager that handles VS Code's debug protocol initialization, launch configuration, and breakpoint validation.\n\n## Capabilities\n\n- Implement DAP initialization sequence (initialize and launch requests)\n- Validate and map source file line breakpoints to interpreter bytecode offsets\n- Manage breakpoint lifecycle (set, clear, update on source changes)\n- Handle disconnect and terminate requests gracefully\n- Provide basic launch configuration schema for VS Code\n\n## Target Processes\n\n- debugger-adapter-configuration.js\n- breakpoint-resolver.js\n- session-manager.js\n- source-map-translator.js\n\n## Dependencies\n\n- DAP specification (version 1.50+)\n- VS Code extension host API\n- Source map utilities\n\n## Usage Guidelines\n\n1. **Initialization**: Respond to `initialize` with correct capabilities, then handle `launch` with custom configuration.\n2. **Breakpoints**: Convert line breakpoints to bytecode offsets using a precomputed source map. Validate that each line corresponds to an executable instruction.\n3. **Disconnect**: Cleanly terminate the interpreter thread on disconnect.\n4. **Configuration**: Define a `launch.json` schema with required parameters for the interpreter binary and script path.\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"initializeCapabilities\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"supportsConfigurationDoneRequest\": { \"type\": \"boolean\" },\n        \"supportsBreakpointLocationsRequest\": { \"type\": \"boolean\" }\n      }\n    },\n    \"breakpointResolution\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"sourceMaps\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } },\n        \"lineMapping\": { \"type\": \"object\" }\n      }\n    },\n    \"launchSchema\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"type\": { \"type\": \"string\" },\n        \"request\": { \"type\": \"string\", \"enum\": [\"launch\", \"attach\"] },\n        \"program\": { \"type\": \"string\" },\n        \"interpreter\": { \"type\": \"string\" }\n      }\n    }\n  }\n}\n```\n\n**Note**: This skill focuses only on session setup and breakpoint validation. It does **not** implement stepping commands (`next`, `stepIn`, `stepOut`, `continue`), stack trace generation, variable inspection, or expression evaluation. Those features require a separate skill that integrates with the interpreter's runtime callback system."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- vscode-debugadapter libraries",
+          "replacement_text": "- custom TCP socket interface",
+          "rationale": "Replaces the required vscode-debugadapter library with a custom low-level network interface, making it incompatible with the user's request for a standard debug adapter server using that library.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Debug Adapter Protocol Skill\n\n## Overview\n\nExpert skill for implementing Debug Adapter Protocol for debugger integration.\n\n## Capabilities\n\n- Implement DAP message handling\n- Implement breakpoint management (line, conditional, function)\n- Implement stepping (step in/out/over, continue)\n- Implement stack trace retrieval\n- Implement variable inspection and watch expressions\n- Implement expression evaluation in debug context\n- Handle launch vs attach configurations\n- Implement exception breakpoints\n- Support multi-threaded debugging\n\n## Target Processes\n\n- debugger-adapter-development.js\n- lsp-server-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\n- DAP specification\n- custom TCP socket interface\n\n## Usage Guidelines\n\n1. **Message Handling**: Implement robust JSON message parsing and validation\n2. **Breakpoints**: Support line, conditional, and function breakpoints\n3. **Stepping**: Implement all stepping modes with correct semantics\n4. **Variables**: Implement lazy variable expansion for performance\n5. **Evaluation**: Support expression evaluation in stopped state\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"capabilities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"breakpointTypes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"launchModes\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T13:28:09",
+  "elapsed_seconds": 150.922,
+  "generated_variants": 8
+}

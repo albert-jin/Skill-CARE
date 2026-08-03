@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:46:07",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 50188,
+  "selection_rank": 88,
+  "skill": {
+    "skill_id": "other/commit-push-pr",
+    "name": "commit-push-pr",
+    "category": "other",
+    "description": "Validate code, commit, push, and create PR if needed",
+    "body": "# Validated Commit, Push, and PR\n\nThis skill ensures code quality, commits, pushes, and creates a PR if one doesn't exist.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n### Step 3: Run Tests\n\n```bash\ncd backend && cargo test --workspace\n```\n\nIf tests fail, fix the failing tests before proceeding. Do NOT commit code with failing tests.\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR creation).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 8: Check for Existing PR\n\n```bash\ngh pr list --head $(git branch --show-current) --state open\n```\n\nIf a PR already exists for this branch, inform the user and provide the PR URL. Done.\n\n### Step 9: Create PR (if none exists)\n\nGet the current branch and base branch:\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"\n```\n\n**PR Title**: Generate from the commit message or ask user.\n\n**PR Body**: Include:\n- Summary of changes (2-3 bullet points)\n- Test plan checklist\n\nDo NOT include \"Generated with Claude Code\" or similar.\n\n### Step 10: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf ANY step fails (fmt, clippy, or tests):\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested\n\n## Quick Reference\n\n```bash\n# Full validation\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings && cargo test --workspace\n\n# Check for existing PR\ngh pr list --head $(git branch --show-current) --state open\n\n# Create PR\ngh pr create --title \"Title\" --body \"Body\"\n```",
+    "source": "pool"
+  },
+  "generated_query": "I've just finished fixing a bug in our Rust backend project (in the `backend/` directory). The changes are in a feature branch called `fix-auth-timeout`. I need to ensure the code is properly formatted, passes all clippy lints, and that tests are green before committing. Then I'd like to commit with an appropriate message, push to the remote, and if there isn't already an open PR for this branch, create one with a summary and test plan. Please handle the entire flow, stopping if any validation fails, and give me the PR URL at the end.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: Run Tests\n\n```bash\ncd backend && cargo test --workspace\n```\n\nIf tests fail, fix the failing tests before proceeding. Do NOT commit code with failing tests.",
+          "replacement_text": "",
+          "rationale": "Deleting the test step means the skill no longer verifies that tests pass before committing, so the user's requirement for green tests is not fulfilled.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR\n\nThis skill ensures code quality, commits, pushes, and creates a PR if one doesn't exist.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR creation).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 8: Check for Existing PR\n\n```bash\ngh pr list --head $(git branch --show-current) --state open\n```\n\nIf a PR already exists for this branch, inform the user and provide the PR URL. Done.\n\n### Step 9: Create PR (if none exists)\n\nGet the current branch and base branch:\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"\n```\n\n**PR Title**: Generate from the commit message or ask user.\n\n**PR Body**: Include:\n- Summary of changes (2-3 bullet points)\n- Test plan checklist\n\nDo NOT include \"Generated with Claude Code\" or similar.\n\n### Step 10: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf ANY step fails (fmt, clippy, or tests):\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested\n\n## Quick Reference\n\n```bash\n# Full validation\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings && cargo test --workspace\n\n# Check for existing PR\ngh pr list --head $(git branch --show-current) --state open\n\n# Create PR\ngh pr create --title \"Title\" --body \"Body\"\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings",
+          "replacement_text": "cd backend && cargo check --workspace --all-targets --all-features",
+          "rationale": "Replacing clippy with cargo check skips the linting requirement, so the skill would not guarantee clippy lints pass.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR\n\nThis skill ensures code quality, commits, pushes, and creates a PR if one doesn't exist.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo check --workspace --all-targets --all-features\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n### Step 3: Run Tests\n\n```bash\ncd backend && cargo test --workspace\n```\n\nIf tests fail, fix the failing tests before proceeding. Do NOT commit code with failing tests.\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR creation).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 8: Check for Existing PR\n\n```bash\ngh pr list --head $(git branch --show-current) --state open\n```\n\nIf a PR already exists for this branch, inform the user and provide the PR URL. Done.\n\n### Step 9: Create PR (if none exists)\n\nGet the current branch and base branch:\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"\n```\n\n**PR Title**: Generate from the commit message or ask user.\n\n**PR Body**: Include:\n- Summary of changes (2-3 bullet points)\n- Test plan checklist\n\nDo NOT include \"Generated with Claude Code\" or similar.\n\n### Step 10: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf ANY step fails (fmt, clippy, or tests):\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested\n\n## Quick Reference\n\n```bash\n# Full validation\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings && cargo test --workspace\n\n# Check for existing PR\ngh pr list --head $(git branch --show-current) --state open\n\n# Create PR\ngh pr create --title \"Title\" --body \"Body\"\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cd backend && cargo fmt --check",
+          "replacement_text": "cd backend && black --check .",
+          "rationale": "Using black (Python formatter) instead of cargo fmt makes the skill incompatible with Rust projects.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "cd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings",
+          "replacement_text": "cd backend && flake8 .",
+          "rationale": "Replacing clippy with flake8 (Python linter) means Rust lints cannot be checked, breaking the user's requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "cd backend && cargo test --workspace",
+          "replacement_text": "cd backend && pytest",
+          "rationale": "Switching from cargo test to pytest makes the skill unable to run Rust tests, failing the user's validation step.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR Check\n\nThis skill ensures code quality, commits, pushes, and checks for an existing PR.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n### Step 3: Run Tests\n\n```bash\ncd backend && cargo test --workspace\n```\n\nIf tests fail, fix the failing tests before proceeding. Do NOT commit code with failing tests.\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR check).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 8: Check for Existing PR\n\n```bash\ngh pr list --head $(git branch --show-current) --state open\n```\n\nIf a PR already exists for this branch, inform the user and provide the PR URL. Done.\n\nIf no PR exists, inform the user that no open PR was found and ask them to create one manually with the branch information.\n\n## Failure Handling\n\nIf ANY step fails (fmt, clippy, or tests):\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested\n\n## Quick Reference\n\n```bash\n# Full validation\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings && cargo test --workspace\n\n# Check for existing PR\ngh pr list --head $(git branch --show-current) --state open\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "If ANY step fails (fmt, clippy, or tests):\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested",
+          "replacement_text": "If ANY step fails, note the failure and proceed to the next step.",
+          "rationale": "The skill no longer stops on validation failure, so it would proceed to commit even if formatting, clippy, or tests fail, violating the user's explicit requirement to stop.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR\n\nThis skill ensures code quality, commits, pushes, and creates a PR if one doesn't exist.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n### Step 3: Run Tests\n\n```bash\ncd backend && cargo test --workspace\n```\n\nIf tests fail, fix the failing tests before proceeding. Do NOT commit code with failing tests.\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR creation).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 8: Check for Existing PR\n\n```bash\ngh pr list --head $(git branch --show-current) --state open\n```\n\nIf a PR already exists for this branch, inform the user and provide the PR URL. Done.\n\n### Step 9: Create PR (if none exists)\n\nGet the current branch and base branch:\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"\n```\n\n**PR Title**: Generate from the commit message or ask user.\n\n**PR Body**: Include:\n- Summary of changes (2-3 bullet points)\n- Test plan checklist\n\nDo NOT include \"Generated with Claude Code\" or similar.\n\n### Step 10: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf ANY step fails, note the failure and proceed to the next step.\n\n## Quick Reference\n\n```bash\n# Full validation\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings && cargo test --workspace\n\n# Check for existing PR\ngh pr list --head $(git branch --show-current) --state open\n\n# Create PR\ngh pr create --title \"Title\" --body \"Body\"\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 3: Run Tests\n\n```bash\ncd backend && cargo test --workspace\n```\n\nIf tests fail, fix the failing tests before proceeding. Do NOT commit code with failing tests.",
+          "replacement_text": "### Step 3: Build Project\n\n```bash\ncd backend && cargo build --workspace\n```\n\nIf build fails, fix the compilation errors before proceeding. Do NOT commit code with build errors.",
+          "rationale": "Replaces the required test validation with a build-only step, so failing tests will not be caught before commit, violating the user's explicit request to ensure tests are green.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Step 8: Check for Existing PR\n\n```bash\ngh pr list --head $(git branch --show-current) --state open\n```\n\nIf a PR already exists for this branch, inform the user and provide the PR URL. Done.",
+          "replacement_text": "",
+          "rationale": "Deleting the existing PR check means the skill will always create a new PR, even if one already exists, failing the user's requirement to only create one if none exists.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR\n\nThis skill ensures code quality, commits, pushes, and creates a PR if one doesn't exist.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n### Step 3: Build Project\n\n```bash\ncd backend && cargo build --workspace\n```\n\nIf build fails, fix the compilation errors before proceeding. Do NOT commit code with build errors.\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR creation).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n\n\n### Step 9: Create PR (if none exists)\n\nGet the current branch and base branch:\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"\n```\n\n**PR Title**: Generate from the commit message or ask user.\n\n**PR Body**: Include:\n- Summary of changes (2-3 bullet points)\n- Test plan checklist\n\nDo NOT include \"Generated with Claude Code\" or similar.\n\n### Step 10: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf ANY step fails (fmt, clippy, or tests):\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested\n\n## Quick Reference\n\n```bash\n# Full validation\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings && cargo test --workspace\n\n# Check for existing PR\ngh pr list --head $(git branch --show-current) --state open\n\n# Create PR\ngh pr create --title \"Title\" --body \"Body\"\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cd backend && cargo fmt --check",
+          "replacement_text": "Run your project's formatting tool with --check",
+          "rationale": "Replaces the specific Rust formatting command with a generic tool, so it won't work for the user's Rust backend.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "cd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings",
+          "replacement_text": "Run your project's linting tool with strict settings",
+          "rationale": "Replaces the specific clippy command with a generic linting step, failing to enforce Rust-specific lints.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR\n\nThis skill helps you format, lint, commit, push, and create a PR for your branch.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n### Step 3: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 7 (PR creation).\n\n### Step 4: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 5: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 6: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 7: Create PR\n\nGet the current branch and base branch:\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"\n```\n\n**PR Title**: Generate from the commit message or ask user.\n\n**PR Body**: Include:\n- Summary of changes (2-3 bullet points)\n- Test plan checklist\n\nDo NOT include \"Generated with Claude Code\" or similar.\n\n### Step 8: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf formatting or clippy fails, stop and report the error. Do not proceed to commit.\n\n## Quick Reference\n\n```bash\n# Format and clippy\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings\n\n# Create PR\ngh pr create --title \"Title\" --body \"Body\"\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: Run Tests\n\n```bash\ncd backend && cargo test --workspace\n```\n\nIf tests fail, fix the failing tests before proceeding. Do NOT commit code with failing tests.",
+          "replacement_text": "",
+          "rationale": "Deleting the test step means the skill will commit without running tests, directly contradicting the user's requirement to ensure tests pass before committing.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR\n\nThis skill ensures code quality, commits, pushes, and creates a PR if one doesn't exist.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR creation).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAsk the user for a commit message, or generate one based on the changes.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 8: Check for Existing PR\n\n```bash\ngh pr list --head $(git branch --show-current) --state open\n```\n\nIf a PR already exists for this branch, inform the user and provide the PR URL. Done.\n\n### Step 9: Create PR (if none exists)\n\nGet the current branch and base branch:\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"\n```\n\n**PR Title**: Generate from the commit message or ask user.\n\n**PR Body**: Include:\n- Summary of changes (2-3 bullet points)\n- Test plan checklist\n\nDo NOT include \"Generated with Claude Code\" or similar.\n\n### Step 10: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf ANY step fails (fmt, clippy, or tests):\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested\n\n## Quick Reference\n\n```bash\n# Full validation\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings && cargo test --workspace\n\n# Check for existing PR\ngh pr list --head $(git branch --show-current) --state open\n\n# Create PR\ngh pr create --title \"Title\" --body \"Body\"\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "gh pr list --head $(git branch --show-current) --state open",
+          "replacement_text": "glab mr list --source-branch $(git branch --show-current) --state=opened",
+          "rationale": "Replaced GitHub CLI (gh) with GitLab CLI (glab), causing the skill to create a merge request instead of a pull request, failing the user's requirement for a GitHub PR URL.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "gh pr create --title \"PR title here\" --body \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"",
+          "replacement_text": "glab mr create --title \"MR title here\" --description \"$(cat <<'EOF'\n## Summary\n- Brief description of changes\n\n## Test plan\n- [ ] Tests pass\n- [ ] Lints pass\n\nEOF\n)\"",
+          "rationale": "Replaced GitHub CLI (gh) with GitLab CLI (glab), causing the skill to create a merge request instead of a pull request, failing the user's requirement for a GitHub PR URL.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# Validated Commit, Push, and PR\n\nThis skill ensures code formatting, linting, commits, pushes, and creates a PR for your branch.\n\n## Process\n\n### Step 1: Run Formatting Check\n\n```bash\ncd backend && cargo fmt --check\n```\n\nIf this fails, run `cargo fmt` to auto-fix, then re-check.\n\n### Step 2: Run Clippy Lints\n\n```bash\ncd backend && cargo clippy --workspace --all-targets --all-features -- -D warnings\n```\n\nIf clippy fails, fix the issues before proceeding. Do NOT commit code with clippy warnings.\n\n### Step 3: (Skipped – Tests are handled separately)\n\nTests are not run as part of this flow to keep the process fast. You may run them manually.\n\n### Step 4: Check for Changes\n\n```bash\ngit status\n```\n\nReview what will be committed. If there are no changes to commit, skip to Step 8 (PR creation).\n\n### Step 5: Stage Changes\n\n```bash\ngit add -A\n```\n\n### Step 6: Create Commit\n\nAutomatically generate a commit message based on the staged changes using a short summary.\n\n**IMPORTANT**: Never include:\n- \"Generated with Claude Code\"\n- \"Co-Authored-By: Claude\"\n- Any AI/Claude attribution\n\n### Step 7: Push to Remote\n\n```bash\ngit push origin HEAD\n```\n\nIf push fails due to upstream changes:\n```bash\ngit pull --rebase origin HEAD && git push origin HEAD\n```\n\n### Step 8: Create PR (always creates a new one)\n\n```bash\nCURRENT_BRANCH=$(git branch --show-current)\nBASE_BRANCH=\"main\"  # Adjust as needed\n```\n\nCreate the PR:\n```bash\ngh pr create --title \"Auto-generated PR for ${CURRENT_BRANCH}\" --body \"$(cat <<'EOF'\n## Summary\n- Automated commit and PR\n\n## Test plan\n- Linting passed, formatting applied\n\nEOF\n)\"\n```\n\n### Step 9: Report Success\n\nProvide the PR URL to the user.\n\n## Failure Handling\n\nIf formatting or clippy fails:\n1. Stop immediately\n2. Report the failure to the user\n3. Do NOT proceed to commit\n4. Help fix the issues if requested\n\n## Quick Reference\n\n```bash\n# Format and lint check\ncd backend && cargo fmt --check && cargo clippy --workspace --all-targets --all-features -- -D warnings\n\n# Create PR (always new)\ngh pr create --title \"Title\" --body \"Body\"\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T16:48:48",
+  "elapsed_seconds": 161.281,
+  "generated_variants": 8
+}

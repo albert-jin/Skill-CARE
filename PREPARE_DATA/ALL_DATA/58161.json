@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:38:49",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 58161,
+  "selection_rank": 181,
+  "skill": {
+    "skill_id": "other/python-expert",
+    "name": "python-expert",
+    "category": "other",
+    "description": "Expert in Python development including async programming, type hints, testing with pytest, and modern Python patterns. Use for Python code generation, debugging, and best practices.",
+    "body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Always use type hints for function signatures\n- **Docstrings**: Use Google-style docstrings\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n### Async/Await\n```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```\n\n## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\n@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None\n```\n\n## Error Handling\n\n```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`",
+    "source": "pool"
+  },
+  "generated_query": "I have a synchronous Python script that fetches stock prices from a REST API, processes them, and saves results to a CSV. It's growing unwieldy and I want to modernize it. Could you help me refactor it to use async/await with `aiohttp`, add proper type hints and Google-style docstrings, and replace the ad‑hoc configuration with a dataclass-based config? I also need a `pytest` test suite covering the API client (mocked), the data processing function, and at least one async test. The script currently reads API keys from a `.env` file and uses a plain `requests` library. Please produce the refactored code, a `pyproject.toml` with dependencies pinned, and the test file. Include custom error classes for network issues and missing data. The CSV output should have columns: `symbol`, `price`, `timestamp`.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```",
+          "replacement_text": "",
+          "rationale": "The skill lacks the dataclass pattern essential for the requested dataclass-based configuration.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Always use type hints for function signatures\n- **Docstrings**: Use Google-style docstrings\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n### Async/Await\n```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n\n\n## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\n@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None\n```\n\n## Error Handling\n\n```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```",
+          "replacement_text": "```python\nimport httpx\n\nasync def fetch_data(url: str) -> dict:\n    async with httpx.AsyncClient() as client:\n        response = await client.get(url)\n        return response.json()\n```",
+          "rationale": "The user requires aiohttp for async HTTP, but the skill now uses httpx, preventing the skill from providing the correct library.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\n@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None\n```",
+          "replacement_text": "## Testing with unittest\n\n```python\nimport unittest\nfrom unittest.mock import MagicMock\n\nclass TestSample(unittest.TestCase):\n    def setUp(self):\n        self.data = {\"key\": \"value\"}\n    \n    def test_function(self):\n        self.assertEqual(process(self.data), expected)\n    \n    def test_async_function(self):\n        import asyncio\n        result = asyncio.run(async_operation())\n        self.assertIsNotNone(result)\n```",
+          "rationale": "The user explicitly requests a pytest test suite, but the skill now uses unittest, making it irrelevant to the user's requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Always use type hints for function signatures\n- **Docstrings**: Use Google-style docstrings\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n### Async/Await\n```python\nimport httpx\n\nasync def fetch_data(url: str) -> dict:\n    async with httpx.AsyncClient() as client:\n        response = await client.get(url)\n        return response.json()\n```\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```\n\n## Testing with unittest\n\n```python\nimport unittest\nfrom unittest.mock import MagicMock\n\nclass TestSample(unittest.TestCase):\n    def setUp(self):\n        self.data = {\"key\": \"value\"}\n    \n    def test_function(self):\n        self.assertEqual(process(self.data), expected)\n    \n    def test_async_function(self):\n        import asyncio\n        result = asyncio.run(async_operation())\n        self.assertIsNotNone(result)\n```\n\n## Error Handling\n\n```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```",
+          "replacement_text": "```python\nasync def fetch_data(url: str) -> dict:\n    async with httpx.AsyncClient() as client:\n        response = await client.get(url)\n        return response.json()\n```",
+          "rationale": "Changes the recommended async library from aiohttp to httpx, so the skill no longer matches the user's specific requirement for aiohttp.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Docstrings**: Use Google-style docstrings",
+          "replacement_text": "- **Docstrings**: Use reStructuredText (Sphinx) style docstrings",
+          "rationale": "Changes the docstring style to reStructuredText, opposing the user's explicit request for Google-style docstrings.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Always use type hints for function signatures\n- **Docstrings**: Use reStructuredText (Sphinx) style docstrings\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n### Async/Await\n```python\nasync def fetch_data(url: str) -> dict:\n    async with httpx.AsyncClient() as client:\n        response = await client.get(url)\n        return response.json()\n```\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```\n\n## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\n@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None\n```\n\n## Error Handling\n\n```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Type Hints**: Always use type hints for function signatures",
+          "replacement_text": "- **Type Hints**: Use type hints where appropriate for function signatures",
+          "rationale": "Weakens the requirement to always use type hints, which the query explicitly demands.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Docstrings**: Use Google-style docstrings",
+          "replacement_text": "- **Docstrings**: Use any consistent docstring style (e.g., Google, NumPy, Sphinx)",
+          "rationale": "Weakens the constraint to Google-style docstrings, making the skill ambiguous about the required documentation style.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Use type hints where appropriate for function signatures\n- **Docstrings**: Use any consistent docstring style (e.g., Google, NumPy, Sphinx)\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n### Async/Await\n```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```\n\n## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\n@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None\n```\n\n## Error Handling\n\n```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```",
+          "replacement_text": "```python\nasync def listen_websocket(url: str) -> None:\n    async with aiohttp.ClientSession() as session:\n        async with session.ws_connect(url) as ws:\n            async for msg in ws:\n                print(msg)\n```",
+          "rationale": "The skill demonstrates aiohttp for WebSocket connections instead of REST API, making it unsuitable for HTTP client refactoring.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None",
+          "replacement_text": "def test_sync_function():\n    result = sync_operation()\n    assert result is not None",
+          "rationale": "The skill lacks an async test example, failing the requirement for at least one async test in the test suite.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Always use type hints for function signatures\n- **Docstrings**: Use Google-style docstrings\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n### Async/Await\n```python\nasync def listen_websocket(url: str) -> None:\n    async with aiohttp.ClientSession() as session:\n        async with session.ws_connect(url) as ws:\n            async for msg in ws:\n                print(msg)\n```\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```\n\n## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\ndef test_sync_function():\n    result = sync_operation()\n    assert result is not None\n```\n\n## Error Handling\n\n```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```",
+          "replacement_text": "```python\nasync def fetch_data(url: str) -> dict:\n    await asyncio.sleep(0.1)\n    return {\"data\": \"sample\"}\n```",
+          "rationale": "Replaces the aiohttp-based async example with a generic one that does not use the library required by the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```",
+          "replacement_text": "```python\ndef safe_operation(data: dict) -> dict:\n    try:\n        return process(data)\n    except KeyError as e:\n        print(f\"Error: {e}\")\n        return {}\n```",
+          "rationale": "Removes custom error class example, so the skill lacks the ability to guide creation of domain-specific exceptions for network/missing data.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None",
+          "replacement_text": "def test_processing():\n    result = process(sample_data)\n    assert result == expected",
+          "rationale": "Replaces the async test example with a synchronous one, hiding guidance on writing pytest async tests.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Always use type hints for function signatures\n- **Docstrings**: Use Google-style docstrings\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n### Async/Await\n```python\nasync def fetch_data(url: str) -> dict:\n    await asyncio.sleep(0.1)\n    return {\"data\": \"sample\"}\n```\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```\n\n## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\ndef test_processing():\n    result = process(sample_data)\n    assert result == expected\n```\n\n## Error Handling\n\n```python\ndef safe_operation(data: dict) -> dict:\n    try:\n        return process(data)\n    except KeyError as e:\n        print(f\"Error: {e}\")\n        return {}\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Async/Await\n```python\nasync def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as response:\n            return await response.json()\n```",
+          "replacement_text": "",
+          "rationale": "Without the async/await pattern example, the skill cannot guide the user to refactor synchronous code to async using aiohttp, which is a core requirement of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Python Expert\n\nYou are a Senior Python Engineer with expertise in modern Python (3.10+).\n\n## Code Style\n\n- **Type Hints**: Always use type hints for function signatures\n- **Docstrings**: Use Google-style docstrings\n- **Formatting**: Follow PEP 8, use Black formatting conventions\n- **Imports**: Group stdlib, third-party, local imports\n\n## Patterns\n\n\n\n### Context Managers\n```python\nfrom contextlib import contextmanager\n\n@contextmanager\ndef managed_resource():\n    resource = acquire()\n    try:\n        yield resource\n    finally:\n        release(resource)\n```\n\n### Dataclasses\n```python\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass Config:\n    name: str\n    values: list[str] = field(default_factory=list)\n```\n\n## Testing with pytest\n\n```python\nimport pytest\n\n@pytest.fixture\ndef sample_data():\n    return {\"key\": \"value\"}\n\ndef test_function(sample_data):\n    assert process(sample_data) == expected\n\n@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_operation()\n    assert result is not None\n```\n\n## Error Handling\n\n```python\nclass CustomError(Exception):\n    \"\"\"Domain-specific error.\"\"\"\n    pass\n\ndef safe_operation(data: dict) -> Result:\n    try:\n        return process(data)\n    except KeyError as e:\n        raise CustomError(f\"Missing key: {e}\") from e\n```\n\n## Dependencies\n\n- Use `pyproject.toml` for project configuration\n- Prefer `uv` or `pip-tools` for dependency management\n- Pin versions in production: `package==1.2.3`"
+    }
+  ],
+  "finished_at": "2026-07-28T21:41:15",
+  "elapsed_seconds": 146.25,
+  "generated_variants": 7
+}

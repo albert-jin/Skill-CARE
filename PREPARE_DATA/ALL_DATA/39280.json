@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:01:14",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 39280,
+  "selection_rank": 115,
+  "skill": {
+    "skill_id": "other/fix-duc01226-softwaredevcareers",
+    "name": "fixing",
+    "category": "other",
+    "description": "Fix bugs, errors, test failures, CI/CD issues with intelligent routing. Use when reporting bugs, type errors, log errors, UI issues, code problems. Auto-classifies complexity and activates relevant skills.",
+    "body": "# Fixing\n\nUnified skill for fixing issues of any complexity with intelligent routing.\n\n## Step 0: Mode Selection\n\n**First action:** If there is no \"auto\" keyword in the request, use `AskUserQuestion` to determine workflow mode:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Autonomous** | Simple/moderate issues | Auto-approve if score >= 9.5 & 0 critical |\n| **Human-in-the-loop** | Critical/production code | Pause for approval at each step |\n| **Quick** | Type errors, lint, trivial bugs | Fast debug → fix → review cycle |\n\nSee `references/mode-selection.md` for AskUserQuestion format.\n\n## Step 1: Complexity Assessment\n\nClassify before routing. See `references/complexity-assessment.md`.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n| **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |\n| **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |\n\n## Skill/Subagent Activation Matrix\n\nSee `references/skill-activation-matrix.md` for complete matrix.\n\n**Always activate:** `debugging` (all workflows)\n**Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`\n**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`\n**Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification\n\n## Output Format\n\nUnified step markers:\n```\n✓ Step 0: [Mode] selected - [Complexity] detected\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix implemented - [N] files changed\n✓ Step 3: Tests [X/X passed]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\nLoad as needed:\n- `references/mode-selection.md` - AskUserQuestion format for mode\n- `references/complexity-assessment.md` - Classification criteria\n- `references/workflow-quick.md` - Quick: debug → fix → review\n- `references/workflow-standard.md` - Standard: full pipeline\n- `references/workflow-deep.md` - Deep: research + brainstorm + plan\n- `references/review-cycle.md` - Review logic (autonomous vs HITL)\n- `references/skill-activation-matrix.md` - When to activate each skill\n- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns\n\n**Specialized Workflows:**\n- `references/workflow-ci.md` - GitHub Actions/CI failures\n- `references/workflow-logs.md` - Application log analysis\n- `references/workflow-test.md` - Test suite failures\n- `references/workflow-types.md` - TypeScript type errors\n- `references/workflow-ui.md` - Visual/UI issues (requires design skills)",
+    "source": "pool"
+  },
+  "generated_query": "I'm getting a TypeScript error in my React project after merging a pull request. The CI pipeline fails on the `build` step with:\n\n```\nsrc/components/UserProfile.tsx:47:12 - error TS2322: Type 'string | null' is not assignable to type 'string'.\n  Type 'null' is not assignable to type 'string'.\n\n47   return <DisplayName name={user.nickname} />;\n```\n\nThe `user.nickname` comes from an API that sometimes returns `null`, but the `DisplayName` component expects a `string`. I've already tried adding a fallback inline: `user.nickname ?? ''` but that broke a test that expects the component to show \"Anonymous\" when the name is missing. The test failure in `UserProfile.test.tsx` is:\n\n```\n● displays anonymous for null nickname\n  expect(received).toBeInTheDocument()\n  Received: <span>Anonymous</span>\n  But the actual rendered text was \"\" (empty string)\n```\n\nI need a fix that satisfies both the type checker and the existing test. There are three test files that might need updates, and the fix should also check if other components have the same issue with nullable nickname fields. Also, please run the full test suite and lint after the required capability.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `references/workflow-test.md` - Test suite failures",
+          "replacement_text": "",
+          "rationale": "Without the specific test suite failure workflow, the skill lacks guidance for handling test failures, which is a critical requirement of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Fixing\n\nUnified skill for fixing issues of any complexity with intelligent routing.\n\n## Step 0: Mode Selection\n\n**First action:** If there is no \"auto\" keyword in the request, use `AskUserQuestion` to determine workflow mode:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Autonomous** | Simple/moderate issues | Auto-approve if score >= 9.5 & 0 critical |\n| **Human-in-the-loop** | Critical/production code | Pause for approval at each step |\n| **Quick** | Type errors, lint, trivial bugs | Fast debug → fix → review cycle |\n\nSee `references/mode-selection.md` for AskUserQuestion format.\n\n## Step 1: Complexity Assessment\n\nClassify before routing. See `references/complexity-assessment.md`.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n| **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |\n| **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |\n\n## Skill/Subagent Activation Matrix\n\nSee `references/skill-activation-matrix.md` for complete matrix.\n\n**Always activate:** `debugging` (all workflows)\n**Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`\n**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`\n**Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification\n\n## Output Format\n\nUnified step markers:\n```\n✓ Step 0: [Mode] selected - [Complexity] detected\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix implemented - [N] files changed\n✓ Step 3: Tests [X/X passed]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\nLoad as needed:\n- `references/mode-selection.md` - AskUserQuestion format for mode\n- `references/complexity-assessment.md` - Classification criteria\n- `references/workflow-quick.md` - Quick: debug → fix → review\n- `references/workflow-standard.md` - Standard: full pipeline\n- `references/workflow-deep.md` - Deep: research + brainstorm + plan\n- `references/review-cycle.md` - Review logic (autonomous vs HITL)\n- `references/skill-activation-matrix.md` - When to activate each skill\n- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns\n\n**Specialized Workflows:**\n- `references/workflow-ci.md` - GitHub Actions/CI failures\n- `references/workflow-logs.md` - Application log analysis\n\n- `references/workflow-types.md` - TypeScript type errors\n- `references/workflow-ui.md` - Visual/UI issues (requires design skills)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`",
+          "replacement_text": "**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`",
+          "rationale": "Without the tester and Bash subagents, the skill cannot run the full test suite or lint, which the user explicitly requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Fixing\n\nUnified skill for fixing issues of any complexity with intelligent routing.\n\n## Step 0: Mode Selection\n\n**First action:** If there is no \"auto\" keyword in the request, use `AskUserQuestion` to determine workflow mode:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Autonomous** | Simple/moderate issues | Auto-approve if score >= 9.5 & 0 critical |\n| **Human-in-the-loop** | Critical/production code | Pause for approval at each step |\n| **Quick** | Type errors, lint, trivial bugs | Fast debug → fix → review cycle |\n\nSee `references/mode-selection.md` for AskUserQuestion format.\n\n## Step 1: Complexity Assessment\n\nClassify before routing. See `references/complexity-assessment.md`.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n| **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |\n| **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |\n\n## Skill/Subagent Activation Matrix\n\nSee `references/skill-activation-matrix.md` for complete matrix.\n\n**Always activate:** `debugging` (all workflows)\n**Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`\n**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`\n**Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification\n\n## Output Format\n\nUnified step markers:\n```\n✓ Step 0: [Mode] selected - [Complexity] detected\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix implemented - [N] files changed\n✓ Step 3: Tests [X/X passed]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\nLoad as needed:\n- `references/mode-selection.md` - AskUserQuestion format for mode\n- `references/complexity-assessment.md` - Classification criteria\n- `references/workflow-quick.md` - Quick: debug → fix → review\n- `references/workflow-standard.md` - Standard: full pipeline\n- `references/workflow-deep.md` - Deep: research + brainstorm + plan\n- `references/review-cycle.md` - Review logic (autonomous vs HITL)\n- `references/skill-activation-matrix.md` - When to activate each skill\n- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns\n\n**Specialized Workflows:**\n- `references/workflow-ci.md` - GitHub Actions/CI failures\n- `references/workflow-logs.md` - Application log analysis\n- `references/workflow-test.md` - Test suite failures\n- `references/workflow-types.md` - TypeScript type errors\n- `references/workflow-ui.md` - Visual/UI issues (requires design skills)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "✓ Step 3: Tests [X/X passed]",
+          "replacement_text": "✓ Step 3: Linting [X warnings]",
+          "rationale": "The skill's output no longer reports test results, so it cannot satisfy the user's requirement to run the full test suite and verify test passes.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Fixing\n\nUnified skill for fixing issues of any complexity with intelligent routing.\n\n## Step 0: Mode Selection\n\n**First action:** If there is no \"auto\" keyword in the request, use `AskUserQuestion` to determine workflow mode:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Autonomous** | Simple/moderate issues | Auto-approve if score >= 9.5 & 0 critical |\n| **Human-in-the-loop** | Critical/production code | Pause for approval at each step |\n| **Quick** | Type errors, lint, trivial bugs | Fast debug → fix → review cycle |\n\nSee `references/mode-selection.md` for AskUserQuestion format.\n\n## Step 1: Complexity Assessment\n\nClassify before routing. See `references/complexity-assessment.md`.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n| **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |\n| **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |\n\n## Skill/Subagent Activation Matrix\n\nSee `references/skill-activation-matrix.md` for complete matrix.\n\n**Always activate:** `debugging` (all workflows)\n**Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`\n**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`\n**Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification\n\n## Output Format\n\nUnified step markers:\n```\n✓ Step 0: [Mode] selected - [Complexity] detected\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix implemented - [N] files changed\n✓ Step 3: Linting [X warnings]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\nLoad as needed:\n- `references/mode-selection.md` - AskUserQuestion format for mode\n- `references/complexity-assessment.md` - Classification criteria\n- `references/workflow-quick.md` - Quick: debug → fix → review\n- `references/workflow-standard.md` - Standard: full pipeline\n- `references/workflow-deep.md` - Deep: research + brainstorm + plan\n- `references/review-cycle.md` - Review logic (autonomous vs HITL)\n- `references/skill-activation-matrix.md` - When to activate each skill\n- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns\n\n**Specialized Workflows:**\n- `references/workflow-ci.md` - GitHub Actions/CI failures\n- `references/workflow-logs.md` - Application log analysis\n- `references/workflow-test.md` - Test suite failures\n- `references/workflow-types.md` - TypeScript type errors\n- `references/workflow-ui.md` - Visual/UI issues (requires design skills)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "✓ Step 3: Tests [X/X passed]",
+          "replacement_text": "✓ Step 3: Type check [X/X type errors resolved]",
+          "rationale": "The edited skill only validates type errors and omits running the full test suite, so it would miss the requirement that existing tests (especially the 'Anonymous' test) must pass.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Fixing\n\nUnified skill for fixing issues of any complexity with intelligent routing.\n\n## Step 0: Mode Selection\n\n**First action:** If there is no \"auto\" keyword in the request, use `AskUserQuestion` to determine workflow mode:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Autonomous** | Simple/moderate issues | Auto-approve if score >= 9.5 & 0 critical |\n| **Human-in-the-loop** | Critical/production code | Pause for approval at each step |\n| **Quick** | Type errors, lint, trivial bugs | Fast debug → fix → review cycle |\n\nSee `references/mode-selection.md` for AskUserQuestion format.\n\n## Step 1: Complexity Assessment\n\nClassify before routing. See `references/complexity-assessment.md`.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n| **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |\n| **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |\n\n## Skill/Subagent Activation Matrix\n\nSee `references/skill-activation-matrix.md` for complete matrix.\n\n**Always activate:** `debugging` (all workflows)\n**Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`\n**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`\n**Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification\n\n## Output Format\n\nUnified step markers:\n```\n✓ Step 0: [Mode] selected - [Complexity] detected\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix implemented - [N] files changed\n✓ Step 3: Type check [X/X type errors resolved]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\nLoad as needed:\n- `references/mode-selection.md` - AskUserQuestion format for mode\n- `references/complexity-assessment.md` - Classification criteria\n- `references/workflow-quick.md` - Quick: debug → fix → review\n- `references/workflow-standard.md` - Standard: full pipeline\n- `references/workflow-deep.md` - Deep: research + brainstorm + plan\n- `references/review-cycle.md` - Review logic (autonomous vs HITL)\n- `references/skill-activation-matrix.md` - When to activate each skill\n- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns\n\n**Specialized Workflows:**\n- `references/workflow-ci.md` - GitHub Actions/CI failures\n- `references/workflow-logs.md` - Application log analysis\n- `references/workflow-test.md` - Test suite failures\n- `references/workflow-types.md` - TypeScript type errors\n- `references/workflow-ui.md` - Visual/UI issues (requires design skills)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Fix bugs, errors, test failures, CI/CD issues with intelligent routing. Use when reporting bugs, type errors, log errors, UI issues, code problems. Auto-classifies complexity and activates relevant skills.",
+          "replacement_text": "Fix CI/CD pipeline configuration and infrastructure issues with intelligent routing. Use when reporting pipeline failures, deployment errors, build script problems, or test runner issues. Auto-classifies complexity and activates relevant skills.",
+          "rationale": "The skill now exclusively targets CI/CD pipeline issues, not code-level type errors or test logic, so it fails to address the actual TypeScript error in the React component.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `references/workflow-types.md` - TypeScript type errors",
+          "replacement_text": "",
+          "rationale": "Removing the TypeScript type error workflow reference prevents the skill from routing to the necessary procedure for fixing the user's TS2322 error and test mismatch.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# TypeScript & Test Fix (Quick)\n\nUnified skill for fixing type errors and test mismatches with minimal overhead.\n\n## Step 0: Mode Selection\n\n**Always Quick mode.** No user input needed. The system auto-selects Quick for any issue involving TypeScript errors and test files.\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Quick** | Type errors, lint, trivial test mismatches | Debug → fix → review in single pass |\n\nNo human-in-the-loop or autonomous complex workflows.\n\n## Step 1: Complexity Bypass\n\nAll type/test issues are treated as **Simple** unless explicitly flagged by CI for multiple files. In that case, default to **Moderate** and skip deep analysis.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n\nNo Complex or Parallel handling.\n\n## Skill/Subagent Activation\n\n- Always: `debugging` (Quick mode)\n- Conditional: `code-reviewer`, `tester`\n- No `planner`, `researcher`, `sequential-thinking`\n\nSubagents: `Bash`, `tester` (for single test file only)\n\n## Output Format\n\n```\n✓ Step 0: Quick mode selected - Type.js error\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix applied to [filename]\n✓ Step 3: Test for that file [PASS/FAIL]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\n- `references/workflow-quick.md` – Fast debug → fix → review\n- `references/workflow-types.md` – TypeScript type errors\n- `references/workflow-test.md` – Test suite failures (single file focus)\n\n**Note:** This skill only runs lint on the file that was changed. Full test suite and lint are skipped unless explicitly requested. Cross‑component checks are not performed – only the reported error location is addressed.\n\n## Special Cases\n\n- **Test mismatch:** If the test expects different behavior than the type fix, update the test to match the new output (rather than preserving existing test expectations).\n- **Multi‑file type errors:** Only the first identified file is fixed; remaining errors are logged but not resolved."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `references/workflow-ci.md` - GitHub Actions/CI failures",
+          "replacement_text": "",
+          "rationale": "Removing the CI workflow reference prevents the skill from handling GitHub Actions pipeline failures, which is a core need of the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `references/workflow-test.md` - Test suite failures",
+          "replacement_text": "",
+          "rationale": "Deleting the test workflow reference makes the skill unable to properly address the existing test failure described in the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `references/workflow-types.md` - TypeScript type errors",
+          "replacement_text": "",
+          "rationale": "Without the TypeScript type errors workflow, the skill lacks specific guidance for resolving TS2322, which is the central issue.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Fixing\n\nUnified skill for fixing issues of any complexity with intelligent routing.\n\n## Step 0: Mode Selection\n\n**First action:** If there is no \"auto\" keyword in the request, use `AskUserQuestion` to determine workflow mode:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Autonomous** | Simple/moderate issues | Auto-approve if score >= 9.5 & 0 critical |\n| **Human-in-the-loop** | Critical/production code | Pause for approval at each step |\n| **Quick** | Type errors, lint, trivial bugs | Fast debug → fix → review cycle |\n\nSee `references/mode-selection.md` for AskUserQuestion format.\n\n## Step 1: Complexity Assessment\n\nClassify before routing. See `references/complexity-assessment.md`.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n| **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |\n| **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |\n\n## Skill/Subagent Activation Matrix\n\nSee `references/skill-activation-matrix.md` for complete matrix.\n\n**Always activate:** `debugging` (all workflows)\n**Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`\n**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`\n**Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification\n\n## Output Format\n\nUnified step markers:\n```\n✓ Step 0: [Mode] selected - [Complexity] detected\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix implemented - [N] files changed\n✓ Step 3: Tests [X/X passed]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\nLoad as needed:\n- `references/mode-selection.md` - AskUserQuestion format for mode\n- `references/complexity-assessment.md` - Classification criteria\n- `references/workflow-quick.md` - Quick: debug → fix → review\n- `references/workflow-standard.md` - Standard: full pipeline\n- `references/workflow-deep.md` - Deep: research + brainstorm + plan\n- `references/review-cycle.md` - Review logic (autonomous vs HITL)\n- `references/skill-activation-matrix.md` - When to activate each skill\n- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns\n\n**Specialized Workflows:**\n\n- `references/workflow-logs.md` - Application log analysis\n\n\n- `references/workflow-ui.md` - Visual/UI issues (requires design skills)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Subagents: `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`",
+          "replacement_text": "Subagents: `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`",
+          "rationale": "Removing the Bash subagent prevents the skill from running the required test suite and lint commands.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `references/workflow-types.md` - TypeScript type errors",
+          "replacement_text": "",
+          "rationale": "Deleting the TypeScript specialized workflow makes the skill unable to properly handle TypeScript type errors, which is core to the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Test-Driven Fixing\n\nSpecialized skill for resolving mismatches between test expectations and runtime behavior.\n\n## Step 0: Mode Selection\n\n**First action:** Use `AskUserQuestion` to determine if the fix should prioritize test consistency or type safety:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Test-First** | Only test failures reported | Update code to match current test expectations |\n| **Type-First** | Only type errors reported | Keep existing tests, add type-safe coercion |\n| **Balanced** | Both reported (rare) | Quickest path to green pipeline – usually test update |\n\n## Step 1: Test Failure Analysis\n\nLoad `references/test-failure-patterns.md`. Classify the failure:\n\n- **Expectation mismatch:** The test expects a specific value/component but code produces something else.\n- **Missing mock/state:** Test setup incomplete.\n- **Async timing:** Race condition in test.\n\nFor expectation mismatches, the default fix is **always to update the test** to match the actual rendered output, because the test is the source of truth for desired behavior.\n\n## Step 2: Implement Test Update\n\n1. Locate the failing test file (e.g., `UserProfile.test.tsx`).\n2. Change the assertion to match what the component actually renders.\n   - If component renders `\"\"` but test expects `\"Anonymous\"`, modify the test: `expect(screen.getByText(\"\")).toBeInTheDocument()`.\n3. If other components use the same prop, update their tests similarly.\n4. Do not modify the component code – the test was wrong.\n\n## Step 3: Verification\n\nRun the failing test suite only. Use `Bash` subagent with:\n\n```\nnpx jest UserProfile.test.tsx --no-coverage\n```\n\nIf the test passes, the fix is complete. Do not run lint or full suite – that is out of scope.\n\n## Output Format\n\n```\n✓ Step 0: [Mode] selected – Test-First\n✓ Step 1: Identified test expectation mismatch in [file]\n✓ Step 2: Updated [N] test assertions\n✓ Step 3: Test suite [X/X passed]\n✓ Step 4: No further issues – review not required\n```\n\n## References\n\n- `references/test-failure-patterns.md` – Common failure types\n- `references/workflow-quick.md` – For single-file test updates\n- `references/parallel-test-runner.md` – Running tests concurrently\n\n**Important:** This workflow does not cover type errors, linting, or production code changes. Those are handled by separate skills."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `tester`, `Bash`",
+          "replacement_text": "**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `designer`",
+          "rationale": "Removes tester and Bash subagents, preventing the skill from running test suite and CI commands needed for the user's fix.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Fixing\n\nUnified skill for fixing issues of any complexity with intelligent routing.\n\n## Step 0: Mode Selection\n\n**First action:** If there is no \"auto\" keyword in the request, use `AskUserQuestion` to determine workflow mode:\n\n| Option | Recommend When | Behavior |\n|--------|----------------|----------|\n| **Autonomous** | Simple/moderate issues | Auto-approve if score >= 9.5 & 0 critical |\n| **Human-in-the-loop** | Critical/production code | Pause for approval at each step |\n| **Quick** | Type errors, lint, trivial bugs | Fast debug → fix → review cycle |\n\nSee `references/mode-selection.md` for AskUserQuestion format.\n\n## Step 1: Complexity Assessment\n\nClassify before routing. See `references/complexity-assessment.md`.\n\n| Level | Indicators | Workflow |\n|-------|------------|----------|\n| **Simple** | Single file, clear error, type/lint | `references/workflow-quick.md` |\n| **Moderate** | Multi-file, root cause unclear | `references/workflow-standard.md` |\n| **Complex** | System-wide, architecture impact | `references/workflow-deep.md` |\n| **Parallel** | 2+ independent issues | Parallel `fullstack-developer` agents |\n\n## Skill/Subagent Activation Matrix\n\nSee `references/skill-activation-matrix.md` for complete matrix.\n\n**Always activate:** `debugging` (all workflows)\n**Conditional:** `problem-solving`, `sequential-thinking`, `brainstorming`, `context-engineering`\n**Subagents:** `debugger`, `researcher`, `planner`, `code-reviewer`, `designer`\n**Parallel:** Multiple `Explore` agents for scouting, `Bash` agents for verification\n\n## Output Format\n\nUnified step markers:\n```\n✓ Step 0: [Mode] selected - [Complexity] detected\n✓ Step 1: Root cause identified - [summary]\n✓ Step 2: Fix implemented - [N] files changed\n✓ Step 3: Tests [X/X passed]\n✓ Step 4: Review [score]/10 - [status]\n✓ Step 5: Complete - [action taken]\n```\n\n## References\n\nLoad as needed:\n- `references/mode-selection.md` - AskUserQuestion format for mode\n- `references/complexity-assessment.md` - Classification criteria\n- `references/workflow-quick.md` - Quick: debug → fix → review\n- `references/workflow-standard.md` - Standard: full pipeline\n- `references/workflow-deep.md` - Deep: research + brainstorm + plan\n- `references/review-cycle.md` - Review logic (autonomous vs HITL)\n- `references/skill-activation-matrix.md` - When to activate each skill\n- `references/parallel-exploration.md` - Parallel Explore/Bash subagents patterns\n\n**Specialized Workflows:**\n- `references/workflow-ci.md` - GitHub Actions/CI failures\n- `references/workflow-logs.md` - Application log analysis\n- `references/workflow-test.md` - Test suite failures\n- `references/workflow-types.md` - TypeScript type errors\n- `references/workflow-ui.md` - Visual/UI issues (requires design skills)"
+    }
+  ],
+  "finished_at": "2026-07-28T18:03:51",
+  "elapsed_seconds": 156.265,
+  "generated_variants": 8
+}

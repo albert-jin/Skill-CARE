@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:43:06",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 57231,
+  "selection_rank": 200,
+  "skill": {
+    "skill_id": "other/updater-shiiman-claude-code-plugins",
+    "name": "updater",
+    "category": "other",
+    "description": "指定したプラグインを最新バージョンに更新する。「プラグインを更新」「〇〇をアップデート」「最新版にして」「プラグインをアップデート」「〇〇を更新して」「プラグインを最新に」「〇〇のバージョンを上げて」「全部アップデート」「プラグイン全部更新」「まとめて更新」などで起動。claude plugin update コマンドを使用して更新。",
+    "body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。",
+    "source": "pool"
+  },
+  "generated_query": "I have several plugins installed on my WordPress site, including Yoast SEO, WooCommerce, and Contact Form 7. I've noticed there are new versions available for all of them but I'm not sure which ones need updating. Can you check for updates and then update all of them to the latest versions? After that, let me know which versions were installed previously and what the new versions are.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。",
+          "replacement_text": "",
+          "rationale": "Removing the instruction for bulk update makes the skill unable to handle the user's request to update all plugins at once.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）",
+          "replacement_text": "2. `/shiiman-plugin:check-updates` を SlashCommand ツールで実行（実装は Commands に委譲）",
+          "rationale": "Replaces the update command with a check-updates command, so the skill only checks for available updates without performing any updates, failing the user's request to update all plugins.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:check-updates` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. `commands/update.md` を Read ツールで参照（SSOT として扱う）",
+          "replacement_text": "1. ユーザーから指定されたプラグイン名を確認し、そのプラグインのみを更新する。",
+          "rationale": "Removes the step to read update checklist and changes behavior to only handle single plugin update without version reporting.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。",
+          "replacement_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、個別のプラグイン名を指定してください。一括更新はサポートしていません。",
+          "rationale": "Removes support for bulk updates, which the user explicitly requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n1. ユーザーから指定されたプラグイン名を確認し、そのプラグインのみを更新する。\n2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、個別のプラグイン名を指定してください。一括更新はサポートしていません。"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。",
+          "replacement_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、各プラグインを個別に指定して `/shiiman-plugin:update <plugin名>` を実行します。",
+          "rationale": "By removing the --all flag, the skill no longer supports updating all plugins at once, forcing individual specification, which fails the user's request for a bulk update.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、各プラグインを個別に指定して `/shiiman-plugin:update <plugin名>` を実行します。"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "インストール済みのプラグインを最新バージョンに更新します。",
+          "replacement_text": "インストール済みのプラグインの更新確認を行います。",
+          "rationale": "Changes the core purpose from updating plugins to only checking for updates, so the skill will not actually perform the update action.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "/shiiman-plugin:update --all",
+          "replacement_text": "/shiiman-plugin:check --all",
+          "rationale": "Replaces the update command with a check-only command, ensuring no update is applied even for batch requests.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインの更新確認を行います。\n\n## 実行内容\n\n1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:check --all` を実行します。"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）",
+          "replacement_text": "2. `/shiiman-plugin:check-updates` を SlashCommand ツールで実行（実装は Commands に委譲）",
+          "rationale": "The skill now only checks for available updates instead of actually performing the update, so the user's request to update all plugins will not be fulfilled.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。",
+          "replacement_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:check-updates --all` を実行します。",
+          "rationale": "The skill now only checks for available updates instead of actually performing the update, so the user's request to update all plugins will not be fulfilled.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:check-updates` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:check-updates --all` を実行します。"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n",
+          "replacement_text": "",
+          "rationale": "Deleting the step that reads the update.md SSOT removes the ability to check for available updates, which the user explicitly requests before updating.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. `/shiiman-plugin:update` を SlashCommand ツールで実行（実装は Commands に委譲）",
+          "replacement_text": "2. `/shiiman-plugin:check` を SlashCommand ツールで実行（確認のみ行う）",
+          "rationale": "Replaces the core update API with a version check only, so the skill never performs the requested update.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:update --all` を実行します。",
+          "replacement_text": "「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:check --all` を実行します。",
+          "rationale": "Aligns the all-plugins case with the check-only command, ensuring no update is run even when the user asks for a bulk update.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plugin Updater\n\nインストール済みのプラグインを最新バージョンに更新します。\n\n## 実行内容\n\n1. `commands/update.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:check` を SlashCommand ツールで実行（確認のみ行う）\n\n## ドキュメント参照\n\n- `commands/update.md` - 機能の詳細\n- `/shiiman-plugin:update` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:update` に委譲します（SSOT として扱う）\n\n### 一括更新の場合\n\n「全部アップデート」「プラグイン全部更新」「まとめて更新」などの場合は、`/shiiman-plugin:check --all` を実行します。"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `/shiiman-plugin:update --all` を実行します。",
+          "replacement_text": "- `/shiiman-plugin:update` を各プラグインに対して個別に実行する必要があります（一括更新非対応）。",
+          "rationale": "By removing the ability to update all plugins at once, the skill cannot efficiently handle the user's request to update all plugins simultaneously, requiring manual intervention.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Plugin Update Checker\n\nインストール済みのプラグインの新しいバージョンの有無を確認します。\n\n## 実行内容\n\n1. `commands/check-updates.md` を Read ツールで参照（SSOT として扱う）\n2. `/shiiman-plugin:check-updates` を SlashCommand ツールで実行（実装は Commands に委譲）\n\n## ドキュメント参照\n\n- `commands/check-updates.md` - 機能の詳細\n- `/shiiman-plugin:check-updates` - 機能の実装\n\n## コマンド連携\n\n実際の処理は `/shiiman-plugin:check-updates` に委譲します（SSOT として扱う）\n\n### 一括確認の場合\n\n「全部チェック」「プラグイン全部確認」「まとめて確認」などの場合は、`/shiiman-plugin:check-updates --all` を実行します。"
+    }
+  ],
+  "finished_at": "2026-07-28T22:46:20",
+  "elapsed_seconds": 194.313,
+  "generated_variants": 9
+}

@@ -1,0 +1,254 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:26:35",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 63670,
+  "selection_rank": 82,
+  "skill": {
+    "skill_id": "other/gcp-billing",
+    "name": "gcp-billing",
+    "category": "other",
+    "description": "GCP Billing 조회",
+    "body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 20\n\"\n```\n\n### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n총 비용: $XX.XX\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |",
+    "source": "pool"
+  },
+  "generated_query": "We’re running a multi-project GCP environment and need to review last month’s spending. Could you pull the latest billing data from our default billing export project (patent-481206) and give me:\n- Total cost per project (last 30 days), sorted by most expensive.\n- Total cost per service (last 30 days), top 20 services.\n- Daily cost trend for the past 7 days.\n\nPresent the results in neat tables, and include a grand total at the end.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the daily cost trend query removes the capability to generate the required 7-day trend, making the skill fail the user's request despite retaining project and service cost queries.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 20\n\"\n```\n\n\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n총 비용: $XX.XX\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```",
+          "replacement_text": "### 프로젝트 목록\n\n```bash\ngcloud projects list --format=\"table(projectId, name)\"\n```",
+          "rationale": "Replaces the per-project cost query with a simple project listing, so no cost data per project is retrieved.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 20\n\"\n```",
+          "replacement_text": "### 서비스 목록\n\n```bash\ngcloud services list --available --format=\"table(config.name, title)\"\n```",
+          "rationale": "Replaces the per-service cost query with a list of available services, so cost per service is missing.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```",
+          "replacement_text": "### 최근 결제 내역\n\n```bash\ngcloud alpha billing accounts get-iam-policy ACCOUNT_ID --format=json\n```",
+          "rationale": "Replaces the daily cost trend query with an IAM policy command, so daily cost data is not available.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트 목록\n\n```bash\ngcloud projects list --format=\"table(projectId, name)\"\n```\n\n### 서비스 목록\n\n```bash\ngcloud services list --available --format=\"table(config.name, title)\"\n```\n\n### 최근 결제 내역\n\n```bash\ngcloud alpha billing accounts get-iam-policy ACCOUNT_ID --format=json\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n총 비용: $XX.XX\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "LIMIT 20",
+          "replacement_text": "",
+          "rationale": "Removing the LIMIT clause causes the query to return all services instead of the top 20, failing to meet the user's explicit request for top 20 services.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "총 비용: $XX.XX",
+          "replacement_text": "",
+          "rationale": "Omitting the grand total line means the output does not include the required grand total, making the skill incomplete for the user's query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\n\n\"\n```\n\n### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "GROUP BY project.id, project.name, currency\nORDER BY total_cost DESC",
+          "replacement_text": "GROUP BY project.id, project.name, currency\nORDER BY total_cost ASC",
+          "rationale": "Changing the sort order from descending to ascending makes the project list start with the cheapest instead of the most expensive, failing the user's explicit requirement to sort by most expensive.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost ASC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 20\n\"\n```\n\n### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n총 비용: $XX.XX\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)",
+          "replacement_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)",
+          "rationale": "Changing the time range to 7 days means the query no longer returns last 30 days of data, failing the user's request for monthly totals.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)",
+          "replacement_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)",
+          "rationale": "Same date range change in the service query prevents the top 20 services from covering the last 30 days as required.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "총 비용: $XX.XX",
+          "replacement_text": "",
+          "rationale": "Removing the grand total line omits a key output element explicitly requested by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# GCP Billing Overview\n\nQuickly review your GCP billing export data. This skill helps you get a summary of recent costs.\n\n## Usage\n\n```\n/gcp-billing                    # Use default billing export project\n/gcp-billing my-project-id      # Use a specific project's billing export\n```\n\n## Configuration\n\nDefault billing export project: `patent-481206` (see context.md)\nDefault dataset: `billing_export.gcp_billing_export_v1_*`\n\n## Queries\n\n### Project Cost Summary (last 7 days)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### Top Services by Cost (last 30 days, top 10)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 10\n\"\n```\n\n### Weekly Cost Trend (last 4 weeks)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE_TRUNC(DATE(usage_start_time), WEEK(MONDAY)) AS week,\n  ROUND(SUM(cost), 2) AS weekly_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY)\nGROUP BY week\nORDER BY week DESC\n\"\n```\n\n## Output Format\n\n```\n## Recent Costs\n\n### Project Costs (7 days)\n| Project | Cost |\n|---------|------|\n\n### Top 10 Services (30 days)\n| Service | Cost |\n|---------|------|\n\n### Weekly Trend (4 weeks)\n| Week | Cost |\n|------|------|\n```\n\n## Related Skills\n\n| Skill | Usage |\n|-------|-------|\n| `/gcp-billing-accounts` | List billing accounts |\n| `/gcp-billing-budgets` | Budget alerts and thresholds |\n| `/gcp-usage` | API usage metrics |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)",
+          "replacement_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)",
+          "rationale": "The daily cost trend now covers 30 days instead of the requested 7 days, failing to provide the specific short-term trend the user needs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "총 비용: $XX.XX",
+          "replacement_text": "",
+          "rationale": "Omitting the grand total line means the output no longer includes the summary the user explicitly asked for.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 20\n\"\n```\n\n### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```",
+          "replacement_text": "",
+          "rationale": "Without the daily cost trend query, the skill cannot provide the daily cost trend for the past 7 days, which is a key request in the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 20\n\"\n```\n\n\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n총 비용: $XX.XX\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "FROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`",
+          "replacement_text": "FROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v2_*\\`",
+          "rationale": "Changes the billing export table to a non-existent version, causing all queries to fail and return no data.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "FROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`",
+          "replacement_text": "FROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v2_*\\`",
+          "rationale": "Changes the billing export table to a non-existent version, causing all queries to fail and return no data.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "FROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`",
+          "replacement_text": "FROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v2_*\\`",
+          "rationale": "Changes the billing export table to a non-existent version, causing all queries to fail and return no data.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 3, expected 1",
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 7일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일, 상위 10개)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 10\n\"\n```\n\n### 일별 비용 추이 (최근 3일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (7일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일) – 상위 10개\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (3일)\n| 날짜 | 비용 |\n|------|------|\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)",
+          "replacement_text": "WHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)",
+          "rationale": "Changes the daily cost trend to cover last 30 days instead of last 7 days, failing the user's requirement for exactly 7-day trend.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "---\n총 비용: $XX.XX",
+          "replacement_text": "",
+          "rationale": "Removes the grand total from the output, so the skill does not provide the requested summary.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 20\n\"\n```\n\n### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "LIMIT 20",
+          "replacement_text": "LIMIT 10",
+          "rationale": "By limiting to only the top 10 services instead of the requested top 20, the skill fails to provide the complete service-level breakdown the user asked for.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "INTERVAL 7 DAY",
+          "replacement_text": "INTERVAL 30 DAY",
+          "rationale": "Changing the daily cost trend interval to 30 days instead of the requested 7 days means the query returns a much longer period, which does not satisfy the user's specific constraint for the past week.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP Billing 조회\n\n결제 계정의 프로젝트별/서비스별 비용을 조회합니다.\n\n## 사용법\n\n```\n/gcp-billing                    # 기본 Billing Export 프로젝트 사용\n/gcp-billing my-project-id      # 특정 프로젝트의 Billing Export 사용\n```\n\n## 설정\n\nBilling Export 프로젝트와 데이터셋을 확인:\n- 기본값: `patent-481206` (context.md 참조)\n- 데이터셋: `billing_export.gcp_billing_export_v1_*`\n\n## 실행할 쿼리\n\n### 프로젝트별 비용 (최근 30일)\n\n```bash\nBILLING_PROJECT=${1:-patent-481206}\n\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  project.id AS project_id,\n  project.name AS project_name,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY project.id, project.name, currency\nORDER BY total_cost DESC\n\"\n```\n\n### 서비스별 비용 (최근 30일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  service.description AS service,\n  ROUND(SUM(cost), 2) AS total_cost,\n  currency\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY service.description, currency\nORDER BY total_cost DESC\nLIMIT 10\n\"\n```\n\n### 일별 비용 추이 (최근 7일)\n\n```bash\nbq query --project_id=$BILLING_PROJECT --use_legacy_sql=false \"\nSELECT\n  DATE(usage_start_time) AS date,\n  ROUND(SUM(cost), 2) AS daily_cost\nFROM \\`$BILLING_PROJECT.billing_export.gcp_billing_export_v1_*\\`\nWHERE DATE(usage_start_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)\nGROUP BY date\nORDER BY date DESC\n\"\n```\n\n## 출력 형식\n\n```\n## 비용 현황\n\n### 프로젝트별 비용 (30일)\n| 프로젝트 | 비용 |\n|----------|------|\n\n### 서비스별 비용 (30일)\n| 서비스 | 비용 |\n|--------|------|\n\n### 일별 추이 (7일)\n| 날짜 | 비용 |\n|------|------|\n\n---\n총 비용: $XX.XX\n```\n\n## 관련 스킬\n\n| 스킬 | 용도 |\n|------|------|\n| `/gcp-billing-accounts` | 결제 계정 목록 |\n| `/gcp-billing-projects` | 계정별 프로젝트 |\n| `/gcp-usage` | API 사용량 조회 |"
+    }
+  ],
+  "finished_at": "2026-07-28T16:30:26",
+  "elapsed_seconds": 231.907,
+  "generated_variants": 10
+}

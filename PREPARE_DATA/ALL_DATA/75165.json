@@ -1,0 +1,182 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:20:19",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 75165,
+  "selection_rank": 120,
+  "skill": {
+    "skill_id": "data/forensics",
+    "name": "forensics",
+    "category": "data",
+    "description": "Extracts hidden data from files and analyzes forensic artifacts. Use when working with images, memory dumps, disk images, steganography, file carving, or when searching for hidden flags in files.",
+    "body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\nzsteg image.png\nzsteg -a image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking",
+    "source": "pool"
+  },
+  "generated_query": "I’ve been given a PNG image from a CTF challenge, and the hint says the flag is hidden using standard steganography techniques. I need to check the metadata, search for any embedded strings, and try common stego extraction methods like zsteg and steghide to recover the flag. Can you help me walk through the process and identify the hidden content?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\nzsteg image.png\nzsteg -a image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)",
+          "replacement_text": "",
+          "rationale": "Without the specific stego extraction commands like zsteg and steghide, the skill cannot guide the user to extract hidden data from PNG images, which is essential for the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "zsteg image.png",
+          "replacement_text": "steghide extract -sf image.png",
+          "rationale": "Replaces the PNG-specific stego tool zsteg with steghide, which does not support PNG, so the user cannot extract the hidden flag.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\nsteghide extract -sf image.png\nzsteg -a image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |",
+          "replacement_text": "| Image (JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |",
+          "rationale": "Removes PNG from the supported image types, so the skill will not guide the user for a PNG image.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "zsteg image.png",
+          "replacement_text": "zsteg image.jpg",
+          "rationale": "Changes the stego tool command to target a .jpg file, making PNG stego extraction unsupported.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\nzsteg image.jpg\nzsteg -a image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\nzsteg image.png\nzsteg -a image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)",
+          "replacement_text": "## Image Stego - Quick Start\n\n```bash\n# JPEG only (PNG stego not supported)\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)",
+          "rationale": "The skill now explicitly excludes PNG stego, making it irrelevant for the user's PNG-based steganography task.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# JPEG only (PNG stego not supported)\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\n# PNG\nzsteg image.png\nzsteg -a image.png\n```",
+          "replacement_text": "```bash\n# JPEG\nsteghide extract -sf image.jpg\n```",
+          "rationale": "Replaces PNG-specific zsteg commands with JPEG-only steghide, so the skill cannot extract hidden data from PNG files as required.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for common markers\n- [ ] Check for embedded archives (binwalk)\n- [ ] Try file carving techniques\n- [ ] Extract hidden payloads\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"password|zip|rar|gzip\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis & carving | [reference/file-analysis.md](reference/file-analysis.md) |\n| Network capture | PCAP analysis | Use `networking` skill |\n| Disk image | Mount & forensic analysis | [reference/disk.md](reference/disk.md) |\n\n## Embedded File Extraction – Quick Start\n\n```bash\n# Binwalk to find embedded files\nbinwalk -Me file.bin  # Automatically extract known signatures\n\n# Foremost for file carving\nforemost -t jpg,png,pdf -i file.bin -o carved_output/\n\n# TestDisk for partition recovery (if disk image)\ntestdisk /dev/sdb\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Memory Dump – Quick Start\n\n```bash\n# Volatility 3 (for Linux/Windows dumps)\nvol -f memory.dmp linux.bash\nvol -f memory.dmp windows.cmdline\nvol -f memory.dmp windows.malfind\n\n# Identify suspicious processes\nvol -f memory.dmp windows.pstree\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## Hex Analysis & Header Repair\n\n```bash\n# Check first bytes (magic bytes)\nxxd file | head -10\n\n# Fix a corrupted header (PNG example)\nprintf '\\x89PNG\\r\\n\\x1a\\n' | dd of=file bs=1 seek=0 conv=notrunc\n\n# Hachoir-metadata for detailed hex\nhachoir-metadata file\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| HexEd.it | hexed.it | Online hex editor |\n| FotoForensics | fotoforensics.com | Error level analysis (ELA) |\n| VirusTotal | virustotal.com | Check file hash against known malware |\n\n## Reference Files\n\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, file carving, header repair\n- **[Memory](reference/memory.md)**: Volatility, process & network artifact extraction\n- **[Disk](reference/disk.md)**: Mounting images, MBR/GPT recovery, slack space"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\nzsteg image.png\nzsteg -a image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```",
+          "replacement_text": "```bash\n# Use a steganography extraction tool to recover hidden data.\n```",
+          "rationale": "Replaces specific stego commands with a generic instruction, leaving the user without the needed zsteg/steghide commands explicitly shown.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# Use a steganography extraction tool to recover hidden data.\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "zsteg image.png\nzsteg -a image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force",
+          "replacement_text": "",
+          "rationale": "Removes the steganography extraction tools (zsteg, steghide) that are essential for analyzing PNG images for hidden flags.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\n\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "zsteg image.png",
+          "replacement_text": "steghide extract -sf image.png",
+          "rationale": "Replaces the correct PNG stego tool zsteg with steghide which only works on JPEG, causing the user's query to fail.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "zsteg -a image.png",
+          "replacement_text": "steghide extract -sf image.png",
+          "rationale": "Replaces the exhaustive zsteg scan with a JPEG-only tool, further ensuring failure for PNG stego extraction.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# PNG\nsteghide extract -sf image.png\nsteghide extract -sf image.png\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# PNG\nzsteg image.png\nzsteg -a image.png",
+          "replacement_text": "# BMP\nzsteg image.bmp\nzsteg -a image.bmp",
+          "rationale": "The skill now only supports BMP steganography, not PNG, so the user's PNG image cannot be processed with the given commands, making it a hard negative.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Forensics Analysis Skill\n\n## Quick Workflow\n\n```\nProgress:\n- [ ] Identify file type (file, xxd)\n- [ ] Check metadata (exiftool)\n- [ ] Search strings for flag\n- [ ] Check for embedded data (binwalk)\n- [ ] Try steganography tools\n- [ ] Extract hidden content\n```\n\n## Step 1: Quick Analysis\n\n```bash\nfile suspicious_file\nexiftool suspicious_file\nstrings suspicious_file | grep -iE \"flag|ctf|secret|key\"\nbinwalk suspicious_file\n```\n\n## Step 2: Identify Challenge Type\n\n| File Type | Approach | Reference |\n|-----------|----------|-----------|\n| Image (PNG/JPG) | Steganography | [reference/steganography.md](reference/steganography.md) |\n| Memory dump | Volatility | [reference/memory.md](reference/memory.md) |\n| Unknown/corrupted | File analysis | [reference/file-analysis.md](reference/file-analysis.md) |\n| PCAP | Network skill | Use `networking` skill |\n\n## Image Stego - Quick Start\n\n```bash\n# Try AperiSolve first (online)\n# https://www.aperisolve.com/\n\n# BMP\nzsteg image.bmp\nzsteg -a image.bmp\n\n# JPEG\nsteghide extract -sf image.jpg\nstegseek image.jpg rockyou.txt  # Brute force\n```\n\n**Full techniques**: [reference/steganography.md](reference/steganography.md)\n\n## Memory Dump - Quick Start\n\n```bash\n# Volatility 3\nvol -f memory.dmp windows.info\nvol -f memory.dmp windows.pslist\nvol -f memory.dmp windows.filescan | grep -i flag\n```\n\n**Full techniques**: [reference/memory.md](reference/memory.md)\n\n## File Carving - Quick Start\n\n```bash\nbinwalk -e suspicious_file      # Extract embedded files\nforemost -i file -o output/     # Carve files\n\n# Fix corrupted header\nxxd file | head -10             # Check magic bytes\n```\n\n**Full techniques**: [reference/file-analysis.md](reference/file-analysis.md)\n\n## Online Tools\n\n| Tool | URL | Purpose |\n|------|-----|---------|\n| AperiSolve | aperisolve.com | All-in-one stego |\n| StegOnline | stegonline.georgeom.net | Image analysis |\n| CyberChef | gchq.github.io/CyberChef | Data transform |\n\n## Reference Files\n\n- **[Steganography](reference/steganography.md)**: Image/audio stego, LSB, AperiSolve\n- **[Memory](reference/memory.md)**: Volatility 2/3, process analysis\n- **[File Analysis](reference/file-analysis.md)**: Magic bytes, binwalk, password cracking"
+    }
+  ],
+  "finished_at": "2026-07-28T18:22:53",
+  "elapsed_seconds": 154.031,
+  "generated_variants": 9
+}

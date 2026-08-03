@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:38:09",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 40056,
+  "selection_rank": 200,
+  "skill": {
+    "skill_id": "other/add-device",
+    "name": "add-device",
+    "category": "other",
+    "description": "Add a new implementation of the primary protocol/interface (Alex Rivera's workflow)",
+    "body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Raise the discovery error exception if resource not detected on `open()`\n   - Raise the connection error exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)",
+    "source": "pool"
+  },
+  "generated_query": "I’m working on adding support for a new barometric pressure sensor, the BME280, to our hardware integration layer. Our system already defines a protocol interface called `EnvironmentalSensorProtocol` in the core layer with methods like `open()`, `close()`, `get_info()`, `read_temperature()`, `read_pressure()`, and `is_open` property. I need to implement this protocol for the BME280 over I2C (address 0x76 by default, configurable via environment variable `ENV_BME280_I2C_ADDR`). The chip has specific commands and requires a discovery step on `open()` (raise `DiscoveryError` if not found on the bus). Communication failures should raise `ConnectionError`. The `close()` must be safe to call multiple times. I need to update the configuration model to include the I2C address setting and add an entry in the `.env.example` file. Also update the existing mock implementation to match the new behavior, especially the same error conditions and state transitions. Then wire the new sensor into the app factory’s lifespan function: add selection logic so that if the config specifies `bme280`, it instantiates and manages our new implementation, ensuring the fail-safe operation runs on both startup and shutdown. Finally, write tests in the core test file covering the open/close lifecycle, valid and invalid state‑changing operations, `get_info()` returning the correct structure (including device type, firmware version placeholder, and live temperature/pressure), error conditions raising the typed exceptions, and accuracy of the `is_open` property. Once done, run the test suite and type check with `mypy` to confirm everything passes. Can you help me step through this?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n",
+          "replacement_text": "",
+          "rationale": "By removing the config update step, the skill fails to address the user's need to add the I2C address setting and .env.example entry, making it incomplete for the BME280 integration.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Raise the discovery error exception if resource not detected on `open()`\n   - Raise the connection error exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Raise the discovery error exception if resource not detected on `open()`",
+          "replacement_text": "Return None if resource not detected on `open()`",
+          "rationale": "Changing from raising a typed exception to returning None removes crucial error handling required by the user query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Raise the connection error exception on communication failures",
+          "replacement_text": "Print an error message and continue on communication failures",
+          "rationale": "Replacing a typed exception with a print statement eliminates the required error propagation for communication failures.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`close()` MUST be idempotent — safe to call multiple times",
+          "replacement_text": "`close()` should be called only once; multiple calls may cause errors",
+          "rationale": "Removing idempotency violates the user's explicit requirement that close() be safe to call multiple times.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Return None if resource not detected on `open()`\n   - Print an error message and continue on communication failures\n   - Track `is_open` state accurately\n   - `close()` should be called only once; multiple calls may cause errors\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- MUST satisfy the primary protocol/interface",
+          "replacement_text": "- MUST satisfy a simplified interface with only open(), close(), and get_info() methods, ignoring read_pressure() and read_temperature()",
+          "rationale": "This change removes the requirement to implement read_pressure and read_temperature, which are essential for the BME280 sensor as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy a simplified interface with only open(), close(), and get_info() methods, ignoring read_pressure() and read_temperature()\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Raise the discovery error exception if resource not detected on `open()`\n   - Raise the connection error exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Raise the discovery error exception if resource not detected on `open()`",
+          "replacement_text": "Optionally raise the discovery error exception if resource not detected on `open()`",
+          "rationale": "Removing the strict requirement to raise DiscoveryError means the skill may skip the mandatory discovery step, failing the user's need for typed error handling.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Raise the connection error exception on communication failures",
+          "replacement_text": "Raise an exception on communication failures",
+          "rationale": "Weakening to a generic exception instead of requiring ConnectionError means the implementation may not provide the typed error the user's system expects.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`close()` MUST be idempotent — safe to call multiple times",
+          "replacement_text": "`close()` should be idempotent — safe to call multiple times",
+          "rationale": "Changing MUST to 'should' removes the strong guarantee of idempotency, which could lead to a close() that is not safely callable multiple times as the user requires.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Optionally raise the discovery error exception if resource not detected on `open()`\n   - Raise an exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` should be idempotent — safe to call multiple times\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Raise the discovery error exception if resource not detected on `open()`",
+          "replacement_text": "- Raise a generic error if resource not detected on `open()`",
+          "rationale": "Using a generic error instead of DiscoveryError fails the query's specific exception requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Test `get_info()` returns expected structure",
+          "replacement_text": "- Test `get_info()` returns basic device status (no temperature/pressure fields)",
+          "rationale": "Removing the requirement for temperature and pressure data makes the skill unsuitable for the BME280 sensor.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Raise a generic error if resource not detected on `open()`\n   - Raise the connection error exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns basic device status (no temperature/pressure fields)\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Raise the discovery error exception if resource not detected on `open()`",
+          "replacement_text": "Handle errors appropriately during `open()`",
+          "rationale": "Removes specific exception types, making the skill too vague to guide implementation of required error handling.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Handle errors appropriately during `open()`\n   - Raise the connection error exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description",
+          "replacement_text": "",
+          "rationale": "Deleting the config update step removes instructions for adding the I2C address setting and .env.example entry, which the query explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Raise the discovery error exception if resource not detected on `open()`\n   - Raise the connection error exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Add to the config file's Settings class with the project's env prefix",
+          "replacement_text": "- Add to the config file's Settings class with the project's env prefix, but hardcode the I2C address to 0x77",
+          "rationale": "By hardcoding the I2C address instead of using an environment variable, the skill ignores the required configurable address, making it unusable for the user's requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Raise the discovery error exception if resource not detected on `open()`\n   - Raise the connection error exception on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix, but hardcode the I2C address to 0x77\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Add selection logic in the lifespan function\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   - Raise the discovery error exception if resource not detected on `open()`",
+          "replacement_text": "   - Raise a generic IOError if resource not detected on `open()`",
+          "rationale": "Changing the required exception to a generic type means the skill no longer matches the user's requirement for a specific DiscoveryError.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "   - Raise the connection error exception on communication failures",
+          "replacement_text": "   - Raise a generic RuntimeError on communication failures",
+          "rationale": "Replacing the ConnectionError with a generic exception makes the skill ignore the user's specified typed exception for failures.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "   - Add selection logic in the lifespan function",
+          "replacement_text": "   - Instantiate the new sensor directly in the lifespan function without selection logic",
+          "rationale": "Removing selection logic prevents the user from wiring the sensor conditionally based on configuration, breaking the config‑driven requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Add a new implementation of the primary protocol/interface: $ARGUMENTS\n\nFollow Alex Rivera's hardware integration standards:\n\n1. **Study the protocol**: Read the primary protocol/interface definition in the core layer (see Key Abstractions and Protocol Methods in project config)\n\n2. **Implement the class** in the core layer file:\n   - MUST satisfy the primary protocol/interface\n   - Follow the future annotations pattern (see stack concepts in project config)\n   - All methods MUST have return type annotations\n   - Document protocol-specific commands with clear comments\n   - Raise a generic IOError if resource not detected on `open()`\n   - Raise a generic RuntimeError on communication failures\n   - Track `is_open` state accurately\n   - `close()` MUST be idempotent — safe to call multiple times\n\n3. **Update config** if new settings are needed:\n   - Add to the config file's Settings class with the project's env prefix\n   - Document in the env example file with defaults and description\n\n4. **Update the mock implementation** to mirror any new behavior:\n   - Same exceptions for same error conditions\n   - Same state transitions\n\n5. **Wire into lifespan** in the app factory:\n   - Instantiate the new sensor directly in the lifespan function without selection logic\n   - Ensure the fail-safe operation runs on both startup and shutdown for the new implementation\n\n6. **Write tests** in the core layer test file (see test file mapping in project config):\n   - Test `open()` / `close()` lifecycle\n   - Test state-changing operations for valid and invalid inputs\n   - Test `get_info()` returns expected structure\n   - Test error conditions raise typed exceptions\n   - Test `is_open` property accuracy\n\n7. **Verify**: Run the test command and the type-check command (see project config)"
+    }
+  ],
+  "finished_at": "2026-07-28T22:41:19",
+  "elapsed_seconds": 190.875,
+  "generated_variants": 9
+}

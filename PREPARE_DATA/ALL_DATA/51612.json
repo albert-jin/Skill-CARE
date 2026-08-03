@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:30:29",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 51612,
+  "selection_rank": 176,
+  "skill": {
+    "skill_id": "other/coredata-cloudkit",
+    "name": "coredata-cloudkit",
+    "category": "other",
+    "description": "CoreData and CloudKit patterns for data persistence and sync. Use when working on data models, migrations, sync logic, or query optimization.",
+    "body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    var deletedAt: Date?  // Soft delete for CloudKit sync\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    @Published var syncStatus: SyncStatus = .idle\n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- For > 100 records: use `NSBatchInsertRequest`\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create compound indexes for common query patterns\n- Use `NSFetchedResultsController` for list views",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a personal finance tracking app and need to set up data persistence with CloudKit sync. My data model includes transactions, categories, and accounts. Transactions need to support soft delete for sync conflict resolution, and I'll often import batches of 100+ transactions from a CSV. I also want to monitor sync status in the UI. Could you help me implement the CoreData model with SwiftData, a repository pattern for transactions, batch import using NSBatchInsertRequest, and a sync monitor that publishes status changes? Also, I need compound indexes on common query fields like date and category for performance.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "@Published var syncStatus: SyncStatus = .idle",
+          "replacement_text": "",
+          "rationale": "Without the @Published property, the SyncMonitor does not publish status changes to the UI, failing the user's requirement for monitoring sync status.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    var deletedAt: Date?  // Soft delete for CloudKit sync\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    \n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- For > 100 records: use `NSBatchInsertRequest`\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create compound indexes for common query patterns\n- Use `NSFetchedResultsController` for list views"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "For > 100 records: use `NSBatchInsertRequest`",
+          "replacement_text": "For > 100 records: use individual `context.insert()` calls followed by periodic `context.save()`",
+          "rationale": "Replaces the efficient batch insert API with a slower per-record insertion, failing the query's requirement for batch import of 100+ transactions.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    var deletedAt: Date?  // Soft delete for CloudKit sync\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    @Published var syncStatus: SyncStatus = .idle\n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- For > 100 records: use individual `context.insert()` calls followed by periodic `context.save()`\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create compound indexes for common query patterns\n- Use `NSFetchedResultsController` for list views"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- For > 100 records: use `NSBatchInsertRequest`",
+          "replacement_text": "- For > 100 records: iterate and save each one individually using `context.save()`",
+          "rationale": "Removes the batch insert requirement, making large imports slow and inefficient.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "@Published var syncStatus: SyncStatus = .idle",
+          "replacement_text": "var syncStatus: SyncStatus = .idle",
+          "rationale": "Removes @Published so the sync status no longer publishes changes to UI, failing the user's monitoring need.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Create compound indexes for common query patterns",
+          "replacement_text": "- Create single indexes on frequently used fields",
+          "rationale": "Replaces compound indexes with single indexes, degrading performance for queries on date and category together.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    var deletedAt: Date?  // Soft delete for CloudKit sync\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    var syncStatus: SyncStatus = .idle\n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- For > 100 records: iterate and save each one individually using `context.save()`\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create single indexes on frequently used fields\n- Use `NSFetchedResultsController` for list views"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create compound indexes for common query patterns",
+          "replacement_text": "Create single-column indexes on frequently filtered fields",
+          "rationale": "Weakens the indexing strategy from compound to single-column, which fails the user's need for compound indexes on date and category.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "For > 100 records: use `NSBatchInsertRequest`",
+          "replacement_text": "For > 100 records: consider using batch inserts or regular inserts",
+          "rationale": "Removes the specific NSBatchInsertRequest requirement, undermining the user's need for that exact batch import method.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    var deletedAt: Date?  // Soft delete for CloudKit sync\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    @Published var syncStatus: SyncStatus = .idle\n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- For > 100 records: consider using batch inserts or regular inserts\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create single-column indexes on frequently filtered fields\n- Use `NSFetchedResultsController` for list views"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    var deletedAt: Date?  // Soft delete for CloudKit sync\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}",
+          "replacement_text": "@Model\nfinal class NoteEntity {\n    @Attribute(.unique) var id: UUID\n    var title: String\n    var content: String\n    var createdAt: Date\n    var updatedAt: Date\n    \n    @Relationship(deleteRule: .nullify)\n    var notebook: NotebookEntity?\n    \n    init(id: UUID = UUID(), title: String, content: String) {\n        self.id = id\n        self.title = title\n        self.content = content\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}",
+          "rationale": "The model is changed from a TransactionEntity with soft delete and category/account relationships to a NoteEntity without those, making the skill irrelevant for finance tracking.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "protocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}",
+          "replacement_text": "protocol NoteRepository: Sendable {\n    func getAll(filter: NoteFilter?) async throws -> [Note]\n    func getById(_ id: UUID) async throws -> Note?\n    func save(_ note: Note) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ notes: [Note]) async throws\n}",
+          "rationale": "The repository is rewritten for Note entities instead of Transactions, removing the required transaction-specific data layer and batch import context.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class NoteEntity {\n    @Attribute(.unique) var id: UUID\n    var title: String\n    var content: String\n    var createdAt: Date\n    var updatedAt: Date\n    \n    @Relationship(deleteRule: .nullify)\n    var notebook: NotebookEntity?\n    \n    init(id: UUID = UUID(), title: String, content: String) {\n        self.id = id\n        self.title = title\n        self.content = content\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol NoteRepository: Sendable {\n    func getAll(filter: NoteFilter?) async throws -> [Note]\n    func getById(_ id: UUID) async throws -> Note?\n    func save(_ note: Note) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ notes: [Note]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    @Published var syncStatus: SyncStatus = .idle\n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- For > 100 records: use `NSBatchInsertRequest`\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create compound indexes for common query patterns\n- Use `NSFetchedResultsController` for list views"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "    var deletedAt: Date?  // Soft delete for CloudKit sync\n",
+          "replacement_text": "",
+          "rationale": "Removes soft delete support, which is essential for CloudKit sync conflict resolution.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Performance: Batch Operations\n- For > 100 records: use `NSBatchInsertRequest`\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create compound indexes for common query patterns\n- Use `NSFetchedResultsController` for list views",
+          "replacement_text": "## Performance: Batch Operations\n- Use batch operations for many records.",
+          "rationale": "Replaces specific batch API and index guidance with a vague statement, omitting NSBatchInsertRequest and compound indexes.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    @Published var syncStatus: SyncStatus = .idle",
+          "replacement_text": "    var syncStatus: SyncStatus = .idle",
+          "rationale": "Removes @Published so sync status does not publish changes, breaking the observable requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    var syncStatus: SyncStatus = .idle\n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- Use batch operations for many records."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- For > 100 records: use `NSBatchInsertRequest`\n",
+          "replacement_text": "",
+          "rationale": "Deleting the batch import instruction removes the ability to efficiently handle the user's requirement to import 100+ transactions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CoreData + CloudKit Patterns\n\n## SwiftData Model Definition\n```swift\n@Model\nfinal class TransactionEntity {\n    @Attribute(.unique) var id: UUID\n    var amount: Decimal\n    var note: String\n    var date: Date\n    var createdAt: Date\n    var updatedAt: Date\n    var deletedAt: Date?  // Soft delete for CloudKit sync\n    \n    @Relationship(deleteRule: .nullify)\n    var category: CategoryEntity?\n    \n    @Relationship(deleteRule: .nullify)\n    var account: AccountEntity?\n    \n    init(id: UUID = UUID(), amount: Decimal, note: String, date: Date) {\n        self.id = id\n        self.amount = amount\n        self.note = note\n        self.date = date\n        self.createdAt = Date()\n        self.updatedAt = Date()\n    }\n}\n```\n\n## Repository Pattern\n```swift\nprotocol TransactionRepository: Sendable {\n    func getAll(filter: TransactionFilter?) async throws -> [Transaction]\n    func getById(_ id: UUID) async throws -> Transaction?\n    func save(_ transaction: Transaction) async throws\n    func delete(_ id: UUID) async throws\n    func batchImport(_ transactions: [Transaction]) async throws\n}\n```\n\n## CloudKit Sync Monitoring\n```swift\nfinal class SyncMonitor: ObservableObject {\n    @Published var syncStatus: SyncStatus = .idle\n    \n    func startMonitoring() {\n        NotificationCenter.default.addObserver(\n            forName: NSPersistentCloudKitContainer.eventChangedNotification,\n            object: nil, queue: .main\n        ) { notification in\n            guard let event = notification.userInfo?[\n                NSPersistentCloudKitContainer.eventNotificationUserInfoKey\n            ] as? NSPersistentCloudKitContainer.Event else { return }\n            \n            self.syncStatus = SyncStatus(from: event)\n        }\n    }\n}\n```\n\n## Performance: Batch Operations\n- Use `fetchBatchSize` on fetch requests (default 20)\n- Create compound indexes for common query patterns\n- Use `NSFetchedResultsController` for list views"
+    }
+  ],
+  "finished_at": "2026-07-28T21:32:15",
+  "elapsed_seconds": 106.469,
+  "generated_variants": 7
+}

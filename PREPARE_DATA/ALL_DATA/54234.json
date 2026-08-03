@@ -1,0 +1,233 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:36:56",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 54234,
+  "selection_rank": 122,
+  "skill": {
+    "skill_id": "other/supabase-framework",
+    "name": "supabase-framework",
+    "category": "other",
+    "description": "Use for any Supabase database work in PierceDesk, including schema, migrations, RLS, and query patterns. Requires MCP-only database access and references docs/system execution/design guidance.",
+    "body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n4. Add/verify RLS policies per table.\n5. Seed minimal data if required and document changes.",
+    "source": "pool"
+  },
+  "generated_query": "I need to add a new `tasks` table to our CRM system for tracking team assignments. The table should have columns: id (uuid primary key), title (text, required), description (text), status (text, default 'open'), assigned_to (uuid referencing auth.users), created_by (uuid, default auth.uid()), org_id (uuid, required for multi-tenant isolation), created_at (timestamptz), and updated_at (timestamptz). I also need RLS policies so users see only tasks within their own org (via org_id), and can only update tasks assigned to them. Please check our existing schema patterns in the system docs first, then use the database tools to verify the current state, create a migration in the `database/` folder, apply it, and add the RLS policies. Finally, seed a few sample tasks for two different orgs so I can test the policies.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Add/verify RLS policies per table.",
+          "replacement_text": "",
+          "rationale": "Without this step, the agent would not implement any RLS policies, failing the user's explicit requirement for org-scoped and assigned_to RLS policies.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Cloud database only**: use Supabase MCP tools for all DB operations.",
+          "replacement_text": "**Cloud database only**: use psql or direct SQL for all DB operations.",
+          "rationale": "The user query relies on Supabase MCP tools for schema verification, migration, and RLS, but this edit replaces the core API with psql, making the skill unusable in the required MCP-only environment.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use psql or direct SQL for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n4. Add/verify RLS policies per table.\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Cloud database only: use Supabase MCP tools for all DB operations.",
+          "replacement_text": "Local database only: use psql for all DB operations.",
+          "rationale": "Replaces the cloud-only MCP tool requirement with local psql, which is incompatible with the system's cloud infrastructure and MCP-only constraint.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "RLS required: all tables must enforce `auth.uid()` or org-scoped policies.",
+          "replacement_text": "RLS required: all tables must enforce `auth.uid()` policies only.",
+          "rationale": "Changes the RLS requirement to only user-scoped policies, omitting org-scoped isolation needed for the multi-tenant query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS optional**: prefer application-level middleware for authorization.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/field-naming-conventions.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n4. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.",
+          "replacement_text": "- **RLS recommended**: consider using `auth.uid()` or org-scoped policies where appropriate.",
+          "rationale": "Weakening RLS from required to recommended may lead to missing or incomplete RLS policies, failing the user's explicit RLS requirements.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS recommended**: consider using `auth.uid()` or org-scoped policies where appropriate.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n4. Add/verify RLS policies per table.\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.",
+          "replacement_text": "**RLS optional**: apply only if explicitly requested in the task.",
+          "rationale": "Softening RLS to optional means the skill may not add required org-scoped policies, breaking the user's need.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use migrations and seeds in `database/` when applicable.",
+          "replacement_text": "Prefer direct SQL modifications via the SQL editor instead of creating migration files.",
+          "rationale": "Removing the default migration pattern prevents the skill from creating a migration file in `database/`, which the user explicitly requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Implement migrations or SQL updates via MCP.",
+          "replacement_text": "3. Implement SQL updates directly via MCP.",
+          "rationale": "Dropping 'migrations' from the checklist step removes the core capability needed to generate the migration script.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS optional**: apply only if explicitly requested in the task.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Prefer direct SQL modifications via the SQL editor instead of creating migration files.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement SQL updates directly via MCP.\n4. Add/verify RLS policies per table.\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. Identify existing schema and tables in docs/system.",
+          "replacement_text": "",
+          "rationale": "Without identifying existing schema patterns, the agent may produce a migration that conflicts with current CRM tables.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`",
+          "replacement_text": "## Required references\n- Refer to system documentation as needed.",
+          "rationale": "Overgeneralizing the required references removes the specific guidance to check docs/system and RLS patterns, making the agent less likely to follow the correct patterns.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references\n- Refer to system documentation as needed.\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n4. Add/verify RLS policies per table.\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Add/verify RLS policies per table.",
+          "replacement_text": "",
+          "rationale": "The skill omits the critical step of adding RLS policies, making it unable to fulfill the query's requirement for RLS.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Cloud database only**: use Supabase MCP tools for all DB operations.\n",
+          "replacement_text": "- **Cloud database only**: use a direct PostgreSQL connection via DATABASE_URL for all DB operations.\n",
+          "rationale": "Changes the core API from MCP tools to direct connection, making the skill unable to use the MCP-based database tools required by the query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **No local DB connections** (no psql, no DATABASE_URL).\n",
+          "replacement_text": "",
+          "rationale": "Removes the contradiction with the new direct-connection rule; the skill now advocates a different tool than expected.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use a direct PostgreSQL connection via DATABASE_URL for all DB operations.\n- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n4. Add/verify RLS policies per table.\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Cloud database only**: use Supabase MCP tools for all DB operations.",
+          "replacement_text": "- **Local database only**: use psql with DATABASE_URL for all DB operations.",
+          "rationale": "Changes the required database access method from cloud MCP to local psql, making the skill unusable in the cloud-only environment expected by the user.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. Use MCP tools to verify current schema.",
+          "replacement_text": "2. Use local database dump to verify current schema.",
+          "rationale": "Alters the verification method to local-only, which fails because the system requires MCP-only database access.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Local database only**: use psql with DATABASE_URL for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **RLS required**: all tables must enforce `auth.uid()` or org-scoped policies.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/rls-auth-patterns.md`\n\n## Operational guidance\n\n- Validate auth context in API routes; DB layer assumes `auth.uid()`.\n- Use migrations and seeds in `database/` when applicable.\n- Prefer indexed columns for frequently filtered fields.\n- For large datasets, design queries with pagination + selective columns.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use local database dump to verify current schema.\n3. Implement migrations or SQL updates via MCP.\n4. Add/verify RLS policies per table.\n5. Seed minimal data if required and document changes."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "RLS required: all tables must enforce `auth.uid()` or org-scoped policies.",
+          "replacement_text": "RLS recommended: consider using `auth.uid()` or org-scoped policies where beneficial.",
+          "rationale": "Weakening the RLS requirement makes it optional, so the skill would not guarantee adding required RLS policies.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. Identify existing schema and tables in docs/system.",
+          "replacement_text": "1. Optionally review existing schema in docs/system if time permits.",
+          "rationale": "Removing the mandatory schema review step makes the skill skip checking existing patterns, which the query explicitly requires.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Supabase Framework Skill\n\n## Core rules\n\n- **Cloud database only**: use Supabase MCP tools for all DB operations.\n- **No local DB connections** (no psql, no DATABASE_URL).\n- **Always use UUID primary keys and timestamptz** for audit columns.\n- **Align schema with existing CRM patterns** in docs/system.\n\n## Required references (read before DB work)\n\n- `references/system-docs-map.md`\n- `references/common-schema-patterns.md`\n\n## Operational guidance\n\n- Use migrations in `database/` for all schema changes.\n- Prefer `BIGSERIAL` for non‑UUID identities when needed.\n- Add indexes on foreign key columns and frequently filtered fields.\n- Create triggers for `updated_at` and `created_at` defaults.\n\n## Process checklist\n\n1. Identify existing schema and tables in docs/system.\n2. Use MCP tools to verify current schema.\n3. Implement migration via MCP in `database/` folder.\n4. Add triggers and constraints (foreign keys, NOT NULL, defaults).\n5. Document the migration in the system‑docs after applying.\n\n---\n\n**Note:** After migration, verify the table structure with `\\d+ tasks` via MCP. For large datasets, consider pagination and selective columns in queries."
+    }
+  ],
+  "finished_at": "2026-07-28T18:40:13",
+  "elapsed_seconds": 196.968,
+  "generated_variants": 10
+}

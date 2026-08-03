@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:12:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 43152,
+  "selection_rank": 171,
+  "skill": {
+    "skill_id": "other/consult-cluesmith-codev-2",
+    "name": "consult",
+    "category": "other",
+    "description": "AI consultation CLI quick reference. Use when running consult commands to check syntax for PR reviews, spec reviews, plan reviews, and general queries across Gemini, Codex, and Claude.",
+    "body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n-n, --dry-run              # Show command without running\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Custom role from codev/roles/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`",
+    "source": "pool"
+  },
+  "generated_query": "I'm about to submit a pull request on GitHub for feature #87. I need a final \"pr-ready\" review. Please use the Claude model with the \"senior-dev\" role from the roles directory, and before running it, show me the exact command line so I can verify the syntax.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "-n, --dry-run              # Show command without running",
+          "replacement_text": "",
+          "rationale": "Removing the --dry-run flag prevents users from previewing the command line, which is explicitly required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Custom role from codev/roles/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `claude` | `opus` | ~60-120s | Balanced tool use |",
+          "replacement_text": "",
+          "rationale": "Removing Claude from the models list makes the skill unable to fulfill the user's request to use the Claude model.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "consult -m claude general \"query\"    # General question (quoted string)",
+          "replacement_text": "consult -m gemini general \"query\"    # General question (quoted string)",
+          "rationale": "Changing the example to use gemini instead of claude further obscures that claude is not supported.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m gemini general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n-n, --dry-run              # Show command without running\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Custom role from codev/roles/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "-n, --dry-run              # Show command without running",
+          "replacement_text": "-d, --debug-output         # Display debug information (does not show command)",
+          "rationale": "Removes the dry-run capability so the user cannot verify the command syntax before execution.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "-r, --role <role>          # Custom role from codev/roles/ (without .md extension)",
+          "replacement_text": "-r, --role-path <path>     # Custom role file path from codev/roles/ (with .md extension)",
+          "rationale": "Changes the role flag to require a full path with .md extension, so specifying 'senior-dev' without extension fails.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n-d, --debug-output         # Display debug information (does not show command)\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role-path <path>     # Custom role file path from codev/roles/ (with .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `pr-ready` | implemented | Final check before PR |",
+          "replacement_text": "",
+          "rationale": "Removing the pr-ready review type prevents the user from obtaining the final PR check they explicitly requested.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "-r, --role <role>          # Custom role from codev/roles/ (without .md extension)",
+          "replacement_text": "-r, --role <role>          # Role from predefined list (e.g., security-reviewer, architect)",
+          "rationale": "Changing the role option to only accept a fixed set of roles disallows the custom senior-dev role the user intends to use.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n-n, --dry-run              # Show command without running\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Role from predefined list (e.g., security-reviewer, architect)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "-n, --dry-run              # Show command without running",
+          "replacement_text": "",
+          "rationale": "Removes the --dry-run flag, so the user cannot verify the exact command line.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "-r, --role <role>          # Custom role from codev/roles/ (without .md extension)",
+          "replacement_text": "-r, --role <role>          # Custom role from codev/roles/default/ (without .md extension)",
+          "rationale": "Changes the role directory so 'senior-dev' is unlikely to be found, blocking the required role.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `pr-ready` | implemented | Final check before PR |",
+          "replacement_text": "| `pr-approve` | implemented | Final approval before merge |",
+          "rationale": "Replaces the 'pr-ready' review type with a different type, so the user cannot select the needed review.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Custom role from codev/roles/default/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-approve` | implemented | Final approval before merge |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "-n, --dry-run              # Show command without running",
+          "replacement_text": "-n, --dry-run              # Perform a dry run",
+          "rationale": "The dry-run description is over-generalized to 'Perform a dry run' instead of explicitly stating it shows the command line, so the user cannot be sure it meets their requirement to verify syntax.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n-n, --dry-run              # Perform a dry run\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Custom role from codev/roles/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "-n, --dry-run              # Show command without running",
+          "replacement_text": "",
+          "rationale": "Deleting the dry-run option removes the ability to preview the command before execution, which the user explicitly needs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Custom role from codev/roles/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "-n, --dry-run              # Show command without running",
+          "replacement_text": "-v, --verbose              # Show detailed output",
+          "rationale": "The user requires the --dry-run flag to preview the command; without it, the skill cannot show the command line before execution.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n-v, --verbose              # Show detailed output\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-r, --role <role>          # Custom role from codev/roles/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "-n, --dry-run              # Show command without running\n",
+          "replacement_text": "",
+          "rationale": "Removing the dry-run option prevents the user from previewing the command line to verify syntax.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "-r, --role <role>          # Custom role from codev/roles/ (without .md extension)\n",
+          "replacement_text": "-p, --profile <profile>    # Custom profile from codev/profiles/ (without .md extension)\n",
+          "rationale": "Changing the flag and path for custom roles makes the user's intended --role senior-dev option unrecognized.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# consult - AI Consultation CLI\n\n## Synopsis\n\n```bash\nconsult -m <model> <subcommand> [args] [options]\n```\n\nThe `-m` / `--model` flag is **always required**.\n\n## Models\n\n| Model | Alias | Speed | Approach |\n|-------|-------|-------|----------|\n| `gemini` | `pro` | ~120-150s | Pure text analysis, fast |\n| `codex` | `gpt` | ~200-250s | Shell command exploration, thorough |\n| `claude` | `opus` | ~60-120s | Balanced tool use |\n\n## Subcommands\n\n```bash\nconsult -m gemini pr 42              # Review a pull request\nconsult -m codex spec 42             # Review a specification\nconsult -m gemini plan 42            # Review an implementation plan\nconsult -m claude general \"query\"    # General question (quoted string)\n```\n\n## Options\n\n```bash\n-t, --type <type>          # Review type (spec-review, plan-review, impl-review, pr-ready, integration-review)\n-p, --profile <profile>    # Custom profile from codev/profiles/ (without .md extension)\n```\n\n## Review Types (--type)\n\n| Type | Stage | Use Case |\n|------|-------|----------|\n| `spec-review` | conceived | Review spec completeness |\n| `plan-review` | specified | Review implementation plan |\n| `impl-review` | implementing | Review code implementation |\n| `pr-ready` | implemented | Final check before PR |\n| `integration-review` | committed | Architect's integration review |\n\nReview type prompts live in `codev/consult-types/` and can be customized.\n\n## Parallel Consultation (3-Way / cmap)\n\nRun all three models in parallel for thorough reviews:\n\n```bash\nconsult -m gemini spec 42 &\nconsult -m codex spec 42 &\nconsult -m claude spec 42 &\nwait\n```\n\nOr from Claude Code, use **cmap** pattern: three parallel background Bash calls.\n\n## Custom Roles\n\n```bash\nconsult -m gemini --role security-reviewer pr 42\nconsult -m codex --role architect general \"Review this design\"\n```\n\nRoles are markdown files in `codev/roles/`. Create your own by adding `.md` files there.\n\n## Common Mistakes\n\n- The `-m` flag is **required** — `consult pr 42` will fail without it\n- PR numbers are GitHub PR numbers, not spec numbers\n- Spec/plan numbers match the `0042` prefix in filenames (pass just `42`, not `0042`)\n- General queries must be **quoted**: `consult -m gemini general \"your question here\"`"
+    }
+  ],
+  "finished_at": "2026-07-28T21:15:53",
+  "elapsed_seconds": 199.937,
+  "generated_variants": 9
+}

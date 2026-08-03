@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:15:30",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 17673,
+  "selection_rank": 223,
+  "skill": {
+    "skill_id": "development/chroma-release-onevcat-chroma",
+    "name": "chroma-release",
+    "category": "development",
+    "description": "Chroma 的发布一体化流程（SemVer 决策、生成 changelog、同步 CLI 版本、打 git tag、发布 GitHub Release）。当被要求进行新版本发布、更新 CHANGELOG.md、升级 `ca` CLI 版本号、创建 tag 或发布 GitHub Release 时使用。",
+    "body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **不得**包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。",
+    "source": "pool"
+  },
+  "generated_query": "我正在维护一个名为 Chroma 的命令行工具，最近的几个提交包括修复大文件处理时的内存泄漏（fix）以及增加 JSON 格式输出支持（feature）。工作区是干净的，最新的 git tag 是 `0.4.2`。请帮我执行完整的发布流程：先运行变更收集脚本查看从上次 tag 到 HEAD 的提交摘要，然后根据 SemVer 规则决定下一版本号（考虑到这次是向后兼容的新功能，我认为应该是 `0.5.0`，但请由你判断）。接着生成符合 `CHANGELOG.md` 现有格式的 release notes，notes 内容只包含 `### Added` 和 `### Fixed` 部分，不要添加版本标题。随后更新 `Sources/Ca/CaCommand.swift` 里的版本常量，在 `## [Unreleased]` 后面插入 `## [0.5.0] - 2026-01-10` 段落，用提交信息“Release 0.5.0”提交，创建 tag `0.5.0`，并使用 `gh release create` 发布 GitHub Release，发布后运行 `release_check.py` 做最终验证。",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```",
+          "replacement_text": "",
+          "rationale": "Removing the final validation step means the skill fails to verify the release, which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **不得**包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "更新 `Sources/Ca/CaCommand.swift` 里的版本常量",
+          "replacement_text": "更新 `Sources/Chroma/Version.swift` 里的版本常量",
+          "rationale": "Changes the file to update to a non-existent file, so the version constant is not updated in the user-specified file.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落",
+          "replacement_text": "",
+          "rationale": "Removes the step to insert the changelog header, so the changelog is not updated according to user request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **不得**包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Chroma/Version.swift` 里的版本常量\n\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "notes **不得**包含版本标题。",
+          "replacement_text": "notes **必须**包含版本标题（例如 `## [X.Y.Z] - YYYY-MM-DD`）。",
+          "rationale": "The user explicitly requests notes without a version title, but this edit forces a version title, making the generated changelog unusable for the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **必须**包含版本标题（例如 `## [X.Y.Z] - YYYY-MM-DD`）。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **不得**包含版本标题。",
+          "replacement_text": "生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes 可以包含版本标题。",
+          "rationale": "By allowing the notes to contain version titles, the skill contradicts the user's explicit requirement to omit them, making it unsuitable for the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes 可以包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "notes **不得**包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```",
+          "replacement_text": "notes **必须**包含版本标题（例如 `## [X.Y.Z] - YYYY-MM-DD`）。示例：\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```",
+          "rationale": "The user explicitly requires notes without a version title (only Added and Fixed sections), but the edited skill now mandates a version title, making it impossible to satisfy the query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **必须**包含版本标题（例如 `## [X.Y.Z] - YYYY-MM-DD`）。示例：\n\n```markdown\n## [X.Y.Z] - YYYY-MM-DD\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。",
+          "replacement_text": "根据上次 tag 与 HEAD 的 diff 填充段落，可以包含所有标准分组（如 Added、Changed、Fixed、Removed 等）。",
+          "rationale": "放宽 notes 格式约束后，AI 生成的 release notes 可能包含 ### Changed 等额外章节，违反用户“只包含 ### Added 和 ### Fixed”的明确要求。",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n",
+          "replacement_text": "",
+          "rationale": "删除发布后校验步骤，导致最终缺少 release_check.py 验证，用户要求的验证环节被遗漏。",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **不得**包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，可以包含所有标准分组（如 Added、Changed、Fixed、Removed 等）。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the collect_changes.py command makes the skill unable to gather the commit summary required by the user query, breaking the entire release flow.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **不得**包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 使用同一 notes 文件通过 `gh release create` 发布 GitHub Release",
+          "replacement_text": "- 使用同一 notes 文件通过 `git push --tags` 发布 GitHub Release",
+          "rationale": "Replaces the required `gh release create` command with a simple tag push, so the skill fails to create a GitHub Release as the user explicitly requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Chroma 发布流程\n\n## 概览\n\n通过对比 HEAD 与最新 tag，确定下一版 SemVer，生成符合仓库格式的 changelog 段落，同步 `ca` CLI 版本号，并通过 `gh` 发布 git tag 与 GitHub Release。\n\n## 工作流（从 HEAD 发布）\n\n### 0) 前置条件\n\n- 确保功能/修复改动已提交。release 脚本要求工作区干净。\n- Tag 格式为纯 `X.Y.Z`（不带 `v`）。\n- Release notes 从 notes 文件读取，文件内不包含版本标题。\n\n### 1) 收集变更用于 AI 分析\n\n运行变更收集脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py\n```\n\n如果需要指定基准 tag：\n\n```bash\n./.codex/skills/chroma-release/scripts/collect_changes.py --since-tag 0.1.1\n```\n\n利用输出检查：\n- 上次 tag 到 HEAD 的提交摘要\n- 变更文件与 diff 统计\n\n### 2) 决定下一版本（SemVer）\n\n基于 diff 与提交上下文决定下一版本号。\n\n判定参考：\n- **Breaking change**：删除/重命名 public API，修改函数签名，改变默认行为，或不兼容的 CLI flag 变更。\n- **Feature**：向后兼容的新增功能。\n- **Fix**：仅包含向后兼容的 bug 修复。\n\nSemVer 对应：\n- `MAJOR`：破坏性变更（若已到 1.0.0+）\n- `MINOR`：新增功能\n- `PATCH`：修复\n\n1.0 前版本处理（当前状态）：\n- `0.y.z` 下的破坏性变更按 **minor** 处理（`y+1`）。\n- 功能新增按风险决定 `y+1` 或 `z+1`；默认用户可见新增走 **minor**，低风险修复走 **patch**。\n\n若破坏性判断不明确，优先检查 `Sources/Chroma` 与 public 声明 diff 再决策。\n\n### 3) 生成 changelog notes（AI）\n\n生成与 `CHANGELOG.md` 现有格式一致的 notes 文件。notes **不得**包含版本标题。示例：\n\n```markdown\n### Added\n- ...\n\n### Changed\n- ...\n\n### Fixed\n- ...\n```\n\n根据上次 tag 与 HEAD 的 diff 填充段落，只保留有内容的分组。\n\n### 4) 应用版本 + changelog，提交、打 tag、发布（脚本化）\n\n用选定版本和 notes 文件执行发布脚本：\n\n```bash\n./.codex/skills/chroma-release/scripts/release.py \\\n  --version 0.1.1 \\\n  --notes-file /path/to/release-notes.md \\\n  --date 2026-01-04\n```\n\n行为：\n- 更新 `Sources/Ca/CaCommand.swift` 里的版本常量\n- 在 `## [Unreleased]` 之后插入 `## [X.Y.Z] - YYYY-MM-DD` 段落\n- 提交信息为 `Release X.Y.Z`\n- 创建 git tag `X.Y.Z`\n- 使用同一 notes 文件通过 `git push --tags` 发布 GitHub Release\n\n可选参数：\n- `--skip-commit` / `--skip-tag` / `--skip-release`\n- `--allow-dirty`（不建议）\n\n### 5) 校验\n\n```bash\n./.codex/skills/chroma-release/scripts/release_check.py --version 0.1.1 --require-clean --require-tag\n```\n\n## 资源\n\n### scripts/\n- `collect_changes.py`：收集上次 tag 到 HEAD 的提交与 diff 摘要。\n- `release.py`：应用 changelog 与 CLI 版本，提交、打 tag、发布。\n- `release_check.py`：强校验版本一致性与 tag 是否存在。"
+    }
+  ],
+  "finished_at": "2026-07-29T00:18:24",
+  "elapsed_seconds": 174.0,
+  "generated_variants": 8
+}

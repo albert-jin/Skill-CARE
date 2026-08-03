@@ -1,0 +1,201 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:48:07",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 2145,
+  "selection_rank": 109,
+  "skill": {
+    "skill_id": "design/agentuity-cli-cloud-sandbox-create-agentuity-discord-help-agent-21db0ea8",
+    "name": "agentuity-cli-cloud-sandbox-create",
+    "category": "design",
+    "description": "Create an interactive sandbox for multiple executions. Requires authentication. Use for Agentuity cloud platform operations",
+    "body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n| `--file` | array | Yes | - | Files to create in sandbox (sandbox-path:local-path) |\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |",
+    "source": "pool"
+  },
+  "generated_query": "I’m testing a new data processing script that needs a clean environment with specific resources and dependencies. Can you help me spin up a cloud sandbox with the following specs using the Agentuity CLI?\n\n- Memory: 1Gi\n- CPU: 500m\n- Disk: 2Gi\n- Network access: enabled\n- Idle timeout: 10m\n- Environment variables: `API_KEY=abc123`, `DEBUG=true`\n- File to upload: `/home/user/script.py` should be placed at `/app/script.py` in the sandbox\n- APT packages: `python3`, `python3-pip`, `curl`\n- No snapshot needed\n\nAfter creation, I need the sandbox ID and the stream URLs so I can monitor the output.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--file` | array | Yes | - | Files to create in sandbox (sandbox-path:local-path) |",
+          "replacement_text": "",
+          "rationale": "Deleting the --file option removes the ability to upload files, which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |",
+          "replacement_text": "",
+          "rationale": "Deleting the --dependency option removes the ability to install required APT packages.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "agentuity cloud sandbox create [options]",
+          "replacement_text": "agentuity cloud sandbox run [options]",
+          "rationale": "Changed the core command from 'create' to 'run', making the skill target running an existing sandbox rather than creating a new one, which fails the user's need to spin up a sandbox.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "bunx @agentuity/cli cloud sandbox create",
+          "replacement_text": "bunx @agentuity/cli cloud sandbox run",
+          "rationale": "Reinforces the incorrect command verb, further misleading the user into thinking this skill supports starting a sandbox instead of creating one.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 4, expected 1",
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive cloud sandbox for isolated testing and execution.\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idle-timeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env-file` | string | No | - | Path to a file containing environment variables (KEY=VAL per line) |\n| `--snapshot` | string | No | - | Snapshot ID or tag to restore from |\n\n## Examples\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m --disk 2Gi\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with environment variables from a file:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env-file /path/to/vars.env\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status (e.g., \"running\", \"stopped\") |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |",
+          "replacement_text": "## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |",
+          "rationale": "Removes the stdout and stderr stream URLs from the output, so the user cannot monitor the sandbox as required.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |",
+          "replacement_text": "",
+          "rationale": "Deletes the --dependency option, making it impossible to install the required APT packages (python3, python3-pip, curl).",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n| `--file` | array | Yes | - | Files to create in sandbox (sandbox-path:local-path) |\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `--file` | array | Yes | - | Files to create in sandbox (sandbox-path:local-path) |",
+          "replacement_text": "| `--file` | array | Yes | - | Files to create in sandbox (local-path:sandbox-path) |",
+          "rationale": "Reversing the file mapping format misleads the user into specifying the wrong order, so their intended placement of /home/user/script.py at /app/script.py would fail.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n| `--file` | array | Yes | - | Files to create in sandbox (local-path:sandbox-path) |\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "sandbox-path:local-path",
+          "replacement_text": "local-path:sandbox-path",
+          "rationale": "The file upload format is reversed, so the user's intended mapping from /home/user/script.py to /app/script.py would fail.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |",
+          "replacement_text": "",
+          "rationale": "Removing the --dependency option makes it impossible to specify APT packages, which the user explicitly requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |",
+          "replacement_text": "",
+          "rationale": "Omitting stream URLs from the output means the user cannot monitor sandbox output as requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n| `--file` | array | Yes | - | Files to create in sandbox (local-path:sandbox-path) |\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |",
+          "replacement_text": "",
+          "rationale": "Removing the --dependency option makes it impossible to install APT packages (python3, python3-pip, curl), which is a key requirement from the user query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `--file` | array | Yes | - | Files to create in sandbox (sandbox-path:local-path) |",
+          "replacement_text": "| `--file` | array | Yes | - | Files to create in sandbox (local-path:sandbox-path) |",
+          "rationale": "Swapping the path order for the --file option means the user's intended mapping (local-path:sandbox-path) will not work, breaking the file upload requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n| `--file` | array | Yes | - | Files to create in sandbox (local-path:sandbox-path) |\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |",
+          "replacement_text": "",
+          "rationale": "Deleting the --dependency option prevents installing required APT packages (python3, python3-pip, curl) as specified in the user query, making the skill insufficient.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity cloud sandbox create [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n| `--file` | array | Yes | - | Files to create in sandbox (sandbox-path:local-path) |\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "agentuity cloud sandbox create [options]",
+          "replacement_text": "agentuity sandbox launch [options]",
+          "rationale": "The CLI command is changed to a non-existent subcommand, so the user's invocation will fail even though the rest of the options seem relevant.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"sandboxId\": \"string\",\n  \"status\": \"string\",\n  \"stdoutStreamUrl\": \"string\",\n  \"stderrStreamUrl\": \"string\"\n}",
+          "replacement_text": "{\n  \"id\": \"string\",\n  \"status\": \"string\",\n  \"outputUrl\": \"string\",\n  \"errorUrl\": \"string\"\n}",
+          "rationale": "The output field names are changed, so the user will not find sandboxId or stream URLs as expected, making the skill useless for monitoring.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Sandbox Create\n\nCreate an interactive sandbox for multiple executions\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n- Organization context required (`--org-id` or default org)\n\n## Usage\n\n```bash\nagentuity sandbox launch [options]\n```\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--memory` | string | Yes | - | Memory limit (e.g., \"500Mi\", \"1Gi\") |\n| `--cpu` | string | Yes | - | CPU limit in millicores (e.g., \"500m\", \"1000m\") |\n| `--disk` | string | Yes | - | Disk limit (e.g., \"500Mi\", \"1Gi\") |\n| `--network` | boolean | Yes | - | Enable outbound network access |\n| `--idleTimeout` | string | Yes | - | Idle timeout before sandbox is reaped (e.g., \"10m\", \"1h\") |\n| `--env` | array | Yes | - | Environment variables (KEY=VALUE) |\n| `--file` | array | Yes | - | Files to create in sandbox (sandbox-path:local-path) |\n| `--snapshot` | string | Yes | - | Snapshot ID or tag to restore from |\n| `--dependency` | array | Yes | - | Apt packages to install (can be specified multiple times) |\n\n## Examples\n\nCreate a sandbox with default settings:\n\n```bash\nbunx @agentuity/cli cloud sandbox create\n```\n\nCreate a sandbox with resource limits:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --memory 1Gi --cpu 1000m\n```\n\nCreate a sandbox with network and custom timeout:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --network --idle-timeout 30m\n```\n\nCreate a sandbox with a specific environment variable:\n\n```bash\nbunx @agentuity/cli cloud sandbox create --env KEY=VAL\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"id\": \"string\",\n  \"status\": \"string\",\n  \"outputUrl\": \"string\",\n  \"errorUrl\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `sandboxId` | string | Unique sandbox identifier |\n| `status` | string | Current sandbox status |\n| `stdoutStreamUrl` | string | URL to the stdout output stream |\n| `stderrStreamUrl` | string | URL to the stderr output stream |"
+    }
+  ],
+  "finished_at": "2026-07-28T17:50:48",
+  "elapsed_seconds": 160.453,
+  "generated_variants": 8
+}

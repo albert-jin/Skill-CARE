@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:42:49",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 16118,
+  "selection_rank": 235,
+  "skill": {
+    "skill_id": "development/devcontainer-help",
+    "name": "devcontainer-help",
+    "category": "development",
+    "description": "Help users customize devcontainers by adding packages, extensions, features, and settings. Use when users ask about adding tools, languages, or configuring their development environment. Focus on practical devcontainer customization, not BitBot internals.",
+    "body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n- Extensions: `ms-ossdata.vscode-postgresql`\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards.",
+    "source": "pool"
+  },
+  "generated_query": "I'm setting up a new devcontainer for a Python Django project that uses PostgreSQL. I need help configuring the `devcontainer.json` and `Dockerfile` to include Python, Django dependencies, the PostgreSQL client, and some VS Code extensions like the Python extension and Django template snippets. Also, I want to set environment variables for the database connection. Could you show me the exact files and settings I need?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Database Tools\n- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n- Extensions: `ms-ossdata.vscode-postgresql`",
+          "replacement_text": "",
+          "rationale": "Deleting the Database Tools section removes all guidance for adding PostgreSQL client, which the user explicitly needs for their Django project.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Database Tools\n- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n- Extensions: `ms-ossdata.vscode-postgresql`",
+          "replacement_text": "### Database Tools\n- MySQL: `ghcr.io/devcontainers/features/mysql:1`\n- Extensions: `cweijan.vscode-mysql-client2`",
+          "rationale": "Replacing PostgreSQL with MySQL prevents the skill from providing the PostgreSQL configuration needed for the user's Django project, making it a hard negative.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- MySQL: `ghcr.io/devcontainers/features/mysql:1`\n- Extensions: `cweijan.vscode-mysql-client2`\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`",
+          "replacement_text": "- MongoDB: `ghcr.io/devcontainers/features/mongodb:1`",
+          "rationale": "Changing the database tool from PostgreSQL to MongoDB makes the skill provide the wrong database client, failing the user's explicit requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Extensions: `ms-ossdata.vscode-postgresql`",
+          "replacement_text": "- Extensions: `mongodb.mongodb-vscode`",
+          "rationale": "Replacing the PostgreSQL extension with a MongoDB extension further misleads the user into installing the wrong tool.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- MongoDB: `ghcr.io/devcontainers/features/mongodb:1`\n- Extensions: `mongodb.mongodb-vscode`\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Extensions: `ms-ossdata.vscode-postgresql`",
+          "replacement_text": "",
+          "rationale": "Removing the PostgreSQL VS Code extension guidance weakens the database setup advice, leaving the user without the crucial extension for PostgreSQL integration in VS Code.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`",
+          "replacement_text": "- Feature: `ghcr.io/devcontainers/features/conda:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `conda`, `pip` (via conda)",
+          "rationale": "Changing the Python development feature to Conda removes the standard pip/venv tooling, making it harder for the user to install Django dependencies as expected.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n- Extensions: `ms-ossdata.vscode-postgresql`",
+          "replacement_text": "- MySQL: `ghcr.io/devcontainers/features/mysql:1`\n- Extensions: `ms-ossdata.vscode-mysql`",
+          "rationale": "Replacing PostgreSQL with MySQL means the skill no longer supports the user's specific database requirement, even though it still covers database tools.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n### Python Development\n- Feature: `ghcr.io/devcontainers/features/conda:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `conda`, `pip` (via conda)\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- MySQL: `ghcr.io/devcontainers/features/mysql:1`\n- Extensions: `ms-ossdata.vscode-mysql`\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Database Tools\n- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n- Extensions: `ms-ossdata.vscode-postgresql`",
+          "replacement_text": "### Database Tools\n- You can add database features for PostgreSQL, MySQL, or others as needed.",
+          "rationale": "Removes the specific PostgreSQL feature and extension references, leaving the user without the exact details required.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`",
+          "replacement_text": "### Python Development\n- Use a Python feature and install Django dependencies as needed.",
+          "rationale": "Omits the exact feature reference, extension identifiers, and tool list, making the skill unhelpful for Python/Django setup.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```",
+          "replacement_text": "You can set environment variables in the devcontainer.json configuration.",
+          "rationale": "Removes the concrete JSON example, so the user cannot see the exact format needed for database connection variables.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\nYou can set environment variables in the devcontainer.json configuration.\n\n## Language-Specific Examples\n\n### Python Development\n- Use a Python feature and install Django dependencies as needed.\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- You can add database features for PostgreSQL, MySQL, or others as needed.\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`",
+          "replacement_text": "",
+          "rationale": "Deleting the Python Development subsection removes the specific feature, extensions, and tools needed for a Python/Django devcontainer, forcing the user to rely on general patterns that lack the exact configuration required.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n- Extensions: `ms-ossdata.vscode-postgresql`\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Python Development\n- Feature: `ghcr.io/devcontainers/features/python:1`\n- Extensions: `ms-python.python`, `ms-python.vscode-pylance`\n- Tools: `python3-pip`, `python3-venv`",
+          "replacement_text": "### Java Development\n- Feature: `ghcr.io/devcontainers/features/java:1`\n- Extensions: `vscjava.vscode-java-pack`\n- Tools: `openjdk-11-jdk`, `maven`",
+          "rationale": "The user needs Python and Django setup, but the skill now only provides Java examples, making it irrelevant for their specific language and framework.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DevContainer Customization Helper\n\nThis skill helps users customize their devcontainer by providing examples and guidance for common tasks.\n\n## Common Customization Patterns\n\n### Adding Packages to Dockerfile\n\n```dockerfile\nRUN apt-get update && apt-get install -y \\\n    package-name \\\n    && apt-get clean && rm -rf /var/lib/apt/lists/*\n```\n\n### Adding VS Code Extensions\n\n```json\n{\n  \"customizations\": {\n    \"vscode\": {\n      \"extensions\": [\"publisher.extension-name\"]\n    }\n  }\n}\n```\n\n### Adding DevContainer Features\n\n```json\n{\n  \"features\": {\n    \"ghcr.io/devcontainers/features/feature-name:version\": {}\n  }\n}\n```\n\n### Setting Environment Variables\n\n```json\n{\n  \"remoteEnv\": {\n    \"VAR_NAME\": \"value\"\n  }\n}\n```\n\n## Language-Specific Examples\n\n### Java Development\n- Feature: `ghcr.io/devcontainers/features/java:1`\n- Extensions: `vscjava.vscode-java-pack`\n- Tools: `openjdk-11-jdk`, `maven`\n\n### Node.js Development\n- Feature: `ghcr.io/devcontainers/features/node:1`\n- Extensions: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`\n- Tools: npm, yarn, pnpm\n\n### Database Tools\n- PostgreSQL: `ghcr.io/devcontainers/features/postgres:1`\n- Extensions: `ms-ossdata.vscode-postgresql`\n\n### Docker-in-Docker\n- Feature: `ghcr.io/devcontainers/features/docker-in-docker:2`\n\n## When to Use This Skill\n\n- User asks \"how do I add Python to my devcontainer?\"\n- User wants to install a specific tool or language\n- User needs help with VS Code extensions\n- User wants to set up databases or services\n- User asks about devcontainer configuration\n\n## What NOT to Explain\n\n- BitBot's internal template merging system\n- How BitBot copies files during init\n- Container orchestration internals\n- SPARC methodology or BitBot development\n\n## Focus\n\nHelp users accomplish their customization goals with practical, working examples that follow devcontainer standards."
+    }
+  ],
+  "finished_at": "2026-07-29T00:45:32",
+  "elapsed_seconds": 163.157,
+  "generated_variants": 8
+}

@@ -1,0 +1,238 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:38:49",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 44490,
+  "selection_rank": 131,
+  "skill": {
+    "skill_id": "other/lawyer-validator",
+    "name": "lawyer_validator",
+    "category": "other",
+    "description": "Validates FINAL_DRAFT.json for legal correctness, Indian court compliance, formatting, and hallucination risk. Produces VALIDATION_REPORT.json with pass/fail and required fixes.",
+    "body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)\n11. No unverified citations (must be verified=true and have verification_hash)\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te",
+    "source": "pool"
+  },
+  "generated_query": "I’ve just finished drafting a legal petition for the Delhi High Court. Can you check the final draft (in FINAL_DRAFT.json) for legal correctness, formatting, and compliance with Indian court requirements? Use the MASTER_FACTS.json, MERGED_CONTEXT.json, COMPLIANCE_REPORT.json, LOCAL_RULES.json, PRAYER_PACK.json, and the optional CITATION_PACK.json. I need you to verify jurisdiction, court heading format, party naming, presence of verification clause and affidavit, that the prayer matches the proceeding, proper annexure references, limitation compliance, and that no mandatory sections are missing. Also flag any facts not backed by a source_doc_id and any citations that aren’t verified with a verification_hash. Save the validation report as VALIDATION_REPORT.json.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)\n11. No unverified citations (must be verified=true and have verification_hash)",
+          "replacement_text": "",
+          "rationale": "Removing the hallucination and citation verification steps prevents the skill from flagging facts without source_doc_id or citations without verification_hash, which the query explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)",
+          "replacement_text": "No hallucinated facts (must be consistent with any provided context)",
+          "rationale": "The skill no longer requires facts to be backed by a source_doc_id, so it will not flag facts missing source_doc_id as required by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n10. No hallucinated facts (must be consistent with any provided context)\n11. No unverified citations (must be verified=true and have verification_hash)\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- CITATION_PACK.json (optional)",
+          "replacement_text": "",
+          "rationale": "Removing the citation pack input prevents the skill from accessing citation verification data, making it unable to flag unverified citations as required.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "11. No unverified citations (must be verified=true and have verification_hash)",
+          "replacement_text": "",
+          "rationale": "Without this checklist item, the skill no longer validates citation authenticity, failing the user's requirement to verify citations.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Any citation without verified=true + verification_hash",
+          "replacement_text": "",
+          "rationale": "Removing this hard failure condition means the skill will not reject unverified citations, undermining the query's need for citation integrity.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)\n\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by source_doc_id\n\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Any fact not backed by source_doc_id",
+          "replacement_text": "- Any fact not backed by a source_doc_id is flagged as warning, not failure",
+          "rationale": "The skill no longer treats hallucinated facts as a hard failure, so it would pass drafts containing unsourced facts, directly contradicting the user's need to flag such facts.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Any citation without verified=true + verification_hash",
+          "replacement_text": "- Any citation without verified=true or verification_hash is flagged as warning, not failure",
+          "rationale": "The skill weakens the citation verification constraint, allowing unverified citations to pass, which fails the user's explicit requirement to verify citations with a verification_hash.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)\n11. No unverified citations (must be verified=true and have verification_hash)\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by a source_doc_id is flagged as warning, not failure\n- Any citation without verified=true or verification_hash is flagged as warning, not failure\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)",
+          "replacement_text": "",
+          "rationale": "Removing the check for hallucinated facts means the skill will not flag facts lacking source_doc_id, failing the user's explicit request.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- hallucination_flags: []\n- citation_flags: []",
+          "replacement_text": "- formatting_issues: []",
+          "rationale": "Replacing hallucination and citation flags with formatting issues means the output lacks fields for unverified citations and unbacked facts, making the validation incomplete.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash",
+          "replacement_text": "- Any formatting error",
+          "rationale": "Weakening the hard failure conditions to only check formatting errors means the skill will pass drafts with hallucinated facts and unverified citations, directly contradicting the query requirements.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n\n11. No unverified citations (must be verified=true and have verification_hash)\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any formatting error\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- formatting_issues: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)\n11. No unverified citations (must be verified=true and have verification_hash)",
+          "replacement_text": "## Validation Checklist (Mandatory)\n1. Grammar and spelling errors\n2. Consistency in formatting\n3. Fact-checking against source documents\n4. Citation format consistency\n5. No contradictory statements\n6. Proper language and tone\n7. Overall readability",
+          "rationale": "Replaces the comprehensive court-specific checklist with a generic grammar and fact-checking list, making the skill unable to verify jurisdiction, heading format, verification clause, or other Indian court requirements.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding",
+          "replacement_text": "## Hard Failure Conditions (Must Fail)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Contradictory statements across sections",
+          "rationale": "Removes critical failure conditions like missing jurisdiction, missing verification clause, wrong court type, and prayer mismatch, so the skill no longer flags these essential compliance failures.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Grammar and spelling errors\n2. Consistency in formatting\n3. Fact-checking against source documents\n4. Citation format consistency\n5. No contradictory statements\n6. Proper language and tone\n7. Overall readability\n\n## Hard Failure Conditions (Must Fail)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Contradictory statements across sections\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)",
+          "replacement_text": "",
+          "rationale": "Removing this mandatory check means the skill will not flag facts missing source_doc_id, directly failing the user's hallucination detection requirement.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "11. No unverified citations (must be verified=true and have verification_hash)",
+          "replacement_text": "",
+          "rationale": "Deleting this bullet removes the mandatory verification of citations, so the skill will not output citation_flags as needed by the user.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Any fact not backed by source_doc_id",
+          "replacement_text": "",
+          "rationale": "Removing this hard failure condition allows drafts with ungrounded facts to pass validation, contradicting the user's instruction to flag such issues.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n\n\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n\n- Any citation without verified=true + verification_hash\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "11. No unverified citations (must be verified=true and have verification_hash)",
+          "replacement_text": "11. No unverified citations (must be verified=true)",
+          "rationale": "The edited skill no longer requires verification_hash for citations, so it will not flag unverified citations as required by the user's query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n- CITATION_PACK.json (optional)\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)\n11. No unverified citations (must be verified=true)\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n- citation_flags: []\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- CITATION_PACK.json (optional)",
+          "replacement_text": "",
+          "rationale": "Removing the optional citation input means the skill cannot access citation verification data.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "11. No unverified citations (must be verified=true and have verification_hash)",
+          "replacement_text": "",
+          "rationale": "Deleting the citation validation step prevents the skill from flagging unverified citations as required by the user.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- citation_flags: []",
+          "replacement_text": "",
+          "rationale": "Removing the citation_flags field from output means the validation report will not contain citation-related issues.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lawyer Validator Skill (Indian Context)\n\n## Purpose\nThis skill performs court-grade validation of generated legal drafts.\nIt checks compliance, structure, missing mandatory clauses, jurisdiction correctness, and detects hallucinated facts/citations.\n\n\n\n## Inputs\n- FINAL_DRAFT.json\n- MASTER_FACTS.json\n- MERGED_CONTEXT.json\n- COMPLIANCE_REPORT.json\n- LOCAL_RULES.json\n- PRAYER_PACK.json\n\n\n## Outputs\nWrites:\n- VALIDATION_REPORT.json\n\n## Validation Checklist (Mandatory)\n1. Jurisdiction correctness (State, City, Court)\n2. Correct court heading format\n3. Proper party naming format (Petitioner/Respondent)\n4. Verification clause present\n5. Affidavit requirements included if needed\n6. Prayer clause matches proceeding type\n7. Annexures referenced correctly\n8. Limitation compliance check\n9. No missing mandatory sections\n10. No hallucinated facts (must exist in MASTER_FACTS or uploaded docs)\n\n\n## Hard Failure Conditions (Must Fail)\n- Missing jurisdiction\n- Missing verification clause (where mandatory)\n- Any fact not backed by source_doc_id\n- Any citation without verified=true + verification_hash\n- Relief/prayer not supported by facts\n- Wrong court type for proceeding\n\n## Output Schema (VALIDATION_REPORT.json)\nMust include:\n- status: PASS/FAIL\n- issues: [ {severity, section, problem, fix_suggestion} ]\n- hallucination_flags: []\n\n- missing_sections: []\n- quality_score: 0-100\n\nModel Configuration Test Results\n================================\nConfiguration: [Kimi K2.5]\nTotal Cost: $X.XX\nExecution Time: XX seconds\nAccuracy Score: XX%\nNotes: [observations]\n\n## Test speed \nU need check te"
+    }
+  ],
+  "finished_at": "2026-07-28T18:41:03",
+  "elapsed_seconds": 133.125,
+  "generated_variants": 9
+}

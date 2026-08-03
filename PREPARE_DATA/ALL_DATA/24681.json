@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:56:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 24681,
+  "selection_rank": 291,
+  "skill": {
+    "skill_id": "other/agentuity-cli-cloud-apikey-delete",
+    "name": "agentuity-cli-cloud-apikey-delete",
+    "category": "other",
+    "description": "Delete an API key (soft delete). Requires authentication. Use for Agentuity cloud platform operations",
+    "body": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey delete <id>\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<id>` | string | Yes | - |\n\n## Examples\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey delete <id>\n```\n\nRun <id> command:\n\n```bash\nbunx @agentuity/cli cloud apikey del <id>\n```\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey rm <id>\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": \"boolean\",\n  \"id\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |",
+    "source": "pool"
+  },
+  "generated_query": "I’ve noticed one of my API keys (ID: `key_abc123`) is exposed in a test log, so I need to delete it right away to prevent unauthorized access. Could you show me the exact command to soft-delete this key from my Agentuity cloud account, and confirm the expected output (like a success flag and the key ID) so I know it worked?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "agentuity cloud apikey delete <id>",
+          "replacement_text": "",
+          "rationale": "Removes the primary command template, so the user cannot find the exact delete command.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## Examples\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey delete <id>\n```\n\nRun <id> command:\n\n```bash\nbunx @agentuity/cli cloud apikey del <id>\n```\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey rm <id>\n```\n\n",
+          "replacement_text": "",
+          "rationale": "Deletes all example commands, leaving no working deletion command in the skill document.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\n\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<id>` | string | Yes | - |\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": \"boolean\",\n  \"id\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "agentuity cloud apikey delete <id>",
+          "replacement_text": "agentuity cloud apikey list",
+          "rationale": "Changes the core API command from delete to list, so the skill no longer deletes an API key as requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"success\": \"boolean\",\n  \"id\": \"string\"",
+          "replacement_text": "\"keys\": \"array\"",
+          "rationale": "Alters the expected output to an array of keys instead of delete confirmation, making it useless for the user's needs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey list\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<id>` | string | Yes | - |\n\n## Examples\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey delete <id>\n```\n\nRun <id> command:\n\n```bash\nbunx @agentuity/cli cloud apikey del <id>\n```\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey rm <id>\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"keys\": \"array\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `<id>` | string | Yes | - |",
+          "replacement_text": "| `<key_name>` | string | Yes | The name of the API key to delete (e.g., 'production-key') |",
+          "rationale": "Changing the required argument from a key ID to a key name makes the user's key_abc123 invalid input, so the query cannot be fulfilled.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```json\n{\n  \"success\": \"boolean\",\n  \"id\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |",
+          "replacement_text": "```json\n{\n  \"success\": \"boolean\",\n  \"message\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `message` | string | Status message about the deletion |",
+          "rationale": "Removing the 'id' field from the output prevents the user from confirming which key was deleted, failing the explicit request to see the key ID in the output.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey delete <id>\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<key_name>` | string | Yes | The name of the API key to delete (e.g., 'production-key') |\n\n## Examples\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey delete <id>\n```\n\nRun <id> command:\n\n```bash\nbunx @agentuity/cli cloud apikey del <id>\n```\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey rm <id>\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": \"boolean\",\n  \"message\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `message` | string | Status message about the deletion |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "{ \"success\": \"boolean\", \"id\": \"string\" }",
+          "replacement_text": "{ \"success\": \"boolean\" }",
+          "rationale": "The user expects confirmation containing both success flag and key ID, but this output only reports success, making it impossible to verify which key was deleted.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Cloud Apikey List\n\nList all API keys for your account\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey list [--active]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `--active` | flag | No | Filter only active keys |\n\n## Examples\n\nList all keys:\n\n```bash\nbunx @agentuity/cli cloud apikey list\n```\n\nList active keys:\n\n```bash\nbunx @agentuity/cli cloud apikey list --active\n```\n\n## Output\n\nReturns JSON array:\n\n```json\n[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"status\": \"active | revoked\"\n  }\n]\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `id` | string | API key ID |\n| `name` | string | Key name |\n| `status` | string | Current status of the key |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\nagentuity cloud apikey delete <id>\n```",
+          "replacement_text": "```bash\nagentuity cloud apikey list\n```",
+          "rationale": "Changed the command from 'delete' to 'list' so the skill now lists keys instead of deleting them.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<id>` | string | Yes | - |",
+          "replacement_text": "",
+          "rationale": "Removed the required <id> argument because listing keys does not need an id, making the skill unable to delete a specific key.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey list\n```\n\n## Arguments\n\n\n\n## Examples\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey delete <id>\n```\n\nRun <id> command:\n\n```bash\nbunx @agentuity/cli cloud apikey del <id>\n```\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey rm <id>\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": \"boolean\",\n  \"id\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)",
+          "replacement_text": "# Cloud Apikey Management\n\nManage API keys (create, delete, list)",
+          "rationale": "Makes the skill appear as a general management skill rather than specifically for deleting an API key.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\nagentuity cloud apikey delete <id>\n```",
+          "replacement_text": "```bash\nagentuity cloud apikey <command> <id>\n```",
+          "rationale": "Changes the exact delete command to a generic placeholder, so the user cannot be sure which command to use for deletion.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": \"boolean\",\n  \"id\": \"string\"\n}\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |",
+          "replacement_text": "## Output\n\nReturns JSON object:\n\n```json\n{\n  \"status\": \"string\",\n  \"data\": {}\n}\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `status` | string | Result of the operation (e.g., 'success', 'error') |\n| `data` | object | Additional data depending on the operation |",
+          "rationale": "Removes the specific success flag and key ID fields, so the user cannot confirm the expected output for a delete operation.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 2 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Cloud Apikey Status Update\n\nUpdate the status of an API key (enable or disable). This replaces the older soft-delete command for access control.\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey status <id> --status <status>\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<id>` | string | Yes | - |\n| `--status` | string | Yes | New status: `active` or `disabled` |\n\n## Examples\n\nDisable a key:\n\n```bash\nbunx @agentuity/cli cloud apikey status key_abc123 --status disabled\n```\n\nEnable a key:\n\n```bash\nbunx @agentuity/cli cloud apikey status key_xyz456 --status active\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": true,\n  \"id\": \"key_abc123\",\n  \"status\": \"disabled\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key ID |\n| `status` | string | New status of the key |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": \"boolean\",\n  \"id\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |",
+          "replacement_text": "",
+          "rationale": "Removing the output specification means the skill cannot confirm the deletion result, so the user cannot verify the key was soft-deleted as requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey delete <id>\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<id>` | string | Yes | - |\n\n## Examples\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey delete <id>\n```\n\nRun <id> command:\n\n```bash\nbunx @agentuity/cli cloud apikey del <id>\n```\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey rm <id>\n```\n\n"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "agentuity cloud apikey delete <id>",
+          "replacement_text": "agentuity cloud apikey list <id>",
+          "rationale": "Replaces the delete command with a list command, so the skill no longer allows deleting an API key, making it irrelevant to the user's request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Apikey Delete\n\nDelete an API key (soft delete)\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud apikey list <id>\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<id>` | string | Yes | - |\n\n## Examples\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey delete <id>\n```\n\nRun <id> command:\n\n```bash\nbunx @agentuity/cli cloud apikey del <id>\n```\n\nDelete item:\n\n```bash\nbunx @agentuity/cli cloud apikey rm <id>\n```\n\n## Output\n\nReturns JSON object:\n\n```json\n{\n  \"success\": \"boolean\",\n  \"id\": \"string\"\n}\n```\n\n| Field | Type | Description |\n|-------|------|-------------|\n| `success` | boolean | Whether the operation succeeded |\n| `id` | string | API key id that was deleted |"
+    }
+  ],
+  "finished_at": "2026-07-29T03:59:44",
+  "elapsed_seconds": 167.344,
+  "generated_variants": 8
+}

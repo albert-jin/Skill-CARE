@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:48:41",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 21512,
+  "selection_rank": 72,
+  "skill": {
+    "skill_id": "other/react-grab",
+    "name": "react-grab",
+    "category": "other",
+    "description": "Browser automation with Playwright and real cookies. Use 'grab browser execute \"<code>\"' to run Playwright code.",
+    "body": "# React Grab\n\nPlaywright automation with your real browser cookies. Pages persist across executions. Output is always JSON: `{ok, result, error, url, title, page}`\n\n**Note:** If MCP is available in your environment, prefer using the `browser_snapshot` and `browser_execute` MCP tools instead of this skill for better performance.\n\n## Usage\n\n```bash\ngrab browser execute \"<code>\"\n```\n\n## Performance Tips\n\n1. Batch multiple actions in a single execute call (3-5x faster)\n2. Use maxDepth to limit tree depth: `getSnapshot({maxDepth: 5})`\n\n```bash\n# SLOW: 3 separate round-trips\nexecute \"await page.goto('https://example.com')\"\nexecute \"await getRef('e1').click()\"\nexecute \"return await getSnapshot()\"\n\n# FAST: 1 round-trip\nexecute \"await page.goto('...'); await getRef('e1').click(); return await getSnapshot();\"\n```\n\n## Helpers\n\n- `page` - Playwright Page object\n- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`\n- `getRef(id)` - Get element by ref ID (chainable). E.g. `await getRef('e1').click()`\n- `getRef(id).source()` - Get React component source: `{ filePath, lineNumber, componentName }`\n- `fill(id, text)` - Clear and fill input\n- `drag({from, to, dataTransfer?})` - Drag with custom MIME types\n- `dispatch({target, event, dataTransfer?, detail?})` - Dispatch custom events\n- `waitFor(target, opts?)` - Wait for selector/ref/state. E.g. `waitFor('e1')`, `waitFor('networkidle')`\n\n## Common Patterns\n\n```bash\nexecute \"await getRef('e1').click()\"\nexecute \"await fill('e1', 'hello')\"\nexecute \"await waitFor('e1')\"\nexecute \"await waitFor('networkidle')\"\nexecute \"return await getRef('e1').getAttribute('data-id')\"\nexecute \"return await getRef('e1').source()\"\nexecute \"return await getSnapshot()\"\nexecute \"return await getRef('e1').screenshot()\"\nexecute \"return await page.screenshot()\"\n```\n\n## Multi-Page Sessions\n\n```bash\nexecute \"await page.goto('https://github.com')\" --page github\nexecute \"return await getSnapshot()\" --page github\n```\n\n## Docs\n\nPlaywright API: https://playwright.dev/docs/api/class-page",
+    "source": "pool"
+  },
+  "generated_query": "I’m working on a React-based single‑page application that loads dynamic content after login. I need to automate a series of interactions to verify that a specific component is rendering correctly and to extract its file location for debugging.\n\n- First, navigate to the app’s dashboard page (e.g., `https://app.example.com/dashboard`) using the browser session that already has my authentication cookies.\n- Wait for the page to fully load (network idle).\n- Using the ARIA snapshot, identify the element that contains the text “Active Projects”. Click on it.\n- Wait for a sub‑panel to appear (a selector like `[data-testid=\"project-list\"]`).\n- Capture the full ARIA tree of the sub‑panel (limit depth to 4).\n- For the first project item in the list (which should be a React component), get its source file path and line number.\n- Finally, take a screenshot of the visible page after the interaction and return it along with the component source information.\n\nAll outputs should be returned in a structured JSON format, ready to be passed to my analysis tool.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `getRef(id).source()` - Get React component source: `{ filePath, lineNumber, componentName }`",
+          "replacement_text": "",
+          "rationale": "Without the source() helper, the skill cannot provide the React component source file path and line number required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# React Grab\n\nPlaywright automation with your real browser cookies. Pages persist across executions. Output is always JSON: `{ok, result, error, url, title, page}`\n\n**Note:** If MCP is available in your environment, prefer using the `browser_snapshot` and `browser_execute` MCP tools instead of this skill for better performance.\n\n## Usage\n\n```bash\ngrab browser execute \"<code>\"\n```\n\n## Performance Tips\n\n1. Batch multiple actions in a single execute call (3-5x faster)\n2. Use maxDepth to limit tree depth: `getSnapshot({maxDepth: 5})`\n\n```bash\n# SLOW: 3 separate round-trips\nexecute \"await page.goto('https://example.com')\"\nexecute \"await getRef('e1').click()\"\nexecute \"return await getSnapshot()\"\n\n# FAST: 1 round-trip\nexecute \"await page.goto('...'); await getRef('e1').click(); return await getSnapshot();\"\n```\n\n## Helpers\n\n- `page` - Playwright Page object\n- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`\n- `getRef(id)` - Get element by ref ID (chainable). E.g. `await getRef('e1').click()`\n\n- `fill(id, text)` - Clear and fill input\n- `drag({from, to, dataTransfer?})` - Drag with custom MIME types\n- `dispatch({target, event, dataTransfer?, detail?})` - Dispatch custom events\n- `waitFor(target, opts?)` - Wait for selector/ref/state. E.g. `waitFor('e1')`, `waitFor('networkidle')`\n\n## Common Patterns\n\n```bash\nexecute \"await getRef('e1').click()\"\nexecute \"await fill('e1', 'hello')\"\nexecute \"await waitFor('e1')\"\nexecute \"await waitFor('networkidle')\"\nexecute \"return await getRef('e1').getAttribute('data-id')\"\nexecute \"return await getRef('e1').source()\"\nexecute \"return await getSnapshot()\"\nexecute \"return await getRef('e1').screenshot()\"\nexecute \"return await page.screenshot()\"\n```\n\n## Multi-Page Sessions\n\n```bash\nexecute \"await page.goto('https://github.com')\" --page github\nexecute \"return await getSnapshot()\" --page github\n```\n\n## Docs\n\nPlaywright API: https://playwright.dev/docs/api/class-page"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "getSnapshot(opts?) - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`",
+          "replacement_text": "getSnapshot(opts?) - Get page HTML content as string. Options: `selector` (CSS selector to limit area)",
+          "rationale": "Replacing ARIA tree with plain HTML prevents identifying elements by text and obtaining refs needed for clicking and source extraction.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "getRef(id).source() - Get React component source: `{ filePath, lineNumber, componentName }`",
+          "replacement_text": "getRef(id).source() - Get React component name: `{ componentName }`",
+          "rationale": "Removing file path and line number from source output makes it impossible to fulfill the user's debugging requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# React Snapshot\n\nPlaywright automation with your real browser session. Pages persist across calls. Output is always JSON: `{ok, result, error, url}`.\n\n**Note:** For advanced ARIA tree depth control, consider using the `browser_snapshot` MCP tool if available.\n\n## Usage\n\n```bash\nsnap browser execute \"<code>\"\n```\n\n## Helpers\n\n- `page` – Playwright Page object with existing cookies and localStorage.\n- `getSnapshot()` – Get the full ARIA tree of the current page (no depth limit).\n- `getRef(id)` – Get an element by its ref ID (e.g., `e1`, `e2`) from the snapshot.\n- `click(id)` – Click the element referenced by `id`.\n- `fill(id, text)` – Clear and fill the referenced input.\n- `waitForPageLoad()` – Wait until the `load` event fires (not network idle).\n- `screenshot()` – Capture a full-page screenshot as base64.\n\n## Patterns\n\n```bash\nexecute \"await page.goto('https://example.com'); await waitForPageLoad(); return await getSnapshot();\"\nexecute \"await click('e3'); await waitForPageLoad(); return await getSnapshot();\"\nexecute \"return await screenshot();\"\nexecute \"await fill('e5', 'hello'); await click('e6'); return await getSnapshot();\"\n```\n\n## Workflow Example\n\n1. Navigate to the page.\n2. Wait for the page to load.\n3. Get the full ARIA tree (refs are assigned automatically).\n4. Click the element whose text contains “Active Projects” (you’d need to map the snapshot output manually).\n5. Wait again for the page to load (the sub‑panel appears).\n6. Get another full ARIA tree.\n7. Parse the result to find the first project item.\n8. Take a screenshot.\n\n```bash\nsnap browser execute \"await page.goto('https://app.example.com/dashboard'); await waitForPageLoad(); return await getSnapshot();\"\n# Then parse snapshot to find the ref for \"Active Projects\"\nsnap browser execute \"await click('e7'); await waitForPageLoad(); return await getSnapshot();\"\n# Parse snapshot again for project list\nsnap browser execute \"return await screenshot();\"\n```\n\nAll outputs are returned as JSON with the fields `ok`, `result`, `error`, and `url`.\n\n**Note:** The full ARIA tree is returned; there is no option to limit depth. To extract React component source information (file path, line number), you would need to manually inspect the bundle or use browser DevTools – this skill does not provide a `source()` helper."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Output is always JSON: `{ok, result, error, url, title, page}`",
+          "replacement_text": "Output is always plain text.",
+          "rationale": "The user requires structured JSON output for analysis, but the skill now returns plain text, making it impossible to parse programmatically.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# React Grab\n\nPlaywright automation with your real browser cookies. Pages persist across executions. Output is always plain text.\n\n**Note:** If MCP is available in your environment, prefer using the `browser_snapshot` and `browser_execute` MCP tools instead of this skill for better performance.\n\n## Usage\n\n```bash\ngrab browser execute \"<code>\"\n```\n\n## Performance Tips\n\n1. Batch multiple actions in a single execute call (3-5x faster)\n2. Use maxDepth to limit tree depth: `getSnapshot({maxDepth: 5})`\n\n```bash\n# SLOW: 3 separate round-trips\nexecute \"await page.goto('https://example.com')\"\nexecute \"await getRef('e1').click()\"\nexecute \"return await getSnapshot()\"\n\n# FAST: 1 round-trip\nexecute \"await page.goto('...'); await getRef('e1').click(); return await getSnapshot();\"\n```\n\n## Helpers\n\n- `page` - Playwright Page object\n- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`\n- `getRef(id)` - Get element by ref ID (chainable). E.g. `await getRef('e1').click()`\n- `getRef(id).source()` - Get React component source: `{ filePath, lineNumber, componentName }`\n- `fill(id, text)` - Clear and fill input\n- `drag({from, to, dataTransfer?})` - Drag with custom MIME types\n- `dispatch({target, event, dataTransfer?, detail?})` - Dispatch custom events\n- `waitFor(target, opts?)` - Wait for selector/ref/state. E.g. `waitFor('e1')`, `waitFor('networkidle')`\n\n## Common Patterns\n\n```bash\nexecute \"await getRef('e1').click()\"\nexecute \"await fill('e1', 'hello')\"\nexecute \"await waitFor('e1')\"\nexecute \"await waitFor('networkidle')\"\nexecute \"return await getRef('e1').getAttribute('data-id')\"\nexecute \"return await getRef('e1').source()\"\nexecute \"return await getSnapshot()\"\nexecute \"return await getRef('e1').screenshot()\"\nexecute \"return await page.screenshot()\"\n```\n\n## Multi-Page Sessions\n\n```bash\nexecute \"await page.goto('https://github.com')\" --page github\nexecute \"return await getSnapshot()\" --page github\n```\n\n## Docs\n\nPlaywright API: https://playwright.dev/docs/api/class-page"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `getRef(id).source()` - Get React component source: `{ filePath, lineNumber, componentName }`",
+          "replacement_text": "- `getRef(id).source()` - Get React component source: `{ filePath, componentName }`",
+          "rationale": "The query requires lineNumber, but skill no longer returns it, so the output is incomplete.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`",
+          "replacement_text": "- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). (fixed depth=2)",
+          "rationale": "The query requires maxDepth 4, but skill now only captures depth 2, so the ARIA tree is insufficient.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# React Grab\n\nPlaywright automation with your real browser cookies. Pages persist across executions. Output is always JSON: `{ok, result, error, url, title, page}`\n\n**Note:** If MCP is available in your environment, prefer using the `browser_snapshot` and `browser_execute` MCP tools instead of this skill for better performance.\n\n## Usage\n\n```bash\ngrab browser execute \"<code>\"\n```\n\n## Performance Tips\n\n1. Batch multiple actions in a single execute call (3-5x faster)\n2. Use maxDepth to limit tree depth: `getSnapshot({maxDepth: 5})`\n\n```bash\n# SLOW: 3 separate round-trips\nexecute \"await page.goto('https://example.com')\"\nexecute \"await getRef('e1').click()\"\nexecute \"return await getSnapshot()\"\n\n# FAST: 1 round-trip\nexecute \"await page.goto('...'); await getRef('e1').click(); return await getSnapshot();\"\n```\n\n## Helpers\n\n- `page` - Playwright Page object\n- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). (fixed depth=2)\n- `getRef(id)` - Get element by ref ID (chainable). E.g. `await getRef('e1').click()`\n- `getRef(id).source()` - Get React component source: `{ filePath, componentName }`\n- `fill(id, text)` - Clear and fill input\n- `drag({from, to, dataTransfer?})` - Drag with custom MIME types\n- `dispatch({target, event, dataTransfer?, detail?})` - Dispatch custom events\n- `waitFor(target, opts?)` - Wait for selector/ref/state. E.g. `waitFor('e1')`, `waitFor('networkidle')`\n\n## Common Patterns\n\n```bash\nexecute \"await getRef('e1').click()\"\nexecute \"await fill('e1', 'hello')\"\nexecute \"await waitFor('e1')\"\nexecute \"await waitFor('networkidle')\"\nexecute \"return await getRef('e1').getAttribute('data-id')\"\nexecute \"return await getRef('e1').source()\"\nexecute \"return await getSnapshot()\"\nexecute \"return await getRef('e1').screenshot()\"\nexecute \"return await page.screenshot()\"\n```\n\n## Multi-Page Sessions\n\n```bash\nexecute \"await page.goto('https://github.com')\" --page github\nexecute \"return await getSnapshot()\" --page github\n```\n\n## Docs\n\nPlaywright API: https://playwright.dev/docs/api/class-page"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "getSnapshot(opts?) - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`",
+          "replacement_text": "getSnapshot(opts?) - Get flattened DOM text, not ARIA tree. Options: `maxDepth` (default 2)",
+          "rationale": "Without ARIA tree, the user cannot locate elements by their accessible text like 'Active Projects' to click on them.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "getRef(id).source() - Get React component source: `{ filePath, lineNumber, componentName }`",
+          "replacement_text": "getRef(id).text() - Get visible text content of element.",
+          "rationale": "Removes the ability to extract the React component's file path and line number, which is a key requirement of the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "execute \"return await getRef('e1').source()\"\nexecute \"return await getSnapshot()\"",
+          "replacement_text": "",
+          "rationale": "Deleting these common patterns hides the existence of snapshot and source capabilities, making the skill appear unsuitable for the task.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# React Component Inspector\n\nAutomated debugging tool that captures React component details and screenshots using your browser session. Pages persist between executions. Output is always plain text with component info and screenshot paths.\n\n**Note:** If you have React DevTools installed, this skill can also extract component props and state via the `inspectComponent` helper.\n\n## Usage\n\n```bash\ngrab component inspect \"<code>\"\n```\n\n## Performance Tips\n\n1. Combine multiple actions to reduce round-trips (2-3x faster)\n2. Use CSS selectors for faster element lookups instead of relying on ARIA\n\n```bash\n# SLOW: each step separate\nexecute \"await page.goto('https://app.example.com')\"\nexecute \"await page.click('button')\"\nexecute \"return await page.screenshot()\"\n\n# FAST: all in one call\nexecute \"await page.goto('https://app.example.com'); await page.click('button'); return await page.screenshot();\"\n```\n\n## Helpers\n\n- `page` - Playwright Page object\n- `getSnapshot()` - Get current page’s ARIA tree (no depth limit, full tree returned)\n- `findElement(text)` - Returns the first DOM element containing exact text (case‑sensitive)\n- `getComponentInfo(selector)` - For a given CSS selector, returns `{ componentName, state, props }` if React DevTools is connected\n- `captureSource(selector)` - Attempts to retrieve the React component’s source file with line number (only works for class components)\n- `screenshot(selector?)` - Take a screenshot of the page or a specific element (saved as PNG, returns file path)\n- `waitForNetworkIdle()` - Wait until no network requests for 500ms\n\n## Common Patterns\n\n```bash\nexecute \"await page.goto('https://app.example.com/dashboard')\"\nexecute \"await waitForNetworkIdle()\"\nexecute \"return await getSnapshot()\"\nexecute \"return await findElement('Active Projects').click()\"\nexecute \"return await page.screenshot()\"\nexecute \"return await captureSource('[data-testid=\\\"project-list\\\"] > :first-child')\"\nexecute \"return await getComponentInfo('[data-testid=\\\"project-list\\\"] > :first-child')\"\n```\n\n## Multi-Page Sessions\n\n```bash\nexecute \"await page.goto('https://app.example.com/dashboard')\" --session main\nexecute \"return await getSnapshot()\" --session main\nexecute \"await page.screenshot()\" --session main\n```\n\n## Docs\n\nPlaywright API: https://playwright.dev/docs/api/class-page\nReact DevTools integration: https://github.com/facebook/react/tree/main/packages/react-devtools\n\n*Note: Output format is plain text with each helper returning a human‑readable description. For structured JSON, use the `--json` flag when calling `grab component inspect`. When using `--json`, all results are combined into a single JSON object with keys matching the last executed helper.*"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`",
+          "replacement_text": "- `getSnapshot(opts?)` - Get the DOM tree with refs (e1, e2...). Options: `maxDepth`",
+          "rationale": "Replaces 'ARIA tree' with 'DOM tree', so the snapshot does not provide the accessible ARIA information needed to identify elements by text.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `getRef(id).source()` - Get React component source: `{ filePath, lineNumber, componentName }`",
+          "replacement_text": "",
+          "rationale": "Deletes the source() method, making it impossible to retrieve the exact file path and line number of a React component.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# React Grab\n\nPlaywright automation with your real browser cookies. Pages persist across executions. Output is always JSON: `{ok, result, error, url, title, page}`\n\n**Note:** If MCP is available in your environment, prefer using the `browser_snapshot` and `browser_execute` MCP tools instead of this skill for better performance.\n\n## Usage\n\n```bash\ngrab browser execute \"<code>\"\n```\n\n## Performance Tips\n\n1. Batch multiple actions in a single execute call (3-5x faster)\n2. Use maxDepth to limit tree depth: `getSnapshot({maxDepth: 5})`\n\n```bash\n# SLOW: 3 separate round-trips\nexecute \"await page.goto('https://example.com')\"\nexecute \"await getRef('e1').click()\"\nexecute \"return await getSnapshot()\"\n\n# FAST: 1 round-trip\nexecute \"await page.goto('...'); await getRef('e1').click(); return await getSnapshot();\"\n```\n\n## Helpers\n\n- `page` - Playwright Page object\n- `getSnapshot(opts?)` - Get the DOM tree with refs (e1, e2...). Options: `maxDepth`\n- `getRef(id)` - Get element by ref ID (chainable). E.g. `await getRef('e1').click()`\n\n- `fill(id, text)` - Clear and fill input\n- `drag({from, to, dataTransfer?})` - Drag with custom MIME types\n- `dispatch({target, event, dataTransfer?, detail?})` - Dispatch custom events\n- `waitFor(target, opts?)` - Wait for selector/ref/state. E.g. `waitFor('e1')`, `waitFor('networkidle')`\n\n## Common Patterns\n\n```bash\nexecute \"await getRef('e1').click()\"\nexecute \"await fill('e1', 'hello')\"\nexecute \"await waitFor('e1')\"\nexecute \"await waitFor('networkidle')\"\nexecute \"return await getRef('e1').getAttribute('data-id')\"\nexecute \"return await getRef('e1').source()\"\nexecute \"return await getSnapshot()\"\nexecute \"return await getRef('e1').screenshot()\"\nexecute \"return await page.screenshot()\"\n```\n\n## Multi-Page Sessions\n\n```bash\nexecute \"await page.goto('https://github.com')\" --page github\nexecute \"return await getSnapshot()\" --page github\n```\n\n## Docs\n\nPlaywright API: https://playwright.dev/docs/api/class-page"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `getRef(id).source()` - Get React component source: `{ filePath, lineNumber, componentName }`",
+          "replacement_text": "",
+          "rationale": "Deleting the source() helper means the skill cannot retrieve React component file path and line number, a key requirement for the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# React Grab\n\nPlaywright automation with your real browser cookies. Pages persist across executions. Output is always JSON: `{ok, result, error, url, title, page}`\n\n**Note:** If MCP is available in your environment, prefer using the `browser_snapshot` and `browser_execute` MCP tools instead of this skill for better performance.\n\n## Usage\n\n```bash\ngrab browser execute \"<code>\"\n```\n\n## Performance Tips\n\n1. Batch multiple actions in a single execute call (3-5x faster)\n2. Use maxDepth to limit tree depth: `getSnapshot({maxDepth: 5})`\n\n```bash\n# SLOW: 3 separate round-trips\nexecute \"await page.goto('https://example.com')\"\nexecute \"await getRef('e1').click()\"\nexecute \"return await getSnapshot()\"\n\n# FAST: 1 round-trip\nexecute \"await page.goto('...'); await getRef('e1').click(); return await getSnapshot();\"\n```\n\n## Helpers\n\n- `page` - Playwright Page object\n- `getSnapshot(opts?)` - Get ARIA tree with refs (e1, e2...). Options: `maxDepth`\n- `getRef(id)` - Get element by ref ID (chainable). E.g. `await getRef('e1').click()`\n\n- `fill(id, text)` - Clear and fill input\n- `drag({from, to, dataTransfer?})` - Drag with custom MIME types\n- `dispatch({target, event, dataTransfer?, detail?})` - Dispatch custom events\n- `waitFor(target, opts?)` - Wait for selector/ref/state. E.g. `waitFor('e1')`, `waitFor('networkidle')`\n\n## Common Patterns\n\n```bash\nexecute \"await getRef('e1').click()\"\nexecute \"await fill('e1', 'hello')\"\nexecute \"await waitFor('e1')\"\nexecute \"await waitFor('networkidle')\"\nexecute \"return await getRef('e1').getAttribute('data-id')\"\nexecute \"return await getRef('e1').source()\"\nexecute \"return await getSnapshot()\"\nexecute \"return await getRef('e1').screenshot()\"\nexecute \"return await page.screenshot()\"\n```\n\n## Multi-Page Sessions\n\n```bash\nexecute \"await page.goto('https://github.com')\" --page github\nexecute \"return await getSnapshot()\" --page github\n```\n\n## Docs\n\nPlaywright API: https://playwright.dev/docs/api/class-page"
+    }
+  ],
+  "finished_at": "2026-07-28T15:51:09",
+  "elapsed_seconds": 147.5,
+  "generated_variants": 7
+}

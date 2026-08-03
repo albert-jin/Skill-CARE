@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:46:15",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 46254,
+  "selection_rank": 109,
+  "skill": {
+    "skill_id": "other/buyer-presentation",
+    "name": "buyer-presentation",
+    "category": "other",
+    "description": "Generate buyer-ready sales collateral from market data",
+    "body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Verify data currency\n2. **market-analyst** — Pull category performance, share trends, competitive landscape\n3. **segment-helper** — Validate product segmentation for the target category\n\n### Step 3: Build the Sell Story\n\nDelegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as markdown. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).\n\n### Error Handling\n\n- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data",
+    "source": "pool"
+  },
+  "generated_query": "I need to prepare a compelling presentation for an upcoming line review with Target. We’re pitching three new Jocko Fuel products—the Mint Chip protein bar, the Cold Brew RTD, and the Grass-Fed Collagen powder. The core message is that our brand drives incremental category growth and higher velocity per SKU than the category average. Could you pull the latest Circana market data to show overall performance in the protein bar and ready-to-drink coffee segments? I want proof points on our velocity, share trends, and any distribution gaps or whitespace opportunities relative to competitors like Quest or Celsius. Then, build a buyer-ready narrative that lays out the financial case—margin per unit, turns, and profit per linear foot—and structure it as a one-page executive summary, a category overview slide, dedicated sell sheets for each product, and a recommended shelf-set expansion for the energy and nutrition aisle. Also include a 3-month promotional calendar proposal if the data supports it. I’ll need everything in markdown so I can drop it into Google Slides.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Verify data currency\n2. **market-analyst** — Pull category performance, share trends, competitive landscape\n3. **segment-helper** — Validate product segmentation for the target category\n\n",
+          "replacement_text": "",
+          "rationale": "Without market data collection, the skill cannot provide Circana data on velocity, share trends, or distribution gaps, which the user query explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 3: Build the Sell Story\n\nDelegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as markdown. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).\n\n### Error Handling\n\n- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **market-analyst** — Pull category performance, share trends, competitive landscape",
+          "replacement_text": "- **market-analyst** — Summarize high-level category stats from internal reports only",
+          "rationale": "Without access to external market data like Circana, the skill cannot provide the required velocity, share trends, or competitive landscape, making it fail the query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Delegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:",
+          "replacement_text": "Delegate to `brand-reporter` to compile a simple list of product features and benefits:",
+          "rationale": "Replacing the strategic narrative builder with a basic feature lister prevents construction of the financial case (margin, turns, profit per linear foot) needed for the buyer presentation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "You are helping the sales team create internal pitch decks for product launches. This skill combines sales performance data with the `brand-strategist` and `deck-builder` agents.\n\n### Step 1: Define the Pitch\n\nAsk the user:\n- **Product**: Which Jocko Fuel product is this for?\n- **Pitch objective**: What's the key selling point — taste, ingredient quality, brand loyalty?\n- **Target audience**: Internal sales team, not external buyers\n- **Core narrative**: What emotional or functional benefit to emphasize?\n\n### Step 2: Gather Internal Data\n\nDelegate to agents for data collection:\n1. **sales-analyst** — Pull internal sales velocity, inventory turnover, and historical reorder rates\n2. **brand-insights** — Collect customer reviews, social media sentiment, and repeat purchase data\n3. **competitor-scraper** — Aggregate competitor pricing and product claims from public sources (no Circana or retailer-specific data)\n\n### Step 3: Build the Product Story\n\nDelegate to `brand-strategist` to create a compelling narrative:\n- Product origin and formulation highlights\n- Testimonial quotes from athletes or influencers\n- Unique ingredient differentiation\n- Projected margin vs. internal cost structure\n\n### Step 4: Generate Deck Content\n\nDelegate to `deck-builder` to produce:\n- Product one-pager (benefits, specs, imagery suggested)\n- Comparison table against top 3 competitors (features only, no market share)\n- Suggested retail price and internal margin calculator\n- Internal launch timeline (not promotional calendar)\n\n### Step 5: Review and Finalize\n\nPresent the draft for user refinement. Allow:\n- Adjust tone (technical vs. inspirational)\n- Swap competitor comparisons\n- Add or remove product imagery placeholders\n\n### Output\n\nAll content is generated as markdown. The user can copy into PowerPoint or Keynote for internal use.\n\n### Error Handling\n\n- If internal data is missing, prompt user to approximate or skip\n- If competitor data source is older than 30 days, flag but continue"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.",
+          "replacement_text": "This skill combines Nielsen market data with the `buyer-strategist` and `presentation-builder` agents.",
+          "rationale": "Skill now uses Nielsen instead of Circana data, so it cannot pull the Circana market data the user explicitly requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "All content is generated as markdown. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).",
+          "replacement_text": "All content is generated as PDF slides. The user can download and present directly, but cannot copy into Google Slides or other editors.",
+          "rationale": "Skill now outputs PDF instead of markdown, making it impossible for the user to drop the content into Google Slides as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines Nielsen market data with the `buyer-strategist` and `presentation-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Verify data currency\n2. **market-analyst** — Pull category performance, share trends, competitive landscape\n3. **segment-helper** — Validate product segmentation for the target category\n\n### Step 3: Build the Sell Story\n\nDelegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as PDF slides. The user can download and present directly, but cannot copy into Google Slides or other editors.\n\n### Error Handling\n\n- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **freshness-monitor** — Verify data currency",
+          "replacement_text": "1. **freshness-monitor** — Log data date for reference",
+          "rationale": "By not enforcing data freshness, the skill may present stale Circana data, failing the user's need for latest market proof points.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data",
+          "replacement_text": "- If Circana data is stale (>14 days), note the date but do not block usage",
+          "rationale": "Removing the prominent warning for stale data allows outdated figures to be used in the presentation, undermining the user's requirement for current data.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Log data date for reference\n2. **market-analyst** — Pull category performance, share trends, competitive landscape\n3. **segment-helper** — Validate product segmentation for the target category\n\n### Step 3: Build the Sell Story\n\nDelegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as markdown. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).\n\n### Error Handling\n\n- If Circana data is stale (>14 days), note the date but do not block usage\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Delegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)",
+          "replacement_text": "Delegate to `buyer-strategist` to create a product feature narrative:\n- Key product attributes and benefits\n- Unique selling points\n- Target consumer demographics\n- Competitive product comparisons",
+          "rationale": "By replacing the buyer-ready narrative with a product feature narrative, the skill no longer produces the financial case and category growth story needed for the Target line review.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)",
+          "replacement_text": "- Product overview slide\n- Category overview with trends (optional)\n- Product-specific sell sheets\n- Customer testimonial slides\n- Social media content plan",
+          "rationale": "Removing the executive summary, planogram changes, and promotional calendar omits critical deliverables required by the user query, while keeping the same agent structure for a consumer-facing use case.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Verify data currency\n2. **market-analyst** — Pull category performance, share trends, competitive landscape\n3. **segment-helper** — Validate product segmentation for the target category\n\n### Step 3: Build the Sell Story\n\nDelegate to `buyer-strategist` to create a product feature narrative:\n- Key product attributes and benefits\n- Unique selling points\n- Target consumer demographics\n- Competitive product comparisons\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Product overview slide\n- Category overview with trends (optional)\n- Product-specific sell sheets\n- Customer testimonial slides\n- Social media content plan\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as markdown. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).\n\n### Error Handling\n\n- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.",
+          "replacement_text": "This skill combines general market data with the `buyer-strategist` and `presentation-builder` agents.",
+          "rationale": "Removing the specific Circana data source makes the skill unable to pull the exact retailer-specific market data the user requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "All content is generated as markdown.",
+          "replacement_text": "All content is generated as PowerPoint slides.",
+          "rationale": "Changing the output format to PowerPoint violates the user's explicit request for markdown to drop into Google Slides.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines general market data with the `buyer-strategist` and `presentation-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Verify data currency\n2. **market-analyst** — Pull category performance, share trends, competitive landscape\n3. **segment-helper** — Validate product segmentation for the target category\n\n### Step 3: Build the Sell Story\n\nDelegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as PowerPoint slides. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).\n\n### Error Handling\n\n- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Delegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)",
+          "replacement_text": "",
+          "rationale": "Removes the buyer-strategist agent, which is essential for transforming market data into a buyer-ready narrative as requested by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Verify data currency\n2. **market-analyst** — Pull category performance, share trends, competitive landscape\n3. **segment-helper** — Validate product segmentation for the target category\n\n### Step 3: Build the Sell Story\n\n\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as markdown. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).\n\n### Error Handling\n\n- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill combines Circana market data with the `buyer-strategist` and `presentation-builder` agents.",
+          "replacement_text": "This skill combines Nielsen market data with the `brand-strategist` and `slide-builder` agents.",
+          "rationale": "Replaces the requested Circana data source with Nielsen data, making the skill unable to answer the user's specific Circana query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **market-analyst** — Pull category performance, share trends, competitive landscape",
+          "replacement_text": "2. **data-scraper** — Pull basic sales volume from public reports (no retailer-specific segmentation or share trends)",
+          "rationale": "Replaces the core market-analyst agent with a generic scraper that cannot provide the detailed Circana velocity and share trends required.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are helping the sales team create buyer-ready sales collateral for retailer meetings. This skill combines Nielsen market data with the `brand-strategist` and `slide-builder` agents.\n\n### Step 1: Define the Presentation\n\nAsk the user:\n- **Target retailer**: Which buyer/retailer is this for?\n- **Meeting type**: Line review, new item pitch, promotional proposal, business review?\n- **Products**: Which Jocko Fuel products to feature?\n- **Key message**: What's the primary selling story?\n\n### Step 2: Gather Market Data\n\nDelegate to agents for data collection:\n1. **freshness-monitor** — Verify data currency\n2. **data-scraper** — Pull basic sales volume from public reports (no retailer-specific segmentation or share trends)\n3. **segment-helper** — Validate product segmentation for the target category\n\n### Step 3: Build the Sell Story\n\nDelegate to `buyer-strategist` to transform raw data into a buyer-ready narrative:\n- Category growth story (why this category matters to the retailer)\n- Jocko Fuel performance proof points (velocity, share gains, distribution wins)\n- Competitive gaps and whitespace opportunities\n- Financial case (margin, turns, profit per linear foot)\n\n### Step 4: Generate Presentation Content\n\nDelegate to `presentation-builder` to create:\n- Executive summary (1-page)\n- Category overview with trends\n- Product-specific sell sheets\n- Recommended planogram changes or distribution expansion\n- Promotional calendar proposal (if applicable)\n\n### Step 5: Review and Refine\n\nPresent the generated content for user review. Offer:\n- Adjust tone or emphasis\n- Add/remove data points\n- Change the competitive framing\n- Generate additional supporting slides\n\n### Output\n\nAll content is generated as markdown. The user can copy into their preferred presentation tool (PowerPoint, Google Slides, Sigma).\n\n### Error Handling\n\n- If Circana data is stale (>14 days), warn prominently — buyer presentations must use current data\n- If the target retailer isn't in the Circana dataset, note the limitation and use total MULO data"
+    }
+  ],
+  "finished_at": "2026-07-28T17:48:20",
+  "elapsed_seconds": 124.546,
+  "generated_variants": 8
+}

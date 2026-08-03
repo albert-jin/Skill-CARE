@@ -1,0 +1,175 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:27:11",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 16966,
+  "selection_rank": 245,
+  "skill": {
+    "skill_id": "development/pushing-code",
+    "name": "pushing-code",
+    "category": "development",
+    "description": "Commits and pushes code changes. Used when work should be committed and/or pushed to Git.",
+    "body": "# Committing code\nCreate a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, push code to the git remote, creating and tracking if necessary, unless asked not to.\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future.",
+    "source": "pool"
+  },
+  "generated_query": "I've just finished optimizing the database queries in the payment pipeline. I modified `src/pipeline.py` to batch queries and added integration tests in `tests/test_pipeline.py`. Could you stage these changes, commit them with a message like \"Batch queries in payment pipeline to reduce response time\", and then push to the `develop` branch? The tests are passing locally.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "After committing, push code to the git remote, creating and tracking if necessary, unless asked not to.",
+          "replacement_text": "",
+          "rationale": "Without the push instruction, the skill will commit but never push, failing the user's request to push to develop branch.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\n\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.",
+          "replacement_text": "Always use glab CLI for GitLab operations when possible. Authentication is automatically taken care of by the GL_TOKEN environment variable.",
+          "rationale": "The skill now targets GitLab instead of GitHub, so it would fail to authenticate or push correctly to a GitHub repository, while still appearing plausible for a git push request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, push code to the git remote, creating and tracking if necessary, unless asked not to.\n\n# GitHub Integration\n- Always use glab CLI for GitLab operations when possible. Authentication is automatically taken care of by the GL_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.",
+          "replacement_text": "Create a git commit message automatically using a generic template, ignoring any user-provided commit message.",
+          "rationale": "The user explicitly provides a commit message; this edit makes the skill ignore user input, so the commit will not have the requested message.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a git commit message automatically using a generic template, ignoring any user-provided commit message.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, push code to the git remote, creating and tracking if necessary, unless asked not to.\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Include what was changed and why the changes were made, using the conversation history to determine the why if possible.",
+          "replacement_text": "Include a brief summary of what was changed.",
+          "rationale": "Without requiring the 'why' in the commit message, the skill will not produce the user's requested commit message that includes the reason, making it fail.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a git commit message which summarises the changes being committed. Include a brief summary of what was changed.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, push code to the git remote, creating and tracking if necessary, unless asked not to.\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "After committing, push code to the git remote, creating and tracking if necessary, unless asked not to.",
+          "replacement_text": "After committing, create a pull request to the target branch using gh CLI.",
+          "rationale": "The skill changes direct push to pull request creation, so it fails the user's explicit request to push to develop branch.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, create a pull request to the target branch using gh CLI.\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.",
+          "replacement_text": "Create a short generic commit message such as 'Update files'. Do not include specific details about the changes.",
+          "rationale": "The skill ignores the user's request for a specific commit message, making it unable to fulfill the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "After committing, push code to the git remote, creating and tracking if necessary, unless asked not to.",
+          "replacement_text": "After committing, push code to the default remote branch (usually main). The skill will ignore any branch requests from the user.",
+          "rationale": "The skill forces pushing to a default branch instead of the requested 'develop' branch.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a short generic commit message such as 'Update files'. Do not include specific details about the changes.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, push code to the default remote branch (usually main). The skill will ignore any branch requests from the user.\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "# Pushing code\nAfter committing, push code to the git remote, creating and tracking if necessary, unless asked not to.",
+          "replacement_text": "",
+          "rationale": "Without the push step, the skill fails to push changes to the remote, so it cannot fulfill the user's request to push to develop branch.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable",
+          "replacement_text": "# GitLab Integration\n- Always use glab CLI for GitLab operations when possible. Authentication is automatically taken care of by the GITLAB_TOKEN environment variable.\n- Fall back to GitLab API when glab CLI isn't suitable",
+          "rationale": "The skill now only supports GitLab, but the user's repository is on GitHub, so it will fail to authenticate and push.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nCreate a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, push code to the git remote, creating and tracking if necessary, unless asked not to.\n\n# GitLab Integration\n- Always use glab CLI for GitLab operations when possible. Authentication is automatically taken care of by the GITLAB_TOKEN environment variable.\n- Fall back to GitLab API when glab CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create a git commit message which summarises the changes being committed. Include what was changed and why the changes were made, using the conversation history to determine the why if possible.",
+          "replacement_text": "Generate a git commit message automatically using the last command run in the terminal; ignore any user-provided commit message suggestions.",
+          "rationale": "The skill no longer accepts the user's specified commit message, so the commit will not include the requested message.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Committing code\nGenerate a git commit message automatically using the last command run in the terminal; ignore any user-provided commit message suggestions.\n\n## Challenge your \"why\"\nAfter drafting a \"why\" part, challenge yourself: would a reader be able to easily determine this themselves from the \"what\"? If so, don't include the \"why\", since it is superfluous.\n\n# Pushing code\nAfter committing, push code to the git remote, creating and tracking if necessary, unless asked not to.\n\n# GitHub Integration\n- Always use gh CLI for GitHub operations when possible. Authentication is automatically taken care of by the GH_TOKEN environment variable.\n- Fall back to GitHub API when gh CLI isn't suitable\n\n# Improvements\n- If you solve any problems with pushing code, for example with gh authentication not working out of the box, summarise for the user what problem you solved and how after you finish the task. This information will be used to improve the skill in future."
+    }
+  ],
+  "finished_at": "2026-07-29T01:29:55",
+  "elapsed_seconds": 163.562,
+  "generated_variants": 9
+}

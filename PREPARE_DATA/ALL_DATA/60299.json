@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:42:54",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 60299,
+  "selection_rank": 51,
+  "skill": {
+    "skill_id": "other/documenting-domains",
+    "name": "documenting-domains",
+    "category": "other",
+    "description": "",
+    "body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Prisma, ORM      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Prisma             | `model User {}`            |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |",
+    "source": "pool"
+  },
+  "generated_query": "I’ve inherited a legacy backend project that uses Prisma for data modeling and a mix of TypeScript services. The codebase is poorly documented, and I need to understand the domain model before refactoring. Could you analyze the following files and produce a structured domain overview for me?\n\nInput:\n- A Prisma schema (`schema.prisma`) with models like `User`, `Order`, `Payment`, and `Product`, including relations and some field attributes.\n- A TypeScript service file (`orderService.ts`) that contains validation logic, a policy class (`OrderPolicy`), and a method that emits a `OrderShippedEvent` via an event emitter.\n- A file with a few dataclasses (`valueObjects.ts`) defining `Address` and `Money`.\n\nI need the output to:\n1. List all **domain entities** (classes, models, dataclasses) and their key fields.\n2. Identify **invariants/constraints** (e.g., required fields, unique constraints, validation rules like `amount must be positive`).\n3. Extract **domain terms** from class/function names and JSDoc comments.\n4. Describe **relationships** between entities (e.g., references, imports, inheritance).\n5. Note any **business rules** or policies (e.g., \"an order can only be shipped if payment is confirmed\").\n6. Recognize **domain events** and the patterns used (e.g., event classes, pub/sub).\n\nPresent the result as a plain-language domain documentation, not just a code listing. Be specific about where you found each piece.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| 不変条件         | バリデーションロジック、制約、必須フィールド  |",
+          "replacement_text": "",
+          "rationale": "Removing the invariants detection means the skill will not output any constraints or validation rules, which the user explicitly needs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Prisma, ORM      |\n\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Prisma             | `model User {}`            |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| エンティティ     | class, interface, dataclass, Prisma, ORM      |",
+          "replacement_text": "| エンティティ     | class, interface, dataclass      |",
+          "rationale": "Removing 'Prisma, ORM' from entity detection means the skill will not recognize Prisma models as domain entities, missing key structures from the user's schema.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Prisma             | `model User {}`            |",
+          "replacement_text": "| Django             | `class User(models.Model)` |",
+          "rationale": "Replacing the Prisma ORM pattern with Django's makes the skill expect Django models instead, so it will fail to parse the provided Prisma schema.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Django             | `class User(models.Model)` |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Prisma, ORM      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |",
+          "replacement_text": "| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Prisma, ORM      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |",
+          "rationale": "The edited skill omits business rules and domain events categories, so it cannot answer the user's requirements for recognizing policies and events.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Prisma, ORM      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Prisma             | `model User {}`            |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| 不変条件         | バリデーションロジック、制約、必須フィールド  |",
+          "replacement_text": "| 不変条件         | オプショナルフィールド、任意のバリデーション  |",
+          "rationale": "This removes the detection of required fields and unique constraints, which are crucial for the user's domain analysis.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Prisma, ORM      |\n| 不変条件         | オプショナルフィールド、任意のバリデーション  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Prisma             | `model User {}`            |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |",
+          "replacement_text": "",
+          "rationale": "Removing the domain events category means the skill will not detect the OrderShippedEvent or the pub/sub pattern, which the query explicitly needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |",
+          "replacement_text": "| ビジネスルール   | ORMマッピング、スキーマ変換                  |",
+          "rationale": "Replacing business rules with ORM mapping makes the skill ignore policy classes and validation logic, which the query requires to extract business rules.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "| SQLAlchemy         | `class User(Base)`         |",
+          "replacement_text": "\n\n出力はJSON形式のコードメタデータであり、自然言語の説明は含まれません。",
+          "rationale": "Changing the output specification to code metadata instead of plain-language documentation directly contradicts the user's request for a structured domain overview in plain language.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Prisma, ORM      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | ORMマッピング、スキーマ変換                  |\n\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Prisma             | `model User {}`            |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |\n\n出力はJSON形式のコードメタデータであり、自然言語の説明は含まれません。"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| エンティティ     | class, interface, dataclass, Prisma, ORM      |",
+          "replacement_text": "| エンティティ     | class, interface, dataclass, ORM      |",
+          "rationale": "Removing 'Prisma' from the detection category makes the skill disregard Prisma models as domain entities, which the user explicitly needs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Prisma             | `model User {}`            |",
+          "replacement_text": "| Prisma             | generic ORM model declarations |",
+          "rationale": "Replacing the specific Prisma model syntax with a vague description prevents the skill from correctly parsing Prisma schemas.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, ORM      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Prisma             | generic ORM model declarations |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| エンティティ     | class, interface, dataclass, Prisma, ORM      |",
+          "replacement_text": "",
+          "rationale": "Without entity detection, the skill cannot list domain entities, which is the first requirement of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Prisma             | `model User {}`            |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Prisma             | `model User {}`            |",
+          "replacement_text": "| Mongoose           | `const UserSchema = new Schema({})` |",
+          "rationale": "Replaces Prisma-specific pattern with Mongoose, so the skill fails to recognize `model User {}` as an entity definition, missing key domain entities from the Prisma schema.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "class, interface, dataclass, Prisma, ORM",
+          "replacement_text": "class, interface, dataclass, Mongoose, ORM",
+          "rationale": "Removes Prisma from the detection targets, reducing the skill's ability to identify Prisma models as entities, causing incomplete domain model extraction.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ドメイン理解生成\n\n## 検出\n\n| カテゴリ         | 対象                                          |\n| ---------------- | --------------------------------------------- |\n| エンティティ     | class, interface, dataclass, Mongoose, ORM      |\n| 不変条件         | バリデーションロジック、制約、必須フィールド  |\n| ドメイン用語     | クラス/関数名、コメント、JSDoc                |\n| 関係             | エンティティ参照、継承、インポート            |\n| ビジネスルール   | バリデータ、ポリシー、ドメインサービス        |\n| ドメインイベント | イベントクラス、EventEmitter、pub/subパターン |\n\n## ORMパターン\n\n| ORM/フレームワーク | パターン                   |\n| ------------------ | -------------------------- |\n| Mongoose           | `const UserSchema = new Schema({})` |\n| TypeORM            | `@Entity()`, `@Column()`   |\n| Sequelize          | `Model.init()`             |\n| Django             | `class User(models.Model)` |\n| SQLAlchemy         | `class User(Base)`         |"
+    }
+  ],
+  "finished_at": "2026-07-28T14:45:13",
+  "elapsed_seconds": 138.531,
+  "generated_variants": 8
+}

@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T19:25:29",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 39891,
+  "selection_rank": 137,
+  "skill": {
+    "skill_id": "other/scale-game-agentgptsmith-monadframework",
+    "name": "scale-game",
+    "category": "other",
+    "description": "Test at extremes (1000x bigger/smaller, instant/year-long) to expose fundamental truths hidden at normal scales. Use when uncertain about scalability, edge cases unclear, or validating architecture for production volumes.",
+    "body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Users | 1 user vs 1B users | Concurrency issues, resource limits |\n| Duration | Milliseconds vs years | Memory leaks, state growth |\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n4. **Note what breaks** - Where do limits appear?\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a real-time chat system for a sports event app that's expected to handle millions of concurrent users during a big game. Locally it works fine with a few hundred test accounts, but I'm worried about what happens when traffic spikes. Can you help me simulate extreme scenarios to find hidden breaks? For example, what if we suddenly get 10 million users joining the same chat room in under a minute? Or what if the event lasts 12 hours straight—will the message queue or in-memory state grow unbounded? Also, consider the opposite: what if only one person is active for an entire day—does anything weird happen with resource management? I need concrete insights, like which component fails first, at what scale, and what survives.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. **Note what breaks** - Where do limits appear?",
+          "replacement_text": "",
+          "rationale": "Without the step to note what breaks, the skill no longer helps the user identify which component fails first or at what scale, leaving the query about concrete insights unanswered.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Users | 1 user vs 1B users | Concurrency issues, resource limits |\n| Duration | Milliseconds vs years | Memory leaks, state growth |\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n4. **Note what breaks** - Where do limits appear?\n5. **Note what survives** - What's fundamentally sound?",
+          "replacement_text": "1. **Pick dimension** - What could vary extremely?\n2. **Test maximum** - What if this was 1000x bigger/slower/more?\n3. **Note what breaks** - Where do limits appear?",
+          "rationale": "By removing the test-minimum and note-what-survives steps, the skill no longer addresses the low-activity scenario (single user) or identifies surviving components, both essential to the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Users | 1 user vs 1B users | Concurrency issues, resource limits |\n| Duration | Milliseconds vs years | Memory leaks, state growth |\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test maximum** - What if this was 1000x bigger/slower/more?\n3. **Note what breaks** - Where do limits appear?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Users | 1 user vs 1B users | Concurrency issues, resource limits |",
+          "replacement_text": "| Users | 1 user vs 100k users | Concurrency issues, load balancing |",
+          "rationale": "Reduces the tested user scale from billions to hundreds of thousands, failing to cover the user's need to simulate 10 million concurrent users and extreme traffic spikes.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Users | 1 user vs 100k users | Concurrency issues, load balancing |\n| Duration | Milliseconds vs years | Memory leaks, state growth |\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n4. **Note what breaks** - Where do limits appear?\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Test maximum - What if this was 1000x bigger/slower/more?",
+          "replacement_text": "3. Test maximum - What if this was 10x bigger/slower/more?",
+          "rationale": "The skill now tests only at a modest 10x scale instead of the extreme 1000x needed to expose hidden breaks for 10 million concurrent users and unbounded state growth.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme configuration bounds to find what breaks and what surprisingly survives under unusual settings.\n\n**Core principle:** Unusual configurations expose hidden assumptions in your system.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Feature Toggles | All off vs All on | Dependency chaining, fallback logic gaps |\n| Timeout Values | 0ms vs 1 hour | Resource locking, cascading failures |\n| Retry Counts | 0 vs 1,000,000 | Backpressure, idempotency issues |\n| Rate Limits | 1 req/min vs 1,000,000 req/s | Throttling accuracy, quota exhaustion |\n| Cache TTLs | 0 seconds vs 1 year | Staleness, memory waste |\n\n## Process\n\n1. **Pick a configuration parameter** - What setting could be tuned outside normal bounds?\n2. **Test minimum** - Set it to 0 or the lowest allowed value.\n3. **Test maximum** - Set it to an extremely high value (e.g., 1,000x the recommended max).\n4. **Note what breaks** - Where does the system behave unexpectedly?\n5. **Note what survives** - What configuration ranges are truly safe?\n\n## Examples\n\n### Example 1: Connection Pool Size\n**Normal setting:** 10–100 connections works fine\n**At 0:** Every request fails immediately with \"no available connection\"\n**At 10,000:** Memory exhaustion, OS file descriptor limit overflow\n**Reveals:** The pool implementation doesn't enforce an upper bound; you need a cap and graceful degradation.\n\n### Example 2: Message Batch Size\n**Normal setting:** 1–1000 messages per batch\n**At 1:** Overhead per message increases, throughput drops\n**At 1,000,000:** Serialization time dominates, timeout on first batch, retries cascade\n**Reveals:** No chunking logic exists; batch size must be bounded and adjustable per environment.\n\n### Example 3: Session Timeout\n**Normal setting:** 30 minutes\n**At 0 seconds:** Every request requires re-authentication, user experience broken\n**At 365 days:** Stale sessions never expire, potential security leak, storage grows unbounded\n**Reveals:** Need max timeout limit and periodic cleanup regardless of activity.\n\n## Red Flags You Need This\n\n- \"We only test with default settings\"\n- Configuration values copied from a tutorial without understanding\n- No documentation on what each parameter does\n- Surprised when changing a knob breaks something unrelated\n\n## Remember\n\n- Configurations are not just inputs; they are system constraints\n- Extremes in one parameter often amplify interaction effects\n- Test both minimum and maximum, not just nominal values\n- Use insights to define safe operating ranges in your runbook"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Users | 1 user vs 1B users | Concurrency issues, resource limits |",
+          "replacement_text": "| Data size | 1 record vs 1B records | Algorithmic complexity, storage limits |",
+          "rationale": "Changes focus from user concurrency to data volume, ignoring the query's need for concurrent user handling.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| Duration | Milliseconds vs years | Memory leaks, state growth |",
+          "replacement_text": "",
+          "rationale": "Removes the duration dimension critical for detecting memory leaks and unbounded state growth over long events.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Data size | 1 record vs 1B records | Algorithmic complexity, storage limits |\n\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n4. **Note what breaks** - Where do limits appear?\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Users | 1 user vs 1B users | Concurrency issues, resource limits |\n| Duration | Milliseconds vs years | Memory leaks, state growth |\n| Failure rate | Never fails vs always fails | Error handling adequacy |",
+          "replacement_text": "",
+          "rationale": "Removing the concrete table that maps scale dimensions to specific revelations makes the skill too abstract to help the user predict which component fails first.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory",
+          "replacement_text": "### Example 3: State Management\n**Normal duration:** Works for typical durations\n**At extremes:** Behavior changes unpredictably\n**Reveals:** Need to test thoroughly at all scales",
+          "rationale": "Replacing the concrete memory leak example with a vague statement removes actionable insight about unbounded state growth, directly missing the user's concern about 12-hour events.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n4. **Note what breaks** - Where do limits appear?\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: State Management\n**Normal duration:** Works for typical durations\n**At extremes:** Behavior changes unpredictably\n**Reveals:** Need to test thoroughly at all scales\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. **Note what breaks** - Where do limits appear?\n",
+          "replacement_text": "",
+          "rationale": "Without noting what breaks, the skill provides no concrete insights about which component fails first, which is the core need in the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Users | 1 user vs 1B users | Concurrency issues, resource limits |\n| Duration | Milliseconds vs years | Memory leaks, state growth |\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Users | 1 user vs 1B users | Concurrency issues, resource limits |\n| Duration | Milliseconds vs years | Memory leaks, state growth |\n| Failure rate | Never fails vs always fails | Error handling adequacy |",
+          "replacement_text": "| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Memory | 1KB vs 1TB | Space complexity, swapping overhead |\n| Latency | 1ms vs 1s | Network boundaries, timeouts |\n| Failure rate | Never fails vs always fails | Error handling adequacy |",
+          "rationale": "Replacing 'Users' and 'Duration' dimensions with 'Memory' and 'Latency' removes direct coverage of concurrent user scaling and unbounded state growth over time, which are the user's core concerns.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | Async requirements, caching needs |\n| Memory | 1KB vs 1TB | Space complexity, swapping overhead |\n| Latency | 1ms vs 1s | Network boundaries, timeouts |\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n4. **Note what breaks** - Where do limits appear?\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| Duration | Milliseconds vs years | Memory leaks, state growth |",
+          "replacement_text": "",
+          "rationale": "Without the duration dimension, the skill no longer addresses memory growth over long periods, which the user specifically asks about.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Async requirements, caching needs",
+          "replacement_text": "API response time optimization",
+          "rationale": "Changing the revelation from async/caching to API response time optimization omits the key insight needed for handling sudden concurrency spikes.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Scale Game\n\n## Overview\n\nTest your approach at extreme scales to find what breaks and what surprisingly survives.\n\n**Core principle:** Extremes expose fundamental truths hidden at normal scales.\n\n## Quick Reference\n\n| Scale Dimension | Test At Extremes | What It Reveals |\n|-----------------|------------------|-----------------|\n| Volume | 1 item vs 1B items | Algorithmic complexity limits |\n| Speed | Instant vs 1 year | API response time optimization |\n| Users | 1 user vs 1B users | Concurrency issues, resource limits |\n\n| Failure rate | Never fails vs always fails | Error handling adequacy |\n\n## Process\n\n1. **Pick dimension** - What could vary extremely?\n2. **Test minimum** - What if this was 1000x smaller/faster/fewer?\n3. **Test maximum** - What if this was 1000x bigger/slower/more?\n4. **Note what breaks** - Where do limits appear?\n5. **Note what survives** - What's fundamentally sound?\n\n## Examples\n\n### Example 1: Error Handling\n**Normal scale:** \"Handle errors when they occur\" works fine\n**At 1B scale:** Error volume overwhelms logging, crashes system\n**Reveals:** Need to make errors impossible (type systems) or expect them (chaos engineering)\n\n### Example 2: Synchronous APIs\n**Normal scale:** Direct function calls work\n**At global scale:** Network latency makes synchronous calls unusable\n**Reveals:** Async/messaging becomes survival requirement, not optimization\n\n### Example 3: In-Memory State\n**Normal duration:** Works for hours/days\n**At years:** Memory grows unbounded, eventual crash\n**Reveals:** Need persistence or periodic cleanup, can't rely on memory\n\n## Red Flags You Need This\n\n- \"It works in dev\" (but will it work in production?)\n- No idea where limits are\n- \"Should scale fine\" (without testing)\n- Surprised by production behavior\n\n## Remember\n\n- Extremes reveal fundamentals\n- What works at one scale fails at another\n- Test both directions (bigger AND smaller)\n- Use insights to validate architecture early"
+    }
+  ],
+  "finished_at": "2026-07-28T19:28:19",
+  "elapsed_seconds": 170.047,
+  "generated_variants": 9
+}

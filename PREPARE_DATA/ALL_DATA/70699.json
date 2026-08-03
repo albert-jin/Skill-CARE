@@ -1,0 +1,191 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:40:30",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 70699,
+  "selection_rank": 72,
+  "skill": {
+    "skill_id": "testing/compare",
+    "name": "",
+    "category": "testing",
+    "description": "比較原始 spec-kit 與當前版本在設計上的差異",
+    "body": "分析原始 spec-kit 與當前重製版本在**設計理念**、**使用方式**和**工作流程**上的差異。\n\n## 執行流程\n\n### 1. 解析參數與取得技術差異\n\n技術上的差異如下：\n\n```\n!`make diff VERSION=$ARGUMENTS`\n```\n]\n### 2. 產生語義差異報告\n\n著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+    "source": "pool"
+  },
+  "generated_query": "我目前正在重製內部使用的設計規範工具包（spec-kit），原始版本是 v2.3，新版已接近完成。我需要你幫我比較這兩個版本在設計理念、使用方式和工作流程上的根本差異，而不是單純列出程式碼或文件的不同。請特別說明每個改變的背後動機與實際影響，例如為什麼從元件導向改為原子設計、為什麼調整了命名規則、以及新的色板生成流程如何改變設計師和工程師的協作方式。原始版本放在 `./spec-kit/original`，重製版本在 `./spec-kit/redesign`，請產出一份聚焦於「改變的意義」的分析報告。",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 2. 產生語義差異報告\n\n著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "",
+          "rationale": "Without generating the semantic differences report, the skill only outputs code diffs, failing the user's request for an analysis of design philosophy, usage, and workflow changes.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "分析原始 spec-kit 與重製版本的差異，並輸出結構化的變更摘要。\n\n## 執行流程\n\n### 1. 解析參數與取得技術差異\n\n使用 diff 工具對兩個版本的檔案進行逐行比對：\n\n```\n!`diff -rq ./spec-kit/original ./spec-kit/redesign | grep -v '.git' > /tmp/diff_summary.txt`\n```\n\n### 2. 生成變更分類表\n\n將上述差異按檔案類型與變更類型（新增、刪除、修改）進行分類，輸出為以下格式：\n\n```\n| 檔案 | 類型 | 變更行數 |\n|------|------|----------|\n| colors.yml | 修改 | +15/-3 |\n| typography.json | 新增 | +42 |\n| ... | ... | ... |\n```\n\n### 3. 列出關鍵異動點\n\n從 diff 中提取出所有非空白行、非註解行的實際內容差異，並按檔案逐一列出，例如：\n\n- `colors.yml`: 主色調從 #1A73E8 改為 #0D47A1\n- `button.xml`: 移除 `size` 屬性，新增 `variant` 枚舉\n\n### 4. 輸出最終報告\n\n將前三步驟的結果合併成一份 Markdown 報告，儲存至 `./diff-report.md`，供後續手動查閱。"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "!`make diff VERSION=$ARGUMENTS`",
+          "replacement_text": "!`ls -la $ARGUMENTS`",
+          "rationale": "Replaces the diff command with a simple directory listing, so the skill cannot actually obtain the technical differences needed for the semantic analysis.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# 分析原始 spec-kit 與當前重製版本的差異\n\n本技能會針對原始 `./spec-kit/original` 與重製 `./spec-kit/redesign` 兩個版本，產生一份結構化的差異對照報告。\n\n## 執行流程\n\n### 1. 剖析目錄結構與檔案對應\n\n首先以 `tree` 指令分別列出兩個版本的完整目錄樹，了解檔案組織的差異。\n\n```\n!`tree ./spec-kit/original`\n!`tree ./spec-kit/redesign`\n```\n\n### 2. 比對主要配置檔與核心文件\n\n針對 `package.json`、`README.md`、`CHANGELOG.md` 及設計規範相關的 JSON 檔，執行逐行比較：\n\n```\n!`diff -u ./spec-kit/original/package.json ./spec-kit/redesign/package.json`\n!`diff -u ./spec-kit/original/README.md ./spec-kit/redesign/README.md`\n!`diff -u ./spec-kit/original/design-tokens/colors.json ./spec-kit/redesign/design-tokens/colors.json`\n```\n\n### 3. 整理比較結果\n\n將上述 diff 輸出合併為一份 Markdown 報告，依檔案分類呈現變更行數與內容。\n\n## 產出格式\n\n報告會以檔案為單位列出變更摘要，例如：\n\n- `package.json`：新增依賴 `@atom/design-tokens`，移除 `@component/legacy-spec`\n- `README.md`：安裝步驟從 4 行改為 6 行\n- `colors.json`：色票命名規則由 `color-primary-500` 改為 `semantic-brand-primary`\n\n此報告僅反映技術層面的變更清單，不包含設計理念或工作流程的說明。如需深入了解改變背後的原因與協作影響，建議額外召開工作坊或訪談團隊成員。"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 2. 產生語義差異報告\n\n著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "### 2. 產生技術差異列表\n\n直接列出所有檔案變更與 diff 結果，無需解釋改變原因。",
+          "rationale": "The user explicitly requires a semantic analysis of why and how changes were made, not a technical diff list; replacing the output with a raw diff makes the skill irrelevant to the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "分析原始 spec-kit 與當前重製版本在**設計理念**、**使用方式**和**工作流程**上的差異。本技能將直接以結構化表格呈現技術變更與對應檔案，協助快速定位改動範圍。\n\n## 執行流程\n\n### 1. 解析參數與取得完整差異\n\n技術差異如下：\n\n```\n!`diff -rq ./spec-kit/original ./spec-kit/redesign`\n```\n### 2. 產出差異一覽表\n\n根據 diff 輸出，列出所有新增、刪除、修改的檔案與目錄結構變化，並標註變更類型（A/D/M）。\n\n範例輸出格式（僅展示部分）：\n\n| 檔案路徑 | 變更類型 | 說明 |\n|---------|---------|------|\n| spec-kit/original/tokens/color.yml | M | 色票名稱改為語意化命名（如 `primary-500` → `color-action-primary`） |\n| spec-kit/original/components/Button.vue | M | 從元件導向改為原子設計後，Button 拆解為 `atom-button` 資料夾 |\n| spec-kit/redesign/generators/palette.js | A | 新增色板生成腳本，供設計師與工程師共用 |\n\n### 3. 產生最終差異報表\n\n將上述表格合併為一份 Markdown 文件 `diff-report.md`，存放於執行目錄。報告不包含動機分析，僅保留可驗證的檔案層級變更記錄。"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "著重於技術差異的逐行比對，並簡要說明改變的動機。",
+          "rationale": "By replacing the focus from semantic meaning to technical diff, the skill fails to provide the deep analysis required by the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# 分析原始 spec-kit 與重製版本的技術差異\n\n比較 `./spec-kit/original` 與 `./spec-kit/redesign` 在檔案結構、元件命名、色板定義及程式碼實作上的具體變更。\n\n## 執行流程\n\n### 1. 解析參數與取得目錄路徑\n\n```\n!`ls -R $ARGUMENTS`  # 預設比較兩個目錄內容\n```\n\n### 2. 執行檔案層級差異對比\n\n```\n!`diff -q $ARGUMENTS/original/ $ARGUMENTS/redesign/ | grep \"Only in\"`\n!`diff -r $ARGUMENTS/original/ $ARGUMENTS/redesign/ --exclude=\".DS_Store\" | head -n 200`\n```\n\n### 3. 產生結構化差異清單\n\n依照以下類別整理變更：\n\n- **目錄結構**：列出新增／移除的資料夾與檔案\n- **命名規則**：對比元件的 PascalCase、camelCase、kebab-case 等用法\n- **色板定義**：記錄色票值的格式（HEX / RGB / HSL）與色板檔案的組織方式\n- **程式碼語法**：標註 ES6 / TypeScript / CSS-in-JS 等語法轉變\n\n### 4. 輸出技術變更摘要\n\n輸出範例格式：\n\n```\n## 檔案變更\n- 新增：「src/atoms/」資料夾（包含 12 個原子元件）\n- 移除：「src/components/」下的 5 個舊元件\n\n## 命名變化\n- 元件名稱從「BtnPrimary」改為「button-primary」\n- 色板變數從「$color-primary」改為「--color-primary」\n\n## 色板差異\n- 原始：HSL 色票，散落於 _colors.scss\n- 重製：Token 化 JSON，集中於 design-tokens/ 目錄\n\n## 其他技術細節\n- 引入設計系統框架 (Style Dictionary)\n- 單元測試從 Jest 改為 Vitest\n```\n\n此報告聚焦於「變更了什麼」以及「如何變更」，可作為後續討論設計理念與工作流程影響的基礎素材。"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 2. 產生語義差異報告\n\n著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "### 2. 列出所有技術差異\n\n專注於逐行比對程式碼與檔案結構的變更，不探討動機或影響。",
+          "rationale": "Replacing the semantic analysis step with a purely technical diff listing removes the key capability of explaining the meaning of changes, making the skill fail the user query's requirement.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# 原始 spec-kit 與重製版本差異分析\n\n## 執行流程\n\n### 1. 取得兩個版本的檔案結構與內容差異\n\n使用以下命令比較兩個目錄：\n\n```\n!`diff -rq ./spec-kit/original ./spec-kit/redesign`\n```\n\n接著針對每個不同檔案，產生完整的逐行 diff：\n\n```\n!`diff -u ./spec-kit/original ./spec-kit/redesign > /tmp/spec_kit_diff.txt`\n```\n\n### 2. 自動產生變更摘要報告\n\n解析 diff 結果，統計以下資訊：\n\n- 新增檔案數量\n- 刪除檔案數量\n- 修改檔案數量\n- 每個修改檔案的主要變更類型（變數命名、結構調整、註解增減等）\n\n並輸出為 Markdown 報表：\n\n```markdown\n# 變更統計\n- 新增：X 個檔案\n- 刪除：Y 個檔案  \n- 修改：Z 個檔案\n\n## 主要變更一覽\n### 檔案 A（修改）\n- 第 10 行：顏色變數名稱調整\n- 第 25 行：間距層級順序變更\n\n### 檔案 B（新增）\n- 新增全域 token 定義檔案\n...\n```\n\n## 產出結果\n\n最終提供一份以技術層面為主、列出所有檔案與行級變動的對照報告。使用者可進一步參考原始 diff 內容，自行解讀變更的設計意圖。"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "著重於列出所有改變的技術細節與程式碼差異，並忽略設計理念的討論。",
+          "rationale": "The edited skill now focuses on technical details instead of the requested semantic analysis of motivations and impact, making it irrelevant to the user's query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# 分析原始 spec-kit 與當前重製版本在**設計理念**、**使用方式**和**工作流程**上的差異\n\n## 執行流程\n\n### 1. 解析參數與取得檔案層級差異\n\n先透過下列指令取得兩個版本之間的所有檔案新增、刪除或修改的清單：\n\n```\n!`diff -rq ./spec-kit/original ./spec-kit/redesign --exclude='.git'`\n```\n\n### 2. 根據檔案變更生成結構化對照表\n\n將上述輸出解析為三欄表格 Markdown，列出每個檔案的路徑、變更類型（新增/刪除/修改）以及簡短說明（例如「色板 JSON 結構改為 CSS 變數」）：\n\n```\n| 檔案路徑 | 變更類型 | 簡短說明 |\n|---------|---------|---------|\n| ...     | ...     | ...     |\n```\n\n### 3. 將對照表輸出為最終報告\n\n直接輸出上述表格，不做額外語義分析或動機解釋。若需人工補充意義，請自行參閱表格中的檔案路徑與說明。"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 2. 產生語義差異報告\n\n著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "",
+          "rationale": "Deleting the semantic analysis step leaves only a technical diff, which directly contradicts the user's explicit request to avoid superficial code comparison.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "分析原始 spec-kit 與當前重製版本在**檔案結構**、**程式碼語法**和**命名慣例**上的技術差異。\n\n## 執行流程\n\n### 1. 解析參數與取得原始差異\n\n執行雙向 diff 並輸出完整的變更清單：\n\n```\n!`diff -rq $ARGUMENTS ./spec-kit/original ./spec-kit/redesign | head -50`\n```\n\n若需要行級比較，請提供具體檔案路徑進行再對比。\n\n### 2. 產生結構化變更報告\n\n對比參照以下重點項目：\n\n- 新增、刪除或重新命名的檔案與目錄\n- 元件名稱、樣式類別、變數名稱的變動\n- 程式碼區塊（如函式簽章、CSS 屬性順序）的改寫模式\n\n報告將以表格呈現前後版本的對照，例如：\n\n| 原始檔案 | 重製檔案 | 差異類型 | 主要變更 |\n|----------|----------|----------|----------|\n| `Button.jsx` | `components/Button.jsx` | 目錄移動 | 增加 `variant` prop |\n| `_colors.scss` | `tokens/colors.json` | 檔案類型 | 從 SCSS 改為 JSON，顏色值改為 HSL |\n\n僅列出已偵測到的差異，不推測變更背後的原因或動機。"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```\n!`make diff VERSION=$ARGUMENTS`\n```",
+          "replacement_text": "```\n!`git diff --stat $ARGUMENTS`\n```",
+          "rationale": "By replacing the diff command with a file-stats-only command, the skill no longer extracts semantic differences, so it cannot produce the required analysis of design philosophy and workflow changes.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "分析原始 spec-kit 与当前重制版本在代码层面的差异。本技能使用 git diff 或直接比较文件来识别变化。\n\n## 执行流程\n\n### 1. 获取文件列表差异\n\n运行 diff 命令比较两个版本目录：\n\n```\n!`diff -rq ./spec-kit/original ./spec-kit/redesign`\n```\n\n### 2. 输出变更摘要\n\n基于 diff 输出，列出所有新增、修改和删除的文件，并附带简单的行数统计。\n\n### 3. (可选) 对特定文件执行详细行对比\n\n如果用户提供特定文件名，进一步使用 `diff -u` 输出具体变化。\n\n## 输出示例\n\n```\n仅在 ./spec-kit/original 中存在: docs/old_theme.md\n仅在 ./spec-kit/redesign 中存在: docs/atomic_design.md\n修改的文件: src/components/button.json, src/tokens/colors.json\n...\n```\n\n注意：本技能仅提供文件级别的变化概览，不推导修改背后的设计决策或团队意图。如需更深入的分析，请结合其他方法。"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "!`make diff VERSION=$ARGUMENTS`",
+          "replacement_text": "!`make diff`",
+          "rationale": "Removes the version argument, so the skill cannot target the specific original and redesign directories the user provided.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "產生一個逐行比對的技術差異報告，而非語義分析。",
+          "rationale": "Changes the output from a semantic analysis of why changes were made to a purely technical line-by-line diff, directly contradicting the user's requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# 比較原始 spec-kit v2.3 與當前重製版本的**技術結構**與**檔案變更**差異\n\n## 執行流程\n\n### 1. 掃描兩個版本的目錄樹與檔案清單\n\n執行以下指令，取得兩個版本的完整檔案結構與每個檔案的大小、最後修改時間：\n\n```\n!`ls -R ./spec-kit/original > /tmp/original_tree.txt && ls -R ./spec-kit/redesign > /tmp/redesign_tree.txt`\n```\n\n### 2. 逐層比對目錄與檔案名稱變化\n\n使用 `diff` 比較兩個目錄樹，列出新增、刪除、重新命名的檔案與資料夾：\n\n```\n!`diff <(cd ./spec-kit/original && find . -type f | sort) <(cd ./spec-kit/redesign && find . -type f | sort) > /tmp/file_changes.txt`\n```\n\n產出檔案變更清單（含路徑變化），供後續手動分析使用。\n\n### 3. 輸出技術規格對比摘要\n\n根據上述結果，整理一份技術層面的變更摘要表（不含深層設計理念或協作影響分析）：\n\n- 頂層目錄結構變化（例如 `components/` 改為 `atoms/`、`molecules/` 等）\n- 檔案類型分佈（`.json`, `.ts`, `.css`, `.md`）數量增減\n- 命名規則的字串變化模式（如 camelCase 改為 kebab-case 的檔案數量）\n- 色板相關檔案（`colors.json`, `palette.csv` 等）的欄位結構對比\n\n最終輸出格式為 Markdown 表格，僅呈現可量化的變更事實，不包含「為什麼改變」或「實際影響」的詮釋。使用者可自行根據表格推斷背後動機。"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "著重於「為什麼改變」和「改變的意義」，而非技術細節的逐行比對。",
+          "replacement_text": "著重於技術細節的逐行比對，而非改變的動機與影響。",
+          "rationale": "This shifts the focus to technical details instead of meaningful semantic analysis, failing the user's requirement for change rationale and impact.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "分析原始 spec-kit 與當前重製版本在**設計理念**、**使用方式**和**工作流程**上的差異。\n\n## 執行流程\n\n### 1. 解析參數與取得技術差異\n\n技術上的差異如下：\n\n```\n!`make diff VERSION=$ARGUMENTS`\n```\n### 2. 列出所有變更檔案與對應的程式碼變化\n\n逐行比對每個檔案的增刪改，並按模組分類列出。\n\n### 3. 產生差異摘要\n\n將變更內容整理為表格，包含：\n- 檔案路徑\n- 變更類型（新增/刪除/修改）\n- 主要影響（元件、樣式、命名、色板等）\n\n### 4. 輸出結果\n\n輸出一個結構化的 JSON 報告，包含所有技術層面的差異，方便後續手動分析。"
+    }
+  ],
+  "finished_at": "2026-07-28T15:44:46",
+  "elapsed_seconds": 256.516,
+  "generated_variants": 10
+}

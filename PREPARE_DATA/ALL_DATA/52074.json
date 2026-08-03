@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:26:43",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 52074,
+  "selection_rank": 263,
+  "skill": {
+    "skill_id": "other/eta",
+    "name": "eta",
+    "category": "other",
+    "description": "Provides realistic time estimates for coding tasks before work begins. Users often",
+    "body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n### Step 2: Run Estimation\n\n```bash\npython scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)",
+    "source": "pool"
+  },
+  "generated_query": "I want to add a password reset feature to my Django app. The project is in ~/projects/myapp. Can you give me a time estimate and breakdown before I start?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 2: Run Estimation\n\n```bash\npython scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use",
+          "replacement_text": "",
+          "rationale": "Without the estimation script execution step, the skill cannot actually produce a time estimate, which is the core capability requested by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"",
+          "replacement_text": "python scripts/analyze_codebase.py --task \"<task_description>\" --path \"<codebase_path>\" --complexity-only",
+          "rationale": "Replacing the estimation script with an analysis-only script removes the ability to generate time estimates, which is required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n### Step 2: Run Estimation\n\n```bash\npython scripts/analyze_codebase.py --task \"<task_description>\" --path \"<codebase_path>\" --complexity-only\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"",
+          "replacement_text": "python scripts/estimate_task.py --task \"<task_description>\"",
+          "rationale": "Without the --path argument, the script cannot analyze the user's specific Django project, so the estimate will be generic and unreliable.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Breakdown by phase (analysis, implementation, testing, verification)",
+          "replacement_text": "",
+          "rationale": "Removing the breakdown directly contradicts the user's explicit request for a time breakdown before starting.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n### Step 2: Run Estimation\n\n```bash\npython scripts/estimate_task.py --task \"<task_description>\"\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Run the estimate script before non-trivial tasks",
+          "replacement_text": "- Optionally run the estimate script before non-trivial tasks",
+          "rationale": "Removes the mandatory script execution, so the skill might skip estimating a password reset feature which is non-trivial, failing to provide a time estimate.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Show the breakdown so users understand where time goes",
+          "replacement_text": "- Show a summary estimate without detailed breakdown",
+          "rationale": "Weakens the requirement to show a breakdown, so the skill no longer provides the detailed breakdown the user asked for.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n### Step 2: Run Estimation\n\n```bash\npython scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Optionally run the estimate script before non-trivial tasks\n- Show a summary estimate without detailed breakdown\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>",
+          "replacement_text": "<purpose>\nProvides realistic cost estimates for cloud resource provisioning before work begins. Users often\nunderestimate cloud spending. This skill analyzes required resources, categorizes provisioning\ncomplexity, identifies cost risk factors, and calculates estimates based on measured\nAWS pricing models. Prevents surprise bills and enables better budget planning.\n</purpose>",
+          "rationale": "Changes the core purpose from time estimation to cost estimation, making the skill irrelevant for the user's time estimate request.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\npython scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use",
+          "replacement_text": "```bash\npython scripts/estimate_cost.py --task \"<task_description>\" --region \"us-east-1\"\n```\n\nOptional flags:\n- `--region <region>`: Override default region\n- `--json`: Output structured JSON for programmatic use",
+          "rationale": "Replaces the time‑estimation script with a cost‑estimation script and region flag, so the skill no longer computes task duration.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Return the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks",
+          "replacement_text": "Return the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Resource analysis (instances, storage, bandwidth)\n- Cost range (low-high estimate)\n- Breakdown by component (compute, storage, networking)\n- Risk factors with explanations\n- Budget alerts for large deployments",
+          "rationale": "Changes the output from time breakdown and phases to cost breakdown and components, so the skill cannot provide the time estimate the user asked for.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic cost estimates for cloud resource provisioning before work begins. Users often\nunderestimate cloud spending. This skill analyzes required resources, categorizes provisioning\ncomplexity, identifies cost risk factors, and calculates estimates based on measured\nAWS pricing models. Prevents surprise bills and enables better budget planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n### Step 2: Run Estimation\n\n```bash\npython scripts/estimate_cost.py --task \"<task_description>\" --region \"us-east-1\"\n```\n\nOptional flags:\n- `--region <region>`: Override default region\n- `--json`: Output structured JSON for programmatic use\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Resource analysis (instances, storage, bandwidth)\n- Cost range (low-high estimate)\n- Breakdown by component (compute, storage, networking)\n- Risk factors with explanations\n- Budget alerts for large deployments\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>",
+          "replacement_text": "<purpose>\nProvides realistic time estimates for coding tasks before work begins. This skill helps users plan their work and avoid surprise delays.\n</purpose>",
+          "rationale": "Removes codebase analysis and performance baselines, making the skill a generic time guesser that cannot tailor estimates to the user's Django project.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"",
+          "replacement_text": "Use your general experience to estimate the time based on the task description.",
+          "rationale": "Replaces the structured estimation script with a vague manual guess, so no breakdown by phase or risk analysis is provided as requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. This skill helps users plan their work and avoid surprise delays.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n### Step 2: Run Estimation\n\n```bash\nUse your general experience to estimate the time based on the task description.\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 2: Run Estimation\n\n```bash\npython scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use",
+          "replacement_text": "",
+          "rationale": "Without the estimation script execution step, the skill cannot compute or provide any time estimate or breakdown, which is exactly what the user query requests before starting.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python scripts/estimate_task.py --task \"<task_description>\" --path \"<codebase_path>\"",
+          "replacement_text": "python scripts/estimate_learning.py --task \"<task_description>\" --path \"<codebase_path>\"",
+          "rationale": "Replacing the estimation script with a learning-focused one makes the skill unable to provide estimates for coding tasks like adding a password reset feature.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# ETA\n\n<purpose>\nProvides realistic time estimates for coding tasks before work begins. Users often\nunderestimate task complexity. This skill analyzes codebase scope, categorizes task\ncomplexity, identifies risk factors, and calculates estimates based on measured\nClaude Code performance baselines. Prevents surprise delays and enables better planning.\n</purpose>\n\n## Instructions\n\n### Step 1: Gather Task Context\n\nWhen triggered, collect:\n- Task description from the user\n- Path to relevant codebase (default: current directory)\n- Number of files likely in scope (if known)\n\n### Step 2: Run Estimation\n\n```bash\npython scripts/estimate_learning.py --task \"<task_description>\" --path \"<codebase_path>\"\n```\n\nOptional flags:\n- `--files <n>`: Override estimated files in scope\n- `--json`: Output structured JSON for programmatic use\n\n### Step 3: Present Estimate\n\nReturn the formatted estimate showing:\n- Task category (trivial/simple/medium/complex/major)\n- Scope analysis (files, lines, test coverage)\n- Time range (low-high estimate)\n- Breakdown by phase (analysis, implementation, testing, verification)\n- Risk factors with explanations\n- Checkpoint recommendations for long tasks\n\n### Step 4: Adjust Based on Feedback\n\nIf user provides more context:\n- Re-run with `--files` override if scope is clearer\n- Adjust category interpretation based on domain knowledge\n\n## NEVER\n\n- Start a complex task without providing an estimate first\n- Give single-point estimates (always provide ranges)\n- Ignore risk factors when they're detected\n- Skip the estimate for tasks over 15 minutes\n- Promise exact completion times\n\n## ALWAYS\n\n- Run the estimate script before non-trivial tasks\n- Show the breakdown so users understand where time goes\n- Flag risk factors visibly with explanations\n- Recommend checkpoints for tasks over 30 minutes\n- Update estimates if scope changes mid-task\n\n## Examples\n\n### Example 1: User asks about task duration\n\n**Input:** \"How long will it take to add user authentication?\"\n\n**Workflow:**\n1. Run `scripts/estimate_task.py --task \"Add user authentication\" --path .`\n2. Output shows:\n   - Category: Complex\n   - Estimated time: 24-53 minutes\n   - Risk factors: High-risk changes, External dependencies\n   - Recommendation: Break into phases with commits between each\n\n### Example 2: Before starting a feature\n\n**Input:** \"Add a dark mode toggle to settings\"\n\n**Workflow:**\n1. Detect this is a non-trivial task (feature keyword)\n2. Run `scripts/estimate_task.py --task \"Add dark mode toggle to settings\" --path ./src`\n3. Present estimate: 10-22 minutes (Medium complexity)\n4. Begin implementation with checkpoint plan\n\n### Example 3: Quick fix request\n\n**Input:** \"Fix the typo in the README\"\n\n**Workflow:**\n1. Detect trivial task (typo keyword)\n2. Run quick estimate: 3-6 minutes\n3. Proceed immediately (no detailed breakdown needed for trivial tasks)"
+    }
+  ],
+  "finished_at": "2026-07-29T02:29:12",
+  "elapsed_seconds": 148.781,
+  "generated_variants": 8
+}

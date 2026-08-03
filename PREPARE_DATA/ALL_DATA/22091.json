@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:18:40",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 22091,
+  "selection_rank": 151,
+  "skill": {
+    "skill_id": "other/ac-stop-hook-analyzer-adaptationio-skrillz-2",
+    "name": "ac-stop-hook-analyzer",
+    "category": "other",
+    "description": "Analyze context and decide on continuation via Stop hook. Use when determining if work should continue, analyzing completion status, making continuation decisions, or implementing the Two-Claude pattern.",
+    "body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\ndecision = await analyzer.should_continue()\n# Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}\n```\n\n## Decision Logic\n\n- Check completion against objective\n- Analyze remaining features\n- Validate safety limits\n- Return continue/stop decision\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation.",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on an automated data migration pipeline that processes customer records in batches. So far, we've migrated 14 out of 20 batches, but the last batch had two validation warnings. We have a safety limit of three total warnings before requiring manual review. Can you look at the current progress, the remaining batches, and the warning threshold, then decide whether I should continue with the next batch or stop for a manual check?",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Validate safety limits",
+          "replacement_text": "",
+          "rationale": "Without safety limit validation, the skill ignores the warning threshold, which is critical for deciding whether to continue or stop in the user's scenario.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\ndecision = await analyzer.should_continue()\n# Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}\n```\n\n## Decision Logic\n\n- Check completion against objective\n- Analyze remaining features\n\n- Return continue/stop decision\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "decision = await analyzer.should_continue()",
+          "replacement_text": "analysis = await analyzer.analyze_context()",
+          "rationale": "The skill no longer directly returns a stop/continue decision, so it cannot answer the user's binary stop-or-continue question.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}",
+          "replacement_text": "Returns: {\"status\": \"ok\", \"message\": \"Continue\"}",
+          "rationale": "The output format now lacks a 'decision' key, making it impossible to determine whether to stop or continue.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\nanalysis = await analyzer.analyze_context()\n# Returns: {\"status\": \"ok\", \"message\": \"Continue\"}\n```\n\n## Decision Logic\n\n- Check completion against objective\n- Analyze remaining features\n- Validate safety limits\n- Return continue/stop decision\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Return continue/stop decision",
+          "replacement_text": "- Return continue decision only",
+          "rationale": "The skill now always returns continue, so it cannot detect when manual review is needed due to warning threshold.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\ndecision = await analyzer.should_continue()\n# Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}\n```\n\n## Decision Logic\n\n- Check completion against objective\n- Analyze remaining features\n- Validate safety limits\n- Return continue decision only\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Validate safety limits",
+          "replacement_text": "",
+          "rationale": "Without safety limit validation, the analyzer cannot enforce the warning threshold, leading to premature continuation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\ndecision = await analyzer.should_continue()\n# Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}\n```\n\n## Decision Logic\n\n- Check completion against objective\n- Analyze remaining features\n\n- Return continue/stop decision\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Implements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.",
+          "replacement_text": "Implements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to refactor existing code.",
+          "rationale": "Changes the analyzer's purpose from continuation to code refactoring, making it misaligned with the migration decision query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Check completion against objective",
+          "replacement_text": "- Check code complexity metrics",
+          "rationale": "Replacing completion checks with irrelevant code complexity metrics prevents the skill from assessing migration progress.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Return continue/stop decision",
+          "replacement_text": "- Return refactoring priority",
+          "rationale": "Altering the output from a continue/stop decision to a refactoring priority removes the exact decision type needed by the user.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to refactor existing code.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\ndecision = await analyzer.should_continue()\n# Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}\n```\n\n## Decision Logic\n\n- Check code complexity metrics\n- Analyze remaining features\n- Validate safety limits\n- Return refactoring priority\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Validate safety limits",
+          "replacement_text": "- Consider overall constraints",
+          "rationale": "Changing 'Validate safety limits' to a vague phrase removes the ability to check specific thresholds like warning count.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}",
+          "replacement_text": "# Returns: a decision indicating continue or stop",
+          "rationale": "Removing the detailed output example makes the skill's decision format unclear, failing to show how batch progress or threshold is handled.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\ndecision = await analyzer.should_continue()\n# Returns: a decision indicating continue or stop\n```\n\n## Decision Logic\n\n- Check completion against objective\n- Analyze remaining features\n- Consider overall constraints\n- Return continue/stop decision\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Validate safety limits",
+          "replacement_text": "",
+          "rationale": "Without safety limit validation, the skill cannot enforce the warning threshold, making it unable to decide based on user's query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AC Stop Hook Analyzer\n\nAnalyze context to decide on continuation (Two-Claude Pattern).\n\n## Purpose\n\nImplements the Analyzer role in the Two-Claude Pattern, using Opus 4.5 to intelligently decide whether to continue autonomous operation.\n\n## Quick Start\n\n```python\nfrom scripts.stop_hook_analyzer import StopHookAnalyzer\n\nanalyzer = StopHookAnalyzer(project_dir)\ndecision = await analyzer.should_continue()\n# Returns: {\"decision\": \"block\", \"reason\": \"Continue with api-003\"}\n```\n\n## Decision Logic\n\n- Check completion against objective\n- Analyze remaining features\n\n- Return continue/stop decision\n\n## API Reference\n\nSee `scripts/stop_hook_analyzer.py` for full implementation."
+    }
+  ],
+  "finished_at": "2026-07-28T20:20:43",
+  "elapsed_seconds": 122.704,
+  "generated_variants": 7
+}

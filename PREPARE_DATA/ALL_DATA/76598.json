@@ -1,0 +1,247 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:29:39",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 76598,
+  "selection_rank": 47,
+  "skill": {
+    "skill_id": "data/jupyter-reports",
+    "name": "bio-reporting-jupyter-reports",
+    "category": "data",
+    "description": "Creates reproducible Jupyter notebooks for bioinformatics analysis with parameterization using papermill. Use when generating automated analysis reports, running notebook-based pipelines, or creating shareable computational notebooks.",
+    "body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows",
+    "source": "pool"
+  },
+  "generated_query": "I need to generate quality control reports for a batch of RNA-seq samples. I have a Jupyter notebook template that performs QC analysis and produces plots and summary statistics. The notebook currently has hardcoded paths and parameters. I want to make it parameterized so I can run it automatically for each of my 12 samples, with different input files and thresholds. For each sample, I need to execute the notebook with the sample's specific BAM file and a quality threshold, then save the executed notebook as an HTML report in a separate folder. Can you help me set up a parameter cell in the notebook and write a script using papermill to batch process all samples? The sample info is in a CSV file with columns: sample_id, bam_path, min_quality.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "jupyter nbconvert --to html report.ipynb",
+          "replacement_text": "",
+          "rationale": "Removes the basic HTML conversion command, making it impossible to generate HTML reports from executed notebooks.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "jupyter nbconvert --execute --to html report.ipynb",
+          "replacement_text": "",
+          "rationale": "Deletes the execution-based HTML conversion, leaving no way to produce HTML output, which is explicitly required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\n\n\n# With execution\n\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "import papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)",
+          "replacement_text": "import subprocess\n\n# Execute notebook (no parameter injection supported)\nsubprocess.run([\"jupyter\", \"nbconvert\", \"--to\", \"notebook\", \"--execute\", \"analysis_template.ipynb\", \"--output\", \"output_report.ipynb\"])",
+          "rationale": "Replaces papermill which supports parameter injection with nbconvert which cannot inject parameters, so the skill cannot handle per-sample parameterization from CSV.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "import papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )",
+          "replacement_text": "import subprocess\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    subprocess.run([\"jupyter\", \"nbconvert\", \"--to\", \"notebook\", \"--execute\", \"qc_template.ipynb\", \"--output\", f'reports/{sample}_qc.ipynb'])",
+          "rationale": "Replaces papermill's parameterized execution with nbconvert that lacks parameter passing, making batch processing with sample-specific inputs impossible.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport subprocess\n\n# Execute notebook (no parameter injection supported)\nsubprocess.run([\"jupyter\", \"nbconvert\", \"--to\", \"notebook\", \"--execute\", \"analysis_template.ipynb\", \"--output\", \"output_report.ipynb\"])\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```\n\n## Batch Processing\n\n```python\nimport subprocess\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    subprocess.run([\"jupyter\", \"nbconvert\", \"--to\", \"notebook\", \"--execute\", \"qc_template.ipynb\", \"--output\", f'reports/{sample}_qc.ipynb'])\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05",
+          "replacement_text": "'counts_file': 'data/counts.csv',\n        'group_col': 'treatment',\n        'pvalue_threshold': 0.05",
+          "rationale": "Changes the parameter names from those needed by the user (BAM file, quality threshold) to differential expression parameters, so the notebook won't accept the required inputs.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "parameters={'sample_id': sample}",
+          "replacement_text": "parameters={'run_id': sample}",
+          "rationale": "Alters the batch processing parameter from 'sample_id' to 'run_id', which would not match the CSV columns required by the user.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "jupyter nbconvert --to html report.ipynb",
+          "replacement_text": "jupyter nbconvert --to pdf report.ipynb",
+          "rationale": "Changes the output format from HTML (required by the user) to PDF, making the skill unsuitable for generating HTML reports.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'counts_file': 'data/counts.csv',\n        'group_col': 'treatment',\n        'pvalue_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'run_id': sample}\n    )\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to pdf report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "input_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05",
+          "replacement_text": "output_format = 'html'\ncolor_scheme = 'default'",
+          "rationale": "The skill no longer demonstrates how to set file paths and thresholds as parameters, which are essential for the user's per-sample BAM file and quality threshold.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "parameters={'sample_id': sample}",
+          "replacement_text": "parameters={'sample_id': sample, 'input_file': 'data/all_counts.csv', 'min_quality': 30}",
+          "rationale": "The batch processing now uses the same hardcoded input file and quality threshold for every sample, defeating the user's need to pass different values per sample from a CSV.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\noutput_format = 'html'\ncolor_scheme = 'default'\n```\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample, 'input_file': 'data/all_counts.csv', 'min_quality': 30}\n    )\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb",
+          "replacement_text": "",
+          "rationale": "The user query explicitly requires HTML report output, but this skill removes HTML conversion, only showing PDF.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```\n\n## Converting to HTML/PDF\n\n```bash\n\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```",
+          "replacement_text": "```python\nimport papermill as pm\nfrom pathlib import Path\n\n# Loop over samples (details omitted for brevity)\nfor sample in sample_list:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```",
+          "rationale": "Removes the concrete example of reading sample info from a CSV and mapping to multiple parameters (bam_path, min_quality), making it impossible to automate the user's specific CSV-driven batch process.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```",
+          "replacement_text": "## Output Formats\n\nThe executed notebook can be converted to various formats using external tools; refer to the nbconvert documentation for details.",
+          "rationale": "Replaces specific, actionable nbconvert commands with a vague reference, preventing the user from learning how to generate per-sample HTML reports required by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\n# Loop over samples (details omitted for brevity)\nfor sample in sample_list:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```\n\n## Output Formats\n\nThe executed notebook can be converted to various formats using external tools; refer to the nbconvert documentation for details.\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Mark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```",
+          "replacement_text": "",
+          "rationale": "Without the instruction to tag a cell as 'parameters', the user cannot set up parameterized notebooks correctly.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\n\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```",
+          "replacement_text": "```python\nimport os\n\n# Execute notebook without parameters (parameters must be hardcoded)\nos.system('jupyter nbconvert --to notebook --execute analysis_template.ipynb --output output_report.ipynb')\n```",
+          "rationale": "Replaces papermill with nbconvert, which cannot pass dynamic parameters, making batch parameterization impossible.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```",
+          "replacement_text": "```python\nimport os\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    os.system(f'jupyter nbconvert --to notebook --execute qc_template.ipynb --output reports/{sample}_qc.ipynb')\n```",
+          "rationale": "Replaces papermill batch processing with nbconvert commands that ignore per-sample parameters, breaking the user's requirement to pass BAM paths and quality thresholds.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport os\n\n# Execute notebook without parameters (parameters must be hardcoded)\nos.system('jupyter nbconvert --to notebook --execute analysis_template.ipynb --output output_report.ipynb')\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05\n```\n\n## Batch Processing\n\n```python\nimport os\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    os.system(f'jupyter nbconvert --to notebook --execute qc_template.ipynb --output reports/{sample}_qc.ipynb')\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={'sample_id': sample}\n    )\n```",
+          "replacement_text": "```python\n# Single sample processing\npm.execute_notebook(\n    'qc_template.ipynb',\n    'single_report.ipynb',\n    parameters={'sample_id': 'sample1', 'bam_file': 'path/to/sample1.bam', 'min_quality': 30}\n)\n```",
+          "rationale": "Removes batch processing: the user needs to run 12 samples from a CSV, but now only a single manual invocation is shown.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```",
+          "replacement_text": "## Converting to PDF\n\n```bash\n# Only PDF output is supported\njupyter nbconvert --to pdf report.ipynb\n```",
+          "rationale": "Removes HTML output conversion; the user specifically needs HTML reports for each sample.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'qc_template.ipynb',\n    'report.ipynb',\n    parameters={\n        'bam_file': 'sample1.bam',\n        'min_quality': 30\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\nbam_file = 'default.bam'\noutput_dir = 'reports/'\nmin_quality = 30   # Global threshold for all samples\n```\n\n## Batch Processing with CSV Input\n\nSample info CSV (`samples.csv`):\n```\nsample_id,bam_path\nS1,/data/s1.bam\nS2,/data/s2.bam\n```\n\n```python\nimport papermill as pm\nimport pandas as pd\n\nsamples_df = pd.read_csv('samples.csv')\nthreshold = 35   # Single threshold applied to all samples\n\nfor _, row in samples_df.iterrows():\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{row[\"sample_id\"]}_qc.ipynb',\n        parameters={\n            'bam_file': row['bam_path'],\n            'min_quality': threshold\n        }\n    )\n```\n\n## Converting to HTML\n\n```bash\n# Convert executed notebook to HTML\njupyter nbconvert --to html reports/*_qc.ipynb\n\n# Or convert immediately after execution\njupyter nbconvert --execute --to html report.ipynb\n```\n\n## Best Practices\n\n- Use the `parameters` cell tag for all configurable values\n- Store sample metadata in a simple CSV without extra columns\n- Keep a single threshold constant across samples for consistency\n- Clear outputs before committing templates to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- workflows/rnaseq-to-de - Embed in analysis pipelines"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# Parameters (tag this cell as \"parameters\")\ninput_file = 'default.csv'\noutput_dir = 'results/'\nfdr_threshold = 0.05",
+          "replacement_text": "# Parameters (tag this cell as \"parameters\")\nsample_id = 'default'",
+          "rationale": "Removes the configurable parameters for input file, output directory, and threshold, leaving only a sample ID placeholder, which prevents the user from passing per-sample BAM path and quality threshold.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "parameters={'sample_id': sample}",
+          "replacement_text": "parameters={}",
+          "rationale": "Drops the per-sample parameter passing entirely, so each notebook execution uses the default values, making batch processing useless for varying sample-specific inputs and thresholds.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Jupyter Reports with Papermill\n\n## Parameterized Notebooks\n\n```python\nimport papermill as pm\n\n# Execute notebook with parameters\npm.execute_notebook(\n    'analysis_template.ipynb',\n    'output_report.ipynb',\n    parameters={\n        'input_file': 'data/counts.csv',\n        'condition_col': 'treatment',\n        'fdr_threshold': 0.05\n    }\n)\n```\n\n## Creating Parameterized Templates\n\nMark a cell with the `parameters` tag in Jupyter:\n\n```python\n# Parameters (tag this cell as \"parameters\")\nsample_id = 'default'\n```\n\n## Batch Processing\n\n```python\nimport papermill as pm\nfrom pathlib import Path\n\nsamples = ['sample1', 'sample2', 'sample3']\n\nfor sample in samples:\n    pm.execute_notebook(\n        'qc_template.ipynb',\n        f'reports/{sample}_qc.ipynb',\n        parameters={}\n    )\n```\n\n## Converting to HTML/PDF\n\n```bash\n# Single notebook\njupyter nbconvert --to html report.ipynb\n\n# With execution\njupyter nbconvert --execute --to html report.ipynb\n\n# PDF (requires pandoc + LaTeX)\njupyter nbconvert --to pdf report.ipynb\n```\n\n## Best Practices\n\n- Keep analysis code in cells, explanatory text in markdown\n- Use parameters for all configurable values\n- Include version information and timestamps\n- Clear outputs before committing to version control\n\n## Related Skills\n\n- reporting/quarto-reports - Alternative report format\n- reporting/rmarkdown-reports - R-based reports\n- workflows/rnaseq-to-de - Embed in workflows"
+    }
+  ],
+  "finished_at": "2026-07-28T14:33:19",
+  "elapsed_seconds": 220.797,
+  "generated_variants": 10
+}

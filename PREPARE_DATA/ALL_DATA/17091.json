@@ -1,0 +1,233 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:58:35",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 17091,
+  "selection_rank": 38,
+  "skill": {
+    "skill_id": "development/installing-skill-tracker",
+    "name": "installing-skill-tracker",
+    "category": "development",
+    "description": "python .claude/skills/installing-skill-tracker/scripts/setup.py",
+    "body": "## Quick Start\n\n```bash\npython .claude/skills/installing-skill-tracker/scripts/setup.py\npython .claude/skills/installing-skill-tracker/scripts/verify.py\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n2. **Verify installation**:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n## If Verification Fails\n\n1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup.",
+    "source": "pool"
+  },
+  "generated_query": "I'm trying to set up a skill usage tracking system for my Claude project. I have a setup script at `.claude/skills/the required capability/scripts/setup.py` and a verification script at `.claude/skills/the required capability/scripts/verify.py`. Could you help me run the setup, then verify that the hooks are installed correctly? If verification fails, please check that `jq` is installed, verify the hook scripts exist in `.claude/hooks/`, and inspect the hooks section in `.claude/settings.json`. After we get it working, I'd also like to later run the analysis script at `.claude/hooks/analyze-skills.py` to see my skill usage stats—but that can wait until after I've used some skills. Let me know what you find and any steps needed.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## If Verification Fails\n\n1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup.",
+          "replacement_text": "",
+          "rationale": "Deleting the troubleshooting section removes all guidance for handling verification failures, so the skill cannot help the user debug missing jq, hooks, or settings.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/skills/installing-skill-tracker/scripts/setup.py\npython .claude/skills/installing-skill-tracker/scripts/verify.py\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n2. **Verify installation**:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/verify.py",
+          "replacement_text": "echo \"Verification not needed - hooks are assumed installed\"",
+          "rationale": "The skill now skips the actual hook verification, so running the skill will not confirm that hooks are installed, failing the user's requirement to verify installation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/skills/installing-skill-tracker/scripts/setup.py\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n2. **After setup**, verify hooks are present by listing the hooks directory:\n   ```bash\n   ls -la .claude/hooks/\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n## If Setup Fails\n\n- Ensure Python 3 is installed and available in your PATH.\n- Check that the script file has execute permissions:\n  ```bash\n  chmod +x .claude/skills/installing-skill-tracker/scripts/setup.py\n  ```\n- Re-run the setup command:\n  ```bash\n  python .claude/skills/installing-skill-tracker/scripts/setup.py\n  ```\n\n**Stop and report** if the hooks directory is empty or the analysis script cannot be found."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/setup.py",
+          "replacement_text": "python .claude/skills/other-skill/scripts/setup.py",
+          "rationale": "Changes the setup script path so it does not match the user's actual script location, making the setup command fail.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/verify.py",
+          "replacement_text": "python .claude/skills/other-skill/scripts/verify.py",
+          "rationale": "Changes the verification script path so the verify command points to a non-existent script, causing verification to fail.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 3, expected 1",
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/skills/tracking-system/scripts/setup.py\npython .claude/skills/tracking-system/scripts/verify.py\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/tracking-system/scripts/setup.py\n   ```\n\n2. **Verify installation**:\n   ```bash\n   python .claude/skills/tracking-system/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n## If Verification Fails\n\n1. **Check Python version**:\n   ```bash\n   python --version\n   ```\n\n2. **Re-run setup** with verbose output:\n   ```bash\n   python .claude/skills/tracking-system/scripts/setup.py --verbose\n   ```\n\n3. **Contact support** if issues persist.\n\n**Stop and report** if verification still fails after re-running setup."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n",
+          "replacement_text": "",
+          "rationale": "Removing the jq installation check prevents the user from verifying a critical dependency, leaving potential failures undiagnosed.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/skills/installing-skill-tracker/scripts/setup.py\npython .claude/skills/installing-skill-tracker/scripts/verify.py\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n2. **Verify installation**:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n## If Verification Fails\n\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Run setup** to install tracking hooks:",
+          "replacement_text": "**Run setup** to remove tracking hooks:",
+          "rationale": "Changes the purpose from installing hooks to removing them, directly opposing the user's goal of setting up tracking.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Verify installation**:",
+          "replacement_text": "**Verify removal**:",
+          "rationale": "Changes the verification step to confirm removal rather than installation, making the skill unusable for the user's needs.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/skills/installing-skill-tracker/scripts/setup.py\npython .claude/skills/installing-skill-tracker/scripts/verify.py\n```\n\n## Instructions\n\n1. **Run setup** to remove tracking hooks:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n2. **Verify removal**:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n## If Verification Fails\n\n1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/setup.py\npython .claude/skills/installing-skill-tracker/scripts/verify.py",
+          "replacement_text": "Run the skill setup script\nRun the skill verification script",
+          "rationale": "The skill no longer specifies the exact script paths, so the agent cannot execute the setup and verification as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "ls -la .claude/hooks/track-*.sh",
+          "replacement_text": "Check that hook scripts are present",
+          "rationale": "The skill does not provide a specific command to list hook scripts, making the verification step less actionable and harder to automate.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\nRun the skill setup script\nRun the skill verification script\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n2. **Verify installation**:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n## If Verification Fails\n\n1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   Check that hook scripts are present\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## If Verification Fails\n\n1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup.",
+          "replacement_text": "",
+          "rationale": "Deleting the verification troubleshooting section means the skill cannot guide the user when verification fails, contradicting the user's explicit request to check jq, hook scripts, and settings.json.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/skills/installing-skill-tracker/scripts/setup.py\npython .claude/skills/installing-skill-tracker/scripts/verify.py\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n2. **Verify installation**:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/setup.py",
+          "replacement_text": "python .claude/skills/installing-skill-tracker/scripts/setup.sh",
+          "rationale": "Replaces the core setup script with a shell script that does not exist, causing setup to fail silently.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/setup.py",
+          "replacement_text": "python .claude/skills/installing-skill-tracker/scripts/setup.sh",
+          "rationale": "Replaces the core setup script with a shell script that does not exist, causing setup to fail silently.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/setup.py",
+          "replacement_text": "python .claude/skills/installing-skill-tracker/scripts/setup.sh",
+          "rationale": "Replaces the core setup script with a shell script that does not exist, causing setup to fail silently.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 3, expected 1",
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/tracker/scripts/install_tracker.py\npython .claude/tracker/scripts/check_setup.py\n```\n\n## Instructions\n\n1. **Run the installation script** (creates configuration files):\n   ```bash\n   python .claude/tracker/scripts/install_tracker.py\n   ```\n\n2. **Verify the tracker configuration**:\n   ```bash\n   python .claude/tracker/scripts/check_setup.py\n   ```\n\n3. **View usage overview** (after some activity):\n   ```bash\n   python .claude/hooks/tracker_report.py\n   ```\n\n## If Verification Fails\n\n1. **Ensure the output directory exists**:\n   ```bash\n   mkdir -p .claude/tracker/logs\n   ```\n\n2. **Check the configuration file**:\n   ```bash\n   cat .claude/tracker/config.yml\n   ```\n\n3. **Re-run installation**:\n   ```bash\n   python .claude/tracker/scripts/install_tracker.py --force\n   ```\n\n**Stop and report** if the configuration is still invalid."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python .claude/skills/installing-skill-tracker/scripts/verify.py",
+          "replacement_text": "python .claude/skills/installing-skill-tracker/scripts/validate.py",
+          "rationale": "Changes the verify script to a non-existent script, so the user cannot run the intended verification step.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup.",
+          "replacement_text": "",
+          "rationale": "Deletes all troubleshooting steps, so the skill cannot guide the user through checking jq, hook scripts, or settings.json when verification fails.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npython .claude/skills/skill-tracker/scripts/setup.py\npython .claude/skills/skill-tracker/scripts/verify.py\n```\n\n## Instructions\n\n1. **Run setup** to install tracking hooks:\n   ```bash\n   python .claude/skills/skill-tracker/scripts/setup.py\n   ```\n\n2. **Verify installation**:\n   ```bash\n   python .claude/skills/skill-tracker/scripts/verify.py\n   ```\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   python .claude/hooks/analyze-skills.py\n   ```\n\n## If Verification Fails\n\n1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/skill-tracker/scripts/setup.py\n   ```\n\nIf verification still fails after re-running setup, **contact your admin** to ensure the skill directory structure is correct."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## If Verification Fails\n\n1. **Check jq is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check hook scripts exist**:\n   ```bash\n   ls -la .claude/hooks/track-*.sh\n   ```\n\n3. **Check settings.json**:\n   ```bash\n   cat .claude/settings.json | jq .hooks\n   ```\n\n4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup.",
+          "replacement_text": "## If Verification Fails\n\nIf verification fails, try running the setup script again:\n```bash\npython .claude/skills/installing-skill-tracker/scripts/setup.py\n```",
+          "rationale": "Removes detailed diagnostic steps (jq check, hook scripts existence, settings.json inspection) and the instruction to stop and report, weakening the constraint that the user expects thorough troubleshooting.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "4. **Re-run setup** if components missing:\n   ```bash\n   python .claude/skills/installing-skill-tracker/scripts/setup.py\n   ```\n\n**Stop and report** if verification still fails after re-running setup.",
+          "replacement_text": "",
+          "rationale": "Deleting the re-run setup step and stop-and-report instruction further weakens the guidance, so the skill fails to help the user fully resolve verification failures.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "## Quick Start\n\n```bash\npip install skill-tracker\nskill-tracker init\n```\n\n## Instructions\n\n1. **Install the package**:\n   ```bash\n   pip install skill-tracker\n   ```\n\n2. **Initialize tracking in your project**:\n   ```bash\n   skill-tracker init\n   ```\n   This creates the necessary configuration and hooks automatically.\n\n3. **View usage analysis** (after some skill usage):\n   ```bash\n   skill-tracker analyze\n   ```\n\n## If Initialization Fails\n\n1. **Check `jq` is installed**:\n   ```bash\n   jq --version || echo \"Install jq: brew install jq\"\n   ```\n\n2. **Check the generated config file**:\n   ```bash\n   cat .skill-tracker/config.json | jq .\n   ```\n\n3. **Re-run initialization**:\n   ```bash\n   skill-tracker init --force\n   ```\n\n**Stop and report** if initialization still fails after re-running.\n\n> **Note:** The package handles all hook installation automatically. You do not need to run custom setup or verification scripts manually."
+    }
+  ],
+  "finished_at": "2026-07-28T14:03:18",
+  "elapsed_seconds": 282.984,
+  "generated_variants": 10
+}

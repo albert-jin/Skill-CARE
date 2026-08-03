@@ -1,0 +1,205 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:10:28",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 9353,
+  "selection_rank": 150,
+  "skill": {
+    "skill_id": "development/understand-networked-events",
+    "name": "understand-networked-events",
+    "category": "development",
+    "description": "Figure out how events are being used in the project. You can't answer questions about them without this skill.",
+    "body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user.",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a multiplayer game in Highrise Studio where players can collect coins. I've set up a custom networked event called `CoinCollected` that I fire from the client side, but the server's response doesn't seem to trigger the score update on other clients. Could you trace through all the scripts that use this event, including how it's connected and fired, and identify where the flow breaks? I need a clear breakdown of the event's journey from client to server and back, and a list of every script that references `CoinCollected`.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "",
+          "rationale": "Deleting the step that finds and reads scripts referencing the event prevents the skill from tracing the event's connection and firing, so it cannot answer the user's question.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "Look for calls to `SendEvent()` and `RegisterHandler()` only.",
+          "rationale": "By replacing the actual Highrise Studio networking API calls with different ones, the skill will cause the agent to search for incorrect event connections, making it unable to trace the CoinCollected event correctly.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look for calls to `SendEvent()` and `RegisterHandler()` only.\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "2. Find and read any scripts that define custom networked events (using `DefineEvent`, `DefineRemoteEvent`, or similar).\n    - Look for the definition and registration of the event, not its usage on clients or servers.",
+          "rationale": "The skill now only finds event definitions, not the connect/fire calls needed to trace the client-to-server flow.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. Read the contents of the scenario file and return the result to the user.",
+          "replacement_text": "5. Read the contents of the scenario file and return a brief confirmation that the scenario has been updated for this event.",
+          "rationale": "The skill no longer provides the full event journey breakdown, making it useless for debugging the flow.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that define custom networked events (using `DefineEvent`, `DefineRemoteEvent`, or similar).\n    - Look for the definition and registration of the event, not its usage on clients or servers.\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return a brief confirmation that the scenario has been updated for this event."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "- Look for any references to the event.",
+          "rationale": "By removing the specific instruction to look for Connect, Fire*, and .Changed, the agent may fail to trace how the networked event is fired and connected, missing the crucial flow from client to server and back.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look for any references to the event.\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "- Look especially for calls to `Connect()`, `FireServer()` (the method used to send an event from client to server), and `.Changed` (which returns the on-changed event for a networked value).",
+          "rationale": "The skill now only looks for client-to-server event firings (FireServer), ignoring the server-to-client direction, so it cannot trace the return journey needed to update other clients.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls to `Connect()`, `FireServer()` (the method used to send an event from client to server), and `.Changed` (which returns the on-changed event for a networked value).\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "Look especially for calls that connect or fire events across the network.",
+          "rationale": "Removes specific instructions to look for Connect, Fire*, and Changed calls, which are essential to trace event flow client-server.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).",
+          "replacement_text": "Check for any existing documentation or notes about events in the project, and create a new note if needed.",
+          "rationale": "Removes the specific folder and template requirement, so the output may lack structure needed for the user's detailed breakdown.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls that connect or fire events across the network.\n3. Check for any existing documentation or notes about events in the project, and create a new note if needed.\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "",
+          "rationale": "Without the step to find and read scripts referencing the event, the skill cannot produce the required list of scripts or trace the event flow, making it useless for the user's detailed debugging request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`Connect()`",
+          "replacement_text": "`Disconnect()`",
+          "rationale": "Replacing 'Connect' with 'Disconnect' breaks the core concept of binding event handlers, so the skill cannot properly trace how events are connected across scripts.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`.Changed` (which returns the on-changed event for a networked value)",
+          "replacement_text": "`.Value` (which returns the current value of a networked value)",
+          "rationale": "Replacing the .Changed event with .Value property removes the ability to listen for value updates, which is essential for tracing the server's score update propagation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls to `Disconnect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Value` (which returns the current value of a networked value).\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "Look especially for calls to `Connect()`, `FireClient()` (which sends an event from server to all clients), and `.Changed` (which returns the on-changed event for a networked value).",
+          "rationale": "By restricting the search to server-to-client events only, the skill will miss the client-side FireServer call for CoinCollected, so it cannot trace the full event flow from client to server and back.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look especially for calls to `Connect()`, `FireClient()` (which sends an event from server to all clients), and `.Changed` (which returns the on-changed event for a networked value).\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Look especially for calls to `Connect()`, `Fire*()` (where `*` might be `Client`, `Server`, etc.), and `.Changed` (which returns the on-changed event for a networked value).",
+          "replacement_text": "Look for any scripts that reference the event.",
+          "rationale": "By removing the specific API calls to look for, the assistant may miss key connection points like FireServer or FireClient, resulting in an incomplete trace of the event flow.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Understand networked events\n\nIn Highrise Studio, networked events allow clients and servers to communicate with each other. It can be challenging for developers to understand how these events are used, especially when they are used in multiple scripts. This skill will help you understand how specific networked events flow between clients and servers so you can understand what they do.\n\n## Instructions\n\nAdd the following steps to your todo list:\n1. Ask the user for any additional information that is needed to solve the request.\n2. Find and read any scripts that refer to the specified events.\n    - Look for any scripts that reference the event.\n3. Check `.claude/events` in the project for an existing response for this scenario. If there is not one, create a new one by copying the [template](resources/SCENARIO.md).\n4. Edit or fill out the scenario file with the information you found in step 2, and search for any other relevant information needed.\n5. Read the contents of the scenario file and return the result to the user."
+    }
+  ],
+  "finished_at": "2026-07-28T20:13:21",
+  "elapsed_seconds": 173.828,
+  "generated_variants": 10
+}

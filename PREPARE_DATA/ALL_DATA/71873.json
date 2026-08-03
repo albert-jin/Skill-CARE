@@ -1,0 +1,208 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:33:16",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 71873,
+  "selection_rank": 213,
+  "skill": {
+    "skill_id": "documents/meta-skill",
+    "name": "meta-skill",
+    "category": "documents",
+    "description": "Creates new skills for unfamiliar technologies. Use when needing to create a skill, add support for unknown frameworks, or extend capabilities for new tech. Researches documentation and delegates to skill-creator for scaffolding.",
+    "body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] official documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"\n```\n\nGather:\n- Official docs URLs\n- API patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |",
+    "source": "pool"
+  },
+  "generated_query": "I've been using the Amadeus flight search API for a few travel projects, and I keep revisiting the same documentation for authentication, flight offers, and booking endpoints. Could you create a reusable skill for Amadeus integration? It should cover API authentication, flight searches with different parameters (origin, destination, dates, passengers), and handling errors like rate limits or invalid tokens. Also include common workflows for round-trip vs one-way searches and tips for parsing the response data efficiently.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules",
+          "replacement_text": "",
+          "rationale": "Without populating content, the meta-skill creates only an empty shell, so the resulting Amadeus skill would lack essential workflows, error handling, and parsing guidance.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] official documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"\n```\n\nGather:\n- Official docs URLs\n- API patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "WebSearch: \"[technology] official documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"",
+          "replacement_text": "WebSearch: \"[technology] database integration guide\"\nWebSearch: \"[technology] SQL best practices\"\nWebSearch: \"[technology] ORM patterns\"",
+          "rationale": "Replaces the technology research step with database-specific queries, so the skill creation process will miss flight search API documentation and authentication details needed for Amadeus.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- API patterns",
+          "replacement_text": "- SQL query patterns",
+          "rationale": "Changes the gathered patterns from general APIs to SQL, further biasing the skill towards databases and away from flight search APIs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] database integration guide\"\nWebSearch: \"[technology] SQL best practices\"\nWebSearch: \"[technology] ORM patterns\"\n```\n\nGather:\n- Official docs URLs\n- SQL query patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "WebSearch: \"[technology] official documentation\"",
+          "replacement_text": "WebSearch: \"[technology] overview\"",
+          "rationale": "Removing official documentation lookup weakens input research, preventing the skill from gathering accurate API-specific details needed for Amadeus integration.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Error handling guidance",
+          "replacement_text": "",
+          "rationale": "Deleting error handling guidance from the skill content output omits a key requirement for handling rate limits and invalid tokens in the Amadeus workflow.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] overview\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"\n```\n\nGather:\n- Official docs URLs\n- API patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n\n- Delegation rules\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- User explicitly requests skill creation",
+          "replacement_text": "",
+          "rationale": "Without the explicit request trigger, the meta-skill ignores the user's direct instruction to create the Amadeus skill, requiring 2+ repeat encounters first.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"",
+          "replacement_text": "",
+          "rationale": "Removing validation means the generated skill may contain errors or missing documentation, failing to provide a reliable Amadeus integration skill.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] official documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"\n```\n\nGather:\n- Official docs URLs\n- API patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "WebSearch: \"[technology] official documentation\"",
+          "replacement_text": "WebSearch: \"[technology] internal documentation\"",
+          "rationale": "Changing the research query to internal documentation removes the ability to discover external API official docs needed for Amadeus integration.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Official docs URLs\n- API patterns",
+          "replacement_text": "- Internal documentation URLs\n- Configuration patterns",
+          "rationale": "Replacing API patterns with configuration patterns means the gather step will not include the crucial API-specific details needed for flight search and booking endpoints.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "WebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices",
+          "replacement_text": "WebSearch: \"internal tool API documentation\"\n→ https://internal.company.com/docs/api\n\nWebSearch: \"internal tool best practices\"\n→ https://internal.company.com/docs/best-practices",
+          "rationale": "Changing the example from an external API (Stripe) to an internal tool reinforces that the meta-skill is intended for internal systems, not public APIs like Amadeus.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] internal documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"\n```\n\nGather:\n- Internal documentation URLs\n- Configuration patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"internal tool API documentation\"\n→ https://internal.company.com/docs/api\n\nWebSearch: \"internal tool best practices\"\n→ https://internal.company.com/docs/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "WebSearch: \"[technology] official documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"",
+          "replacement_text": "WebSearch: \"official API documentation\"\nWebSearch: \"best practices for API integration\"\nWebSearch: \"common integration patterns\"",
+          "rationale": "Over-generalized research queries prevent the skill from gathering Amadeus-specific documentation, making the created skill too vague.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Documentation URLs discovered in research",
+          "replacement_text": "",
+          "rationale": "Deleting the requirement to include documentation URLs means the generated skill lacks the crucial Amadeus API references needed for integration.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Workflows based on best practices",
+          "replacement_text": "",
+          "rationale": "Removing workflows means the skill will not contain round-trip vs one-way search patterns, failing the user's explicit request.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"official API documentation\"\nWebSearch: \"best practices for API integration\"\nWebSearch: \"common integration patterns\"\n```\n\nGather:\n- Official docs URLs\n- API patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n\n\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules",
+          "replacement_text": "",
+          "rationale": "Removes the step that populates the skill content with workflows, error handling, and patterns, so the created skill would lack the specific capabilities requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `skill-creator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] official documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"\n```\n\nGather:\n- Official docs URLs\n- API patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `skill-creator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Delegate to `skill-creator` for scaffolding",
+          "replacement_text": "Delegate to `docs-generator` for scaffolding",
+          "rationale": "Replaces the actual skill-creation tool with a non-existent one, making the meta-skill unable to scaffold the required Amadeus integration skill.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Need skill scaffolding | `skill-creator` |",
+          "replacement_text": "| Need skill scaffolding | `docs-generator` |",
+          "rationale": "Changes the delegation target in the table to a non-existent tool, ensuring the skill creation workflow always fails.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Meta-Skill\n\nExpert agent architect that creates new skills for any technology.\n\n## Autonomy Level: Full\n\n- Create skills immediately when threshold reached (2+ uses of unfamiliar tech)\n- Notify after creation, don't ask before\n- Research documentation autonomously\n- Delegate to `docs-generator` for scaffolding\n\n## When to Activate\n\n- New technology encountered 2+ times without existing skill\n- User explicitly requests skill creation\n- Learning agent proposes new skill\n- Repeated documentation lookups for same technology\n\n## Skill Creation Process\n\n### Step 1: Research Technology\n\n```\nWebSearch: \"[technology] official documentation\"\nWebSearch: \"[technology] best practices 2025\"\nWebSearch: \"[technology] common patterns\"\n```\n\nGather:\n- Official docs URLs\n- API patterns\n- Best practices\n- Common pitfalls\n\n### Step 2: Analyze Requirements\n\nDetermine:\n- Primary use cases\n- Required tools\n- File patterns that trigger it\n- Common workflows\n- Error patterns\n\n### Step 3: Initialize with skill-creator\n\nRun the scaffolding script:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py <name> --path .claude/skills\n```\n\n### Step 4: Populate Skill Content\n\nEdit the generated `SKILL.md` with:\n\n**Frontmatter:**\n- `name`: kebab-case (e.g., `stripe-integration`)\n- `description`: What it does + trigger keywords (max 1024 chars)\n- `allowed-tools`: Minimal required set\n\n**Body:**\n- Documentation URLs discovered in research\n- Workflows based on best practices\n- Common patterns with examples\n- Error handling guidance\n- Delegation rules\n\n### Step 5: Add Resources\n\nBased on research, add:\n- `scripts/` - Automation for repetitive tasks\n- `references/` - Detailed docs, schemas, patterns\n- `assets/` - Templates, boilerplate\n\n### Step 6: Validate and Notify\n\n```bash\npython .claude/skills/skill-creator/scripts/quick_validate.py .claude/skills/<name>\n```\n\nThen notify: \"Created skill: [name] for [technology]\"\n\n## Example\n\n**Trigger**: Claude encounters Stripe integration twice\n\n**Research**:\n```\nWebSearch: \"Stripe API documentation\"\n→ https://stripe.com/docs/api\n\nWebSearch: \"Stripe webhooks best practices\"\n→ https://stripe.com/docs/webhooks/best-practices\n```\n\n**Initialize**:\n```bash\npython .claude/skills/skill-creator/scripts/init_skill.py stripe-integration --path .claude/skills\n```\n\n**Result**: `.claude/skills/stripe-integration/SKILL.md`\n\n```yaml\n---\nname: stripe-integration\ndescription: Handles Stripe payments, webhooks, and subscriptions. Use for stripe, payment, checkout, subscription, webhook integration.\nallowed-tools: WebFetch, Read, Write, Edit, Bash(npm:*), Bash(curl:*)\n---\n```\n\n## Quality Checklist\n\n- [ ] Description under 1024 chars with trigger keywords\n- [ ] Official documentation URLs included\n- [ ] Minimal tool permissions\n- [ ] Error handling guidance\n- [ ] Delegation rules specified\n- [ ] Validated with quick_validate.py\n\n## Delegation\n\n| Condition | Delegate To |\n|-----------|-------------|\n| Need skill scaffolding | `docs-generator` |\n| Frontend/UI work | `frontend-design` |\n| LSP setup needed | `lsp-setup` |"
+    }
+  ],
+  "finished_at": "2026-07-28T23:35:39",
+  "elapsed_seconds": 143.094,
+  "generated_variants": 8
+}

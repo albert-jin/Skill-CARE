@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:18:47",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 14787,
+  "selection_rank": 172,
+  "skill": {
+    "skill_id": "development/wordpress-router-javiercasares-wpvulnerability",
+    "name": "wordpress-router",
+    "category": "development",
+    "description": "Use when the user asks about WordPress codebases (plugins, themes, block themes, Gutenberg blocks, WP core checkouts) and you need to quickly classify the repo and route to the correct workflow/skill (blocks, theme.json, REST API, WP-CLI, performance, security, testing, release packaging).",
+    "body": "# WordPress Router\n\n## When to use\n\nUse this skill at the start of most WordPress tasks to:\n\n- identify what kind of WordPress codebase this is (plugin vs theme vs block theme vs WP core checkout vs full site),\n- pick the right workflow and guardrails,\n- delegate to the most relevant domain skill(s).\n\n## Inputs required\n\n- Repo root (current working directory).\n- The user’s intent (what they want changed) and any constraints (WP version targets, WP.com specifics, release requirements).\n\n## Procedure\n\n1. Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`\n2. Read the triage output and classify:\n   - primary project kind(s),\n   - tooling available (PHP/Composer, Node, @wordpress/scripts),\n   - tests present (PHPUnit, Playwright, wp-env),\n   - any version hints.\n3. Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.\n4. Apply guardrails before making changes:\n   - Confirm any version constraints if unclear.\n   - Prefer the repo’s existing tooling and conventions for builds/tests.\n\n## Verification\n\n- Re-run the triage script if you create or restructure significant files.\n- Run the repo’s lint/test/build commands that the triage output recommends (if available).\n\n## Failure modes / debugging\n\n- If triage reports `kind: unknown`, inspect:\n  - root `composer.json`, `package.json`, `style.css`, `block.json`, `theme.json`, `wp-content/`.\n- If the repo is huge, consider narrowing scanning scope or adding ignore rules to the triage script.\n\n## Escalation\n\n- If routing is ambiguous, ask one question:\n  - “Is this intended to be a WordPress plugin, a theme (classic/block), or a full site repo?”",
+    "source": "pool"
+  },
+  "generated_query": "I just cloned a WordPress repository from GitHub, and I’m not sure what kind of project it is. The repo is at `/home/user/projects/wordpress-repo`. Could you please inspect it to figure out if it’s a plugin, a theme, a block theme, or something else? I need to know:\n\n- What’s the primary project type?\n- What tooling is already set up (PHP/Composer, Node, scripts, etc.)?\n- What testing framework is used (if any)?\n- Any version hints or constraints I should be aware of?\n\nAfter that, I’d like recommendations on the best workflow for making changes: what linting, build, and testing commands to use, and any domain-specific guides I should follow (for example, if it’s a block theme, what should I focus on?). The ultimate goal is to add a new custom block with a few variations and ensure the code follows the repo’s existing conventions.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`",
+          "replacement_text": "",
+          "rationale": "Without the triage script step, the skill cannot identify the project type, tooling, testing, or version hints, making it unable to answer the user's classification questions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WordPress Router\n\n## When to use\n\nUse this skill at the start of most WordPress tasks to:\n\n- identify what kind of WordPress codebase this is (plugin vs theme vs block theme vs WP core checkout vs full site),\n- pick the right workflow and guardrails,\n- delegate to the most relevant domain skill(s).\n\n## Inputs required\n\n- Repo root (current working directory).\n- The user’s intent (what they want changed) and any constraints (WP version targets, WP.com specifics, release requirements).\n\n## Procedure\n\n\n2. Read the triage output and classify:\n   - primary project kind(s),\n   - tooling available (PHP/Composer, Node, @wordpress/scripts),\n   - tests present (PHPUnit, Playwright, wp-env),\n   - any version hints.\n3. Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.\n4. Apply guardrails before making changes:\n   - Confirm any version constraints if unclear.\n   - Prefer the repo’s existing tooling and conventions for builds/tests.\n\n## Verification\n\n- Re-run the triage script if you create or restructure significant files.\n- Run the repo’s lint/test/build commands that the triage output recommends (if available).\n\n## Failure modes / debugging\n\n- If triage reports `kind: unknown`, inspect:\n  - root `composer.json`, `package.json`, `style.css`, `block.json`, `theme.json`, `wp-content/`.\n- If the repo is huge, consider narrowing scanning scope or adding ignore rules to the triage script.\n\n## Escalation\n\n- If routing is ambiguous, ask one question:\n  - “Is this intended to be a WordPress plugin, a theme (classic/block), or a full site repo?”"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`",
+          "replacement_text": "Run the project triage script:\n   - `head -n 5 style.css theme.json package.json composer.json`",
+          "rationale": "Replacing the dedicated triage script with a basic head command removes the automated classification capability, making it impossible to reliably identify project type, tooling, and testing framework.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WordPress Router\n\n## When to use\n\nUse this skill at the start of most WordPress tasks to:\n\n- identify what kind of WordPress codebase this is (plugin vs theme vs block theme vs WP core checkout vs full site),\n- pick the right workflow and guardrails,\n- delegate to the most relevant domain skill(s).\n\n## Inputs required\n\n- Repo root (current working directory).\n- The user’s intent (what they want changed) and any constraints (WP version targets, WP.com specifics, release requirements).\n\n## Procedure\n\n1. Run the project triage script:\n   - `head -n 5 style.css theme.json package.json composer.json`\n2. Read the triage output and classify:\n   - primary project kind(s),\n   - tooling available (PHP/Composer, Node, @wordpress/scripts),\n   - tests present (PHPUnit, Playwright, wp-env),\n   - any version hints.\n3. Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.\n4. Apply guardrails before making changes:\n   - Confirm any version constraints if unclear.\n   - Prefer the repo’s existing tooling and conventions for builds/tests.\n\n## Verification\n\n- Re-run the triage script if you create or restructure significant files.\n- Run the repo’s lint/test/build commands that the triage output recommends (if available).\n\n## Failure modes / debugging\n\n- If triage reports `kind: unknown`, inspect:\n  - root `composer.json`, `package.json`, `style.css`, `block.json`, `theme.json`, `wp-content/`.\n- If the repo is huge, consider narrowing scanning scope or adding ignore rules to the triage script.\n\n## Escalation\n\n- If routing is ambiguous, ask one question:\n  - “Is this intended to be a WordPress plugin, a theme (classic/block), or a full site repo?”"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- The user’s intent (what they want changed) and any constraints (WP version targets, WP.com specifics, release requirements).",
+          "replacement_text": "- The user's project domain (plugin, theme, block theme, WP core) if already known.",
+          "rationale": "By removing the requirement for user intent and constraints, the skill no longer asks for the user's specific goal to get workflow recommendations.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Route to domain workflows based on user intent + repo kind:",
+          "replacement_text": "3. Output the repo kind and tooling summary:",
+          "rationale": "Replaces the routing decision with a mere output step, so the skill no longer provides workflow, linting, build, or testing guidance.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WordPress Router\n\n## When to use\n\nUse this skill at the start of most WordPress tasks to:\n\n- identify what kind of WordPress codebase this is (plugin vs theme vs block theme vs WP core checkout vs full site),\n- pick the right workflow and guardrails,\n- delegate to the most relevant domain skill(s).\n\n## Inputs required\n\n- Repo root (current working directory).\n- The user's project domain (plugin, theme, block theme, WP core) if already known.\n\n## Procedure\n\n1. Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`\n2. Read the triage output and classify:\n   - primary project kind(s),\n   - tooling available (PHP/Composer, Node, @wordpress/scripts),\n   - tests present (PHPUnit, Playwright, wp-env),\n   - any version hints.\n3. Output the repo kind and tooling summary:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.\n4. Apply guardrails before making changes:\n   - Confirm any version constraints if unclear.\n   - Prefer the repo’s existing tooling and conventions for builds/tests.\n\n## Verification\n\n- Re-run the triage script if you create or restructure significant files.\n- Run the repo’s lint/test/build commands that the triage output recommends (if available).\n\n## Failure modes / debugging\n\n- If triage reports `kind: unknown`, inspect:\n  - root `composer.json`, `package.json`, `style.css`, `block.json`, `theme.json`, `wp-content/`.\n- If the repo is huge, consider narrowing scanning scope or adding ignore rules to the triage script.\n\n## Escalation\n\n- If routing is ambiguous, ask one question:\n  - “Is this intended to be a WordPress plugin, a theme (classic/block), or a full site repo?”"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Confirm any version constraints if unclear.",
+          "replacement_text": "- Version constraints may be noted later if time permits.",
+          "rationale": "Weakening the requirement to confirm version constraints upfront could cause the skill to overlook critical version hints needed for the user's workflow recommendations.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Prefer the repo’s existing tooling and conventions for builds/tests.",
+          "replacement_text": "- Consider using the repo's tooling as a starting point, but feel free to suggest alternatives.",
+          "rationale": "Weakening the preference for the repo’s existing tooling may lead to recommending mismatched build and test commands that do not follow the repo’s conventions.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WordPress Router\n\n## When to use\n\nUse this skill at the start of most WordPress tasks to:\n\n- identify what kind of WordPress codebase this is (plugin vs theme vs block theme vs WP core checkout vs full site),\n- pick the right workflow and guardrails,\n- delegate to the most relevant domain skill(s).\n\n## Inputs required\n\n- Repo root (current working directory).\n- The user’s intent (what they want changed) and any constraints (WP version targets, WP.com specifics, release requirements).\n\n## Procedure\n\n1. Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`\n2. Read the triage output and classify:\n   - primary project kind(s),\n   - tooling available (PHP/Composer, Node, @wordpress/scripts),\n   - tests present (PHPUnit, Playwright, wp-env),\n   - any version hints.\n3. Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.\n4. Apply guardrails before making changes:\n   - Version constraints may be noted later if time permits.\n   - Consider using the repo's tooling as a starting point, but feel free to suggest alternatives.\n\n## Verification\n\n- Re-run the triage script if you create or restructure significant files.\n- Run the repo’s lint/test/build commands that the triage output recommends (if available).\n\n## Failure modes / debugging\n\n- If triage reports `kind: unknown`, inspect:\n  - root `composer.json`, `package.json`, `style.css`, `block.json`, `theme.json`, `wp-content/`.\n- If the repo is huge, consider narrowing scanning scope or adding ignore rules to the triage script.\n\n## Escalation\n\n- If routing is ambiguous, ask one question:\n  - “Is this intended to be a WordPress plugin, a theme (classic/block), or a full site repo?”"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use when the user asks about WordPress codebases (plugins, themes, block themes, Gutenberg blocks, WP core checkouts) and you need to quickly classify the repo and route to the correct workflow/skill (blocks, theme.json, REST API, WP-CLI, performance, security, testing, release packaging).",
+          "replacement_text": "Use when the user asks about WordPress codebases for security auditing or performance testing, and you need to classify the repo and route to security or performance workflows.",
+          "rationale": "The skill now only covers security and performance workflows, ignoring block/theme/plugin development needs like adding a custom block.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.",
+          "replacement_text": "Route only to security or performance workflows based on user intent + repo kind:\n   - For security scanning, read: `skills/wp-security/scan.md`.\n   - For performance analysis, read: `skills/wp-performance/audit.md`.",
+          "rationale": "Removes routing to block/plugin development workflows, so the skill cannot recommend how to add a custom block or follow repo conventions.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# WordPress Repo Inspector\n\n## When to use\n\nUse this skill when a user has a WordPress repository (plugin, theme, or site) and you need to provide a basic overview of its structure, tools, and common workflows. This skill is ideal for first-time inspection and standard development setups.\n\n## Inputs required\n\n- Path to the repository root.\n- User’s high-level goal (e.g., “add a custom block”).\n- Any known constraints (e.g., “must work on WP 5.9+”, “uses Block Editor”).\n\n## Procedure\n\n1. Quickly scan the repo root for essential WordPress files:\n   - `style.css` → likely a classic theme.\n   - `block.json` → likely a block or block plugin.\n   - `theme.json` → likely a block theme.\n   - `wp-content/plugins/` or `wp-content/themes/` → indicates a full site or core checkout.\n   - `composer.json`, `package.json` for tooling.\n2. Based on the file pattern, assign a primary project kind:\n   - If `style.css` and `functions.php` → classic theme.\n   - If `block.json` in root → block plugin.\n   - If `theme.json` → block theme.\n   - If `wp-content/` structure → full site.\n3. For block development, assume the user will use `@wordpress/scripts`. Provide generic commands:\n   - `npm run start` (if script exists) or `npx wp-scripts start`\n   - `npm run build` for production.\n4. Recommend using `eslint`, `stylelint`, and `prettier` (from `@wordpress/scripts`).\n5. Suggest PHPUnit for PHP tests (if `phpunit.xml` exists) or Playwright for E2E (if `playwright.config.js` found). If none, recommend setting up basic unit tests with `wp-env`.\n\n## Verification\n\n- After assembling the plan, check that the user’s intended changes (e.g., adding a block) can be implemented by following the standard block development guide: `skills/wordpress-blocks/references/block-development.md`.\n- Run a quick `npm list @wordpress/scripts` to verify compatibility.\n\n## Failure modes / debugging\n\n- If the repo has no `package.json` or `composer.json`, assume it’s a manually maintained classic theme and recommend installing `@wordpress/scripts` globally.\n- If multiple conflicting files exist (e.g., both `style.css` and `theme.json`), ask the user to clarify the intended project type.\n\n## Escalation\n\n- If the user’s goal (e.g., “add a custom block”) doesn’t match the detected project kind (e.g., repo is a traditional plugin without block support), escalate to the block routing skill with a note."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`",
+          "replacement_text": "Identify the WordPress codebase type by looking at common configuration files (style.css, package.json, composer.json, etc.)",
+          "rationale": "Removes the specific triage script that provides detailed tooling/testing/version info, making the classification vague and unreliable.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.",
+          "replacement_text": "Give general WordPress development recommendations based on common practices.",
+          "rationale": "Removes routing to specific workflows (e.g., block development), so the skill cannot provide the tailored linting/build/testing commands the user needs.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WordPress Router\n\n## When to use\n\nUse this skill at the start of most WordPress tasks to:\n\n- identify what kind of WordPress codebase this is (plugin vs theme vs block theme vs WP core checkout vs full site),\n- pick the right workflow and guardrails,\n- delegate to the most relevant domain skill(s).\n\n## Inputs required\n\n- Repo root (current working directory).\n- The user’s intent (what they want changed) and any constraints (WP version targets, WP.com specifics, release requirements).\n\n## Procedure\n\n1. Identify the WordPress codebase type by looking at common configuration files (style.css, package.json, composer.json, etc.)\n2. Read the triage output and classify:\n   - primary project kind(s),\n   - tooling available (PHP/Composer, Node, @wordpress/scripts),\n   - tests present (PHPUnit, Playwright, wp-env),\n   - any version hints.\n3. Give general WordPress development recommendations based on common practices.\n4. Apply guardrails before making changes:\n   - Confirm any version constraints if unclear.\n   - Prefer the repo’s existing tooling and conventions for builds/tests.\n\n## Verification\n\n- Re-run the triage script if you create or restructure significant files.\n- Run the repo’s lint/test/build commands that the triage output recommends (if available).\n\n## Failure modes / debugging\n\n- If triage reports `kind: unknown`, inspect:\n  - root `composer.json`, `package.json`, `style.css`, `block.json`, `theme.json`, `wp-content/`.\n- If the repo is huge, consider narrowing scanning scope or adding ignore rules to the triage script.\n\n## Escalation\n\n- If routing is ambiguous, ask one question:\n  - “Is this intended to be a WordPress plugin, a theme (classic/block), or a full site repo?”"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`",
+          "replacement_text": "",
+          "rationale": "Without running the triage script, the skill cannot automatically detect the WordPress project type, tooling, or testing setup, which is essential for the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WordPress Router\n\n## When to use\n\nUse this skill at the start of most WordPress tasks to:\n\n- identify what kind of WordPress codebase this is (plugin vs theme vs block theme vs WP core checkout vs full site),\n- pick the right workflow and guardrails,\n- delegate to the most relevant domain skill(s).\n\n## Inputs required\n\n- Repo root (current working directory).\n- The user’s intent (what they want changed) and any constraints (WP version targets, WP.com specifics, release requirements).\n\n## Procedure\n\n\n2. Read the triage output and classify:\n   - primary project kind(s),\n   - tooling available (PHP/Composer, Node, @wordpress/scripts),\n   - tests present (PHPUnit, Playwright, wp-env),\n   - any version hints.\n3. Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.\n4. Apply guardrails before making changes:\n   - Confirm any version constraints if unclear.\n   - Prefer the repo’s existing tooling and conventions for builds/tests.\n\n## Verification\n\n- Re-run the triage script if you create or restructure significant files.\n- Run the repo’s lint/test/build commands that the triage output recommends (if available).\n\n## Failure modes / debugging\n\n- If triage reports `kind: unknown`, inspect:\n  - root `composer.json`, `package.json`, `style.css`, `block.json`, `theme.json`, `wp-content/`.\n- If the repo is huge, consider narrowing scanning scope or adding ignore rules to the triage script.\n\n## Escalation\n\n- If routing is ambiguous, ask one question:\n  - “Is this intended to be a WordPress plugin, a theme (classic/block), or a full site repo?”"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Run the project triage script:\n   - `node skills/wp-project-triage/scripts/detect_wp_project.mjs`",
+          "replacement_text": "- Run the version check script:\n   - `node skills/wp-project-triage/scripts/check_wp_version.mjs`",
+          "rationale": "Replaces the core classification script with a version-only checker, so project type and tooling are never identified.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Route to domain workflows based on user intent + repo kind:\n   - For the decision tree, read: `skills/wordpress-router/references/decision-tree.md`.",
+          "replacement_text": "",
+          "rationale": "Removes the step that recommends workflows, so the skill cannot give actionable guidance for changes.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# WordPress Theme Analyzer\n\n## When to use\n\nUse this skill when you need to inspect a WordPress theme repository to determine if it’s a classic theme, block theme, or child theme, and to understand its basic structure and conventions.\n\n## Inputs required\n\n- Repo root (current working directory).  \n- The user’s intent (what they want changed) and any constraints (PHP version targets, WordPress version requirements).\n\n## Procedure\n\n1. **Check for `style.css`** at the repo root.  \n   - If present, read the header block to extract the theme name, version, and any included WordPress version requirements.  \n2. **Look for `theme.json`** in the root or `styles/` folder.  \n   - If `theme.json` exists, classify the project as a **block theme**.  \n   - Otherwise, classify as a **classic theme** (or a child theme if the `Template` header is set in `style.css`).  \n3. **Examine existing tooling**:  \n   - Check for `composer.json` to see if PHP dependencies are managed.  \n   - Check for `package.json` for Node scripts (e.g., build, watch).  \n   - Note any linting config files (e.g., `.phpcs.xml`, `.eslintrc`).  \n4. **Determine testing framework**:  \n   - Look for `phpunit.xml` or `tests/` for PHPUnit tests.  \n   - Look for `cypress.config.js` or `playwright.config.ts` for browser tests (rare in themes).  \n5. **Provide findings**:  \n   - Report the detected theme type, version hint, and any available tooling.  \n   - If `style.css` is absent but `composer.json` or `package.json` exists, warn that this may not be a theme and escalate.  \n6. **Recommend workflow**:  \n   - For classic themes: refer to the WordPress Theme Handbook, use PHP_CodeSniffer with WordPress Coding Standards, and run `phpcs` before committing.  \n   - For block themes: refer to the Block Editor Handbook, but note that this skill does **not** cover custom block development. Building new blocks typically requires `@wordpress/scripts` and a separate plugin or theme’s `blocks/` folder – please escalate to the Blocks skill.\n\n## Verification\n\n- Re-check `style.css` after changes to confirm version bump or added theme support.  \n- Run `phpcs` if a coding standards config exists.\n\n## Failure modes / debugging\n\n- If `style.css` is missing and no other standard WordPress file is found, the repo is likely not a theme.  \n- If `theme.json` exists but the user intends to add custom blocks, this skill will not guide block registration – escalate to the Blocks skill.\n\n## Escalation\n\n- If the repo lacks `style.css` and appears to be a plugin or full-site fork, ask: “Is this a WordPress plugin or a full site repository? This skill only covers themes.”  \n- If the user wants to create custom blocks, escalate: “For adding blocks, please use the WordPress Blocks skill.”"
+    }
+  ],
+  "finished_at": "2026-07-28T21:21:31",
+  "elapsed_seconds": 164.125,
+  "generated_variants": 8
+}

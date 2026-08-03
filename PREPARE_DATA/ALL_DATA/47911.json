@@ -1,0 +1,198 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:30:39",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 47911,
+  "selection_rank": 218,
+  "skill": {
+    "skill_id": "other/commit-helderberto-skills",
+    "name": "commit",
+    "category": "other",
+    "description": "Create git commits following repository style. Use when user asks to \"create a commit\", \"commit changes\", \"/commit\", or requests committing code to git.",
+    "body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n3. Stage files explicitly (avoid `git add .` or `-A`)\n4. Commit with HEREDOC format matching repo style\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns",
+    "source": "pool"
+  },
+  "generated_query": "I've been fixing a bug in the user management module. The modified files are `user_manager.py` and `test_user_manager.py`. Could you check the current state of the repo, review the changes I made, stage only those two files, and then save the changes with a message that follows the concise, imperative style the project uses? Look at the last few entries in the git history to match the pattern. After that, confirm that everything is clean.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Analyze recent commit style from log",
+          "replacement_text": "",
+          "rationale": "Without analyzing recent commit style, the commit message won't match the project's pattern, failing the user's request to follow the git history style.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n\n3. Stage files explicitly (avoid `git add .` or `-A`)\n4. Commit with HEREDOC format matching repo style\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "Stage all changes with `git add .`",
+          "rationale": "This change makes the skill stage all files instead of only the specified files, failing the user's request to stage only `user_manager.py` and `test_user_manager.py`.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n3. Stage all changes with `git add .`\n4. Commit with HEREDOC format matching repo style\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "Stage all modified files using `git add .`",
+          "rationale": "The skill now stages all files instead of only the two specified by the user, making it unable to fulfill the specific staging request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n3. Stage all modified files using `git add .`\n4. Commit with HEREDOC format matching repo style\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "- Stage files with `git add .` or `git add -A` if needed",
+          "rationale": "By allowing staging all files, the skill ignores the user's instruction to stage only two specific files, making it a hard negative.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (always with -uall)\n- `git diff HEAD`\n- `git log --oneline -5`\n\n## Message Style\n\nUse concise, imperative messages. No need to match existing patterns; just be clear and brief.\n\n## Workflow\n\n1. Review status and diff\n2. Stage all modified files using `git add -A`\n3. Commit using a simple `git commit -m` with a generic message\n4. Do not run any verification after commit\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Keep messages generic and short"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. Commit with HEREDOC format matching repo style",
+          "replacement_text": "4. Review the diff and output a summary of changes",
+          "rationale": "The skill now only reviews changes without committing, so it cannot fulfill the user's request to create a commit.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n3. Stage files explicitly (avoid `git add .` or `-A`)\n4. Review the diff and output a summary of changes\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "3. Stage all modified files using `git add -A`",
+          "rationale": "The skill over-generalizes the staging step by allowing all files to be staged, contradicting the user's request to stage only two specific files.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n3. Stage all modified files using `git add -A`\n4. Commit with HEREDOC format matching repo style\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "",
+          "rationale": "Without explicit file staging, the agent may not stage the user's specific files, failing the request to stage only those two files.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n\n4. Commit with HEREDOC format matching repo style\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`",
+          "replacement_text": "Run in parallel:\n- `hg status` (never -uall)\n- `hg diff`\n- `hg log --oneline -10`",
+          "rationale": "Replaces git commands with mercurial commands, making the context retrieval step incompatible with the user's git repository.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "Stage files explicitly (avoid `hg add .` or `-A`)",
+          "rationale": "Changes the staging command to mercurial, so the skill cannot correctly stage the user's git files.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Run `git status` after to verify",
+          "replacement_text": "Run `hg status` after to verify",
+          "rationale": "Replaces the verification command with a mercurial command, failing to confirm a clean git status.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `hg status` (never -uall)\n- `hg diff`\n- `hg log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n3. Stage files explicitly (avoid `hg add .` or `-A`)\n4. Commit with HEREDOC format matching repo style\n5. Run `hg status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "- Stage all changes with `git add -A`",
+          "rationale": "The skill would stage all files instead of only the two specified files, failing the user's explicit request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Git Commit with Review\n\n## Context\n\nRun in parallel:\n- `git status` (always include untracked files)\n- `git diff HEAD`\n- `git log --oneline -5`\n\n## Message Style\n\nMatch the project's typical format:\n- Concise but grammatically correct\n- Describe both \"what\" and \"why\"\n- Use past tense\n\n## Workflow\n\n1. Review overall status and diff\n2. Stage all modified and tracked files using `git add -u`\n3. Commit with a HEREDOC message following the observed pattern\n4. Run `git status` afterward for confirmation\n\n## Rules\n\n- Amend previous commit if style matches better\n- Always run pre-commit hooks automatically (skip only on request)\n- Avoid staging untracked files unless user asks\n- Match commit style as closely as possible\n- Confirm final status is clean (no staged or unstaged changes)"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Stage files explicitly (avoid `git add .` or `-A`)",
+          "replacement_text": "Stage files (you may use `git add .` or `-A` for convenience)",
+          "rationale": "By removing the explicit staging requirement and allowing broad staging, the skill no longer guarantees only the user's specified files are staged, failing the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Git Commit\n\n## Context\n\nRun in parallel:\n- `git status` (never -uall)\n- `git diff HEAD`\n- `git log --oneline -10`\n\n## Message Style\n\nMatch repo's existing commit patterns from log.\n- Extreme concision, sacrifice grammar for brevity\n- Focus on \"why\" not \"what\"\n- Imperative mood\n\n## Workflow\n\n1. Review status and diff\n2. Analyze recent commit style from log\n3. Stage files (you may use `git add .` or `-A` for convenience)\n4. Commit with HEREDOC format matching repo style\n5. Run `git status` after to verify\n\n## Rules\n\n- NEVER amend unless requested\n- NEVER skip hooks\n- NEVER commit secrets\n- Only commit when requested\n- Match existing commit patterns"
+    }
+  ],
+  "finished_at": "2026-07-28T23:33:22",
+  "elapsed_seconds": 163.344,
+  "generated_variants": 10
+}

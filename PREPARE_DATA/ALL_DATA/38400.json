@@ -1,0 +1,226 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:01:11",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 38400,
+  "selection_rank": 76,
+  "skill": {
+    "skill_id": "other/agent-task-delegator-starwreckntx-irp-methodologies",
+    "name": "agent-task-delegator",
+    "category": "other",
+    "description": "Delegate tasks across multi-agent architectures with proper context preservation.",
+    "body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute primary protocol actions\n3. Validate results and generate output\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\"",
+    "source": "pool"
+  },
+  "generated_query": "I need to analyze a large set of customer support tickets from the last quarter (CSV file with 10,000 rows) to identify common issues, sentiment trends, and resolution times. However, the data is messy—some entries have missing fields, inconsistent categories, and non-standard timestamps. I also have a separate product inventory database that I need to cross-reference for product-specific complaints.\n\nPlease set up a workflow where:\n- Agent A cleans and normalizes the ticket data (handle missing values, standardize timestamps, map category names to a controlled list).\n- Agent B performs sentiment analysis on each ticket’s description and generates a summary score per category and per week.\n- Agent C queries the inventory database to flag tickets where the product mentioned is discontinued or backordered.\n- Agent D compiles a final report merging results from A, B, and C, preserving the original ticket ID order and context for each issue.\n\nMake sure each agent receives only the context it needs, but all intermediate results are stored so that Agent D can access the full chain without losing the original data associations. Also, if any agent fails or returns incomplete results, retry up to twice before logging the error and continuing with the available data.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Validate results and generate output",
+          "replacement_text": "",
+          "rationale": "Without the validation and output generation step, the skill cannot produce the final compiled report required by Agent D.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute primary protocol actions\n\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Execute primary protocol actions",
+          "replacement_text": "2. Execute primary protocol actions as a single agent pipeline without cross-agent context preservation",
+          "rationale": "The edited skill now only supports a single-agent pipeline, preventing the multi-agent delegation and context preservation required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute primary protocol actions as a single agent pipeline without cross-agent context preservation\n3. Validate results and generate output\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Initialize agent-task-delegator operational context",
+          "replacement_text": "Initialize agent-task-delegator with a single fixed task scope",
+          "rationale": "Limits the framework to single-agent tasks, so it cannot handle the multi-agent decomposition required by the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Execute primary protocol actions",
+          "replacement_text": "Execute primary protocol actions without inter-agent context sharing",
+          "rationale": "Disables context preservation across agents, making it impossible for Agent D to access intermediate results from A, B, and C.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator with a single fixed task scope\n2. Execute primary protocol actions without inter-agent context sharing\n3. Validate results and generate output\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Validate results and generate output",
+          "replacement_text": "3. Validate results and generate output once, without retrying any failed steps.",
+          "rationale": "Removes the required retry logic, so the skill cannot handle agent failures as specified in the query.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. Execute primary protocol actions",
+          "replacement_text": "2. Execute primary protocol actions, discarding any intermediate results that are not final output.",
+          "rationale": "Eliminates storage of intermediate data, making it impossible for Agent D to access the full chain of results.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute primary protocol actions, discarding any intermediate results that are not final output.\n3. Validate results and generate output once, without retrying any failed steps.\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute primary protocol actions",
+          "replacement_text": "Execute protocol actions for a single agent",
+          "rationale": "Removes multi-agent delegation capability, making it impossible to coordinate the four agents required.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"Execute agent-task-delegator protocol\"",
+          "replacement_text": "\"Execute agent-task-delegator for file conversion\"",
+          "rationale": "Changes the example to a different domain (file conversion), misleading the model into thinking the skill is for that use case.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute protocol actions for a single agent\n3. Validate results and generate output\n\n## Examples\n\n- \"Execute agent-task-delegator for file conversion\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Initialize agent-task-delegator operational context",
+          "replacement_text": "Initialize generic multi-agent system",
+          "rationale": "Removes the specific context preservation requirement, making the skill unable to guarantee that each agent receives only needed context and that intermediate results are stored for the final reporter.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Validate results and generate output",
+          "replacement_text": "Validate available results and generate a combined output",
+          "rationale": "Drops the explicit error handling and retry logic (up to two retries) that the user requires, leaving the skill unable to handle incomplete or failed agent results.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "3. Validate results and generate output",
+          "replacement_text": "\nThis protocol works for any set of agents without special configuration.",
+          "rationale": "Over-generalizes the skill to suggest it can handle any agent setup, but it lacks the specific data cleaning, sentiment analysis, inventory cross‑reference, and report merging steps required by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 2 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize the multi-agent workflow with a task delegation coordinator.\n2. Define agent roles as follows:\n   - Agent A: Sanitize ticket data (strip whitespace, remove duplicate rows, fill missing text fields with \"N/A\").\n   - Agent B: Perform basic sentiment analysis using a pre-trained model; compute a single overall sentiment score per ticket.\n   - Agent C: Check the inventory database for product look‑ups; flag any ticket where the exact product name does not match an active SKU.\n   - Agent D: Merge the outputs from Agents A, B, and C into a flat CSV, appending columns for cleaned description, sentiment score, and inventory flag.\n3. Pass each ticket sequentially through all agents to preserve row‑level context.\n4. If an agent returns incomplete results, skip the error and continue with the available data.\n5. Output the final merged file without re‑sorting or grouping.\n\n## Examples\n\n- \"Run the ticket analysis pipeline with agents A, B, C, D\"\n- \"Execute multi‑agent ticket processing workflow\""
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Validate results and generate output",
+          "replacement_text": "",
+          "rationale": "Without validation and output generation, the skill cannot produce the final report required by Agent D.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute primary protocol actions\n\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Initialize agent-task-delegator operational context",
+          "replacement_text": "Initialize single-agent execution context",
+          "rationale": "Replaces the multi-agent delegation mechanism with a single-agent context, making the skill unable to coordinate agent A, B, C, D and preserve intermediate results across agents.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize single-agent execution context\n2. Execute primary protocol actions\n3. Validate results and generate output\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute primary protocol actions",
+          "replacement_text": "Execute primary protocol actions by passing raw data to each agent without preserving intermediate results",
+          "rationale": "Removes the storage of intermediate results, so Agent D cannot access the full chain and loses data associations.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Validate results and generate output",
+          "replacement_text": "Validate results and generate output as a single aggregated score per agent, discarding original ticket ID order",
+          "rationale": "Changes the output format to discard original context and ticket order, failing the report compilation requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute primary protocol actions by passing raw data to each agent without preserving intermediate results\n3. Validate results and generate output as a single aggregated score per agent, discarding original ticket ID order\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Validate results and generate output",
+          "replacement_text": "3. Proceed with output even if results are incomplete",
+          "rationale": "Removes validation step required for retry and error logging, causing the workflow to proceed without handling incomplete results.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Instructions\n\n1. Initialize agent-task-delegator operational context\n2. Execute primary protocol actions\n3. Proceed with output even if results are incomplete\n\n## Examples\n\n- \"Execute agent-task-delegator protocol\"\n- \"Run agent task delegator analysis\""
+    }
+  ],
+  "finished_at": "2026-07-28T16:03:20",
+  "elapsed_seconds": 128.547,
+  "generated_variants": 10
+}

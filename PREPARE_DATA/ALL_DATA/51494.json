@@ -1,0 +1,219 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:32:15",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 51494,
+  "selection_rank": 249,
+  "skill": {
+    "skill_id": "other/openskills-e2e-test-runbook",
+    "name": "openskills-e2e-test-runbook",
+    "category": "other",
+    "description": "Run deterministic OpenSkills end-to-end validation across runtime tests and example agents, then report tool calls, activation behavior, and regressions.",
+    "body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-runtime\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix",
+    "source": "pool"
+  },
+  "generated_query": "I'm about to merge a branch that changes how the runtime handles tool call intents. Could you run the complete end-to-end validation on my current code? I need you to execute the full regression test suite for the runtime, then verify the sandbox-focused tests, and also run the example-agent checks from the example directories using `npm start` with prompts like \"What skills are available?\" and \"Create a new skill called 'note-taker'.\" Finally, run the optional binding smoke tests. For each step, report exactly what was run, what passed, what failed, and for any failures provide the exact repro command and a suggested next fix. The key areas I'm concerned about are that skills still discover correctly, that activation fires for matching prompts, that tool calls align with intent (especially activation, file reads/writes, script runs), and that there are no unexpected sandbox failures.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Sandbox-focused tests",
+          "replacement_text": "",
+          "rationale": "Deleting the sandbox-focused tests step means the skill will skip the explicit verification of sandbox behavior that the user requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-runtime\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cargo test -p openskills-runtime",
+          "replacement_text": "cargo test -p openskills-core",
+          "rationale": "Replaces the runtime regression test suite with a different test set, so the full end-to-end validation the user needs is not executed.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "npm start \"What skills are available?\"",
+          "replacement_text": "npm start \"What is the weather?\"",
+          "rationale": "Removes the critical skill-discovery prompt, preventing verification that skills are correctly discovered and activated.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-core\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What is the weather?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix",
+          "replacement_text": "- What was run\n- What passed\n- What failed",
+          "rationale": "Removes the required repro commands and suggested next fixes from the reporting format, so the skill fails to provide the detailed diagnostic information the user explicitly requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-runtime\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix",
+          "replacement_text": "- What was run\n- What passed\n- What failed",
+          "rationale": "The user explicitly requires repro commands and suggested fixes for each failure; removing those items makes the skill fail to meet the query's detailed reporting requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-runtime\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix",
+          "replacement_text": "## Reporting Format\n\n- What was run\n- What passed\n- What failed",
+          "rationale": "Without repro commands and suggested fixes, the skill cannot satisfy the user's requirement for detailed failure reporting.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "2. Sandbox-focused tests",
+          "replacement_text": "",
+          "rationale": "Omitting sandbox-focused tests means the skill will not run those tests, failing the user's explicit request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-runtime\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\ncargo test -p openskills-runtime\n```",
+          "replacement_text": "Run the runtime regression tests using cargo test (ensure you target the correct package).",
+          "rationale": "Replaces the exact test command with a vague instruction, so the user cannot be sure the specific runtime package is tested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```",
+          "replacement_text": "Run example-agent checks with npm start using typical prompts (e.g., for skill discovery and creation).",
+          "rationale": "Omits the exact prompts the user specified, leaving ambiguity about which prompts to use and whether they were actually executed.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix",
+          "replacement_text": "- Summary of results (include pass/fail counts and notes on any failures)",
+          "rationale": "Removes the requirement to provide repro commands and suggested fixes, which the user explicitly needs for debugging.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\nRun the runtime regression tests using cargo test (ensure you target the correct package).\n\nExample-agent checks (from example directories):\n\nRun example-agent checks with npm start using typical prompts (e.g., for skill discovery and creation).\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- Summary of results (include pass/fail counts and notes on any failures)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "cargo test -p openskills-runtime",
+          "replacement_text": "",
+          "rationale": "Removes the command to run runtime regression tests, which is a critical step requested by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\n\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cargo test -p openskills-runtime",
+          "replacement_text": "cargo test -p other-crate",
+          "rationale": "Replacing the core runtime test command with a different crate means the runtime regression tests are not executed, so the user's concern about tool call intents will not be validated.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "npm start \"What skills are available?\"",
+          "replacement_text": "npm test \"What skills are available?\"",
+          "rationale": "Changing `npm start` to `npm test` prevents the skill from running the prompt-based example-agent checks required for verifying activation and skill discovery.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p other-crate\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm test \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix",
+          "replacement_text": "- What was run\n- What passed\n- What failed\n- Brief summary of failures",
+          "rationale": "The skill no longer provides specific repro commands or suggested fixes, which the user explicitly requires for each failure.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-runtime\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Brief summary of failures"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Reporting Format\n\n- What was run\n- What passed\n- What failed\n- Repro command for each failure\n- Suggested next fix",
+          "replacement_text": "## Reporting Format\n\n- What was run\n- What passed",
+          "rationale": "By omitting the repro command and suggested fix for each failure, the skill no longer provides the detailed debugging information the user explicitly requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# OpenSkills E2E Test Runbook\n\nUse this skill for confidence checks before merging runtime, tooling, or example-agent changes.\n\n## Test Layers\n\n1. Runtime regression tests\n2. Sandbox-focused tests\n3. Example-agent behavior checks\n4. Optional binding smoke tests\n\n## Baseline Commands\n\n```bash\ncargo test -p openskills-runtime\n```\n\nExample-agent checks (from example directories):\n\n```bash\nnpm install\nnpm start \"What skills are available?\"\nnpm start \"Create a new skill called 'note-taker'.\"\n```\n\n## E2E Expectations\n\n- Skills discover successfully.\n- Skill activation occurs for matching prompts.\n- Tool calls align with intent (activation, file reads/writes, script runs).\n- No unexpected sandbox failures.\n\n## Reporting Format\n\n- What was run\n- What passed"
+    }
+  ],
+  "finished_at": "2026-07-29T01:35:06",
+  "elapsed_seconds": 171.156,
+  "generated_variants": 10
+}

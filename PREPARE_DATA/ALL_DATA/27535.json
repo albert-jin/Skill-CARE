@@ -1,0 +1,233 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:40:02",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 27535,
+  "selection_rank": 221,
+  "skill": {
+    "skill_id": "other/apple-reminders-stericishere-obsidian-notes",
+    "name": "apple-reminders",
+    "category": "other",
+    "description": "Manage Apple Reminders via the `remindctl` CLI on macOS (list, add, edit, complete, delete). Supports lists, date filters, and JSON/plain output.",
+    "body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): `remindctl today --json`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command.",
+    "source": "pool"
+  },
+  "generated_query": "I’m drowning in my weekly planning. Can you help me set up my reminders for the next few days? First, show me my existing reminder lists and the overdue items. Then create a new list called “Weekly Goals,” and add these three reminders to it:\n\n- “Review project proposal” due tomorrow at 9am\n- “Grocery shopping” due tomorrow evening\n- “Call dentist” due day after tomorrow at 11am\n\nAfter that, move all reminders from my “Misc” list into “Weekly Goals,” and mark any completed tasks from yesterday as done. Also, delete the reminder that says “Old errand” (I think it’s the one with ID 4A83). Finally, give me a JSON dump of everything due this week so I can process it in a script.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Create list: `remindctl list Projects --create`",
+          "replacement_text": "",
+          "rationale": "Without list creation, the skill cannot create the required 'Weekly Goals' list, failing a core user request.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- JSON (scripting): `remindctl today --json`",
+          "replacement_text": "",
+          "rationale": "Removing JSON output prevents the user from obtaining the requested JSON dump of due reminders, breaking a key requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`",
+          "replacement_text": "- With list + due: `remindctl add --title \"Call mom\" --list Personal --deadline tomorrow`",
+          "rationale": "Replaces the correct `--due` flag with an unsupported `--deadline` flag, so reminders with specific due dates cannot be created.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- JSON (scripting): `remindctl today --json`",
+          "replacement_text": "- JSON (scripting): `remindctl today`",
+          "rationale": "Removes the `--json` flag entirely, making it impossible to get JSON output for any date filter, as required for the week dump.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --deadline tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): `remindctl today`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- JSON (scripting): `remindctl today --json`",
+          "replacement_text": "- Plain TSV (scripting): `remindctl today --plain`",
+          "rationale": "Removes JSON output capability, preventing the user from getting a JSON dump of due reminders.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- Plain TSV (scripting): `remindctl today --plain`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `today`, `tomorrow`, `yesterday`",
+          "replacement_text": "",
+          "rationale": "Removing relative date support prevents the user from specifying due dates like 'tomorrow' or 'yesterday', which are essential for the query.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `YYYY-MM-DD HH:mm`",
+          "replacement_text": "",
+          "rationale": "Removing time support means the user cannot set reminders with specific times (9am, 11am), causing the reminder creation to fail.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): `remindctl today --json`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n\n- `YYYY-MM-DD`\n\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Accepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)",
+          "replacement_text": "Accepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD` (date only, no time support)",
+          "rationale": "The user query requires setting reminders with specific times (9am, evening, 11am), but the edited skill no longer accepts time in due dates, so it cannot fulfill those time-specific reminders.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): `remindctl today --json`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD` (date only, no time support)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create list: `remindctl list Projects --create`",
+          "replacement_text": "Create list: You can create new lists with your reminder app.",
+          "rationale": "Over-generalized description removes the explicit --create flag, making it unclear how to actually create a list via CLI.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "JSON (scripting): `remindctl today --json`",
+          "replacement_text": "JSON (scripting): Output formats include JSON for scripting.",
+          "rationale": "Removes the exact --json option, so the user won't know it's available or how to request it, breaking the JSON dump requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: You can create new lists with your reminder app.\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): Output formats include JSON for scripting.\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Create list: `remindctl list Projects --create`",
+          "replacement_text": "",
+          "rationale": "Without the ability to create a new list, the user cannot set up 'Weekly Goals' as required, making the skill incomplete for the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): `remindctl today --json`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.",
+          "replacement_text": "Use `icalBuddy` to view Apple Reminders events in a read-only mode. It can list events with date filters but cannot create, edit, complete, or delete reminders.",
+          "rationale": "Replaces the core CLI tool with a read-only viewer, making all write operations (create, edit, complete, delete) impossible.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Create Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`",
+          "replacement_text": "Create Reminders (not supported in read-only mode)",
+          "rationale": "Removes the ability to create any reminders, which is required for adding the three reminders in the query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Complete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`",
+          "replacement_text": "Complete / Delete Reminders (not supported in read-only mode)",
+          "rationale": "Removes the ability to complete or delete reminders, which are needed to mark tasks as done and remove 'Old errand'.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `icalBuddy` to view Apple Reminders events in a read-only mode. It can list events with date filters but cannot create, edit, complete, or delete reminders.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders (not supported in read-only mode)\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete / Delete Reminders (not supported in read-only mode)\n\nOutput Formats\n- JSON (scripting): `remindctl today --json`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Accepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)",
+          "replacement_text": "Accepted by `--due` and date filters:\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)",
+          "rationale": "Removing relative date keywords (today, tomorrow, yesterday) makes the skill unable to parse the user's due dates like 'tomorrow at 9am', so they cannot create the reminders.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Week: `remindctl week`",
+          "replacement_text": "- Week: `remindctl week --plain`",
+          "rationale": "Changing the week command to output only plain text prevents the user from getting a JSON dump of this week's reminders, failing the final request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week --plain`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): `remindctl today --json`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Accepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n- `YYYY-MM-DD HH:mm`\n- ISO 8601 (`2026-01-04T12:34:56Z`)",
+          "replacement_text": "Accepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`",
+          "rationale": "Removing time-specific date formats prevents setting reminders with exact hours, which the user query requires for 'tomorrow at 9am' and 'day after tomorrow at 11am'.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Apple Reminders CLI (remindctl)\n\nUse `remindctl` to manage Apple Reminders directly from the terminal. It supports list filtering, date-based views, and scripting output.\n\nSetup\n- Install (Homebrew): `brew install steipete/tap/remindctl`\n- From source: `pnpm install && pnpm build` (binary at `./bin/remindctl`)\n- macOS-only; grant Reminders permission when prompted.\n\nPermissions\n- Check status: `remindctl status`\n- Request access: `remindctl authorize`\n\nView Reminders\n- Default (today): `remindctl`\n- Today: `remindctl today`\n- Tomorrow: `remindctl tomorrow`\n- Week: `remindctl week`\n- Overdue: `remindctl overdue`\n- Upcoming: `remindctl upcoming`\n- Completed: `remindctl completed`\n- All: `remindctl all`\n- Specific date: `remindctl 2026-01-04`\n\nManage Lists\n- List all lists: `remindctl list`\n- Show list: `remindctl list Work`\n- Create list: `remindctl list Projects --create`\n- Rename list: `remindctl list Work --rename Office`\n- Delete list: `remindctl list Work --delete`\n\nCreate Reminders\n- Quick add: `remindctl add \"Buy milk\"`\n- With list + due: `remindctl add --title \"Call mom\" --list Personal --due tomorrow`\n\nEdit Reminders\n- Edit title/due: `remindctl edit 1 --title \"New title\" --due 2026-01-04`\n\nComplete Reminders\n- Complete by id: `remindctl complete 1 2 3`\n\nDelete Reminders\n- Delete by id: `remindctl delete 4A83 --force`\n\nOutput Formats\n- JSON (scripting): `remindctl today --json`\n- Plain TSV: `remindctl today --plain`\n- Counts only: `remindctl today --quiet`\n\nDate Formats\nAccepted by `--due` and date filters:\n- `today`, `tomorrow`, `yesterday`\n- `YYYY-MM-DD`\n\nNotes\n- macOS-only.\n- If access is denied, enable Terminal/remindctl in System Settings → Privacy & Security → Reminders.\n- If running over SSH, grant access on the Mac that runs the command."
+    }
+  ],
+  "finished_at": "2026-07-28T23:44:07",
+  "elapsed_seconds": 244.953,
+  "generated_variants": 10
+}

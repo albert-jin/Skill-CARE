@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:44:32",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 22079,
+  "selection_rank": 250,
+  "skill": {
+    "skill_id": "other/review-for-prod",
+    "name": "review-for-prod",
+    "category": "other",
+    "description": "Production-ready Go code review (QA + security + maintainability) for this project only.",
+    "body": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate:\n\n1. Functional correctness\n- Logic errors and edge cases\n- Concurrency (goroutines, channels, mutexes)\n- Proper context.Context usage (cancellation, timeouts, propagation)\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: injection, SSRF, DoS, data leaks\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)\n\n7. Conclusion\nEnd with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions.",
+    "source": "pool"
+  },
+  "generated_query": "I'm planning to deploy a new Go service that handles real-time order processing for an e-commerce platform. The core logic involves managing inventory updates, payment authorization, and order confirmation, all running concurrently using goroutines and channels. I have the main `order.go` file and a few supporting packages for database access and external API calls. Could you review this code as if you were responsible for approving it for production? \n\nSpecifically, I need you to evaluate:\n- Functional correctness, especially concurrency handling and context propagation.\n- Code quality – is it idiomatic Go, or does it have overcomplicated functions and tight coupling?\n- Maintainability – are the names, structure, and comments clear for a mid-level developer?\n- Security – input validation, secret management (e.g., API keys), and any injection or SSRF risks.\n- Operability – error handling, logging, graceful shutdown, and behavior under load.\n- Testing – are there missing unit/integration tests? Is the code testable (e.g., interfaces, dependency injection)?\n\nPlease end with a clear verdict: ✅ Production-ready, ⚠️ Ready with recommended refactors, or ❌ Not production-ready, and provide a prioritized action plan for any required changes.\n\nI’ll paste the code below when you’re ready.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)",
+          "replacement_text": "",
+          "rationale": "Removing the testing evaluation makes the skill unable to address the user's explicit request to assess missing tests and testability, which is critical for production readiness.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate:\n\n1. Functional correctness\n- Logic errors and edge cases\n- Concurrency (goroutines, channels, mutexes)\n- Proper context.Context usage (cancellation, timeouts, propagation)\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: injection, SSRF, DoS, data leaks\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n\n\n7. Conclusion\nEnd with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Concurrency (goroutines, channels, mutexes)",
+          "replacement_text": "- Database transaction handling",
+          "rationale": "Removes concurrency evaluation, which is the core requirement for the user's real-time order processing code.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Proper context.Context usage (cancellation, timeouts, propagation)",
+          "replacement_text": "- Proper error wrapping and stack traces",
+          "rationale": "Replaces context propagation evaluation, another key concern for the user's concurrent Go service, with a less critical topic.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate:\n\n1. Functional correctness\n- Logic errors and edge cases\n- Database transaction handling\n- Proper error wrapping and stack traces\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: injection, SSRF, DoS, data leaks\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)\n\n7. Conclusion\nEnd with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Concurrency (goroutines, channels, mutexes)\n",
+          "replacement_text": "",
+          "rationale": "Removes evaluation of concurrency, which is critical for the user's Go service handling real-time order processing.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "End with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions.",
+          "replacement_text": "Provide a brief summary of your review.",
+          "rationale": "Alters the required output format, removing the explicit verdict with action plan that the user explicitly requests.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate:\n\n1. Functional correctness\n- Logic errors and edge cases\n- Proper context.Context usage (cancellation, timeouts, propagation)\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: injection, SSRF, DoS, data leaks\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)\n\n7. Conclusion\nProvide a brief summary of your review."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Real risks: injection, SSRF, DoS, data leaks",
+          "replacement_text": "Real risks: common injection vulnerabilities and secret misuse",
+          "rationale": "By narrowing security to only injection and secrets, the skill no longer addresses SSRF and DoS risks that the user specifically asked about.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "End with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions.",
+          "replacement_text": "End with a general summary of your review, highlighting strengths and weaknesses.",
+          "rationale": "Without an explicit verdict and prioritized action plan, the skill fails to deliver the clear go/no-go decision the user requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate:\n\n1. Functional correctness\n- Logic errors and edge cases\n- Concurrency (goroutines, channels, mutexes)\n- Proper context.Context usage (cancellation, timeouts, propagation)\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: common injection vulnerabilities and secret misuse\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)\n\n7. Conclusion\nEnd with a general summary of your review, highlighting strengths and weaknesses."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).",
+          "replacement_text": "Act as a Senior Go Engineer specialized in performance optimization and benchmarking for high-throughput systems.",
+          "rationale": "Changing the role from production-critical reviewer to performance specialist removes the security and operability focus required by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)",
+          "replacement_text": "6. Performance Profiling\n- CPU and memory profiling\n- Identifying bottlenecks\n- Concurrency efficiency tuning",
+          "rationale": "Replacing the testing evaluation with performance profiling omits a key area the user explicitly requested, making the skill irrelevant.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Act as a Senior Go Engineer specialized in performance optimization and benchmarking for high-throughput systems.\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate:\n\n1. Functional correctness\n- Logic errors and edge cases\n- Concurrency (goroutines, channels, mutexes)\n- Proper context.Context usage (cancellation, timeouts, propagation)\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: injection, SSRF, DoS, data leaks\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n6. Performance Profiling\n- CPU and memory profiling\n- Identifying bottlenecks\n- Concurrency efficiency tuning\n\n7. Conclusion\nEnd with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).",
+          "replacement_text": "Act as a senior developer and code reviewer with general experience.",
+          "rationale": "Removes the specialized Go and production-critical expertise, making the review insufficiently rigorous for production Go services.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Evaluate:\n\n1. Functional correctness\n- Logic errors and edge cases\n- Concurrency (goroutines, channels, mutexes)\n- Proper context.Context usage (cancellation, timeouts, propagation)\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: injection, SSRF, DoS, data leaks\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)\n\n7. Conclusion",
+          "replacement_text": "Evaluate general code quality, security, and testing.",
+          "rationale": "Removes all Go-specific and production-critical subpoints, making the review too shallow for the user's detailed needs.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Act as a senior developer and code reviewer with general experience.\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate general code quality, security, and testing.\nEnd with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. Functional correctness\n- Logic errors and edge cases\n- Concurrency (goroutines, channels, mutexes)\n- Proper context.Context usage (cancellation, timeouts, propagation)",
+          "replacement_text": "",
+          "rationale": "Removing the entire functional correctness evaluation means the review will not address the concurrency and context propagation issues critical to the user's real-time order processing service.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Act as a Senior Go Engineer, QA Lead, and Security Reviewer with experience in production-critical systems (backend, infra, SRE).\n\nCritically review the Go code provided as if you were responsible for approving or blocking its production deployment. Be direct, rigorous, and honest.\n\nEvaluate:\n\n\n\n2. Code quality (anti-spaghetti)\n- Idiomatic Go design\n- Functions with too many responsibilities\n- Coupling between packages\n- Project structure and scalability\n\n3. Maintainability and readability\n- Clarity for any mid-level Go developer\n- Variable, function, struct, and interface names\n- File and package organization\n- Fragile, duplicated, or hard-to-extend code\n\n4. Security\n- Input validation and error handling\n- Secrets, tokens, and configuration usage\n- Real risks: injection, SSRF, DoS, data leaks\n\n5. Production and operability\n- Error handling, retries, and timeouts\n- Structured and useful logging\n- Observability and graceful shutdown\n- Behavior under load and partial failures\n\n6. Testing\n- Missing tests (unit, integration, concurrency)\n- Testability (interfaces, dependency injection)\n\n7. Conclusion\nEnd with an explicit assessment:\n- ✅ Production-ready\n- ⚠️ Ready with recommended refactors\n- ❌ Not production-ready\n\nInclude a summary of minimum required changes and actionable recommendations, prioritized by impact and risk.\n\nDo not soften your conclusions."
+    }
+  ],
+  "finished_at": "2026-07-29T01:46:46",
+  "elapsed_seconds": 133.937,
+  "generated_variants": 7
+}

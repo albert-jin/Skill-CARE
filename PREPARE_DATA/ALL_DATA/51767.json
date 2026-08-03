@@ -1,0 +1,191 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:23:37",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 51767,
+  "selection_rank": 244,
+  "skill": {
+    "skill_id": "other/cqrs-thebeardedbearsas-claude-craft-2",
+    "name": "cqrs",
+    "category": "other",
+    "description": "Regel 07: CQRS - Command Query Responsibility Segregation. Use when implementing DDD patterns.",
+    "body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides guidelines and best practices.\n\nSee ../../rules/21-cqrs.md for detailed documentation.",
+    "source": "pool"
+  },
+  "generated_query": "I'm refactoring an order management system where the same model is used for both creating orders and querying order status. Writes are blocking reads, causing slow response times. I need to split the responsibilities: a command side that handles \"PlaceOrder\" (with customerId, items, shipping address) and a query side that handles \"GetOrderById\" and \"GetOrdersByCustomer\" with a denormalized read model. How can I design these separate models using event sourcing for the writes and a projection for the reads? Show me the command handler, event store interaction, and a sample read model for order summaries.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "See ../../rules/21-cqrs.md for detailed documentation.",
+          "replacement_text": "",
+          "rationale": "Removing the link to detailed documentation leaves the skill as a mere title and generic description, lacking the specific implementation instructions the query requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides guidelines and best practices for implementing a command-query separation using a shared relational model with optimistic concurrency control.\n\n## Design Overview\n\nUse a single PostgreSQL table `orders` for both command and query operations. Commands like `PlaceOrder` insert rows, while queries like `GetOrderById` select from the same table. Optimistic locking via `version` column prevents write-write conflicts but does not separate read and write models.\n\n## Command Handler (PlaceOrder)\n\n```python\nclass PlaceOrderHandler:\n    def __init__(self, db_session):\n        self.db = db_session\n\n    def handle(self, command):\n        # ... validation ...\n        order = Order(\n            customer_id=command.customer_id,\n            items=command.items,\n            shipping_address=command.shipping_address,\n            version=1\n        )\n        self.db.add(order)\n        self.db.commit()  # reads may wait during commit\n```\n\n## Query Side (Order Summary)\n\nQueries run against the same table. For performance, a simple cache (Redis) is warmed on writes.\n\n```python\ndef get_order_summary(order_id):\n    # Check cache first\n    cached = cache.get(f\"order:{order_id}\")\n    if cached:\n        return cached\n    # Fallback to shared table (may be stale)\n    order = db.query(Order).filter(Order.id == order_id).first()\n    summary = {\n        \"customer_id\": order.customer_id,\n        \"items_count\": len(order.items),\n        \"status\": order.status\n    }\n    cache.set(f\"order:{order_id}\", summary, ttl=300)\n    return summary\n```\n\n## Event Store Interaction\n\nNo event sourcing is used. State changes are applied directly to the `orders` table. For auditing, a separate `order_audit` table records all modifications.\n\n## Sample Read Model\n\nThe read model is not denormalized; it mirrors the write model with minor projections in the application layer.\n\n| order_id | customer_id | items (JSON) | shipping_address | version |\n|----------|-------------|--------------|------------------|---------|\n| 1        | 42          | [...]        | \"123 Main St\"    | 3       |\n\nFor a full real CQRS implementation with separate read models and event sourcing, see the detailed documentation at `../../rules/21-cqrs.md`."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "See ../../rules/21-cqrs.md for detailed documentation.",
+          "replacement_text": "See ../../rules/21-cqrs.md for detailed documentation on CQRS with database views. The command handler writes to the same database table that the query reads from, using a simple update, ensuring strong consistency.",
+          "rationale": "Replaces event sourcing with database views and merges command and query models, failing the user's requirement for event sourcing, a separate read model, and event store interaction.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides guidelines and best practices.\n\nSee ../../rules/21-cqrs.md for detailed documentation on CQRS with database views. The command handler writes to the same database table that the query reads from, using a simple update, ensuring strong consistency."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill provides guidelines and best practices.",
+          "replacement_text": "This skill provides guidelines for using a unified model to handle both commands and queries, ensuring data consistency.",
+          "rationale": "It changes the core principle from separation to unification, making the skill unsuitable for the query's need for CQRS.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides guidelines for using a unified model to handle both commands and queries, ensuring data consistency.\n\nSee ../../rules/21-cqrs.md for detailed documentation."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill provides guidelines and best practices.",
+          "replacement_text": "This skill provides a high-level overview only, without specific implementation details.",
+          "rationale": "The user needs concrete design patterns and code examples; reducing the skill to an abstract overview makes it insufficient for the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides a high-level overview only, without specific implementation details.\n\nSee ../../rules/21-cqrs.md for detailed documentation."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill provides guidelines and best practices.",
+          "replacement_text": "This skill covers CQRS for read-side projections using materialized views, without command handling or event sourcing.",
+          "rationale": "The user asks for command handler and event store interaction, but this edit redefines the skill to focus solely on read-side projections, omitting the essential command-side implementation and event sourcing details, making it irrelevant.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill covers CQRS for read-side projections using materialized views, without command handling or event sourcing.\n\nSee ../../rules/21-cqrs.md for detailed documentation."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill provides guidelines and best practices.",
+          "replacement_text": "This rule provides high-level guidance on separating read and write models.",
+          "rationale": "The edited skill only gives generic high-level guidance, omitting the required event sourcing, command handler, and projection details needed by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# CQRS - Command Query Responsibility Segregation\n\nThis skill helps you separate read and write responsibilities using a shared relational database with separate table structures.\n\n## Overview\n\nInstead of a single model, maintain two distinct schemas: one optimized for writes (commands) and one optimized for reads (queries). The write model uses normalized tables; the read model uses denormalized views or cached tables updated asynchronously.\n\n## Command Side – Writing the Event Log\n\nEach command (e.g., `PlaceOrder`) writes directly to a `command_log` table that records the raw command along with a timestamp and status. No separate event store is needed – the log acts as the source of truth for audit.\n\n```sql\n-- command_log table\nCREATE TABLE command_log (\n    id UUID PRIMARY KEY,\n    command_type VARCHAR(100),\n    payload JSONB,\n    status VARCHAR(20),\n    created_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Example: Insert a PlaceOrder command\nINSERT INTO command_log (id, command_type, payload, status)\nVALUES (\n    gen_random_uuid(),\n    'PlaceOrder',\n    '{\"customerId\": \"abc\", \"items\": [...], \"shippingAddress\": {...}}',\n    'pending'\n);\n```\n\nA command handler reads the payload, performs validation, and updates a normalized `orders` table. After successful write, it marks the command as `completed`.\n\n## Query Side – Denormalized Read Model\n\nThe read model is built from the normalized tables using a background worker that periodically runs a materialized view refresh or incremental update. No event sourcing is involved – the read model reflects the current state of the write tables.\n\nExample read model for order summaries:\n\n```sql\n-- order_summary read model (materialized view)\nCREATE MATERIALIZED VIEW order_summary AS\nSELECT\n    o.id AS order_id,\n    o.customer_id,\n    o.status,\n    COUNT(oi.id) AS item_count,\n    SUM(oi.price * oi.quantity) AS total_amount,\n    o.shipping_city,\n    o.created_at\nFROM orders o\nJOIN order_items oi ON oi.order_id = o.id\nGROUP BY o.id;\n```\n\nThe query handler for `GetOrderById` or `GetOrdersByCustomer` simply selects from this materialized view, providing low‑latency reads.\n\n## Trade‑offs\n\n- No event store: commands are logged, but events are not persisted or replayed; read models are eventually consistent via periodic refresh.\n- Not true event sourcing: the write side does not emit events; the read model is derived directly from the write tables.\n- Suitable when you need CQRS without the complexity of an event store and projection infrastructure.\n\nUse this pattern when you want separate read/write schemas but prefer a simpler SQL‑based approach over full event sourcing."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "See ../../rules/21-cqrs.md for detailed documentation.",
+          "replacement_text": "",
+          "rationale": "By deleting the pointer to detailed documentation, the skill becomes only a vague statement, lacking any concrete implementation steps for event sourcing or read models.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides guidelines and best practices for splitting command and query responsibilities in an order management system.\n\n## Background\n\nWhen the same model handles both \"PlaceOrder\" and \"GetOrderById\", writes can block reads. CQRS separates the **write model** (for commands) from the **read model** (for queries). However, you do **not need event sourcing** to achieve this separation. Instead, you can use a **shared transactional database** with separate tables and synchronization logic.\n\n## Write Model (Command Side)\n\nThe command handler directly persists to the write store and also updates a denormalized read table in the same transaction.\n\n### Command Handler: PlaceOrder\n\n```csharp\npublic class PlaceOrderHandler\n{\n    private readonly IWriteRepository _writeRepo;\n    private readonly IReadRepository _readRepo;\n\n    public async Task Handle(PlaceOrderCommand cmd)\n    {\n        // 1. Validate and create order aggregate\n        var order = new Order(cmd.CustomerId, cmd.Items, cmd.ShippingAddress);\n\n        // 2. Save to write store (normalized)\n        await _writeRepo.Save(order);\n\n        // 3. Immediately update read model in same transaction\n        var summary = new OrderSummary\n        {\n            Id = order.Id,\n            CustomerId = order.CustomerId,\n            ItemCount = order.Items.Sum(i => i.Quantity),\n            Status = \"Placed\",\n            CreatedAt = DateTime.UtcNow,\n            ShippingAddress = order.ShippingAddress.ToString()\n        };\n        await _readRepo.SaveOrderSummary(summary);\n    }\n}\n```\n\nNote: The read model is updated synchronously within the command transaction to ensure consistency. This avoids the need for eventual consistency or event sourcing.\n\n## Read Model (Query Side)\n\nThe read model is a set of denormalized tables built directly from command-side updates.\n\n### Sample Read Model: OrderSummary\n\n```sql\nCREATE TABLE OrderSummaries (\n    OrderId       UNIQUEIDENTIFIER PRIMARY KEY,\n    CustomerId    UNIQUEIDENTIFIER NOT NULL,\n    ItemCount     INT,\n    Status        VARCHAR(20),\n    CreatedAt     DATETIME2,\n    ShippingAddress VARCHAR(500)\n);\n```\n\nQueries like `GetOrderById` and `GetOrdersByCustomer` are simple SELECTs against this table.\n\n```csharp\npublic class GetOrderByIdHandler\n{\n    private readonly IReadRepository _readRepo;\n\n    public async Task<OrderSummary> Handle(GetOrderByIdQuery query)\n    {\n        return await _readRepo.GetOrderSummaryById(query.OrderId);\n    }\n}\n```\n\nNo projections, no event store – just direct synchronization during command execution.\n\n## Benefits of this Approach\n\n- Simple to implement using a single relational database.\n- Strong consistency between write and read models.\n- No need for event sourcing infrastructure (queues, event store, subscriptions).\n- Suitable for systems with moderate throughput where write load does not heavily impact read performance.\n\nThis variant of CQRS is especially useful when you want to isolate read and write paths without adding the complexity of event sourcing. For full event‑driven decoupling, consider a dedicated event store, but the above pattern often suffices for order management systems."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "See ../../rules/21-cqrs.md for detailed documentation.",
+          "replacement_text": "See ../../rules/22-event-sourcing.md for detailed documentation.",
+          "rationale": "Replaces the CQRS documentation reference with event sourcing documentation, omitting the command/query separation guidance required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Command Query Responsibility Segregation (CQRS) – Practical Guidelines\n\nThis skill provides a pragmatic approach to separating read and write models in your order management system. Follow these steps to improve performance without overcomplicating your architecture.\n\n## Step 1: Define the Write Model (Command Side)\n\nUse the same relational database table for `orders` with columns for all fields (`customerId`, `items`, `shippingAddress`, `status`). The command handler for `PlaceOrder` directly inserts a row:\n\n```csharp\npublic class PlaceOrderHandler\n{\n    private readonly OrdersDbContext _db;\n\n    public PlaceOrderHandler(OrdersDbContext db) => _db = db;\n\n    public async Task Handle(PlaceOrderCommand command)\n    {\n        var order = new Order\n        {\n            CustomerId = command.CustomerId,\n            Items = JsonSerializer.Serialize(command.Items),\n            ShippingAddress = command.ShippingAddress,\n            Status = \"Pending\",\n            CreatedAt = DateTime.UtcNow\n        };\n        _db.Orders.Add(order);\n        await _db.SaveChangesAsync();\n        // The write model is now updated.\n    }\n}\n```\n\nNo event sourcing is used – the command handler directly persists the aggregate state.\n\n## Step 2: Build the Read Model (Query Side)\n\nInstead of a separate denormalized read model, create a database view `OrderSummaryView` that aggregates data from the `orders` table:\n\n```sql\nCREATE VIEW OrderSummaryView AS\nSELECT \n    Id,\n    CustomerId,\n    Items AS ItemCount,  -- Simplified count\n    ShippingAddress,\n    Status,\n    CreatedAt\nFROM Orders;\n```\n\nFor `GetOrderById` and `GetOrdersByCustomer`, query this view directly. This reduces blocking because the view is read-only and can be indexed separately.\n\n```csharp\npublic class OrderQueryService\n{\n    private readonly OrdersDbContext _db;\n\n    public async Task<OrderSummary> GetOrderById(Guid orderId)\n    {\n        return await _db.OrderSummaryView\n                        .FirstOrDefaultAsync(o => o.Id == orderId);\n    }\n\n    public async Task<List<OrderSummary>> GetOrdersByCustomer(Guid customerId)\n    {\n        return await _db.OrderSummaryView\n                        .Where(o => o.CustomerId == customerId)\n                        .ToListAsync();\n    }\n}\n```\n\n## Step 3: Refresh the Read Model\n\nSince the view is based on the same write table, changes are immediately visible – no separate projection is needed. However, to avoid read locks during writes, configure the database to use **read committed snapshot isolation** for the query side.\n\n## Sample Read Model (OrderSummary)\n\nThe `OrderSummary` DTO matches the view columns:\n\n```csharp\npublic class OrderSummary\n{\n    public Guid Id { get; set; }\n    public Guid CustomerId { get; set; }\n    public int ItemCount { get; set; }   // Denormalized count\n    public string ShippingAddress { get; set; }\n    public string Status { get; set; }\n    public DateTime CreatedAt { get; set; }\n}\n```\n\nThis approach reduces blocking by separating the read and write operations at the database transaction level, without requiring a full event‑sourced command model or a separate projection store. It offers a quick win when you need to split responsibilities but want to avoid the complexity of event sourcing."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill provides guidelines and best practices.",
+          "replacement_text": "This skill provides guidelines for designing denormalized read models for reporting and analytics. It does not cover command handling or event sourcing.",
+          "rationale": "The description now limits the skill to read models only, omitting command handling and event sourcing which the user query explicitly requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "See ../../rules/21-cqrs.md for detailed documentation.",
+          "replacement_text": "See ../../rules/22-read-model-design.md for detailed documentation.",
+          "rationale": "The link now points to a read-model-only guide, reinforcing the absence of command-side and event-sourcing content.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides guidelines for designing denormalized read models for reporting and analytics. It does not cover command handling or event sourcing.\n\nSee ../../rules/22-read-model-design.md for detailed documentation."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "See ../../rules/21-cqrs.md for detailed documentation.",
+          "replacement_text": "See ../../rules/21-command-side.md for detailed documentation.",
+          "rationale": "The edited skill now points to a document that only covers the command side, so it fails to provide the query projection and read model guidance the user explicitly needs.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Regel 07: CQRS - Command Query Responsibility Segregation\n\nThis skill provides guidelines and best practices.\n\nCQRS separates the write and read sides. For your order system, start by defining a command for `PlaceOrder` with customerId, items, and shipping address. Use a command handler that validates the input and persists the order to a command database (relational, not necessarily event-sourced). To avoid blocking reads, introduce a separate query database that holds denormalized order summaries. A scheduled job or a change data capture (CDC) tool can propagate updates from the command database to the query database periodically.\n\nFor event sourcing, you can log events to an event store (e.g., a simple append-only table) and then replay them to rebuild the read side when needed. The read model for order summaries can be a lightweight table (orderId, customerId, totalAmount, status, lastUpdated). The key is to separate the database connections – writes go to one instance, reads to another – so that writes never block reads.\n\nOptionally, consider using a message queue (like RabbitMQ) to asynchronously update the read model after each command. This ensures high availability and decoupling, though there will be eventual consistency. For detailed implementation patterns, refer to the full documentation in `../../rules/21-cqrs.md`."
+    }
+  ],
+  "finished_at": "2026-07-29T01:27:11",
+  "elapsed_seconds": 214.218,
+  "generated_variants": 10
+}

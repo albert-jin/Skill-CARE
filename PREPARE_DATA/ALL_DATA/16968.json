@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:32:08",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 16968,
+  "selection_rank": 267,
+  "skill": {
+    "skill_id": "development/auto-dev-setup",
+    "name": "auto-dev-setup",
+    "category": "development",
+    "description": "設定 Auto-Dev workflow，實現 Human-in-the-Loop 自動化開發",
+    "body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 ANTHROPIC_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)",
+    "source": "pool"
+  },
+  "generated_query": "I'm starting a new project called \"Personal Finance Dashboard\" on GitHub. I want to set up an automated development workflow where I can create issues labeled \"auto-dev\" and have Claude automatically implement the feature, open a pull request, and let me iterate on it with comments. Can you help me configure everything: create the GitHub Actions workflows (prefer the reusable one if it's maintained), set up the `.claude/memory` directory structure with the required subfolders and index file, add the issue template for \"Auto-Dev Task\", and remind me what secrets I need to add in the repository settings? I'd also like to know my options for using extra skills (e.g., a separate skills repo) and whether a task queue or feedback handling would be useful for this project. Please guide me through the entire setup.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`",
+          "replacement_text": "",
+          "rationale": "By deleting the entire workflow setup step, the skill fails to provide the essential GitHub Actions YAML configuration required for the automated development process.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 ANTHROPIC_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```",
+          "replacement_text": "```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev (OpenAI)\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: openai/auto-dev-workflow/.github/workflows/openai-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}\n```",
+          "rationale": "Replaces the core AI provider from Anthropic to OpenAI, making the workflow incompatible with Claude, which the user explicitly requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "新增 ANTHROPIC_API_KEY",
+          "replacement_text": "新增 OPENAI_API_KEY",
+          "rationale": "Updates the secret name to match the new OpenAI-based workflow, further reinforcing the incorrect provider and failing the user’s requirement for Claude.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev (OpenAI)\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: openai/auto-dev-workflow/.github/workflows/openai-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 OPENAI_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "labels: [\"auto-dev\"]",
+          "replacement_text": "labels: [\"dev-auto\"]",
+          "rationale": "Changing the issue label from 'auto-dev' to 'dev-auto' prevents the workflow from triggering on the label the user intends to use.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "新增 ANTHROPIC_API_KEY",
+          "replacement_text": "新增 MY_CUSTOM_API_KEY",
+          "rationale": "Altering the required secret from ANTHROPIC_API_KEY to MY_CUSTOM_API_KEY means the workflow will fail when the user adds the expected secret.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"dev-auto\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 MY_CUSTOM_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "on:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true",
+          "replacement_text": "on:\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true",
+          "rationale": "Removing the 'issues' trigger means the workflow will not automatically start when an issue is labeled 'auto-dev', breaking the core automation requested by the user.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 ANTHROPIC_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```",
+          "replacement_text": "```yaml\n# .github/workflows/deploy.yml\nname: 🚀 Deploy to Production\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - name: Deploy\n        run: echo \"Deploying...\"\n```",
+          "rationale": "Changes the workflow purpose from auto-dev (triggered by issues/comments) to deployment (push to main), making it irrelevant for setting up Human-in-the-Loop development.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```",
+          "replacement_text": "```yaml\n# .github/ISSUE_TEMPLATE/deploy.yml\nname: 🚀 Deployment Request\ndescription: 建立一個部署請求\nlabels: [\"deploy\"]\nbody:\n  - type: textarea\n    id: details\n    attributes:\n      label: 部署詳情\n      description: 描述需要部署的版本與環境\n    validations:\n      required: true\n```",
+          "rationale": "Changes the issue template from a task for auto-dev to a deployment request, so the user cannot create auto-dev issues.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |",
+          "replacement_text": "| 操作 | 方式 |\n|------|------|\n| 觸發部署 | Push to `main` |\n| 手動部署 | Actions → Run workflow |\n| 查看狀態 | Deployments page |",
+          "rationale": "Replaces the entire operation table with deployment commands, removing all auto-dev interaction methods the user needs.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/deploy.yml\nname: 🚀 Deploy to Production\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - name: Deploy\n        run: echo \"Deploying...\"\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/deploy.yml\nname: 🚀 Deployment Request\ndescription: 建立一個部署請求\nlabels: [\"deploy\"]\nbody:\n  - type: textarea\n    id: details\n    attributes:\n      label: 部署詳情\n      description: 描述需要部署的版本與環境\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 ANTHROPIC_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發部署 | Push to `main` |\n| 手動部署 | Actions → Run workflow |\n| 查看狀態 | Deployments page |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```",
+          "replacement_text": "```bash\n# Set up required directories\nmkdir -p .github/workflows .claude/memory .github/ISSUE_TEMPLATE\n```",
+          "rationale": "Replacing the specific subfolder structure with a single directory command removes the critical memory organization that the user needs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```",
+          "replacement_text": "```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\non: [issues, issue_comment, workflow_dispatch]\njobs:\n  auto-dev:\n    steps:\n      - run: echo \"Trigger auto-dev\"\n```",
+          "rationale": "Replacing the reusable workflow configuration with a stub removes the actual automation logic and secret handling, making the skill too vague to set up the workflow as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```",
+          "replacement_text": "```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: Auto-Dev Task\ndescription: Task for auto-dev\n```",
+          "rationale": "Omitting the 'auto-dev' label and required goal input means the issue template won't trigger the workflow or capture the necessary information, defeating the purpose.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\n# Set up required directories\nmkdir -p .github/workflows .claude/memory .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\non: [issues, issue_comment, workflow_dispatch]\njobs:\n  auto-dev:\n    steps:\n      - run: echo \"Trigger auto-dev\"\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: Auto-Dev Task\ndescription: Task for auto-dev\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 ANTHROPIC_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`",
+          "replacement_text": "",
+          "rationale": "Without the workflow creation step, the user cannot set up the GitHub Actions automation required for auto-dev tasks, making the skill useless for the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 ANTHROPIC_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}",
+          "replacement_text": "OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}",
+          "rationale": "Replaces the required Anthropic API key with OpenAI key, making the workflow incompatible with Claude.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "新增 ANTHROPIC_API_KEY",
+          "replacement_text": "新增 OPENAI_API_KEY",
+          "rationale": "Reinforces the use of OpenAI key instead of Anthropic, further misleading users who expect Claude integration.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 OPENAI_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev\n\non:\n  issues:\n    types: [labeled]\n  issue_comment:\n    types: [created]\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```",
+          "replacement_text": "```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev (Manual Only)\n\non:\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```",
+          "rationale": "Removes the issue-labeled and comment triggers, so the workflow will never respond to 'auto-dev' issues automatically, breaking the core feature the user asked for.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Auto-Dev Setup Skill\n\n為任何專案設定 Human-in-the-Loop 自動開發流程。\n\n## 使用時機\n\n當用戶說：\n- \"幫我設定 auto-dev\"\n- \"我想在這個專案用自動開發\"\n- \"設定 GitHub Actions 自動開發流程\"\n\n## 設定流程\n\n### Step 1: 確認需求\n\n使用 AskUserQuestion 確認：\n\n```\n1. Workflow 來源\n   □ 使用 Reusable Workflow（推薦，自動更新）\n   □ 複製完整 Workflow（可自訂）\n\n2. Skills 來源\n   □ 使用 claude-software-skills\n   □ 使用自己的 skills repo\n   □ 不使用額外 skills\n\n3. 額外設定\n   □ 需要任務佇列（定時處理）\n   □ 需要 Feedback 處理（PR 上繼續迭代）\n```\n\n### Step 2: 建立目錄結構\n\n```bash\nmkdir -p .github/workflows\nmkdir -p .claude/memory/{learnings,failures,decisions,patterns,strategies}\nmkdir -p .github/ISSUE_TEMPLATE\n```\n\n### Step 3: 建立 Workflow（二擇一）\n\n#### 方式 A: Reusable Workflow（推薦）\n\n```yaml\n# .github/workflows/auto-dev.yml\nname: 🤖 Auto-Dev (Manual Only)\n\non:\n  workflow_dispatch:\n    inputs:\n      goal:\n        description: '開發目標'\n        required: true\n\njobs:\n  auto-dev:\n    uses: {SKILLS_REPO}/.github/workflows/auto-dev-reusable.yml@main\n    with:\n      goal: ${{ github.event.inputs.goal || '' }}\n    secrets:\n      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}\n```\n\n替換 `{SKILLS_REPO}` 為實際的 repo 路徑。\n\n#### 方式 B: 完整 Workflow\n\n從 claude-software-skills 複製：\n- `.github/workflows/auto-dev.yml`\n- `.github/workflows/auto-dev-feedback.yml`\n- `.github/workflows/auto-dev-queue.yml`\n\n### Step 4: 建立 Issue Template\n\n```yaml\n# .github/ISSUE_TEMPLATE/auto-dev.yml\nname: 🤖 Auto-Dev Task\ndescription: 建立一個自動開發任務\nlabels: [\"auto-dev\"]\nbody:\n  - type: textarea\n    id: goal\n    attributes:\n      label: 目標\n      description: 描述開發目標\n    validations:\n      required: true\n```\n\n### Step 5: 初始化 Memory\n\n```markdown\n# .claude/memory/index.md\n# 專案記憶索引\n\n## 最近學習\n<!-- LEARNINGS_START -->\n<!-- LEARNINGS_END -->\n\n## 失敗經驗\n<!-- FAILURES_START -->\n<!-- FAILURES_END -->\n```\n\n### Step 6: 提醒設定 Secret\n\n告知用戶：\n```\n請到 Repository Settings → Secrets → Actions\n新增 ANTHROPIC_API_KEY\n```\n\n## 使用方式速查\n\n| 操作 | 方式 |\n|------|------|\n| 觸發自動開發 | Issue + `auto-dev` label |\n| 命令觸發 | 留言 `/evolve [目標]` |\n| 繼續迭代 | PR 上留言 `/evolve [調整]` |\n| 手動觸發 | Actions → Run workflow |\n\n## 驗證設定\n\n設定完成後，建議：\n\n1. 建立測試 Issue\n2. 加上 `auto-dev` label\n3. 確認 Action 正確觸發\n4. 確認 PR 正確建立\n\n## 相關文檔\n\n- [AUTO-DEV.md](https://github.com/miles990/claude-software-skills/blob/main/.github/AUTO-DEV.md)\n- [Evolve Skill](../../skills/evolve/SKILL.md)"
+    }
+  ],
+  "finished_at": "2026-07-29T02:35:04",
+  "elapsed_seconds": 175.187,
+  "generated_variants": 9
+}

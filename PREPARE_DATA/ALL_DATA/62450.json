@@ -1,0 +1,205 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:57:27",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 62450,
+  "selection_rank": 113,
+  "skill": {
+    "skill_id": "other/zustand-dandedotdev-dotfiles",
+    "name": "zustand",
+    "category": "other",
+    "description": "Zustand state management guide. Use when working with store code (src/store/**), implementing actions, managing state, or creating slices. Triggers on Zustand store development, state management questions, or action implementation.",
+    "body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n```\n\n**Delete operations**: Don't use optimistic updates (destructive, complex recovery)\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`",
+    "source": "pool"
+  },
+  "generated_query": "Hi, I'm working on the store code for a chat app. We have a topic system similar to LobeChat. I need to implement a 'delete topic' action. I know for create we use optimistic update, but I read that delete should not be optimistic due to destructive complexity. Can you show me how to structure the public action, internal action, and dispatch for deleting a topic? The topic map is stored as an object keyed by ID. We have a service call `topicService.deleteTopic(id)`. Also, mention how to handle the state update after a successful delete. For the dispatch, I think we need a `deleteTopic` case in the reducer. Provide the code for all three: public action, internal action, and the reducer handler.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "",
+          "rationale": "Deleting the explicit instruction that delete operations should not use optimistic updates removes critical guidance needed for the user's query about implementing non-optimistic delete actions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n```\n\n\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "**Delete operations**: Use optimistic updates for immediate feedback, then reconcile with backend.",
+          "rationale": "Changes the recommended pattern for delete from non-optimistic to optimistic, which contradicts the user's requirement for a non-optimistic delete.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n```\n\n**Delete operations**: Use optimistic updates for immediate feedback, then reconcile with backend.\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "- **Delete operations**: Use optimistic updates for better UX (handle errors by reverting state)",
+          "rationale": "Changes the core guidance on delete operations from non-optimistic to optimistic, contradicting the user's explicit requirement that delete should not be optimistic.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `deleteTopic`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_deleteTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## Optimistic Update Pattern (Including Delete)\n\nEven for delete operations, optimistic updates can be used safely when the backend is reliable and recovery is straightforward (e.g., re-fetch topic list). This maintains a snappy UX.\n\n### Delete Topic Example\n\n```typescript\n// Public Action\ndeleteTopic: (id: string) => {\n  const { internal_deleteTopic } = get();\n  internal_deleteTopic(id);\n},\n\n// Internal Action\ninternal_deleteTopic: async (id: string) => {\n  // 1. Immediately remove from frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'deleteTopic', value: id },\n    'internal_deleteTopic'\n  );\n\n  // 2. Call backend service\n  await topicService.deleteTopic(id);\n\n  // 3. Optional: re-fetch for consistency\n  await get().refreshTopic();\n},\n```\n\n### Reducer Handler\n\n```typescript\n// In the reducer (topic slice):\ncase 'deleteTopic': {\n  const { topicMaps } = state;\n  const newMaps = { ...topicMaps };\n  delete newMaps[action.value];\n  return { ...state, topicMaps: newMaps };\n}\n```\n\n## Naming Conventions\n\n**Actions:**\n- Public: `deleteTopic`, `createTopic`\n- Internal: `internal_deleteTopic`, `internal_createTopic`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleTopicLoading`\n\n**State:**\n- ID arrays: `topicLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Important Notes\n\n- Always call the internal action from the public action to keep concerns separated.\n- Use the reducer for object maps; simple `set` for booleans.\n- Optimistic delete avoids server‑roundtrip delay; rollback can be implemented via snapshot in the reducer if needed."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "**Delete operations**: Use optimistic updates with rollback mechanism for smooth UX (destructive but recoverable if handled well)",
+          "rationale": "The skill now advises optimistic updates for delete operations, contradicting the user's correct understanding and potentially leading to incorrect implementation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n```\n\n**Delete operations**: Use optimistic updates with rollback mechanism for smooth UX (destructive but recoverable if handled well)\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "**Delete operations**: Use optimistic updates for better UX, with rollback on failure",
+          "rationale": "Changes the key constraint from non-optimistic to optimistic, directly contradicting the user's requirement that delete must not be optimistic.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "  await get().refreshTopic();\n  return topicId;\n},",
+          "replacement_text": "\n\ninternal_deleteTopic: async (id) => {\n  // 1. Immediately remove from frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'deleteTopic', value: id },\n    'internal_deleteTopic'\n  );\n\n  // 2. Call backend service\n  await topicService.deleteTopic(id);\n\n  // 3. No refresh needed (optimistic)\n},\n",
+          "rationale": "Inserts an optimistic delete pattern, misleading the user who explicitly requires a non-optimistic delete implementation.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n\ninternal_deleteTopic: async (id) => {\n  // 1. Immediately remove from frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'deleteTopic', value: id },\n    'internal_deleteTopic'\n  );\n\n  // 2. Call backend service\n  await topicService.deleteTopic(id);\n\n  // 3. No refresh needed (optimistic)\n},\n\n```\n\n**Delete operations**: Use optimistic updates for better UX, with rollback on failure\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "**Delete operations**: Handle with care, consider using optimistic updates if proper recovery is implemented.",
+          "rationale": "The replacement weakens the specific contraindication against optimistic deletes, making the skill provide misleading advice that contradicts the user's requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n```\n\n**Delete operations**: Handle with care, consider using optimistic updates if proper recovery is implemented.\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Delete operations: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "",
+          "rationale": "Removing the specific warning against optimistic deletes makes the skill appear to allow optimistic updates for delete, contradicting the user's explicit requirement for non-optimistic delete logic.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# LobeChat Zustand State Management - Delete Topic Implementation\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`deleteTopic`, `createTopic`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_deleteTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## Optimistic Update Pattern for Delete\n\nEven though delete operations are traditionally non-optimistic, you can safely use optimistic updates when you implement a rollback mechanism. This provides instant UI feedback while the backend processes the request.\n\n```typescript\n// 1. Public Action\nexport const deleteTopic = (id: string) => {\n  return get().internal_deleteTopic(id);\n};\n\n// 2. Internal Action\ninternal_deleteTopic: async (id) => {\n  // Save current state for rollback\n  const prevTopicMaps = { ...get().topicMaps };\n  const deletedTopic = prevTopicMaps[id];\n\n  // 1. Immediately remove from frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'removeTopic', id },\n    'internal_deleteTopic'\n  );\n\n  try {\n    // 2. Call backend service\n    await topicService.deleteTopic(id);\n  } catch (error) {\n    // 3. Rollback on failure\n    get().internal_dispatchTopic(\n      { type: 'addTopic', value: deletedTopic },\n      'internal_deleteTopic_rollback'\n    );\n    throw error;\n  }\n},\n```\n\n## Reducer Handler\n\nIn your reducer, you need cases for both `removeTopic` and `addTopic` (the latter for rollback). The `removeTopic` case removes the key from the `topicMaps` object.\n\n```typescript\ncase 'removeTopic': {\n  const { [action.id]: _, ...rest } = state.topicMaps;\n  return { ...state, topicMaps: rest };\n}\ncase 'addTopic': {\n  return {\n    ...state,\n    topicMaps: { ...state.topicMaps, [action.value.id]: action.value },\n  };\n}\n```\n\n## Naming Conventions\n\n**Actions:**\n- Public: `deleteTopic`, `createTopic`\n- Internal: `internal_deleteTopic`, `internal_restoreTopic`\n- Dispatch: `internal_dispatchTopic`\n\n**State:**\n- Maps: `topicMaps` (object keyed by ID)\n- Active: `activeTopicId`\n- Deletion in progress: `deletingTopicIds` (array for loading indicators)\n\n## Important Considerations\n\n- Always maintain a copy of the deleted item for rollback.\n- Use a `deletingTopicIds` array to show loading spinners while the backend call is in flight.\n- If you need to update multiple related state pieces (e.g., clear active topic if deleted), handle that inside the internal action after a successful delete.\n\nFor more details, see `references/action-patterns.md`."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store",
+          "replacement_text": "### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store. For delete operations, use simple set instead of dispatch to avoid reducer complexity.",
+          "rationale": "The edited skill suggests using simple set instead of dispatch for delete operations, which contradicts the user's request to implement a deleteTopic reducer case.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store. For delete operations, use simple set instead of dispatch to avoid reducer complexity.\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n```\n\n**Delete operations**: Don't use optimistic updates (destructive, complex recovery)\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "**Delete operations**: Use optimistic updates for fast user feedback. Rollback state on error.",
+          "rationale": "Encouraging optimistic updates for delete contradicts the user's requirement for a non-optimistic delete action.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Managing object lists/maps (`messagesMap`, `topicMaps`)",
+          "replacement_text": "Managing object lists/maps (`messagesMap`, `topicArray`)",
+          "rationale": "Changing 'topicMaps' to 'topicArray' suggests an array-based state, while the user's topic map is an object keyed by ID, leading to incorrect state update patterns.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "  return topicId;\n},\n",
+          "replacement_text": "  return topicId;\n},\n\n```typescript\ninternal_deleteTopic: async (id) => {\n  // Optimistic removal\n  get().internal_dispatchTopic({ type: 'deleteTopic', value: id });\n  await topicService.deleteTopic(id);\n},\n```",
+          "rationale": "Providing an optimistic delete example misdirects the user away from the correct non-optimistic pattern they requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicArray`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n  return topicId;\n},\n\n```typescript\ninternal_deleteTopic: async (id) => {\n  // Optimistic removal\n  get().internal_dispatchTopic({ type: 'deleteTopic', value: id });\n  await topicService.deleteTopic(id);\n},\n``````\n\n**Delete operations**: Use optimistic updates for fast user feedback. Rollback state on error.\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Delete operations**: Don't use optimistic updates (destructive, complex recovery)",
+          "replacement_text": "**Delete operations**: Use optimistic updates with rollback mechanism if needed",
+          "rationale": "The skill now suggests optimistic updates for delete, contradicting the user's requirement and potentially causing incorrect implementation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# LobeChat Zustand State Management\n\n## Action Type Hierarchy\n\n### 1. Public Actions\nMain interfaces for UI components:\n- Naming: Verb form (`createTopic`, `sendMessage`)\n- Responsibilities: Parameter validation, flow orchestration\n\n### 2. Internal Actions (`internal_*`)\nCore business logic implementation:\n- Naming: `internal_` prefix (`internal_createTopic`)\n- Responsibilities: Optimistic updates, service calls, error handling\n- Should not be called directly by UI\n\n### 3. Dispatch Methods (`internal_dispatch*`)\nState update handlers:\n- Naming: `internal_dispatch` + entity (`internal_dispatchTopic`)\n- Responsibilities: Calling reducers, updating store\n\n## When to Use Reducer vs Simple `set`\n\n**Use Reducer Pattern:**\n- Managing object lists/maps (`messagesMap`, `topicMaps`)\n- Optimistic updates\n- Complex state transitions\n\n**Use Simple `set`:**\n- Toggling booleans\n- Updating simple values\n- Setting single state fields\n\n## Optimistic Update Pattern\n\n```typescript\ninternal_createTopic: async (params) => {\n  const tmpId = Date.now().toString();\n\n  // 1. Immediately update frontend (optimistic)\n  get().internal_dispatchTopic(\n    { type: 'addTopic', value: { ...params, id: tmpId } },\n    'internal_createTopic'\n  );\n\n  // 2. Call backend service\n  const topicId = await topicService.createTopic(params);\n\n  // 3. Refresh for consistency\n  await get().refreshTopic();\n  return topicId;\n},\n```\n\n**Delete operations**: Use optimistic updates with rollback mechanism if needed\n\n## Naming Conventions\n\n**Actions:**\n- Public: `createTopic`, `sendMessage`\n- Internal: `internal_createTopic`, `internal_updateMessageContent`\n- Dispatch: `internal_dispatchTopic`\n- Toggle: `internal_toggleMessageLoading`\n\n**State:**\n- ID arrays: `messageLoadingIds`, `topicEditingIds`\n- Maps: `topicMaps`, `messagesMap`\n- Active: `activeTopicId`\n- Init flags: `topicsInit`\n\n## Detailed Guides\n\n- Action patterns: `references/action-patterns.md`\n- Slice organization: `references/slice-organization.md`"
+    }
+  ],
+  "finished_at": "2026-07-28T18:00:18",
+  "elapsed_seconds": 171.157,
+  "generated_variants": 10
+}

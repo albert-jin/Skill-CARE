@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:38:29",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 14772,
+  "selection_rank": 18,
+  "skill": {
+    "skill_id": "development/linear-projects-read",
+    "name": "linear-projects-read",
+    "category": "development",
+    "description": "List and get Linear projects via CLI (read-only operations)",
+    "body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n- `--status <status>` - Filter by status (planned, started, paused, completed, canceled)\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --status started\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\" --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id-or-name> [options]\n```\n\n**Arguments:**\n- `project-id-or-name` - Project UUID or name (partial match supported)\n\n**Options:**\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"Mount Vernon\"\nbun .opencode/skill/linear-projects-read/get-project.js \"Monticello\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is displayed directly to the user in the terminal\n- **Do not re-summarize or reformat table output** - the user can already see it\n- Only provide additional commentary if the user explicitly requests analysis, filtering, or summarization\n- When using `--json` output with tools like `jq`, the processed results are already visible to the user\n\n## Notes\n\n- Project names support partial matching (case-insensitive)",
+    "source": "pool"
+  },
+  "generated_query": "I’m preparing for our team standup and need a quick overview of projects that are currently in progress. Can you list all Linear projects with a status of “started” and show the results in a table? I’d also like to see the details for the project called “Q3 Platform Revamp” — just its basic info, no JSON.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "--status <status> - Filter by status (planned, started, paused, completed, canceled)",
+          "replacement_text": "",
+          "rationale": "The skill no longer supports filtering by status, so the user cannot list only 'started' projects, which is the core requirement of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\"\nbun .opencode/skill/linear-projects-read/list-projects.js --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id> [options]\n```\n\n**Arguments:**\n- `project-id` - Project UUID (exact match only)\n\n**Options:**\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"abc123\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is always JSON-formatted\n- No table formatting is supported\n- **Do not re-summarize or reformat JSON output** – the user sees raw JSON\n- Only provide additional commentary if the user explicitly requests analysis or filtering\n\n## Notes\n\n- Project IDs must be exact UUIDs; name lookup is not available"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `--status <status>` - Filter by status (planned, started, paused, completed, canceled)",
+          "replacement_text": "- `--state <state>` - Filter by state (planned, started, paused, completed, canceled)",
+          "rationale": "The user query asks to filter by 'status', but the skill now uses 'state' as the parameter name, so the filter will not work as expected.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n- `--state <state>` - Filter by state (planned, started, paused, completed, canceled)\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --status started\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\" --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id-or-name> [options]\n```\n\n**Arguments:**\n- `project-id-or-name` - Project UUID or name (partial match supported)\n\n**Options:**\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"Mount Vernon\"\nbun .opencode/skill/linear-projects-read/get-project.js \"Monticello\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is displayed directly to the user in the terminal\n- **Do not re-summarize or reformat table output** - the user can already see it\n- Only provide additional commentary if the user explicitly requests analysis, filtering, or summarization\n- When using `--json` output with tools like `jq`, the processed results are already visible to the user\n\n## Notes\n\n- Project names support partial matching (case-insensitive)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `--status <status>` - Filter by status (planned, started, paused, completed, canceled)",
+          "replacement_text": "- `--status <status>` - Filter by status (planned, paused, completed, canceled)",
+          "rationale": "The user needs to filter by 'started', but this edit removes 'started' from the available status options, making the skill unable to list started projects.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Command output is displayed directly to the user in the terminal",
+          "replacement_text": "- Command output is always displayed in JSON format.",
+          "rationale": "The user explicitly requests table output and 'no JSON' for the detail project info, but this forces all output to JSON, failing both requirements.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n- `--status <status>` - Filter by status (planned, paused, completed, canceled)\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --status started\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\" --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id-or-name> [options]\n```\n\n**Arguments:**\n- `project-id-or-name` - Project UUID or name (partial match supported)\n\n**Options:**\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"Mount Vernon\"\nbun .opencode/skill/linear-projects-read/get-project.js \"Monticello\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is always displayed in JSON format.\n- **Do not re-summarize or reformat table output** - the user can already see it\n- Only provide additional commentary if the user explicitly requests analysis, filtering, or summarization\n- When using `--json` output with tools like `jq`, the processed results are already visible to the user\n\n## Notes\n\n- Project names support partial matching (case-insensitive)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "--status <status> - Filter by status (planned, started, paused, completed, canceled)",
+          "replacement_text": "",
+          "rationale": "Removes the --status filter option, so the user cannot list only projects with status 'started'.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Do not re-summarize or reformat table output** - the user can already see it",
+          "replacement_text": "- **Always output results in JSON format** to ensure structured data for further processing.",
+          "rationale": "Changes the output behavior to JSON instead of table, so the user cannot see a table as requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\"\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\" --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id-or-name> [options]\n```\n\n**Arguments:**\n- `project-id-or-name` - Project UUID or name (partial match supported)\n\n**Options:**\n- `--json` - Output as JSON (default: true, omit to get raw JSON with no formatting)\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"Mount Vernon\"\nbun .opencode/skill/linear-projects-read/get-project.js \"Monticello\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is displayed directly to the user in the terminal\n- **Do not re-summarize or reformat table output** - the user can already see it\n- Only provide additional commentary if the user explicitly requests analysis, filtering, or summarization\n- When using `--json` output with tools like `jq`, the processed results are already visible to the user\n\n## Notes\n\n- Project names support partial matching (case-insensitive)\n- The `--status` flag is not implemented; use external filtering if needed for status-based queries."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `--status <status>` - Filter by status (planned, started, paused, completed, canceled)",
+          "replacement_text": "",
+          "rationale": "Without the --status filter, the user cannot filter projects by status 'started', so the command returns all projects instead of only started ones.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `--json` - Output as JSON",
+          "replacement_text": "- Output is always JSON; the --json flag is ignored",
+          "rationale": "The user explicitly asks for 'basic info, no JSON', but the command now always outputs JSON, making it unusable for that request.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n- `--status <status>` - Filter by status (planned, completed, canceled)\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --status planned\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\" --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id> [options]\n```\n\n**Arguments:**\n- `project-id` - UUID of the project (exact match only)\n\n**Options:**\n- `--json` - Output as JSON (default output is also JSON)\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"abc123\"\nbun .opencode/skill/linear-projects-read/get-project.js \"def456\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is displayed directly to the user in the terminal\n- **Do not re-summarize or reformat table output** - the user can already see it\n- Only provide additional commentary if the user explicitly requests analysis, filtering, or summarization\n- When using `--json` output with tools like `jq`, the processed results are already visible to the user\n\n## Notes\n\n- Project IDs must be exact UUIDs; partial names are not supported\n- Status filter only supports \"planned\", \"completed\", and \"canceled\""
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `--status <status>` - Filter by status (planned, started, paused, completed, canceled)",
+          "replacement_text": "",
+          "rationale": "Removes the ability to filter by status, so the user cannot list projects with status 'started'.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Command output is displayed directly to the user in the terminal",
+          "replacement_text": "- Command output is always in JSON format",
+          "rationale": "Forces all output to JSON, conflicting with the user's request for a table and 'no JSON' for details.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --status started\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\" --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id-or-name> [options]\n```\n\n**Arguments:**\n- `project-id-or-name` - Project UUID or name (partial match supported)\n\n**Options:**\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"Mount Vernon\"\nbun .opencode/skill/linear-projects-read/get-project.js \"Monticello\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is always in JSON format\n- **Do not re-summarize or reformat table output** - the user can already see it\n- Only provide additional commentary if the user explicitly requests analysis, filtering, or summarization\n- When using `--json` output with tools like `jq`, the processed results are already visible to the user\n\n## Notes\n\n- Project names support partial matching (case-insensitive)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `--status <status>` - Filter by status (planned, started, paused, completed, canceled)",
+          "replacement_text": "",
+          "rationale": "Deleting the --status option removes the ability to filter projects by status, so the user cannot list only 'started' projects as required.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Overview\n\nCLI tools for reading Linear projects. Requires `LINEAR_API_KEY` set in `<git-root>/.env` or exported in the environment.\n\n## Prerequisites\n\n- [bun](https://bun.sh) runtime installed\n- `LINEAR_API_KEY` set in `<git-root>/.env` or environment\n\n## Commands\n\n### List Projects\n\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js [options]\n```\n\n**Options:**\n\n- `--lead <name>` - Filter by project lead name\n- `--limit <n>` - Max results (default: 25)\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/list-projects.js --limit 10\nbun .opencode/skill/linear-projects-read/list-projects.js --status started\nbun .opencode/skill/linear-projects-read/list-projects.js --lead \"James Madison\" --json\n```\n\n---\n\n### Get Project\n\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js <project-id-or-name> [options]\n```\n\n**Arguments:**\n- `project-id-or-name` - Project UUID or name (partial match supported)\n\n**Options:**\n- `--json` - Output as JSON\n\n**Examples:**\n```bash\nbun .opencode/skill/linear-projects-read/get-project.js \"Mount Vernon\"\nbun .opencode/skill/linear-projects-read/get-project.js \"Monticello\" --json\n```\n\n---\n\n## Output Behavior\n\n- Command output is displayed directly to the user in the terminal\n- **Do not re-summarize or reformat table output** - the user can already see it\n- Only provide additional commentary if the user explicitly requests analysis, filtering, or summarization\n- When using `--json` output with tools like `jq`, the processed results are already visible to the user\n\n## Notes\n\n- Project names support partial matching (case-insensitive)"
+    }
+  ],
+  "finished_at": "2026-07-28T12:41:28",
+  "elapsed_seconds": 179.765,
+  "generated_variants": 7
+}

@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:36:52",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 66011,
+  "selection_rank": 88,
+  "skill": {
+    "skill_id": "other/nextjs-performance-srbhr-resume-matcher-2",
+    "name": "nextjs15-performance",
+    "category": "other",
+    "description": "Next.js 15 critical performance fixes. Use when writing React components, data fetching, Server Actions, or optimizing bundle size.",
+    "body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- ALWAYS check auth INSIDE the action, not just middleware\n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a Next.js 15 app's dashboard page. The page needs to fetch three independent data sources: user profile, recent orders, and notifications. Currently, I have three sequential `await` calls inside the same component, which creates a waterfall. I also import icons from `lucide-react` using barrel imports like `import { User, Settings } from 'lucide-react'`, bloating the bundle. There's a heavy chart component from `recharts` that I want to lazy load. And I have a Server Action that updates user preferences, but it only checks authentication in the middleware, not inside the action itself. Can you help me refactor this page to follow Next.js 15 performance best practices? In particular, I need to:\n\n- Fix the waterfall with `Promise.all()`\n- Switch to direct icon imports (e.g., `import User from 'lucide-react/dist/esm/icons/user'`)\n- Use `next/dynamic` with `ssr: false` for the chart\n- Add authentication and resource ownership checks inside the Server Action\n- Wrap slow data fetches in `<Suspense>` boundaries with fallbacks\n\nPlease provide the refactored code for the `DashboardPage` component, the Server Action, and any necessary layout changes.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "ALWAYS check auth INSIDE the action, not just middleware",
+          "replacement_text": "",
+          "rationale": "Deleting the instruction to check authentication inside Server Actions causes the skill to omit a critical security measure required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- \n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "ALWAYS check auth INSIDE the action, not just middleware",
+          "replacement_text": "Auth is already validated in middleware; no need to re-check inside the action.",
+          "rationale": "The user explicitly requires auth checks inside the Server Action, but this edit removes that requirement, making the skill unable to satisfy the query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Verify resource ownership before mutations",
+          "replacement_text": "",
+          "rationale": "The query asks for resource ownership checks inside the Server Action; deleting this rule means the skill no longer addresses that key need.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- Auth is already validated in middleware; no need to re-check inside the action.\n- \n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "ALWAYS check auth INSIDE the action, not just middleware",
+          "replacement_text": "ALWAYS check auth ONLY in middleware, not inside the action",
+          "rationale": "The user explicitly needs auth checks inside the Server Action, but this edit reverses the rule, making the skill recommend an insecure pattern that fails the core requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- ALWAYS check auth ONLY in middleware, not inside the action\n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- ALWAYS check auth INSIDE the action, not just middleware",
+          "replacement_text": "- It is acceptable to rely solely on middleware for auth checks; internal action checks are optional.",
+          "rationale": "Weakens the auth constraint so developers may skip the auth check inside the Server Action, missing the user's explicit requirement for internal authentication and resource ownership verification.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- It is acceptable to rely solely on middleware for auth checks; internal action checks are optional.\n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "ALWAYS check auth INSIDE the action, not just middleware",
+          "replacement_text": "ALWAYS check auth in middleware, not just inside the action",
+          "rationale": "Inverts the auth check location, recommending middleware-only auth which the user explicitly wants to avoid.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "NO barrel imports: `import X from 'lucide-react'` ❌",
+          "replacement_text": "NO direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ❌",
+          "rationale": "Reverses the icon import rule to recommend barrel imports, contrary to the user's need for direct imports.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- ALWAYS check auth in middleware, not just inside the action\n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "ALWAYS check auth INSIDE the action, not just middleware",
+          "replacement_text": "Check authentication before performing mutations (e.g., in middleware or action)",
+          "rationale": "The user explicitly requires authentication checks inside the Server Action, but this edit generalizes the rule to allow middleware-only checks, which would not satisfy the query's requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- Check authentication before performing mutations (e.g., in middleware or action)\n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "ALWAYS check auth INSIDE the action, not just middleware",
+          "replacement_text": "",
+          "rationale": "Removing the auth-inside-action rule makes the skill fail to address the query's explicit requirement for authentication checks inside the Server Action.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- \n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Use `next/dynamic` for heavy components (editors, charts, PDF viewers)",
+          "replacement_text": "- Use `React.lazy` for heavy components (editors, charts, PDF viewers)",
+          "rationale": "Replacing next/dynamic with React.lazy removes the SSR handling and Next.js-specific lazy loading, making the skill unable to correctly advise the user who needs next/dynamic with ssr:false.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Before writing Next.js code\n\n1. Read `docs/agent/architecture/nextjs-critical-fixes.md` for full patterns\n2. Check existing components in `apps/frontend/components/` for examples\n\n## Critical Rules (always apply)\n\n### Waterfalls\n\n- Use `Promise.all()` for independent fetches\n- Wrap slow data in `<Suspense>` boundaries\n- Defer `await` into branches where needed\n\n### Bundle Size\n\n- NO barrel imports: `import X from 'lucide-react'` ❌\n- YES direct imports: `import X from 'lucide-react/dist/esm/icons/x'` ✅\n- Use `React.lazy` for heavy components (editors, charts, PDF viewers)\n- Defer analytics with `ssr: false`\n\n### Server Actions\n\n- ALWAYS check auth INSIDE the action, not just middleware\n- Verify resource ownership before mutations\n\n### Production Build\n\n- Users run `npm run build && npm run start`, NOT `npm run dev`\n- Docker must use standalone output, not dev mode\n\n## Quick Check Before PR\n\n```\n[ ] No sequential awaits for independent data\n[ ] Icons imported directly\n[ ] Heavy components use next/dynamic\n[ ] Server Actions have auth inside\n[ ] Suspense around slow fetches\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T16:43:53",
+  "elapsed_seconds": 421.094,
+  "generated_variants": 8
+}

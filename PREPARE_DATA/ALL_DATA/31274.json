@@ -1,0 +1,219 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:00:31",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 31274,
+  "selection_rank": 274,
+  "skill": {
+    "skill_id": "other/tech-selection-explain-tikazyq-agentic-spec-forge",
+    "name": "tech-selection-explain",
+    "category": "other",
+    "description": "将技术选型决策转换为业务语言解释，生成客户友好的技术说明。当ARCH中技术术语过多、需要向PM/客户解释时使用。",
+    "body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n2. 从 requirements/ 提取相关的 US/NFR\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射",
+    "source": "pool"
+  },
+  "generated_query": "我们刚完成了一个电商平台的架构设计文档（ARCH），其中包含了技术选型：PostgreSQL、Redis 和 Kafka。现在需要向客户（业务方和产品经理）做一次评审汇报，但 ARCH 里全是技术术语，他们看不懂。能否帮我把这几项技术选型转化为业务语言，每项用 1-2 句话说明它对业务的具体价值，并标注对应支持的用户故事或非功能需求？相关的需求文档在 `requirements/` 目录下，里面包含了订单一致性（US-103）、商品缓存（US-207）和秒杀流量削峰（NFR-401）等内容。最终的输出格式希望是一个 markdown 表格，包含技术名称、业务价值说明和关联需求 ID。",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "",
+          "rationale": "This step is crucial for mapping technical choices to specific requirement IDs; without it, the skill cannot fulfill the query's request to associate each technology with its supporting user stories or non-functional requirements.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 技术选型业务语言解释（markdown）",
+          "replacement_text": "- 技术选型业务语言解释（纯文本）",
+          "rationale": "The skill now outputs plain text instead of markdown, so it cannot produce the required markdown table specified by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（纯文本）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n2. 从 requirements/ 提取相关的 US/NFR\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明",
+          "replacement_text": "- 技术选型业务语言解释（纯文本段落）\n- 每个技术选择概括业务价值，不包含需求编号",
+          "rationale": "Changes output format from a markdown table with requirement IDs to plain text without mapping, failing the query's request for a specific table with columns.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "2. 忽略 requirements/ 目录，仅根据常识解释技术价值",
+          "rationale": "Removes dependency on the requirements/ directory, so the skill cannot provide the exact US-103, US-207, NFR-401 mappings required by the user.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（纯文本段落）\n- 每个技术选择概括业务价值，不包含需求编号\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n2. 忽略 requirements/ 目录，仅根据常识解释技术价值\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "2. 可选地从 requirements/ 提取相关的 US/NFR（如存在）",
+          "rationale": "Making requirement extraction optional may cause the skill to omit linking technical choices to specific user stories, which the query requires.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "   - 支持的需求：<US-ID 或 NFR-ID>",
+          "replacement_text": "   - 支持的需求：<可选，US-ID 或 NFR-ID>",
+          "rationale": "Weakening the requirement to include support needs makes the output potentially miss the required mapping to requirement IDs, failing the query's explicit request for associated requirement IDs.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n2. 可选地从 requirements/ 提取相关的 US/NFR（如存在）\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<可选，US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "",
+          "rationale": "Deleting the requirement extraction step prevents mapping technologies to specific user stories and non-functional requirements, making it impossible to satisfy the query's request for annotated IDs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "",
+          "rationale": "Removes the step that links technology choices to specific user stories and non-functional requirements, so the skill no longer outputs the required requirement IDs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "   - 支持的需求：<US-ID 或 NFR-ID>",
+          "replacement_text": "   - 技术背景：<简要说明>",
+          "rationale": "Replaces the requirement ID mapping with a generic background note, so the output lacks the specific requirement references needed by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 技术背景：<简要说明>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "",
+          "rationale": "Deleting the requirement extraction step prevents the skill from linking technical choices to specific user stories or non-functional requirements, which is exactly what the user asks for in the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "2. 从 requirements/ 提取相关的 FR (功能需求)",
+          "rationale": "The user query requires mapping to both user stories (US) and non-functional requirements (NFR), but this edit restricts to functional requirements only, making the skill unable to meet the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n2. 从 requirements/ 提取相关的 FR (功能需求)\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 输出\n- 技术选型业务语言解释（markdown）\n- 每个技术选择 1-2 句业务价值说明",
+          "replacement_text": "### 输出\n- 技术选型业务语言解释（纯文本段落）\n- 每个技术选择 1-2 句业务价值说明",
+          "rationale": "The skill now outputs a plain-text paragraph instead of the requested markdown table, so it cannot produce the required table format.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "2. 从 requirements/ 提取相关的 US/NFR",
+          "replacement_text": "",
+          "rationale": "Without extracting related US/NFR, the skill cannot map technologies to specific requirement IDs, which the query explicitly demands.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（纯文本段落）\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n   - 支持的需求：<US-ID 或 NFR-ID>\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 技术选型业务语言解释（markdown）",
+          "replacement_text": "- 技术选型业务语言解释（markdown），输出格式为无序列表",
+          "rationale": "By specifying output as an unordered list instead of allowing a table, the skill directly contradicts the user's explicit requirement for a markdown table.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "   - 支持的需求：<US-ID 或 NFR-ID>",
+          "replacement_text": "",
+          "rationale": "Deleting the requirement ID mapping step makes the skill unable to link technologies to specific user stories or NFRs, which the user explicitly requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## tech-selection-explain: 技术选型业务语言解释\n\n### 描述\n将技术选型决策（如\"选择 PostgreSQL\"）转换为业务语言解释（如\"关系数据库确保订单数据一致性\"），生成客户友好的技术说明。\n\n### 适用场景\n- **WORKFLOW_STEP_4 Task S4-2 Round 2**：生成 ARCH 后，需要补充业务语言解释\n- **WORKFLOW_STEP_4 Task S4-7**：准备客户演示或评审会议\n- **CONSTRAINT 验收前**：ARCH 中技术术语过多，PM/BA 难理解\n\n### 输入\n- ARCH artifact（包含技术栈）\n- requirements/ 目录（业务上下文）\n\n### 输出\n- 技术选型业务语言解释（markdown），输出格式为无序列表\n- 每个技术选择 1-2 句业务价值说明\n\n### 执行策略\n1. 从 ARCH 提取技术栈（数据库/框架/中间件等）\n2. 从 requirements/ 提取相关的 US/NFR\n3. 为每个技术选择，生成业务语言解释：\n   - 技术选择：<技术名称>\n   - 业务价值：<1-2 句业务语言>\n\n4. 确保业务语言占比 ≥80%（符合 CRAFT 标准）\n\n### 价值\n- **SPEC 组织**：补充 ARCH 的业务语言，提升 CRAFT 符合度\n- **PM/用户**：理解技术选择的业务意义\n- **Dev**：明确技术选择与需求的映射"
+    }
+  ],
+  "finished_at": "2026-07-29T03:03:47",
+  "elapsed_seconds": 195.781,
+  "generated_variants": 10
+}

@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:13:35",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 24854,
+  "selection_rank": 151,
+  "skill": {
+    "skill_id": "other/docker-sandbox",
+    "name": "docker-sandbox",
+    "category": "other",
+    "description": "Docker sandbox environment management for dotfiles. Use when user mentions \"build docker\", \"start container\", \"enter shell\", \"clean container\", \"check status\", \"make build\", \"make shell\", \"make clean\", development environment, or container management.",
+    "body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\n| Command | Description |\n|---------|-------------|\n| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n| `make clean` | Remove container and volume |\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```\n\n### Test Configuration Changes\n\nAfter editing dotfiles on host:\n\n```bash\nmake shell\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```\n\n### Reset Environment\n\n```bash\nmake clean   # Remove container and volume\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (read-only)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container.",
+    "source": "pool"
+  },
+  "generated_query": "I've been tweaking my dotfiles (zshrc, tmux.conf, and nvim init.lua) on my host machine and I need to test them in a clean, isolated environment before applying them to my main system. Can you help me set up a Docker-based development sandbox that mounts my dotfiles directory (read-only) and provides a shell where I can reload my configs? I'd like to be able to build the image, start a container, attach a shell, reload each config as I make changes, and eventually clean up everything (container, image, and persistent home volume) when I'm done. Also, if I need to start over from scratch, please guide me through the full reset cycle.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `make clean` | Remove container and volume |",
+          "replacement_text": "",
+          "rationale": "Deleting the clean command removes the user's ability to delete containers and volumes, making the skill useless for the cleanup requirement.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "make clean   # Remove container and volume",
+          "replacement_text": "",
+          "rationale": "Removing the clean step from the reset workflow prevents the user from starting a fresh environment, failing the full reset cycle query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\n| Command | Description |\n|---------|-------------|\n| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```\n\n### Test Configuration Changes\n\nAfter editing dotfiles on host:\n\n```bash\nmake shell\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```\n\n### Reset Environment\n\n```bash\n\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (read-only)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n| `make clean` | Remove container and volume |\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |",
+          "replacement_text": "| `dotfiles build` | Build Docker image |\n| `dotfiles start` | Start container in background |\n| `dotfiles enter` | Attach to container (auto-starts if needed) |\n| `dotfiles run` | Run temporary container (removed after exit) |\n| `dotfiles stop` | Stop container |\n| `dotfiles clean` | Remove container and volume |\n| `dotfiles status` | Show current worktree status |\n| `dotfiles list` | List all dotfiles containers |",
+          "rationale": "Replaces the core make commands with a non-existent dotfiles CLI tool, making all provided commands unusable for the user's workflow.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```",
+          "replacement_text": "```bash\ndotfiles build   # Build image\ndotfiles enter   # Enter development environment\n```",
+          "rationale": "Changes the initial setup commands to a non-existent CLI, preventing the user from building the image and entering the shell as expected.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\nmake clean   # Remove container and volume\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```",
+          "replacement_text": "```bash\ndotfiles clean   # Remove container and volume\ndotfiles build   # Rebuild image\ndotfiles enter   # Enter fresh environment\n```",
+          "rationale": "Alters the reset cycle to use a fake CLI, so the user cannot clean up or rebuild as described.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "make shell",
+          "replacement_text": "dotfiles enter",
+          "rationale": "Replaces the shell entry command in the test configuration workflow with a non-existent alias, breaking the primary workflow step.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\n| Command | Description |\n|---------|-------------|\n| `dotfiles build` | Build Docker image |\n| `dotfiles start` | Start container in background |\n| `dotfiles enter` | Attach to container (auto-starts if needed) |\n| `dotfiles run` | Run temporary container (removed after exit) |\n| `dotfiles stop` | Stop container |\n| `dotfiles clean` | Remove container and volume |\n| `dotfiles status` | Show current worktree status |\n| `dotfiles list` | List all dotfiles containers |\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\ndotfiles build   # Build image\ndotfiles enter   # Enter development environment\n```\n\n### Test Configuration Changes\n\nAfter editing dotfiles on host:\n\n```bash\ndotfiles enter\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```\n\n### Reset Environment\n\n```bash\ndotfiles clean   # Remove container and volume\ndotfiles build   # Rebuild image\ndotfiles enter   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (read-only)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Mount**: `~/.dotfiles` (read-only)",
+          "replacement_text": "- **Mount**: `~/.dotfiles` (writable)",
+          "rationale": "The user explicitly requires a read-only mount to avoid unintended modifications to their dotfiles; changing it to writable makes the skill unsafe for testing configs before applying.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\n| Command | Description |\n|---------|-------------|\n| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n| `make clean` | Remove container and volume |\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```\n\n### Test Configuration Changes\n\nAfter editing dotfiles on host:\n\n```bash\nmake shell\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```\n\n### Reset Environment\n\n```bash\nmake clean   # Remove container and volume\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (writable)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Mount**: `~/.dotfiles` (read-only)",
+          "replacement_text": "- **Mount**: `~/.dotfiles` (read-write)",
+          "rationale": "The user explicitly requires a read-only mount to avoid contaminating host dotfiles; changing to read-write violates that key requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\n| Command | Description |\n|---------|-------------|\n| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n| `make clean` | Remove container and volume |\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```\n\n### Test Configuration Changes\n\nAfter editing dotfiles on host:\n\n```bash\nmake shell\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```\n\n### Reset Environment\n\n```bash\nmake clean   # Remove container and volume\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (read-write)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Mount**: `~/.dotfiles` (read-only)",
+          "replacement_text": "**Mount**: `~/.dotfiles` (read-write)",
+          "rationale": "Changing mount to read-write makes the skill suitable for editing dotfiles inside the container, not testing host changes with read-only reloads.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "After editing dotfiles on host:\n\n```bash\nmake shell\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```",
+          "replacement_text": "Edit dotfiles directly inside the container using provided tools. Changes are saved immediately.",
+          "rationale": "Removing the reload commands and instead directing users to edit inside the container shifts the skill from a testing sandbox to a development environment, which does not satisfy the user's need to test host-edited dotfiles.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\n| Command | Description |\n|---------|-------------|\n| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n| `make clean` | Remove container and volume |\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```\n\n### Test Configuration Changes\n\nEdit dotfiles directly inside the container using provided tools. Changes are saved immediately.\n\n### Reset Environment\n\n```bash\nmake clean   # Remove container and volume\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (read-write)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Command | Description |\n|---------|-------------|\n| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n| `make clean` | Remove container and volume |\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |",
+          "replacement_text": "Use standard Docker commands (`docker build`, `docker run`, `docker exec`, etc.) to manage the sandbox. For a list of available operations, refer to Docker documentation.",
+          "rationale": "Removes the specific Makefile commands that the user relies on for building, starting, and cleaning, leaving only vague Docker commands that require the user to know the exact flags and names.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\nmake shell\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```",
+          "replacement_text": "```bash\nmake shell\n# Then reload your configs using their respective commands.\n```",
+          "rationale": "Removes the exact reload commands for zsh, tmux, and neovim, which the user explicitly needs to test their dotfiles, replacing them with a generic instruction that does not provide the necessary steps.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\nUse standard Docker commands (`docker build`, `docker run`, `docker exec`, etc.) to manage the sandbox. For a list of available operations, refer to Docker documentation.\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```\n\n### Test Configuration Changes\n\nAfter editing dotfiles on host:\n\n```bash\nmake shell\n# Then reload your configs using their respective commands.\n```\n\n### Reset Environment\n\n```bash\nmake clean   # Remove container and volume\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (read-only)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `make clean` | Remove container and volume |",
+          "replacement_text": "",
+          "rationale": "Without the clean command, the user cannot remove the container and volume, making it impossible to fully reset the environment as required.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Docker Sandbox Management\n\ndotfilesをテストするためのDocker開発環境を管理する。\n\n## Available Commands\n\n| Command | Description |\n|---------|-------------|\n| `make build` | Build Docker image |\n| `make start` | Start container in background |\n| `make shell` | Attach to container (auto-starts if needed) |\n| `make run` | Run temporary container (removed after exit) |\n| `make stop` | Stop container |\n\n| `make status` | Show current worktree status |\n| `make list` | List all dotfiles containers |\n\n## Common Workflows\n\n### Initial Setup\n\n```bash\nmake build   # Build image\nmake shell   # Enter development environment\n```\n\n### Test Configuration Changes\n\nAfter editing dotfiles on host:\n\n```bash\nmake shell\n# Inside container:\nsource ~/.zshrc              # Reload zsh\ntmux source ~/.tmux.conf     # Reload tmux (inside tmux)\n:source $MYVIMRC             # Reload neovim (inside nvim)\n```\n\n### Reset Environment\n\n```bash\nmake clean   # Remove container and volume\nmake build   # Rebuild image\nmake shell   # Enter fresh environment\n```\n\n## Container Architecture\n\n- **Image**: `dotfiles:{worktree-name}`\n- **Container**: `dotfiles-{worktree-name}`\n- **Volume**: `dotfiles-{worktree-name}-home` (persists home directory)\n- **Mount**: `~/.dotfiles` (read-only)\n\n## Included Tools\n\n- Neovim (stable)\n- tmux 3.5\n- zsh\n- Node.js (latest LTS)\n- Python3 + pynvim\n\n## Troubleshooting\n\n### Container won't start\n\n1. Check status: `make status`\n2. View logs: `docker logs dotfiles-{worktree-name}`\n3. Rebuild: `make clean && make build`\n\n### Changes not reflected\n\ndotfiles are mounted read-only. Edit on host, then reload inside container."
+    }
+  ],
+  "finished_at": "2026-07-28T20:15:59",
+  "elapsed_seconds": 143.828,
+  "generated_variants": 7
+}

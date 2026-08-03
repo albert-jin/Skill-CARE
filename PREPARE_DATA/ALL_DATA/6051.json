@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:59:10",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 6051,
+  "selection_rank": 291,
+  "skill": {
+    "skill_id": "devops/ctx-plan-execution-nickcrew-claude-cortex",
+    "name": "ctx-plan-execution",
+    "category": "devops",
+    "description": "Execution discipline skill adapted from obra/superpowers. Ensures plans translate into tracked tasks, orchestration, and verification runs.",
+    "body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   - Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.\n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; attach screenshots/logs when relevant.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers, verification evidence.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`.",
+    "source": "pool"
+  },
+  "generated_query": "I have a plan in the chat for deploying a canary release of the payment service. The plan lists these steps: update the helm chart, configure the flag in Consul, run the canary for 30 minutes, verify error rates and latency, then promote. I need you to take that plan, create tasks for each step with the correct workstream categories, activate the required modes (e.g., ops, monitoring), and then work through each task one by one. After each step, run the verification checks we agreed on – smoke tests and a metrics dashboard check. Once all tasks are done, close them out and give me a summary of what was completed, any blockers, and attach a screenshot of the canary dashboard. Also note any lessons learned for the runbook.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "",
+          "rationale": "Deletes the verification step required by the user after each task, so the skill no longer supports executing verification checks as requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   \n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; attach screenshots/logs when relevant.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers, verification evidence.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use /ctx:verify rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "Use /ctx:verify rules (lint, spell check, and style guide) before moving to next task.",
+          "rationale": "The user query requires smoke tests and a metrics dashboard check after each step; this edit replaces those verification items with irrelevant checks, making the skill unable to fulfill the core verification requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nExecutes a deployment plan by converting it into a high-level runbook and running it through a single pass of verification.\n\n## Prereqs\n\n- A plan document in the chat (e.g., step list).\n- Project context loaded (service names, environment).\n\n## Steps\n\n1. **Ingest Plan Steps**\n   - Read the step list from the chat; confirm no ambiguous steps exist.\n2. **Activate Required Modes**\n   - In the modes view (`3`), toggle on `ops` and any other mode mentioned in the plan (e.g., `monitoring`). No need to adjust rules individually.\n3. **Execute the Plan**\n   - Walk through steps as a sequential script: run each command, wait for expected outputs.\n   - Do not capture separate tasks for each step – treat the whole plan as one batch.\n4. **Run Post-Execution Verification**\n   - After all steps finish, run a single set of smoke tests and a metrics dashboard check (one call to the dashboard endpoint).\n5. **Provide Summary**\n   - Print a completion message listing the steps that were run and any error encountered.\n   - Optionally paste a link to the dashboard if available.\n   - Note any obvious blockers that stopped the whole plan.\n6. **Close Out**\n   - Mark the plan as complete in the chat (no task view updates required).\n   - Archive any temporary files.\n\n## Output\n\n- A single status message: steps executed, overall success/failure, link to dashboard.\n- No per‑step tasks, no screenshots, no lessons learned – unless explicitly asked.\n\n## Resources\n\n- Runbook template: `skills/devops/canary/canary-runbook.md`."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   - Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "   - Use `/ctx:verify` rules (unit tests, lint, code coverage) before moving to next task.",
+          "rationale": "Changes the verification checks to unit tests and code coverage, omitting the smoke tests and metrics dashboard required by the user query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "attach screenshots/logs when relevant",
+          "replacement_text": "attach log files when relevant",
+          "rationale": "Removes the ability to attach screenshots, which the user explicitly requires for the canary dashboard evidence.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   - Use `/ctx:verify` rules (unit tests, lint, code coverage) before moving to next task.\n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; attach log files when relevant.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers, verification evidence.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "Optionally use `/ctx:verify` rules if time permits before moving to next task.",
+          "rationale": "Weakening the mandatory verification check means the skill may skip the smoke tests and metrics dashboard checks required by the query.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Status update message covering completed tasks, blockers, verification evidence.",
+          "replacement_text": "Status update message covering completed tasks, blockers.",
+          "rationale": "Removing 'verification evidence' from the status update makes it optional to include the screenshot and metrics results, failing the query's requirement for a summary with verification evidence.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   - Optionally use `/ctx:verify` rules if time permits before moving to next task.\n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; attach screenshots/logs when relevant.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "Use `/ctx:verify` rules (unit tests, integration tests) before moving to next task.",
+          "rationale": "The query requires smoke tests and a metrics dashboard check after each step, but the edited skill replaces those with unit and integration tests.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "summarize progress + next up; attach screenshots/logs when relevant.",
+          "replacement_text": "summarize progress + next up; update status in chat.",
+          "rationale": "The query explicitly asks for a screenshot of the canary dashboard in the final summary, but the edited skill removes the screenshot attachment step.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   - Use `/ctx:verify` rules (unit tests, integration tests) before moving to next task.\n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; update status in chat.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers, verification evidence.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "Use `/ctx:verify` to run relevant checks before moving to next task.",
+          "rationale": "The edited skill no longer specifies which verification checks are performed, so the user's required smoke tests and metrics dashboard check may be omitted.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   - Use `/ctx:verify` to run relevant checks before moving to next task.\n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; attach screenshots/logs when relevant.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers, verification evidence.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "",
+          "rationale": "Removing the verification step means the executor will not run smoke tests and metrics checks after each task, directly failing the user's explicit requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   \n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; attach screenshots/logs when relevant.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers, verification evidence.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use `/ctx:verify` rules (tests, lint, Supersaiyan visual check) before moving to next task.",
+          "replacement_text": "Use `/ctx:verify` rules (tests, lint, CloudWatch logs analysis) before moving to next task.",
+          "rationale": "The user explicitly requires a metrics dashboard check and a screenshot of the canary dashboard; replacing the visual dashboard check with log analysis removes the ability to perform that check and generate the required screenshot, making the skill a hard negative despite looking relevant.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# `/ctx:execute-plan`\n\nLocks in the plan and drives it through claude-ctx’s orchestration + verification stack.\n\n## Prereqs\n\n- `/ctx:plan` output in the thread.\n- Tasks captured in the Task view (`T`) or ready to be created now.\n- Relevant modes/agents activated.\n\n## Steps\n\n1. **Create/Sync Tasks**\n   - For each plan item, add/edit a task (Task view `T` → `A`/`E`).\n   - Ensure category + workstream mirror the plan’s stream names.\n2. **Activate Modes & Rules**\n   - Toggle required modes (`3` view) and rules (`4` view) to match plan.\n3. **Run Workstream Loops**\n   - Pick a task → do the work → update status/progress.\n   - Use `/ctx:verify` rules (tests, lint, CloudWatch logs analysis) before moving to next task.\n4. **Update Stakeholders**\n   - For finished streams, summarize progress + next up; attach screenshots/logs when relevant.\n5. **Retrospective Hooks**\n   - When all tasks complete, close them in Task view, capture learnings in chat, and link to plan doc.\n\n## Output\n\n- Tasks JSON updated under `tasks/current/active_agents.json`.\n- Status update message covering completed tasks, blockers, verification evidence.\n- Next steps or follow-up issues if needed.\n\n## Resources\n\n- Execution checklist: `skills/collaboration/executing-plans/resources/checklist.md`."
+    }
+  ],
+  "finished_at": "2026-07-29T04:01:30",
+  "elapsed_seconds": 139.36,
+  "generated_variants": 8
+}

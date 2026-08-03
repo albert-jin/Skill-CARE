@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:55:44",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 19192,
+  "selection_rank": 75,
+  "skill": {
+    "skill_id": "development/wt-status",
+    "name": "wt-status",
+    "category": "development",
+    "description": "Show comprehensive status of current and all git worktrees. Use when checking uncommitted changes, sync status, or getting overview of all active worktrees.",
+    "body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and all worktrees.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **All worktrees and their states** - Overview of all worktrees\n- **Uncommitted changes** - Files modified, staged, untracked\n- **Branches ahead/behind origin** - Sync status with remote\n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Multi-Worktree View** - Status of all worktrees",
+    "source": "pool"
+  },
+  "generated_query": "I'm juggling three feature branches in separate git worktrees for our project, and I need a quick status check before our standup. Can you show me the current state of all my worktrees? I want to see which worktrees have uncommitted changes (modified, staged, or untracked files), which branches are ahead or behind their remote counterparts, and what branch I'm currently on in each worktree. Also, highlight the worktree I'm actually in right now.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Branches ahead/behind origin** - Sync status with remote",
+          "replacement_text": "",
+          "rationale": "Deleting the sync status information causes the skill to omit branch ahead/behind details required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and all worktrees.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **All worktrees and their states** - Overview of all worktrees\n- **Uncommitted changes** - Files modified, staged, untracked\n\n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Multi-Worktree View** - Status of all worktrees"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Automatically runs the `*status` command",
+          "replacement_text": "2. Automatically runs the `*current-status` command (only for current worktree)",
+          "rationale": "This removes the multi-worktree status overview, failing the user's request to see all worktrees.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**All worktrees and their states** - Overview of all worktrees",
+          "replacement_text": "**Current worktree state** - Overview of current worktree",
+          "rationale": "This removes the listing of all worktrees, so the user cannot see their separate feature branches.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and all worktrees.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*current-status` command (only for current worktree)\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **Current worktree state** - Overview of current worktree\n- **Uncommitted changes** - Files modified, staged, untracked\n- **Branches ahead/behind origin** - Sync status with remote\n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Multi-Worktree View** - Status of all worktrees"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **All worktrees and their states** - Overview of all worktrees",
+          "replacement_text": "- **Current worktree state** - Detailed status of the current worktree only",
+          "rationale": "The user explicitly asks for status of all worktrees, but this edit limits output to only the current worktree, failing the multi-worktree requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "✅ **Multi-Worktree View** - Status of all worktrees",
+          "replacement_text": "✅ **Single Worktree Focus** - Detailed status of the active worktree",
+          "rationale": "Reinforces the limitation to current worktree, making the skill appear to only support single worktree status, contradicting the user's need for an overview of all worktrees.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and all worktrees.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **Current worktree state** - Detailed status of the current worktree only\n- **Uncommitted changes** - Files modified, staged, untracked\n- **Branches ahead/behind origin** - Sync status with remote\n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Single Worktree Focus** - Detailed status of the active worktree"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**Branches ahead/behind origin** - Sync status with remote",
+          "replacement_text": "",
+          "rationale": "This edit removes the sync status information, so the skill cannot show which branches are ahead or behind their remote, which the user explicitly needs.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and all worktrees.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **All worktrees and their states** - Overview of all worktrees\n- **Uncommitted changes** - Files modified, staged, untracked\n- \n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Multi-Worktree View** - Status of all worktrees"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Quick command to show comprehensive status of the current worktree and all worktrees.",
+          "replacement_text": "Quick command to show comprehensive status of the current worktree only.",
+          "rationale": "The user needs status of all worktrees, but this skill now only shows the current worktree, missing a key capability.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **All worktrees and their states** - Overview of all worktrees",
+          "replacement_text": "- **Current worktree state** - Detailed information about the current worktree",
+          "rationale": "Removes the all-worktrees overview that the user explicitly requested, making the skill insufficient.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree only.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **Current worktree state** - Detailed information about the current worktree\n- **Uncommitted changes** - Files modified, staged, untracked\n- **Branches ahead/behind origin** - Sync status with remote\n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Multi-Worktree View** - Status of all worktrees"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Uncommitted changes - Files modified, staged, untracked",
+          "replacement_text": "Uncommitted changes - Overview of local changes",
+          "rationale": "Replaces specific file state categories with a vague summary, failing to show which files are modified, staged, or untracked.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Branches ahead/behind origin - Sync status with remote",
+          "replacement_text": "Branch status - General sync information",
+          "rationale": "Removes the explicit ahead/behind detail, so the skill cannot answer whether branches are ahead or behind their remote.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and branch you're actively working in.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **Current branch** - The branch checked out in this worktree\n- **Uncommitted changes** - Files modified, staged, untracked\n- **Ahead/behind origin** - Sync status with remote for the current branch\n\n## Benefits\n\n✅ **Instant Snapshot** - See what’s going on in your active worktree\n✅ **Sync Awareness** - Know if you're ahead or behind remote\n✅ **Change Tracking** - Catch uncommitted work before standup\n✅ **Focused Overview** - No clutter from other worktrees"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Uncommitted changes** - Files modified, staged, untracked",
+          "replacement_text": "",
+          "rationale": "Deleting the uncommitted changes bullet means the skill would not report modified, staged, or untracked files, which the user explicitly requests.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and all worktrees.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **All worktrees and their states** - Overview of all worktrees\n\n- **Branches ahead/behind origin** - Sync status with remote\n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Multi-Worktree View** - Status of all worktrees"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Shows detailed status information",
+          "replacement_text": "3. Shows detailed status information for the current worktree only",
+          "rationale": "The skill now displays only the current worktree's status instead of all worktrees, failing the user's need for a multi-worktree overview.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **All worktrees and their states** - Overview of all worktrees",
+          "replacement_text": "- **Current worktree state** - Details of current worktree",
+          "rationale": "Removes the listing of all worktrees, making the skill unable to show which branches are ahead/behind in each worktree.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# /wt:status - Show Worktree Status\n\n## Description\nQuick command to show comprehensive status of the current worktree and all worktrees.\n\n## Usage\n```\n/wt:status\n```\n\n## What It Does\n\nThis slash command:\n1. Activates the Git Worktree Manager skill (`@git-worktree`)\n2. Automatically runs the `*status` command\n3. Shows detailed status information for the current worktree only\n\n## Information Displayed\n\nThe command shows:\n- **Current worktree location** - Where you are now\n- **Current worktree state** - Details of current worktree\n- **Uncommitted changes** - Files modified, staged, untracked\n- **Branches ahead/behind origin** - Sync status with remote\n\n## Benefits\n\n✅ **Complete Overview** - See everything at a glance\n✅ **Sync Awareness** - Know what needs pushing/pulling\n✅ **Change Tracking** - See all uncommitted work\n✅ **Multi-Worktree View** - Status of all worktrees"
+    }
+  ],
+  "finished_at": "2026-07-28T15:57:39",
+  "elapsed_seconds": 115.516,
+  "generated_variants": 8
+}

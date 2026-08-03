@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:59:24",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 62523,
+  "selection_rank": 96,
+  "skill": {
+    "skill_id": "other/drive-permissions",
+    "name": "drive-permissions",
+    "category": "other",
+    "description": "Google Drive のファイルの共有設定を確認する。「共有状況確認」「誰がアクセスできる」「共有設定を見せて」「アクセス権確認」「権限一覧」「共有中のユーザー」などで起動。`/shiiman-google:drive-permissions` を実行して共有設定を取得する。",
+    "body": "# Drive Permissions\n\nGoogle Drive のファイルの共有設定を確認します。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-permissions` に委譲します（SSOT として扱う）。",
+    "source": "pool"
+  },
+  "generated_query": "Can you check the sharing settings on my Google Drive folder named \"Q3 Budget Review\"? I need to know who currently has access and what their permission levels are (view, comment, or edit). Also, let me know if there are any links that allow public access.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 1. コマンド実行\n\n`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "replacement_text": "",
+          "rationale": "Deleting the command execution step means the skill provides no method to actually retrieve sharing settings, so it cannot fulfill the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Drive Sharing Status\n\nGoogle Drive のフォルダの共有状態（公開範囲）を確認します。公開リンクの有無や、ドメイン内での共有設定を表示します。個々のユーザーごとのアクセス権は取得しません。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-google:drive-sharing-status` を SlashCommand ツールで実行（実装は Commands に委譲）。このコマンドは、指定されたフォルダの公開設定（Public（誰でもアクセス可）、Domain with link（リンクを知っているドメインユーザー）、Restricted（個別ユーザーのみ））を表示します。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-sharing-status` に委譲します（SSOT として扱う）。"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "replacement_text": "`/shiiman-google:drive-list` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "rationale": "Changing the core API from permission retrieval to file listing makes the skill unable to provide sharing settings needed for the query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "実際の処理は `/shiiman-google:drive-permissions` に委譲します（SSOT として扱う）。",
+          "replacement_text": "実際の処理は `/shiiman-google:drive-list` に委譲します（SSOT として扱う）。",
+          "rationale": "Reinforcing the swapped command ensures the skill consistently fails to fetch permissions, aligning with the core-API replacement strategy.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Drive Permissions\n\nGoogle Drive のファイルの共有設定を確認します。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-google:drive-list` を SlashCommand ツールで実行（実装は Commands に委譲）。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-list` に委譲します（SSOT として扱う）。"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Google Drive のファイルの共有設定を確認します。",
+          "replacement_text": "Google Drive のファイルの基本情報（ファイル名、作成日、更新日）を確認します。",
+          "rationale": "The description no longer mentions sharing settings, so the skill appears to provide basic file info instead of access permissions.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "replacement_text": "`/shiiman-google:drive-basic-info` を SlashCommand ツールで実行（実装は Commands に委譲）。このコマンドはファイル・フォルダの基本情報のみを返し、共有設定の詳細は含みません。",
+          "rationale": "The command is changed to one that returns only basic metadata, lacking the sharing details needed to answer the query about who has access and permission levels.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Drive Permissions\n\nGoogle Drive のファイルの基本情報（ファイル名、作成日、更新日）を確認します。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-google:drive-basic-info` を SlashCommand ツールで実行（実装は Commands に委譲）。このコマンドはファイル・フォルダの基本情報のみを返し、共有設定の詳細は含みません。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-permissions` に委譲します（SSOT として扱う）。"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Google Drive のファイルの共有設定を確認します。",
+          "replacement_text": "Google Drive のファイルの共有ユーザー一覧を表示します。",
+          "rationale": "The skill now only lists users with access, not their permission levels or public links, so it cannot answer the user's query about permission levels and public access.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Drive Permissions\n\nGoogle Drive のファイルの共有ユーザー一覧を表示します。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-permissions` に委譲します（SSOT として扱う）。"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Google Drive のファイルの共有設定を確認します。",
+          "replacement_text": "Google Drive のファイルの公開アクセスリンクの有無を確認します。",
+          "rationale": "The skill now only checks for public access links instead of full sharing settings, so it cannot list users or permission levels as required.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Drive Permissions\n\nGoogle Drive のファイルの公開アクセスリンクの有無を確認します。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-permissions` に委譲します（SSOT として扱う）。"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "replacement_text": "`/shiiman-file:permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "rationale": "The skill no longer targets Google Drive specifically, so it cannot retrieve sharing settings for a Google Drive folder as requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Drive Permissions\n\nGoogle Drive のファイルの共有設定を確認します。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-file:permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-permissions` に委譲します（SSOT として扱う）。"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "replacement_text": "",
+          "rationale": "Deleting the only command execution step means the skill cannot actually retrieve any folder sharing settings, so it fails to answer the user's query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Drive Permissions Overview\n\nGoogle Drive の共有設定の概要を確認します。\n\n## ワークフロー\n\n### 1. フォルダ選択\n\nまず、対象のフォルダ名（例：`Q3 Budget Review`）を指定して、共有状態を確認します。\n\n### 2. コマンド実行\n\n`/shiiman-google:drive-permissions-overview` を SlashCommand ツールで実行。\n\nこのコマンドは、指定フォルダが共有されているかどうかのみを返します。  \n- 「共有あり」または「共有なし」の結果が表示されます。  \n- 具体的なユーザー一覧や権限レベル（閲覧・コメント・編集）は取得しません。  \n- 公開リンクの有無もこのコマンドでは確認できません。\n\n### 3. 追加確認\n\nもし特定のユーザーのアクセス権を調べたい場合は、別途「ユーザー確認モード」で該当ユーザーのメールアドレスを指定して再度コマンドを実行してください。  \n- 例：`/shiiman-google:drive-user-access --folder \"Q3 Budget Review\" --email partner@example.com`\n\n## 注意事項\n\n本スキルはフォルダの共有有無のみを簡易的に確認するものです。詳細な権限一覧や公開リンクの存在を調べるには、Google Drive の Web UI を直接ご利用いただくか、別のスキル（例：`drive-permissions-detail`）を使用してください。"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`/shiiman-google:drive-permissions` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "replacement_text": "`/shiiman-google:drive-file-properties` を SlashCommand ツールで実行（実装は Commands に委譲）。",
+          "rationale": "By replacing the core API command that retrieves sharing permissions with one that only retrieves file properties, the skill cannot answer the user query about access lists, permission levels, or public links.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "実際の処理は `/shiiman-google:drive-permissions` に委譲します（SSOT として扱う）。",
+          "replacement_text": "実際の処理は `/shiiman-google:drive-file-properties` に委譲します（SSOT として扱う）。",
+          "rationale": "Consistently replacing the command reference ensures the skill appears coherent but still functionally irrelevant to checking sharing settings.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Drive Permissions\n\nGoogle Drive のファイルの共有設定を確認します。\n\n## ワークフロー\n\n### 1. コマンド実行\n\n`/shiiman-google:drive-file-properties` を SlashCommand ツールで実行（実装は Commands に委譲）。\n\n## コマンド連携\n\n実際の処理は `/shiiman-google:drive-file-properties` に委譲します（SSOT として扱う）。"
+    }
+  ],
+  "finished_at": "2026-07-28T17:01:50",
+  "elapsed_seconds": 145.297,
+  "generated_variants": 8
+}

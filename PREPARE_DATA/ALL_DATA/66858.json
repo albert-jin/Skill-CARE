@@ -1,0 +1,212 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:01:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 66858,
+  "selection_rank": 189,
+  "skill": {
+    "skill_id": "other/architecture-paradigm-pipeline-athola-claude-night-market",
+    "name": "architecture-paradigm-pipeline",
+    "category": "other",
+    "description": "1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.",
+    "body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a system to process customer reviews from our website, app, and third-party platforms like Google Play and the App Store. The raw data comes in as JSON blobs with timestamps, ratings, and free-text comments. I need to design a reliable data pipeline that ingests these streams, cleans and normalizes the text, runs sentiment analysis (positive/negative/neutral), aggregates scores per product and day, and then stores the results in a reporting database. Each stage should be independent so that if sentiment analysis fails, the rest of the pipeline can still buffer data and retry. I also need to handle schema changes—for example, if a new field appears in the raw data, it shouldn't break downstream stages. Could you help me define the processing stages (filters), choose a way to connect them (like a message queue or stream), decide on error handling and replay mechanisms, and suggest how to monitor latency and throughput for each stage? I also need to produce contract tests for each filter to ensure they work together correctly.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.",
+          "replacement_text": "",
+          "rationale": "This edit removes the deliverable of contract tests, which the user explicitly requests for ensuring filter interoperability and correctness.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Connect via Pipes: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.",
+          "replacement_text": "Connect via Pipes: Connect the filters using direct function calls or synchronous RPC endpoints. Ensure these calls complete quickly to avoid blocking the pipeline.",
+          "rationale": "Replacing asynchronous, buffered pipes with synchronous calls prevents failure isolation and retry capabilities required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# The Centralized ETL Pipeline\n\n## When to Employ This Paradigm\n- When data volume is moderate and processing latency is not a strict requirement (e.g., daily batch reports).\n- When the team is small and prefers a single, well‑understood processing component over a distributed system.\n- When operational simplicity outweighs the need for independent scaling or fine‑grained failure recovery.\n\n## Adoption Steps\n1. **Define a Single Processing Stage**: Collect all transformations—cleaning, normalization, sentiment analysis, and aggregation—into one monolithic filter. This stage accepts raw JSON blobs and outputs aggregated results.\n2. **Use a Single Input Queue**: Place all incoming data (from website, app, third‑party platforms) into one shared message queue. The queue provides buffering and basic retry.\n3. **Centralize State within the Stage**: Maintain aggregation state (daily scores per product) in an in‑memory cache backed by the reporting database. The stage reloads state on restart; no external state management needed.\n4. **Instrument the Whole Pipeline as One Unit**: Monitor only the overall latency and throughput of the single stage. Error rates are tracked aggregated, without per‑transformation visibility.\n5. **Deploy as a Monolith**: Package the entire pipeline into one deployment unit. Scaling requires duplicating the entire process, including all transformations.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the chosen input queue technology and the monolithic processing logic.\n- A single integration test suite that validates the complete pipeline end‑to‑end on a sample dataset.\n- A dashboard showing overall throughput and error count for the full pipeline.\n\n## Risks & Mitigations\n- **Transform‑Specific Bottleneck**:\n  - *Mitigation*: Within the monolithic stage, identify the slowest sub‑process (e.g., sentiment analysis) and consider offloading it to a separate thread. However, the whole stage still scales as one unit.\n- **Schema Drift**:\n  - *Mitigation*: The staging function can be made tolerant to unknown fields by keeping a generic JSON parser that discards unexpected keys. No per‑filter schema enforcement is needed.\n- **Back‑Pressure Failures**:\n  - *Mitigation*: Increase the input queue’s message retention period and implement a simple circuit breaker that stops reading from the queue when memory usage exceeds a threshold.\n\n## Troubleshooting\n\n### Common Issues\n\n**Processing stage crashes frequently**  \nInvestigate the monolithic log; often a single bad record causes a full restart. Add record‑level try‑catch around each sub‑process within the stage.\n\n**Output lag increases over time**  \nThe in‑memory aggregation may grow unbounded. Implement periodic flushing to the reporting database every 10 minutes.\n\n**Schema changes cause ingestion failures**  \nUpdate the generic parsing logic to drop new fields; no re‑deployment of separate stages is needed—just redeploy the single service."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Each filter must have a clear input and output data schema.",
+          "replacement_text": "Each filter must have a fixed, immutable input and output data schema—any new or missing fields cause immediate pipeline failure.",
+          "rationale": "By making schemas rigid and intolerant to new fields, the skill no longer supports the schema-evolution requirement in the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "validate these pipes support back-pressure and buffering.",
+          "replacement_text": "these pipes do NOT support back-pressure or buffering—any overflow is dropped immediately.",
+          "rationale": "By removing back-pressure and buffering, the skill cannot isolate failures or buffer data during sentiment analysis failures as required.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a fixed, immutable input and output data schema—any new or missing fields cause immediate pipeline failure.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. these pipes do NOT support back-pressure or buffering—any overflow is dropped immediately.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.",
+          "replacement_text": "Schema drift can be managed by adding new fields to downstream schemas manually when they appear, with appropriate error logging for unexpected fields.",
+          "rationale": "By replacing proactive schema compatibility enforcement with a manual reactive approach, the skill fails the query's need for automatic resilience to schema changes.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Schema drift can be managed by adding new fields to downstream schemas manually when they appear, with appropriate error logging for unexpected fields.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- When failure isolation between stages is a critical requirement.",
+          "replacement_text": "- When minimal latency between stages is a critical requirement.",
+          "rationale": "Shifts focus from failure isolation (needed for independent retry) to low latency, undermining the error handling requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.",
+          "replacement_text": "- A suite of integration tests for the entire pipeline, covering common execution paths.",
+          "rationale": "Removes the need for per-filter contract tests, failing the query's explicit request for contract tests.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When minimal latency between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of integration tests for the entire pipeline, covering common execution paths.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "validate these pipes support back-pressure and buffering.",
+          "replacement_text": "choose any appropriate communication channel between filters.",
+          "rationale": "Removes the specific requirement for back-pressure and buffering, which is essential for the user's need for failure isolation and retry.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.",
+          "replacement_text": "A high-level architecture overview document.",
+          "rationale": "Replaces the concrete contract and integration test deliverable with a vague document, omitting the user's explicit need for contract tests.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. choose any appropriate communication channel between filters.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A high-level architecture overview document.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.",
+          "replacement_text": "",
+          "rationale": "Without specifying how to connect filters with back-pressure and buffering, the pipeline cannot reliably handle failures and retries.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.",
+          "replacement_text": "2. **Connect via Pipes**: Connect the filters using \"pipes\" implemented as HTTP REST endpoints. Validate that these endpoints support immediate synchronous responses.",
+          "rationale": "Replacing the pipe technology with synchronous HTTP REST endpoints removes buffering and back-pressure, breaking the required failure isolation and retry capability.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes\" implemented as HTTP REST endpoints. Validate that these endpoints support immediate synchronous responses.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. validate these pipes support back-pressure and buffering.",
+          "replacement_text": "Connect the filters using \"pipes,\" which are implemented as synchronous remote procedure calls (e.g., REST endpoints) without any queuing or buffering.",
+          "rationale": "Removing back-pressure and buffering prevents the pipeline from handling independent stage failures and retry semantics required by the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which are implemented as synchronous remote procedure calls (e.g., REST endpoints) without any queuing or buffering.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "validate these pipes support back-pressure and buffering.",
+          "replacement_text": "consider configuring back-pressure and buffering if needed.",
+          "rationale": "By making back-pressure and buffering optional, the skill no longer guarantees independent stage failure handling, which is critical for the query's requirement that a failed stage does not block others.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Centralize schema definitions in a shared repository and enforce compatibility tests as part of the CI/CD process to prevent breaking changes.",
+          "replacement_text": "Centralize schema definitions in a shared repository and optionally include compatibility tests in the CI/CD process.",
+          "rationale": "By removing the enforcement of compatibility tests, the skill no longer ensures robust handling of schema changes, contradicting the query's need to tolerate new fields without breaking downstream stages.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# The Pipeline (Pipes and Filters) Paradigm\n\n## When to Employ This Paradigm\n- When data must flow through a fixed sequence of discrete transformations, such as in ETL jobs, streaming analytics, or CI/CD pipelines.\n- When reusing individual processing stages is needed, either independently or to scale bottleneck stages separately from others.\n- When failure isolation between stages is a critical requirement.\n\n## Adoption Steps\n1. **Define Filters**: Design each stage (filter) to perform a single, well-defined transformation. Each filter must have a clear input and output data schema.\n2. **Connect via Pipes**: Connect the filters using \"pipes,\" which can be implemented as streams, message queues, or in-memory channels. consider configuring back-pressure and buffering if needed.\n3. **Maintain Stateless Filters**: Where possible, design filters to be stateless. Any required state should be persisted externally or managed at the boundaries of the pipeline.\n4. **Instrument Each Stage**: Implement monitoring for each filter to track key metrics such as latency, throughput, and error rates.\n5. **Orchestrate Deployments**: Design the deployment strategy to allow each stage to be scaled horizontally and upgraded independently.\n\n## Key Deliverables\n- An Architecture Decision Record (ADR) documenting the filters, the chosen pipe technology, the error-handling strategy, and the tools for replaying data.\n- A suite of contract tests for each filter, plus integration tests that cover representative end-to-end pipeline executions.\n- Observability dashboards that visualize stage-level Key Performance Indicators (KPIs).\n\n## Risks & Mitigations\n- **Single-Stage Bottlenecks**:\n  - **Mitigation**: Implement auto-scaling for individual filters. If a single filter remains a bottleneck, consider refactoring it into a more granular sub-pipeline.\n- **Schema Drift Between Stages**:\n  - **Mitigation**: Centralize schema definitions in a shared repository and optionally include compatibility tests in the CI/CD process.\n- **Back-Pressure Failures**:\n  - **Mitigation**: Conduct rigorous load testing to simulate high-volume scenarios. Validate that buffering, retry logic, and back-pressure mechanisms behave as expected under stress.\n## Troubleshooting\n\n### Common Issues\n\n**Command not found**\nEnsure all dependencies are installed and in PATH\n\n**Permission errors**\nCheck file permissions and run with appropriate privileges\n\n**Unexpected behavior**\nEnable verbose logging with `--verbose` flag"
+    }
+  ],
+  "finished_at": "2026-07-28T22:04:40",
+  "elapsed_seconds": 163.594,
+  "generated_variants": 10
+}

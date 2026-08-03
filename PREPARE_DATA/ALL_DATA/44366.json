@@ -1,0 +1,212 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:33:47",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 44366,
+  "selection_rank": 129,
+  "skill": {
+    "skill_id": "other/blogwatcher-lex-1401-zero",
+    "name": "blogwatcher",
+    "category": "other",
+    "description": "Monitor blogs and RSS/Atom feeds for updates using the blogwatcher CLI.",
+    "body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add \"My Blog\" https://example.com`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher scan`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options.",
+    "source": "pool"
+  },
+  "generated_query": "I’ve been following a few tech blogs and RSS feeds manually, but I keep missing updates. Could you help me set up a simple workflow to track them? I want to add my favorite blogs by URL—like “xkcd” from https://xkcd.com and “Daring Fireball” from https://daringfireball.net/feed—then check for new posts whenever I remember. After scanning, I’d like to see a list of the new articles and mark each one as read after I read it, or mark all as read if I’ve caught up. Also, if I stop following a blog, I need to remove it from the list. Can you walk me through the commands step by step?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Scan for updates: `blogwatcher scan`",
+          "replacement_text": "",
+          "rationale": "Deleting the scan command removes the core ability to check for new posts, so the user cannot detect updates.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add \"My Blog\" https://example.com`\n- List blogs: `blogwatcher blogs`\n\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Scan for updates: `blogwatcher scan`",
+          "replacement_text": "Scan for updates: `blogwatcher fetch`",
+          "rationale": "The scan command is renamed to 'fetch', which is not an actual blogwatcher command, so the user cannot trigger an update check as intended.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "List articles: `blogwatcher articles`",
+          "replacement_text": "List articles: `blogwatcher list`",
+          "rationale": "The articles command is replaced with 'list', which is not supported by blogwatcher, preventing the user from viewing new articles.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Mark all articles read: `blogwatcher read-all`",
+          "replacement_text": "",
+          "rationale": "Removing the 'read-all' command eliminates the ability to mark all articles as read, a key requirement for the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add \"My Blog\" https://example.com`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher fetch`\n- List articles: `blogwatcher list`\n- Mark an article read: `blogwatcher read 1`\n- \n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Scan for updates: `blogwatcher scan`",
+          "replacement_text": "- Scan for updates: `blogwatcher update`",
+          "rationale": "The user expects 'blogwatcher scan' to check for new posts, but the skill now uses 'update', causing failure.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Mark an article read: `blogwatcher read 1`",
+          "replacement_text": "- Mark an article read: `blogwatcher mark-read 1`",
+          "rationale": "The user needs to mark individual articles read, but the command is renamed to 'mark-read', so following the original instructions would fail.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Mark all articles read: `blogwatcher read-all`",
+          "replacement_text": "- Mark all articles read: `blogwatcher mark-all-read`",
+          "rationale": "The convenient 'read-all' command is changed to 'mark-all-read', breaking the user's expected workflow.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add \"My Blog\" https://example.com`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher update`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher mark-read 1`\n- Mark all articles read: `blogwatcher mark-all-read`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Add a blog: `blogwatcher add \"My Blog\" https://example.com`",
+          "replacement_text": "- Add a blog: `blogwatcher add \"My Blog\"`",
+          "rationale": "Removing the URL from the add command makes it impossible for the user to specify which blog feed to track, so they cannot add their favorite blogs by URL as required.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add \"My Blog\"`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher scan`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Add a blog: `blogwatcher add \"My Blog\" https://example.com`",
+          "replacement_text": "- Add a feed: `blogwatcher add \"My Feed\" https://example.com/feed`",
+          "rationale": "User expects to add blogs by homepage URL, but this skill now requires a direct feed URL, making the examples like xkcd and Daring Fireball unusable.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a feed: `blogwatcher add \"My Feed\" https://example.com/feed`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher scan`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Common commands\n- Add a blog: `blogwatcher add \"My Blog\" https://example.com`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher scan`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`",
+          "replacement_text": "Use `blogwatcher` with subcommands to manage your feeds.",
+          "rationale": "The skill no longer provides the specific commands requested by the user, making it unhelpful for the step-by-step walkthrough.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nUse `blogwatcher` with subcommands to manage your feeds.\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Scan for updates: `blogwatcher scan`",
+          "replacement_text": "",
+          "rationale": "Without the scan command, the user cannot check for new blog posts, which is the core requirement of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add \"My Blog\" https://example.com`\n- List blogs: `blogwatcher blogs`\n\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Add a blog: `blogwatcher add \"My Blog\" https://example.com`",
+          "replacement_text": "- Add a blog: `blogwatcher add \"My Blog\"`",
+          "rationale": "The skill no longer supports adding blogs by URL, only by name, so the user cannot follow specific blogs via their RSS URLs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add \"My Blog\"`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher scan`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Add a blog: `blogwatcher add \"My Blog\" https://example.com`",
+          "replacement_text": "- Add a blog: `blogwatcher add --id 12345`",
+          "rationale": "The skill now requires a blog ID instead of a URL, so users cannot add blogs by their feed URL.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add --id 12345`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher scan`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Add a blog: `blogwatcher add \"My Blog\" https://example.com`",
+          "replacement_text": "- Add a blog: `blogwatcher add https://example.com`",
+          "rationale": "Removing the name argument from the add command prevents the user from associating a human-readable name with their blogs, so they cannot later remove a blog by name as requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# blogwatcher\n\nTrack blog and RSS/Atom feed updates with the `blogwatcher` CLI.\n\nInstall\n- Go: `go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest`\n\nQuick start\n- `blogwatcher --help`\n\nCommon commands\n- Add a blog: `blogwatcher add https://example.com`\n- List blogs: `blogwatcher blogs`\n- Scan for updates: `blogwatcher scan`\n- List articles: `blogwatcher articles`\n- Mark an article read: `blogwatcher read 1`\n- Mark all articles read: `blogwatcher read-all`\n- Remove a blog: `blogwatcher remove \"My Blog\"`\n\nExample output\n```\n$ blogwatcher blogs\nTracked blogs (1):\n\n  xkcd\n    URL: https://xkcd.com\n```\n```\n$ blogwatcher scan\nScanning 1 blog(s)...\n\n  xkcd\n    Source: RSS | Found: 4 | New: 4\n\nFound 4 new article(s) total!\n```\n\nNotes\n- Use `blogwatcher <command> --help` to discover flags and options."
+    }
+  ],
+  "finished_at": "2026-07-28T18:36:48",
+  "elapsed_seconds": 180.734,
+  "generated_variants": 10
+}

@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:59:24",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 50508,
+  "selection_rank": 164,
+  "skill": {
+    "skill_id": "other/prefer-immutability",
+    "name": "prefer-immutability",
+    "category": "other",
+    "description": "Prefer const over let and readonly properties where possible Use when enforcing code quality standards. Quality category skill.",
+    "body": "# Prefer Immutability\n\nPrefer const over let and readonly properties where possible. Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops. When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase.",
+    "source": "pool"
+  },
+  "generated_query": "I have a function that processes a list of orders and applies discounts. Currently, it mutates the original array and uses `let` for variables that don't change. Can you refactor this code to eliminate mutations and use `const` and immutable update patterns? Also, the `Order` interface has a mutable `status` property that should only be set once—make it read-only where possible.\n\nHere's the current code:\n\n```typescript\ninterface Order {\n  id: number;\n  items: string[];\n  total: number;\n  status: string;\n}\n\nfunction applyDiscount(orders: Order[], discount: number): Order[] {\n  let discountedOrders: Order[] = [];\n  for (let i = 0; i < orders.length; i++) {\n    let order = orders[i];\n    if (order.total > 100) {\n      order.total = order.total * (1 - discount);\n      order.status = \"discounted\";\n    }\n    discountedOrders.push(order);\n  }\n  return discountedOrders;\n}\n\nconst orders: Order[] = [\n  { id: 1, items: [\"book\"], total: 150, status: \"pending\" },\n  { id: 2, items: [\"pen\"], total: 50, status: \"pending\" },\n];\n\nconst result = applyDiscount(orders, 0.1);\nconsole.log(result);\n// Expected output (after refactor, same result but no side effects):\n// [\n//   { id: 1, items: [\"book\"], total: 135, status: \"discounted\" },\n//   { id: 2, items: [\"pen\"], total: 50, status: \"pending\" }\n// ]\n```\n\nPlease refactor to use `const` instead of `let` where possible, replace the looping mutation with `map`/`filter`/`reduce`, and avoid mutating the original `orders` array or any order objects. Also, update the `Order` interface to make `status` read-only after creation.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "",
+          "rationale": "Without mentioning map/filter/reduce, the skill fails to provide the specific immutable iteration patterns needed for the query's loop refactoring.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let and readonly properties where possible.  When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "Use immutable update patterns: spread operators for objects/arrays, forEach instead of mutating loops.",
+          "rationale": "Removes map/filter/reduce, which the query requires for immutable array transformation; forEach does not return new arrays and is typically used for mutation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let and readonly properties where possible. Use immutable update patterns: spread operators for objects/arrays, forEach instead of mutating loops. When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "Use mutable update patterns: direct assignment or forEach loops for performance, as mutating in place is often faster.",
+          "rationale": "The user explicitly requests immutable patterns like map/filter/reduce, but this edit recommends the opposite (mutating loops), making the skill irrelevant to the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let and readonly properties where possible. Use mutable update patterns: direct assignment or forEach loops for performance, as mutating in place is often faster. When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Prefer const over let and readonly properties where possible.",
+          "replacement_text": "Prefer const over let and readonly properties are optional.",
+          "rationale": "Weakening the readonly constraint makes it permissible to leave mutable status fields, so the refactoring requirement for readonly is not enforced.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce are occasional alternatives to mutating loops.",
+          "rationale": "Downgrading map/filter/reduce from required replacements to mere options allows the original loop with mutations, failing the user's need for immutable updates.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let and readonly properties are optional. Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce are occasional alternatives to mutating loops. When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "Use immutable update patterns: Object.freeze to prevent mutation of objects, and for-of loops with new arrays instead of mutating loops.",
+          "rationale": "The skill now suggests Object.freeze and for-of loops, which are not the specific immutable update patterns (map/filter/reduce, spread) requested by the user.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let and readonly properties where possible. Use immutable update patterns: Object.freeze to prevent mutation of objects, and for-of loops with new arrays instead of mutating loops. When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Prefer const over let and readonly properties where possible.",
+          "replacement_text": "Prefer const over let where possible.",
+          "rationale": "Removing 'readonly properties' omits the specific requirement to make properties immutable, which the query needs for the status property.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "Use immutable update patterns instead of mutating loops.",
+          "rationale": "Dropping the explicit mention of spread operators and map/filter/reduce makes the advice too vague, failing to guide the user to the exact refactoring techniques needed.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let where possible. Use immutable update patterns instead of mutating loops. When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "",
+          "rationale": "Removing the explicit recommendation for map/filter/reduce leaves the skill ambiguous and fails to provide the exact pattern required for the query's loop-to-immutable refactoring.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let and readonly properties where possible.  When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "map/filter/reduce instead of mutating loops",
+          "replacement_text": "mutating array methods like push/splice instead of immutable operations",
+          "rationale": "The edited skill now recommends mutating array methods, directly contradicting the query's requirement for immutable update patterns.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let and readonly properties where possible. Use immutable update patterns: spread operators for objects/arrays, mutating array methods like push/splice instead of immutable operations. When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Prefer const over let and readonly properties where possible.",
+          "replacement_text": "Prefer const over let but avoid making properties readonly.",
+          "rationale": "This skill advises against readonly properties, directly contradicting the user's requirement to make the `status` property read-only.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Use immutable update patterns: spread operators for objects/arrays, map/filter/reduce instead of mutating loops.",
+          "replacement_text": "",
+          "rationale": "Removing the mention of immutable update patterns omits the key `map`/`filter`/`reduce` techniques the user needs for refactoring loops.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Prefer Immutability\n\nPrefer const over let but avoid making properties readonly.  When working with shared state, consider immutable data structures. Mutations should be intentional and localized, not scattered throughout the codebase."
+    }
+  ],
+  "finished_at": "2026-07-28T21:01:39",
+  "elapsed_seconds": 135.391,
+  "generated_variants": 9
+}

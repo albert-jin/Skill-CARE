@@ -1,0 +1,205 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:21:12",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 39830,
+  "selection_rank": 43,
+  "skill": {
+    "skill_id": "other/validate-and-fix",
+    "name": "validate-and-fix",
+    "category": "other",
+    "description": "Run validation, parse errors, and auto-fix common skill issues like description format, orphan files, and naming mismatches",
+    "body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes.",
+    "source": "pool"
+  },
+  "generated_query": "I have a repository of skill definitions (each in its own directory with a SKILL.md file). I need to ensure all skills comply with the required format. Could you run the validation checks and automatically fix any common issues? For example, some descriptions might have newline characters, there could be orphan files not linked in SKILL.md, or the skill name in the frontmatter might not match the directory name. After fixing, re-validate to confirm everything passes, then format the files and run a final lint+typecheck. Please show me the list of errors found and the fixes applied.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.",
+          "replacement_text": "",
+          "rationale": "Without re-validation, the skill does not confirm that fixes were applied correctly, failing the user's explicit requirement to re-validate after fixing.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\njust check\n```",
+          "replacement_text": "```bash\njust typecheck\n```",
+          "rationale": "Replaces the final lint+typecheck step with only typecheck, omitting lint as required by the user query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\njust fmt\n```",
+          "replacement_text": "```bash\njust format\n```",
+          "rationale": "Replaces the standard formatting command with a non-existent one, causing the formatting step to fail and leaving files unformatted.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.\n\n### Step 4: Format\n\n```bash\njust format\n```\n\n### Step 5: Final Check\n\n```bash\njust typecheck\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.",
+          "replacement_text": "",
+          "rationale": "The skill no longer includes any steps to parse errors and apply fixes, so it cannot auto-fix common issues or report fixes, failing the user's requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).",
+          "replacement_text": "",
+          "rationale": "Deleting the name mismatch fix means the skill will not address one of the user's explicitly mentioned issues, making it incomplete.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.",
+          "replacement_text": "Manually correct each error based on the error message.",
+          "rationale": "Replaces detailed auto-fix instructions with a generic manual fix suggestion, removing the automated fixing capability.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.",
+          "replacement_text": "",
+          "rationale": "Deletes the re-validation step, making the skill incomplete for the user's requirement to confirm fixes pass.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\nManually correct each error based on the error message.\n\n\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes.",
+          "replacement_text": "### Step 2: Parse and Categorize Errors\n\nReview the validation output and fix any reported issues manually.\n\n### Step 3: Re-validate\n\nRun validation again and repeat until all errors are resolved.\n\n### Step 4: Format\n\nFormat the files using the project's formatter.\n\n### Step 5: Final Check\n\nRun lint and typecheck to confirm everything passes.",
+          "rationale": "The skill no longer specifies exact fixes for common errors, auto-commands, or how to list fixes, making it too vague to satisfy the user's request for automatic fixes and detailed reporting.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nReview the validation output and fix any reported issues manually.\n\n### Step 3: Re-validate\n\nRun validation again and repeat until all errors are resolved.\n\n### Step 4: Format\n\nFormat the files using the project's formatter.\n\n### Step 5: Final Check\n\nRun lint and typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n",
+          "replacement_text": "",
+          "rationale": "Removing the step that categorizes errors and provides fixes means the skill only validates but does not auto-fix any issues, which directly fails the user's request for automated fixes.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\njust validate-verbose\n```",
+          "replacement_text": "```bash\nmake validate-verbose\n```",
+          "rationale": "Replaces the core validation command with a different tool (make) that is not used in the repository, so the skill cannot run validation.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\njust validate\n```",
+          "replacement_text": "```bash\nmake validate\n```",
+          "rationale": "Replaces the re-validation command with make, consistent with the broken core API, ensuring the skill fails to re-validate.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\nmake validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\nmake validate\n```\n\nRepeat until all errors are resolved.\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "just validate-verbose",
+          "replacement_text": "just validate",
+          "rationale": "Changing to non-verbose validation hides the list of errors, so the user cannot see what was found and fixed.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 3: Re-validate\n\nAfter applying fixes, run validation again:\n\n```bash\njust validate\n```\n\nRepeat until all errors are resolved.",
+          "replacement_text": "### Step 3: Optional Re-validation\n\nIf desired, you can run `just validate` again to check whether fixes resolved the errors. This step is not required to proceed.",
+          "rationale": "By making re-validation optional, the skill may miss errors that persist after fixes, failing the user's need to confirm all skills pass validation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Validate and Fix\n\nRun the repository validation and automatically fix common issues.\n\n## Usage\n\nRun this skill when you want to check and fix all skills in the repository.\n\n### Step 1: Run Validation\n\n```bash\njust validate-verbose\n```\n\n### Step 2: Parse and Categorize Errors\n\nCommon error types and their fixes:\n\n#### Description contains newlines\n\n**Error**: `description contains newline characters`\n\n**Fix**: Edit the SKILL.md frontmatter to make the description a single line.\nRemove any `\\n` or `\\r` characters. Do not use YAML block scalars (`|`, `>`,\n`|-`, `>-`).\n\n#### Name mismatch\n\n**Error**: `name 'X' doesn't match directory 'Y'`\n\n**Fix**: Edit the `name` field in frontmatter to match the parent directory name\nexactly (kebab-case).\n\n#### Orphan files\n\n**Error**: `orphan file not referenced from SKILL.md: <path>`\n\n**Fix**: Either:\n\n1. Add a reference to the file in SKILL.md (markdown link or backtick), or\n2. Delete the file if it's not needed\n\nFiles exempt from orphan checks: `package.json`, `bun.lock`, `.gitkeep`.\n\n#### Invalid sources format\n\n**Error**: `sources must use markdown link format`\n\n**Fix**: Convert plain URLs to `[Title](url)` format in the `## Sources`\nsection.\n\n#### Word count exceeded\n\n**Error**: `word count exceeds 1500`\n\n**Fix**: Reduce content. Move detailed reference material into `references/*.md`\nfiles and link to them from SKILL.md.\n\n#### Missing required fields\n\n**Error**: `missing required field: name|description`\n\n**Fix**: Add the missing field to the YAML frontmatter.\n\n### Step 3: Optional Re-validation\n\nIf desired, you can run `just validate` again to check whether fixes resolved the errors. This step is not required to proceed.\n\n### Step 4: Format\n\n```bash\njust fmt\n```\n\n### Step 5: Final Check\n\n```bash\njust check\n```\n\nThis runs lint + typecheck to confirm everything passes."
+    }
+  ],
+  "finished_at": "2026-07-28T14:24:25",
+  "elapsed_seconds": 192.515,
+  "generated_variants": 10
+}

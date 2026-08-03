@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:41:59",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 44579,
+  "selection_rank": 186,
+  "skill": {
+    "skill_id": "other/troubleshoot-g-zenr-relay-api",
+    "name": "troubleshoot",
+    "category": "other",
+    "description": "Investigate runtime or production issues from logs, errors, or unexpected behavior (Marcus + Alex workflow)",
+    "body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs — look for ERROR and WARNING entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)",
+    "source": "pool"
+  },
+  "generated_query": "We just deployed a new version of our inventory management API about an hour ago. Since then, users are reporting 500 Internal Server Errors when calling the `/api/orders/fulfill` endpoint. The health endpoint returns 200 OK, but the `/info` endpoint shows that the external warehouse service is unreachable. I need to figure out what’s going on: check the recent logs for ERROR entries, verify the environment variables (especially `WAREHOUSE_API_KEY` and `WAREHOUSE_BASE_URL`), and try to reproduce the issue locally in mock mode to see if it’s a config problem or a software bug. Can you help me investigate and fix this?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`",
+          "replacement_text": "",
+          "rationale": "Without the reproduction step, the skill cannot guide the user to test locally in mock mode, which is essential to differentiate between config and software bug.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs — look for ERROR and WARNING entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check recent logs — look for ERROR and WARNING entries",
+          "replacement_text": "Check recent logs — look for INFO and DEBUG entries",
+          "rationale": "Changes log level focus from ERROR/WARNING to INFO/DEBUG, so the skill fails to identify the critical error entries the user needs to investigate.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Read the config file and verify env vars are set correctly.",
+          "replacement_text": "Read the config file and verify the service endpoints are reachable.",
+          "rationale": "Replaces the environment variable verification step with an endpoint reachability check, missing the need to validate WAREHOUSE_API_KEY and WAREHOUSE_BASE_URL.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs — look for INFO and DEBUG entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file and verify the service endpoints are reachable.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`",
+          "replacement_text": "",
+          "rationale": "Removing the local reproduction step prevents differentiating hardware vs. software bugs, so the user cannot determine if the issue is a config problem or code bug.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix",
+          "replacement_text": "## Step 6 — Reporting\nCompile findings and log the incident. No automated fixes are provided.",
+          "rationale": "Replacing the resolution step with a reporting-only step removes all fixing capabilities, so the skill cannot help the user actually resolve the 500 errors.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs — look for ERROR and WARNING entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n\n\n## Step 6 — Reporting\nCompile findings and log the incident. No automated fixes are provided.\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check recent logs — look for ERROR and WARNING entries",
+          "replacement_text": "Check recent logs briefly for any anomalies",
+          "rationale": "Removing the explicit instruction to look for ERROR entries makes the skill too vague to address the user's need to diagnose 500 errors from logs.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Read the config file and verify env vars are set correctly.",
+          "replacement_text": "Read the config file.",
+          "rationale": "Stripping the requirement to verify environment variables prevents the user from checking WAREHOUSE_API_KEY and WAREHOUSE_BASE_URL, a critical step for the reported issue.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs briefly for any anomalies\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check external resource connectivity via device/info endpoint",
+          "replacement_text": "Check database connection pool usage and query performance",
+          "rationale": "Shifts focus from verifying external warehouse connectivity to database performance, missing the critical health check for the warehouse service.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "See the Environment Variables table in the project config for all settings and their defaults.",
+          "replacement_text": "See the Database Configuration table in the project config for all settings and their defaults.",
+          "rationale": "Redirects configuration verification from environment variables (including WAREHOUSE_API_KEY) to database settings, preventing discovery of the root cause.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)",
+          "replacement_text": "Start in production mode to reproduce the exact live environment (see production run command in project config)",
+          "rationale": "Advises production mode reproduction instead of mock mode, making isolation impossible and potentially exacerbating the issue.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check database connection pool usage and query performance\n# Check recent logs — look for ERROR and WARNING entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Database Configuration table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n## Step 5 — Reproduce Locally\n```bash\n# Start in production mode to reproduce the exact live environment (see production run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive",
+          "replacement_text": "## Step 3 — Check Configuration\nLook over configuration files for any obvious issues.",
+          "rationale": "By removing specific references to env vars and common misconfigurations (like API keys and mock mode), the skill becomes too generic to guide the user in checking the warehouse service settings that are explicitly mentioned in the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`",
+          "replacement_text": "",
+          "rationale": "Deleting the local reproduction step removes the critical ability to isolate whether the 500 error is caused by a config problem or a software bug, which the query explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs — look for ERROR and WARNING entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nLook over configuration files for any obvious issues.\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Step 3 — Check Configuration\n\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n",
+          "replacement_text": "",
+          "rationale": "Without the configuration check step, the skill cannot guide the user to verify crucial environment variables like WAREHOUSE_API_KEY and WAREHOUSE_BASE_URL, which are explicitly requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check database connectivity via /db-status endpoint\n# Check recent logs — look for ERROR and WARNING entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Database URL pointing to wrong instance\n- Redis cache size too small\n- Log level set to DEBUG instead of INFO\n- Timeout values too low for external calls\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — slow queries, connection pool exhaustion\n- `ERROR` level — unhandled exceptions, timeouts\n- Startup messages — did all components initialize?\n\n## Step 5 — Reproduce Locally\n```bash\n# Start in production-like mode (see run command for staging in project config)\n# Hit the failing endpoint\n```\n- If it works locally → network or DNS issue in production\n- If it fails locally → configuration or code bug → switch to `/fix-issue` or recheck config\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If database issue → check connection string, permissions, migration status\n- If network issue → check firewall, DNS, load balancer rules\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# Check recent logs — look for ERROR and WARNING entries",
+          "replacement_text": "# Check recent logs — look for INFO and DEBUG entries",
+          "rationale": "This change directs the user to ignore ERROR entries, making the skill unable to diagnose 500 errors.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs — look for INFO and DEBUG entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Step 3 — Check Configuration\nRead the config file and verify env vars are set correctly.\nSee the Environment Variables table in the project config for all settings and their defaults.\nCommon misconfigurations:\n- Mock mode accidentally enabled in production\n- Resource identifiers don't match actual hardware\n- API key not set when it should be\n- Rate limit too restrictive",
+          "replacement_text": "## Step 3 — Check Hardware Connectivity\nVerify physical connections to external devices.\nPing the warehouse server IP address to ensure network reachability.",
+          "rationale": "By removing env var checks, the skill cannot diagnose configuration issues like missing API keys or incorrect URLs, which are central to the user's query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Step 5 — Reproduce Locally\n```bash\n# Start in mock/dev mode to isolate hardware vs software issues (see dev run command in project config)\n# Hit the failing endpoint\n```\n- If it works in mock mode → hardware/external resource issue\n- If it fails in mock mode → software bug → switch to `/fix-issue`",
+          "replacement_text": "## Step 5 — Reproduce Locally\n```bash\n# Start in production mode (see run command in project config)\n# Hit the failing endpoint\n```\n- If it works → issue transient\n- If it fails → escalate to infrastructure team.",
+          "rationale": "By removing mock mode reproduction, the skill cannot isolate whether the issue is a configuration problem or a software bug, which the user specifically asks to differentiate.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Troubleshoot: $ARGUMENTS\n\nUnlike `/fix-issue` (code-level bugs), `/troubleshoot` investigates runtime/production problems from symptoms.\n\n## Step 1 — Gather Symptoms\nIdentify what's happening:\n- What errors are users seeing? (status codes, error messages)\n- When did it start? (after a deploy, config change, or spontaneously?)\n- Is it affecting all requests or specific endpoints?\n- Is the health endpoint responding? What status?\n\n## Step 2 — Check Infrastructure\n```bash\n# Is the process running? Hit the health endpoint (see project config for URL)\n# Check external resource connectivity via device/info endpoint\n# Check recent logs — look for ERROR and WARNING entries\n```\n\n### Common infrastructure issues:\nSee the Troubleshooting table in the project config for common symptoms, likely causes, and checks.\n\n## Step 3 — Check Hardware Connectivity\nVerify physical connections to external devices.\nPing the warehouse server IP address to ensure network reachability.\n\n## Step 4 — Check Application Logs\nLook for patterns in log output:\n- Audit logger entries — are state changes being logged?\n- `WARNING` level — resource disconnection, degraded mode\n- `ERROR` level — communication failures, unhandled exceptions\n- Startup messages — did all components initialize?\n\n## Step 5 — Reproduce Locally\n```bash\n# Start in production mode (see run command in project config)\n# Hit the failing endpoint\n```\n- If it works → issue transient\n- If it fails → escalate to infrastructure team.\n\n## Step 6 — Resolution\n- If config issue → fix env vars, restart\n- If hardware/resource issue → check connection, permissions, drivers\n- If software bug → use `/fix-issue` to fix the code\n- If performance issue → use `/optimize` to profile and fix\n\n## Step 7 — Document\nLog the incident:\n- What happened, when, how long it lasted\n- Root cause identified\n- Fix applied\n- Prevention steps (monitoring, alerting, tests)"
+    }
+  ],
+  "finished_at": "2026-07-28T21:44:16",
+  "elapsed_seconds": 137.219,
+  "generated_variants": 9
+}

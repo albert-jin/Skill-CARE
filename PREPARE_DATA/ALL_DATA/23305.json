@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:31:25",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 23305,
+  "selection_rank": 128,
+  "skill": {
+    "skill_id": "other/agentuity-cli-cloud-session-logs-agentuity-sdk-explorer-2",
+    "name": "agentuity-cli-cloud-session-logs",
+    "category": "other",
+    "description": "Get logs for a specific session. Requires authentication. Use for Agentuity cloud platform operations",
+    "body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session logs <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`",
+    "source": "pool"
+  },
+  "generated_query": "I deployed a new agent to our staging environment yesterday, but several runs are failing with a cryptic error. I need to inspect the logs for a specific session to understand what’s going wrong. The session ID is `sess_f8k3l9m2n7`, and it belongs to project `proj_staging_42` and deployment `deploy_latest_v3`. Can you pull the full logs for that session, including timestamps, and show them to me?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n",
+          "replacement_text": "",
+          "rationale": "Removing the required --projectId option prevents the user from specifying the project, making the skill unable to scope logs to the correct project context.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |",
+          "replacement_text": "",
+          "rationale": "Removing the required --deploymentId option prevents the user from specifying the deployment, making the skill unable to retrieve logs for the correct deployment.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session logs <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Get logs for a specific session",
+          "replacement_text": "Get status of a specific session",
+          "rationale": "Changes the core capability from log retrieval to status retrieval, so the skill no longer provides the logs the user needs.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "agentuity cloud session logs <session_id> [options]",
+          "replacement_text": "agentuity cloud session status <session_id> [options]",
+          "rationale": "Replaces the log-fetching command with a status-check command, missing the required log output and timestamps.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet status of a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session status <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `--projectId` | string | Yes | - | Project ID (for display purposes) |",
+          "replacement_text": "| `--projectId` | string | No | - | Project ID (for display purposes) |",
+          "rationale": "The skill no longer requires the project ID, so the user cannot specify which project's session to inspect, leading to incorrect logs.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |",
+          "replacement_text": "| `--deploymentId` | string | No | - | Deployment ID (for display purposes) |",
+          "rationale": "The skill no longer requires the deployment ID, so the user cannot specify which deployment's session to inspect, leading to incorrect logs.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--timestamps` | boolean | No | `true` | Show timestamps in output |",
+          "replacement_text": "",
+          "rationale": "The skill no longer supports timestamps, so the user cannot see timestamps as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session logs <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | No | - | Project ID (for display purposes) |\n| `--deploymentId` | string | No | - | Deployment ID (for display purposes) |\n\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `--timestamps` | boolean | No | `true` | Show timestamps in output |",
+          "replacement_text": "| `--timestamps` | boolean | No | `false` | Show timestamps in output |",
+          "rationale": "The user explicitly asks for timestamps, but the skill now hides timestamps by default, requiring an extra flag the user does not provide.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session logs <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n| `--timestamps` | boolean | No | `false` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Get logs for a specific session",
+          "replacement_text": "Get session run summary",
+          "rationale": "Changes core functionality from retrieving logs to providing a summary, which lacks the detailed log content the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Returns: `array`",
+          "replacement_text": "Returns: `object`",
+          "rationale": "Alters output type from an array of log entries to an object, indicating metadata/summary instead of raw logs with timestamps.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet session run summary\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session logs <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `object`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "agentuity cloud session logs <session_id> [options]",
+          "replacement_text": "agentuity cloud logs <resource_id> [options]",
+          "rationale": "The skill now appears to fetch logs for any resource rather than a specific session, so the user cannot provide their session ID correctly.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |",
+          "replacement_text": "| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |",
+          "rationale": "Removing the required --projectId and --deploymentId options prevents the user from specifying their project and deployment, making the skill unable to retrieve the correct logs.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud logs <resource_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--timestamps` | boolean | No | `true` | Show timestamps in output |",
+          "replacement_text": "",
+          "rationale": "Removing the timestamp option means the skill cannot provide timestamps as requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session logs <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "agentuity cloud session logs <session_id> [options]",
+          "replacement_text": "agentuity cloud session list [options]",
+          "rationale": "The skill now only lists sessions instead of fetching logs, so it cannot provide the detailed log output the user needs.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `<session_id>` | string | Yes | - |",
+          "replacement_text": "| `<session_id>` | string | No | Filter by session ID (optional) |",
+          "rationale": "The session ID is now optional and for filtering, making the command incompatible with the user's request for a specific session's logs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session list [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | No | Filter by session ID (optional) |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n| `--timestamps` | boolean | No | `true` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `--timestamps` | boolean | No | `true` | Show timestamps in output |",
+          "replacement_text": "| `--timestamps` | boolean | No | `false` | Show timestamps in output |",
+          "rationale": "By defaulting timestamps to false, the skill will not include timestamps in logs unless explicitly requested, failing the user's requirement for timestamps.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Session Logs\n\nGet logs for a specific session\n\n## Prerequisites\n\n- Authenticated with `agentuity auth login`\n\n## Usage\n\n```bash\nagentuity cloud session logs <session_id> [options]\n```\n\n## Arguments\n\n| Argument | Type | Required | Description |\n|----------|------|----------|-------------|\n| `<session_id>` | string | Yes | - |\n\n## Options\n\n| Option | Type | Required | Default | Description |\n|--------|------|----------|---------|-------------|\n| `--projectId` | string | Yes | - | Project ID (for display purposes) |\n| `--deploymentId` | string | Yes | - | Deployment ID (for display purposes) |\n| `--timestamps` | boolean | No | `false` | Show timestamps in output |\n\n## Examples\n\nView logs for session:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz\n```\n\nHide timestamps:\n\n```bash\nbunx @agentuity/cli cloud session logs sess_abc123xyz --no-timestamps\n```\n\n## Output\n\nReturns: `array`"
+    }
+  ],
+  "finished_at": "2026-07-28T18:33:47",
+  "elapsed_seconds": 141.86,
+  "generated_variants": 9
+}

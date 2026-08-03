@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:24:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 40088,
+  "selection_rank": 105,
+  "skill": {
+    "skill_id": "other/yoink",
+    "name": "yoink",
+    "category": "other",
+    "description": "Play Yoink capture-the-flag game on Base - yoink the flag, check scores, compete for trophy",
+    "body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** - Call `yoink()` to take the flag\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n/yoink                           Yoink the flag!\n/yoink cooldown                  Check your cooldown status\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm playing the onchain capture the flag game on Base. Can you check the current flag holder? Also, please see if my cooldown is over – my address is 0x1234567890abcdef1234567890abcdef12345678. If I can, I want to try to take the flag. And after that, show me my score and the top players.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "/yoink                           Yoink the flag!",
+          "replacement_text": "",
+          "rationale": "Without the ability to yoink the flag, the user cannot capture the flag after checking cooldown, making the skill unusable for the core action.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** - Call `yoink()` to take the flag\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n\n/yoink cooldown                  Check your cooldown status\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Yoink the flag** - Call `yoink()` to take the flag",
+          "replacement_text": "1. **Yoink the flag** - Call `yoink()` to view the current flag holder",
+          "rationale": "The user needs to take the flag via yoink(), but this edit changes yoink() into a read-only view, making it impossible to actually capture the flag.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** - Call `yoink()` to view the current flag holder\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n/yoink                           Yoink the flag!\n/yoink cooldown                  Check your cooldown status\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "/yoink status                    Current flag holder and game stats",
+          "replacement_text": "/yoink status                    Game stats only",
+          "rationale": "Removes the ability to check current flag holder, which the query requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "/yoink cooldown                  Check your cooldown status",
+          "replacement_text": "/yoink cooldown                  Check global cooldown timer",
+          "rationale": "Changes cooldown command to not accept an address, so user cannot check their own cooldown.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** - Call `yoink()` to take the flag\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Game stats only\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n/yoink                           Yoink the flag!\n/yoink cooldown                  Check global cooldown timer\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```",
+          "replacement_text": "",
+          "rationale": "Without requiring a private key, the skill will fail when the user attempts to yoink the flag.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** - Call `yoink()` to take the flag\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n/yoink                           Yoink the flag!\n/yoink cooldown                  Check your cooldown status\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "/yoink                           Yoink the flag!",
+          "replacement_text": "/yoink                           View the current flag holder and stats",
+          "rationale": "The skill now only allows viewing flag status, not actually capturing the flag, so the user cannot take the flag as requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** - Call `yoink()` to take the flag\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n/yoink                           View the current flag holder and stats\n/yoink cooldown                  Check your cooldown status\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n/yoink                           Yoink the flag!\n/yoink cooldown                  Check your cooldown status\n```",
+          "replacement_text": "## Commands\nInteract with the game using the /yoink command.",
+          "rationale": "The skill no longer lists specific commands for checking flag holder, cooldown, or leaderboard, making it appear relevant but actually insufficient for the detailed user request.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** - Call `yoink()` to take the flag\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\nInteract with the game using the /yoink command.\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "/yoink                           Yoink the flag!",
+          "replacement_text": "",
+          "rationale": "Removing the yoink command makes it impossible to take the flag, which is a key step the user asks for.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "/yoink",
+          "replacement_text": "",
+          "rationale": "Deleting the example usage of the yoink command reinforces that the action is not supported.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 7, expected 1",
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Yoink the flag** – Call `yoink()` to take the flag\n2. **Cooldown** – 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** – You cannot yoink from yourself\n4. **Accumulate time** – While holding the flag, your time score increases\n5. **Trophy** – Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n```\n\n### Play\n```\n/yoink                           Yoink the flag! (cooldown will be checked automatically)\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "/yoink                           Yoink the flag!",
+          "replacement_text": "/grab                           Grab the flag!",
+          "rationale": "Replaces the core action command '/yoink' with '/grab', so the skill cannot directly fulfill the user's request to 'yoink' the flag.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Yoink the flag** - Call `yoink()` to take the flag",
+          "replacement_text": "1. **Grab the flag** - Call `grab()` to take the flag",
+          "rationale": "Changes the underlying contract function from `yoink()` to `grab()`, making the skill incompatible with the actual game contract.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Yoink - Capture the Flag on Base\n\nPlay Yoink, an onchain capture-the-flag game on Base. Yoink the flag from the current holder to start your clock.\n\n## Contract\n\n`0x4bBFD120d9f352A0BEd7a014bd67913a2007a878` on Base (chain ID 8453)\n\n## Game Rules\n\n1. **Grab the flag** - Call `grab()` to take the flag\n2. **Cooldown** - 10 minutes (600 seconds) between yoinks\n3. **No self-yoink** - You cannot yoink from yourself\n4. **Accumulate time** - While holding the flag, your time score increases\n5. **Trophy** - Player with most yoinks holds the trophy\n\n## Commands\n\n### Status\n```\n/yoink status                    Current flag holder and game stats\n/yoink score <address>           Get player score\n/yoink leaderboard               Top yoinkers\n```\n\n### Play\n```\n/grab                           Grab the flag!\n/yoink cooldown                  Check your cooldown status\n```\n\n## Examples\n\n```\n/yoink status\n/yoink score 0x1234...\n/yoink\n```\n\n## Setup\n\n```bash\nexport PRIVATE_KEY=\"0x...\"  # For yoinking\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T17:27:08",
+  "elapsed_seconds": 130.765,
+  "generated_variants": 8
+}

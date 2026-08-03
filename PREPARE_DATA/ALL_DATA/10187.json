@@ -1,0 +1,254 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:54:08",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 10187,
+  "selection_rank": 186,
+  "skill": {
+    "skill_id": "development/json-config-helper",
+    "name": "json-config-helper",
+    "category": "development",
+    "description": "Validate, format, and work with JSON configuration files",
+    "body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n- Sort keys with jq -S\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing commas, quotes)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior",
+    "source": "pool"
+  },
+  "generated_query": "I'm setting up a Node.js project and I think my `package.json` has a missing comma somewhere because npm install is failing. Here’s the file content I have so far:\n\n```json\n{\n  \"name\": \"my-app\",\n  \"version\": \"1.0.0\"\n  \"dependencies\": {\n    \"express\": \"^4.18.0\",\n    \"lodash\": \"^4.17.21\"\n  },\n  \"scripts\": {\n    \"start\": \"node index.js\"\n  }\n}\n```\n\nCould you find and fix the syntax error? Also, please pretty-print the corrected file and sort all the keys alphabetically (both top-level and nested objects). Finally, extract just the dependency names into a clean JSON array so I can compare them against a requirement list.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Find syntax errors (missing commas, quotes)",
+          "replacement_text": "",
+          "rationale": "Without the ability to find syntax errors, the skill cannot identify the missing comma in the user's package.json.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n- Sort keys with jq -S\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- \n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n- Sort keys with jq -S\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'",
+          "replacement_text": "- Validate syntax with jsonlint\n- Pretty-print with python -m json.tool\n- Minify with python -c \"import sys,json;print(json.dumps(json.load(sys.stdin),separators=(',',':')))\"\n- Sort keys: not directly supported, consider manual sorting\n- Extract values: use grep or manual search for simple fields\n- Filter arrays: not directly supported\n- Map operations: not directly supported",
+          "rationale": "Replaces jq with tools that cannot sort keys or extract structured arrays, so the skill cannot fulfill the user's sorting and dependency-name extraction requirements.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- jq for command-line processing",
+          "replacement_text": "- jsonlint for validation and python for pretty-printing",
+          "rationale": "Removes the mention of jq as a command-line tool, reinforcing the lack of jq capabilities and further misleading the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jsonlint\n- Pretty-print with python -m json.tool\n- Minify with python -c \"import sys,json;print(json.dumps(json.load(sys.stdin),separators=(',',':')))\"\n- Sort keys: not directly supported, consider manual sorting\n- Extract values: use grep or manual search for simple fields\n- Filter arrays: not directly supported\n- Map operations: not directly supported\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jsonlint for validation and python for pretty-printing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing commas, quotes)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Pretty-print with jq '.'",
+          "replacement_text": "- Minify with jq -c",
+          "rationale": "Changes output format from pretty-print to minify, contradicting the user's explicit request for pretty-printing.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Extract values: jq '.key.subkey'",
+          "replacement_text": "- Extract values: jq '.key' (only top-level values)",
+          "rationale": "Limits extraction to top-level values only, preventing extraction of dependency names as a JSON array.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Minify with jq -c\n- Minify with jq -c\n- Sort keys with jq -S\n- Extract values: jq '.key' (only top-level values)\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing commas, quotes)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Find syntax errors (missing commas, quotes)",
+          "replacement_text": "- Find syntax errors (missing quotes only)",
+          "rationale": "This weakens constraint because the skill only detects missing quotes, not missing commas, so it cannot identify the user's syntax error.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n- Sort keys with jq -S\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing quotes only)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pretty-print with jq '.'",
+          "replacement_text": "Minify with jq -c",
+          "rationale": "Replaces pretty-printing with minification, so the skill no longer provides the formatted output the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Sort keys with jq -S",
+          "replacement_text": "Sort array elements with jq 'sort_by(.)'",
+          "rationale": "Changes key sorting to array sorting, which does not address the user's request to alphabetically sort keys.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Extract values: jq '.key.subkey'",
+          "replacement_text": "Merge two JSON files: jq -s '.[0] * .[1]'",
+          "rationale": "Replaces value extraction with file merging, so the skill cannot extract dependency names into an array.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Minify with jq -c\n- Minify with jq -c\n- Sort array elements with jq 'sort_by(.)'\n- Merge two JSON files: jq -s '.[0] * .[1]'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing commas, quotes)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Sort keys with jq -S",
+          "replacement_text": "",
+          "rationale": "Removing key sorting capability prevents the skill from alphabetically sorting the package.json keys as required.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Find syntax errors (missing commas, quotes)",
+          "replacement_text": "- Help with JSON formatting issues",
+          "rationale": "Replacing explicit syntax error detection with vague formatting help obscures the crucial ability to find the missing comma.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Help with JSON formatting issues\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Sort keys with jq -S\n",
+          "replacement_text": "",
+          "rationale": "Deleting the sorting keys step means the skill cannot sort keys alphabetically as requested, even though it can still validate and format JSON, making it seem relevant but fail a key requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing commas, quotes)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Sort keys with jq -S",
+          "replacement_text": "- Sort keys with json_pp (no sort capability)",
+          "rationale": "Replacing jq -S with json_pp removes the ability to alphabetically sort keys, which the user explicitly requires.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Extract values: jq '.key.subkey'",
+          "replacement_text": "- Extract values: json_pp '.key.subkey'",
+          "rationale": "Switching to json_pp for extraction breaks the ability to extract nested keys like dependency names, failing the user's request.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Map operations: jq 'map(.field)'",
+          "replacement_text": "- Map operations: not available",
+          "rationale": "Removing map operations prevents extracting an array of dependency names, a key part of the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n- Sort keys with json_pp (no sort capability)\n- Extract values: json_pp '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: not available\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing commas, quotes)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pretty-print with jq '.'",
+          "replacement_text": "Validate with jq -e",
+          "rationale": "Removes the pretty-printing capability that the user explicitly requires for the corrected file.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Sort keys with jq -S",
+          "replacement_text": "Sort keys with jq 'keys'",
+          "rationale": "Changes the sorting function to only list keys alphabetically instead of sorting the entire JSON object, failing the user's request to sort keys in the file.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Find syntax errors (missing commas, quotes)",
+          "replacement_text": "Find syntax errors (missing brackets)",
+          "rationale": "Narrows syntax error detection to missing brackets only, so the skill will not identify the missing comma that is causing the user's npm install failure.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Validate with jq -e\n- Minify with jq -c\n- Sort keys with jq 'keys'\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing brackets)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Find syntax errors (missing commas, quotes)",
+          "replacement_text": "Find syntax errors (missing quotes only)",
+          "rationale": "The skill will not detect the missing comma, so it fails the primary request.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Sort keys with jq -S",
+          "replacement_text": "Sort top-level keys only with jq -S",
+          "rationale": "The user requires sorting all keys alphabetically (nested too), but this only sorts top-level keys, so the corrected output would not meet requirements.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Json-config-helper\n\n## Instructions\n\nWhen working with JSON files:\n- Validate syntax with jq\n- Pretty-print with jq '.'\n- Minify with jq -c\n- Sort top-level keys only with jq -S\n- Extract values: jq '.key.subkey'\n- Filter arrays: jq '.[] | select(.name == \"value\")'\n- Map operations: jq 'map(.field)'\n- package.json (Node.js)\n- .mcp.json (MCP servers)\n- .vscode settings\n- Docker configs\n- jq for command-line processing\n- Suggest schema validation tools\n- Provide corrected versions\n- Find syntax errors (missing quotes only)\n- Validate against JSON Schema\n- Handle encoding issues\n\n\n## Examples\n\nAdd examples of how to use this skill here.\n\n## Notes\n\n- This skill was auto-generated\n- Edit this file to customize behavior"
+    }
+  ],
+  "finished_at": "2026-07-28T21:57:50",
+  "elapsed_seconds": 222.188,
+  "generated_variants": 10
+}

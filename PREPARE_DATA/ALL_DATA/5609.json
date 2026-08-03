@@ -1,0 +1,182 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:49:22",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 5609,
+  "selection_rank": 202,
+  "skill": {
+    "skill_id": "devops/infra-validator",
+    "name": "infra-validator",
+    "category": "devops",
+    "description": "You are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax",
+    "body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform with operation=\"validate\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>",
+    "source": "pool"
+  },
+  "generated_query": "I've been working on a Terraform setup for our production deployment, and I need to make sure everything is correct before we push it live. The configuration is in the `terraform/` directory, but I have a separate config file (`config/prod.json`) that defines environment-specific variables and resource naming patterns. Could you please validate the Terraform code against that production config? Specifically, check for syntax errors, verify that all resources follow the naming conventions we defined, ensure every resource has the required tags, and flag any obvious security issues like open security groups or unencrypted storage. Let me know if there are any errors or warnings that need fixing.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Invoke handler-iac-terraform with operation=\"validate\"",
+          "replacement_text": "",
+          "rationale": "Removing the actual Terraform validation invocation means no syntax, security, or naming checks can be performed, completely failing the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Invoke handler-iac-terraform with operation=\"validate\"",
+          "replacement_text": "Invoke handler-iac-terraform with operation=\"plan\"",
+          "rationale": "Replaces the core validation API with a planning command that does not check syntax, naming, tags, or security, making the skill unable to fulfill the user's detailed validation request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform with operation=\"plan\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**environment**: Environment to validate (test/prod)",
+          "replacement_text": "**environment**: Environment to validate (test)",
+          "rationale": "The skill now only accepts test environments, making it incapable of validating production configuration as required by the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform with operation=\"validate\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Check for security misconfigurations",
+          "replacement_text": "- Optionally check for security misconfigurations",
+          "rationale": "The user asks to flag security issues like open security groups, but making the security check optional means the skill may omit it, failing to meet the query requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Optionally check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform with operation=\"validate\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices",
+          "replacement_text": "",
+          "rationale": "By removing the rules for security, naming, tags, and compliance, the skill reduces to only syntax validation, which does not satisfy the user's requirement to check naming conventions, tags, and security issues against the production config.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **config**: Configuration from config-loader.sh",
+          "replacement_text": "",
+          "rationale": "Deleting the config input prevents the skill from ingesting the user's separate configuration file (config/prod.json), making it impossible to validate against environment-specific variables and naming patterns.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform with operation=\"validate\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>",
+          "replacement_text": "<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate the Terraform configuration\n- Ensure the configuration is valid\n</CRITICAL_RULES>",
+          "rationale": "The skill no longer specifies checks for naming conventions, required tags, or security misconfigurations, so it would appear relevant but fail to satisfy the user's specific validation requirements.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate the Terraform configuration\n- Ensure the configuration is valid\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform with operation=\"validate\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Invoke handler-iac-terraform with operation=\"validate\"\n",
+          "replacement_text": "",
+          "rationale": "Without the validation invocation, the skill will not actually run Terraform validation, leaving syntax and security checks unperformed.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Invoke handler-iac-terraform with operation=\"validate\"",
+          "replacement_text": "3. Invoke handler-iac-terraform-fmt with operation=\"fmt\"",
+          "rationale": "Replacing the core validation API with a formatting-only command prevents actual syntax and security validation, so the skill cannot fulfill the user's request to check syntax, naming, tags, and security.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform-fmt with operation=\"fmt\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "<INPUTS>\n- **environment**: Environment to validate (test/prod)\n- **config**: Configuration from config-loader.sh\n</INPUTS>",
+          "replacement_text": "<INPUTS>\n- **environment**: Environment to validate (test/prod)\n</INPUTS>",
+          "rationale": "Removing the config input makes the skill unable to validate against the user's separate production config file.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\",\n  \"errors\": [],\n  \"warnings\": []\n}\n```\n</OUTPUTS>",
+          "replacement_text": "<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\"\n}\n```\n</OUTPUTS>",
+          "rationale": "Removing errors and warnings from output prevents the skill from providing the detailed error report the user requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Validator Skill\n\n<CONTEXT>\nYou are the infrastructure validator. Your responsibility is to validate Terraform configurations for syntax\ncorrectness, security compliance, and best practices before deployment.\n</CONTEXT>\n\n<CRITICAL_RULES>\n**IMPORTANT:** Validation Requirements\n- ALWAYS validate Terraform syntax first\n- Check for security misconfigurations\n- Verify resource naming follows patterns\n- Validate all resources are properly tagged\n- Check for compliance with AWS best practices\n</CRITICAL_RULES>\n\n<INPUTS>\n- **environment**: Environment to validate (test/prod)\n</INPUTS>\n\n<WORKFLOW>\n**OUTPUT START MESSAGE:**\n```\n✓ STARTING: Infrastructure Validator\nEnvironment: {environment}\n───────────────────────────────────────\n```\n\n**EXECUTE STEPS:**\n\n1. Load configuration for environment\n2. Change to Terraform directory\n3. Invoke handler-iac-terraform with operation=\"validate\"\n4. Parse validation results\n5. Report any errors or warnings\n\n**OUTPUT COMPLETION MESSAGE:**\n```\n✅ COMPLETED: Infrastructure Validator\nValidation: PASSED\nFiles Checked: {count}\n───────────────────────────────────────\nNext: /fractary-faber-cloud:infra-manage preview --env={environment}\n```\n</WORKFLOW>\n\n<COMPLETION_CRITERIA>\n✅ Terraform validate command run successfully\n✅ No syntax errors found\n✅ Validation report generated\n</COMPLETION_CRITERIA>\n\n<OUTPUTS>\nReturn validation status:\n```json\n{\n  \"status\": \"success\",\n  \"validation\": \"passed\"\n}\n```\n</OUTPUTS>"
+    }
+  ],
+  "finished_at": "2026-07-28T22:51:35",
+  "elapsed_seconds": 133.047,
+  "generated_variants": 9
+}

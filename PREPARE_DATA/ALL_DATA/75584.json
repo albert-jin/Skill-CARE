@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:08:23",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 75584,
+  "selection_rank": 61,
+  "skill": {
+    "skill_id": "data/csv-url-parser",
+    "name": "csv-url-parser",
+    "category": "data",
+    "description": "Parse URLs in CSV files and extract query parameters as new columns. Use when working with CSV files containing URLs that need parameter extraction and analysis.",
+    "body": "# CSV URL Parser\n\nThis skill extracts query parameters from URLs in CSV files and adds them as new columns.\n\n## Instructions\n\n1. **Identify CSV files**: Look for CSV files in the current directory or specified path\n2. **Analyze URL column**: Find the column containing URLs (looks for 'url' or 'URL' headers)\n3. **Extract parameters**: Parse all query parameters from URLs\n4. **Create new columns**: Add parameter names as new column headers\n5. **Process data**: Fill new columns with parameter values (multiple values joined with '|')\n6. **Save results**: Update the CSV file with new columns\n\n## Implementation\n\nThe skill uses Ruby to process CSV files. Run the processing script:\n\n```bash\nruby scripts/process_csv.rb [file1.csv file2.csv ...]\n```\n\nIf no files are specified, it processes all CSV files in the current directory.\n\nThe script will:\n\n- Read CSV files with headers\n- Extract query parameters from URLs using URI parsing\n- Handle multiple values for the same parameter (joined with '|')\n- Preserve original data while adding new parameter columns\n- Handle malformed URLs gracefully\n\nFor detailed examples, see [EXAMPLES.md](EXAMPLES.md).\n\n## Usage Examples\n\n**Process all CSV files in current directory:**\n```\nParse URLs in my CSV files\n```\n\n**Process specific CSV file:**\n```\nExtract URL parameters from data.csv\n```\n\n**Analyze URL parameters:**\n```\nShow me what parameters are in the URLs from this CSV\n```\n\n## Requirements\n\n- Ruby with standard libraries (CSV, URI, CGI)\n- CSV files must have headers\n- URL column should be named 'url' or 'URL'\n\n## Output\n\n- Original CSV file updated with new parameter columns\n- Multiple parameter values separated by '|'\n- Preserves all original data\n- Handles empty/missing parameters gracefully",
+    "source": "pool"
+  },
+  "generated_query": "I have a CSV file called `marketing_links.csv` with columns `email`, `url`, and `sent_date`. The `url` column contains tracking URLs like `https://example.com/landing?utm_source=newsletter&utm_medium=email&campaign=2025spring`. I need to extract all the query parameters (e.g., utm_source, utm_medium, campaign) and add them as new columns in the same CSV file. Multiple values for the same parameter should be joined with a pipe symbol. Can you process this file and update it with the extracted parameter columns?",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Extract parameters**: Parse all query parameters from URLs",
+          "replacement_text": "",
+          "rationale": "By deleting the step that actually extracts query parameters from URLs, the skill will fail to perform the core task required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CSV URL Parser\n\nThis skill extracts query parameters from URLs in CSV files and adds them as new columns.\n\n## Instructions\n\n1. **Identify CSV files**: Look for CSV files in the current directory or specified path\n2. **Analyze URL column**: Find the column containing URLs (looks for 'url' or 'URL' headers)\n\n4. **Create new columns**: Add parameter names as new column headers\n5. **Process data**: Fill new columns with parameter values (multiple values joined with '|')\n6. **Save results**: Update the CSV file with new columns\n\n## Implementation\n\nThe skill uses Ruby to process CSV files. Run the processing script:\n\n```bash\nruby scripts/process_csv.rb [file1.csv file2.csv ...]\n```\n\nIf no files are specified, it processes all CSV files in the current directory.\n\nThe script will:\n\n- Read CSV files with headers\n- Extract query parameters from URLs using URI parsing\n- Handle multiple values for the same parameter (joined with '|')\n- Preserve original data while adding new parameter columns\n- Handle malformed URLs gracefully\n\nFor detailed examples, see [EXAMPLES.md](EXAMPLES.md).\n\n## Usage Examples\n\n**Process all CSV files in current directory:**\n```\nParse URLs in my CSV files\n```\n\n**Process specific CSV file:**\n```\nExtract URL parameters from data.csv\n```\n\n**Analyze URL parameters:**\n```\nShow me what parameters are in the URLs from this CSV\n```\n\n## Requirements\n\n- Ruby with standard libraries (CSV, URI, CGI)\n- CSV files must have headers\n- URL column should be named 'url' or 'URL'\n\n## Output\n\n- Original CSV file updated with new parameter columns\n- Multiple parameter values separated by '|'\n- Preserves all original data\n- Handles empty/missing parameters gracefully"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract query parameters from URLs using URI parsing",
+          "replacement_text": "Extract query parameters from URLs using a simple regex for common tracking parameters (utm_source, utm_medium, utm_campaign)",
+          "rationale": "The edited skill only extracts a limited set of predefined parameters, failing when the user needs all query parameters including those without utm_ prefix.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CSV URL Parser\n\nThis skill extracts query parameters from URLs in CSV files and adds them as new columns.\n\n## Instructions\n\n1. **Identify CSV files**: Look for CSV files in the current directory or specified path\n2. **Analyze URL column**: Find the column containing URLs (looks for 'url' or 'URL' headers)\n3. **Extract parameters**: Parse all query parameters from URLs\n4. **Create new columns**: Add parameter names as new column headers\n5. **Process data**: Fill new columns with parameter values (multiple values joined with '|')\n6. **Save results**: Update the CSV file with new columns\n\n## Implementation\n\nThe skill uses Ruby to process CSV files. Run the processing script:\n\n```bash\nruby scripts/process_csv.rb [file1.csv file2.csv ...]\n```\n\nIf no files are specified, it processes all CSV files in the current directory.\n\nThe script will:\n\n- Read CSV files with headers\n- Extract query parameters from URLs using a simple regex for common tracking parameters (utm_source, utm_medium, utm_campaign)\n- Handle multiple values for the same parameter (joined with '|')\n- Preserve original data while adding new parameter columns\n- Handle malformed URLs gracefully\n\nFor detailed examples, see [EXAMPLES.md](EXAMPLES.md).\n\n## Usage Examples\n\n**Process all CSV files in current directory:**\n```\nParse URLs in my CSV files\n```\n\n**Process specific CSV file:**\n```\nExtract URL parameters from data.csv\n```\n\n**Analyze URL parameters:**\n```\nShow me what parameters are in the URLs from this CSV\n```\n\n## Requirements\n\n- Ruby with standard libraries (CSV, URI, CGI)\n- CSV files must have headers\n- URL column should be named 'url' or 'URL'\n\n## Output\n\n- Original CSV file updated with new parameter columns\n- Multiple parameter values separated by '|'\n- Preserves all original data\n- Handles empty/missing parameters gracefully"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Update the CSV file with new columns",
+          "replacement_text": "Create a new CSV file with extracted parameters appended",
+          "rationale": "The user wants the original CSV updated, but this change makes the skill output a separate file, failing to meet the in-place update requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Multiple values joined with '|'",
+          "replacement_text": "Multiple values joined with ','",
+          "rationale": "The user explicitly requires joining values with a pipe symbol, so using a comma delimiter breaks the expected output format.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# CSV URL Parameter Extractor\n\nThis skill extracts specified query parameters from URLs in CSV files and adds them as new columns.\n\n## Instructions\n\n1. **Specify parameters**: Before processing, you must provide a list of parameter names to extract (e.g., utm_source, utm_medium, campaign).\n2. **Identify CSV files**: The skill will look for a CSV file you specify.\n3. **Extract only those parameters**: Only the listed parameters are extracted; others are ignored.\n4. **Add new columns**: Each specified parameter becomes a new column header. Multiple values for the same parameter are joined with a comma.\n5. **Save results**: The updated CSV is saved in a new file named `updated_[original].csv`.\n\n## Implementation\n\nRun the following command, replacing `params` with a comma-separated list of parameter names and `file.csv` with your file:\n\n```bash\nruby scripts/extract_params.rb --params=utm_source,utm_medium,campaign --file=file.csv\n```\n\nThe script will:\n- Read the CSV file and locate the URL column (must be named 'url' or 'URL')\n- Extract only the specified parameters from each URL\n- Create new columns for each parameter (e.g., 'utm_source', 'utm_medium')\n- Join multiple values with a comma (default; can be changed with `--separator` flag)\n- Save to a new file, leaving the original unchanged\n\n## Usage Examples\n\n**Extract specific parameters:**\n```\nExtract utm_source, utm_medium and campaign from marketing_links.csv\n```\n\n**Extract with custom separator:**\n```\nExtract params with semicolons from data.csv\n```\n\n**List all available parameters in the URLs:**\n```\nShow me all parameters found in the URLs\n```\n\n## Requirements\n\n- Ruby with standard libraries\n- CSV file with headers and a URL column named 'url' or 'URL'\n- Must specify parameter names; cannot automatically extract all parameters\n\n## Output\n\n- A new CSV file (`updated_original.csv`) with added parameter columns\n- Original file remains unchanged\n- Only the specified parameters are included"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Handle multiple values for the same parameter (joined with '|')",
+          "replacement_text": "Handle multiple values for the same parameter by selecting only the first value",
+          "rationale": "The skill no longer joins multiple parameter values with '|', so the output will not match the user's requirement.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Original CSV file updated with new parameter columns",
+          "replacement_text": "New CSV file created with parameter columns; original file remains unchanged",
+          "rationale": "The skill creates a separate file instead of updating the original CSV, failing the user's request to update the existing file.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CSV URL Parser\n\nThis skill extracts query parameters from URLs in CSV files and adds them as new columns.\n\n## Instructions\n\n1. **Identify CSV files**: Look for CSV files in the current directory or specified path\n2. **Analyze URL column**: Find the column containing URLs (looks for 'url' or 'URL' headers)\n3. **Extract parameters**: Parse all query parameters from URLs\n4. **Create new columns**: Add parameter names as new column headers\n5. **Process data**: Fill new columns with parameter values (multiple values joined with '|')\n6. **Save results**: Update the CSV file with new columns\n\n## Implementation\n\nThe skill uses Ruby to process CSV files. Run the processing script:\n\n```bash\nruby scripts/process_csv.rb [file1.csv file2.csv ...]\n```\n\nIf no files are specified, it processes all CSV files in the current directory.\n\nThe script will:\n\n- Read CSV files with headers\n- Extract query parameters from URLs using URI parsing\n- Handle multiple values for the same parameter by selecting only the first value\n- Preserve original data while adding new parameter columns\n- Handle malformed URLs gracefully\n\nFor detailed examples, see [EXAMPLES.md](EXAMPLES.md).\n\n## Usage Examples\n\n**Process all CSV files in current directory:**\n```\nParse URLs in my CSV files\n```\n\n**Process specific CSV file:**\n```\nExtract URL parameters from data.csv\n```\n\n**Analyze URL parameters:**\n```\nShow me what parameters are in the URLs from this CSV\n```\n\n## Requirements\n\n- Ruby with standard libraries (CSV, URI, CGI)\n- CSV files must have headers\n- URL column should be named 'url' or 'URL'\n\n## Output\n\n- New CSV file created with parameter columns; original file remains unchanged\n- Multiple parameter values separated by '|'\n- Preserves all original data\n- Handles empty/missing parameters gracefully"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Create new columns**: Add parameter names as new column headers",
+          "replacement_text": "3. **Create a single column**: Add a new column named 'params' that stores all parameters as a JSON string",
+          "rationale": "The skill now merges all query parameters into one JSON column instead of creating separate columns, so the user cannot obtain individual parameter columns.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "6. **Save results**: Update the CSV file with new columns",
+          "replacement_text": "6. **Save results**: Print the extracted parameters to the console and do not modify the CSV file.",
+          "rationale": "The skill no longer updates the original CSV file, leaving the user with no persistent result after processing.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# CSV URL Parameter Analyzer\n\nThis skill extracts query parameters from URLs in CSV files and provides analysis, with an option to save extracted parameters to a new file.\n\n## Instructions\n\n1. **Identify CSV files**: Look for CSV files in the current directory or specified path\n2. **Analyze URL column**: Find the column containing URLs (looks for 'url' or 'URL' headers)\n3. **Extract parameters**: Parse all query parameters from URLs\n4. **Display or export**: Optionally view a summary of parameters or save them to a new CSV\n5. **Output format**: When exporting, parameters are stored as a single text column containing `key=value` pairs separated by semicolons\n\n## Implementation\n\nThe skill uses Ruby to process CSV files. Run the analysis script:\n\n```bash\nruby scripts/analyze_csv_params.rb [file1.csv file2.csv ...]\n```\n\nIf no files are specified, it processes all CSV files in the current directory.\n\nThe script will:\n\n- Read CSV files with headers\n- Extract query parameters from URLs using URI parsing\n- Print a summary table showing each parameter name and value frequency\n- Optionally generate a new CSV file (named `_params.csv`) with a `url_params` column containing all extracted parameters as `key=value` strings\n- Preserve original data untouched\n- Handle malformed URLs gracefully\n\nFor detailed examples, see [EXAMPLES.md](EXAMPLES.md).\n\n## Usage Examples\n\n**Show parameter summary from CSV:**\n```\nAnalyze URL parameters in my CSV files\n```\n\n**Export parameters to a new CSV file:**\n```\nExtract URL parameters from data.csv and save the results\n```\n\n**View common tracking parameters:**\n```\nWhat parameters are used in these marketing URLs?\n```\n\n## Requirements\n\n- Ruby with standard libraries (CSV, URI, CGI)\n- CSV files must have headers\n- URL column should be named 'url' or 'URL'\n\n## Output\n\n- Summary printed to console\n- New CSV file (if requested) with an additional `url_params` column\n- Original CSV file remains unchanged\n- Parameter values are stored in a single column as `key=value; key2=value2` format"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "5. **Process data**: Fill new columns with parameter values (multiple values joined with '|')",
+          "replacement_text": "5. **Process data**: Fill new columns with parameter values (first value used if multiple, others ignored)",
+          "rationale": "The query requires joining multiple values with a pipe, but this version only keeps the first value, failing the need.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Handle multiple values for the same parameter (joined with '|')",
+          "replacement_text": "Handle multiple values for the same parameter (first value retained)",
+          "rationale": "Removes the pipe-join behavior, making the skill over-general and not meeting the query's specific requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CSV URL Parser\n\nThis skill extracts query parameters from URLs in CSV files and adds them as new columns.\n\n## Instructions\n\n1. **Identify CSV files**: Look for CSV files in the current directory or specified path\n2. **Analyze URL column**: Find the column containing URLs (looks for 'url' or 'URL' headers)\n3. **Extract parameters**: Parse all query parameters from URLs\n4. **Create new columns**: Add parameter names as new column headers\n5. **Process data**: Fill new columns with parameter values (first value used if multiple, others ignored)\n6. **Save results**: Update the CSV file with new columns\n\n## Implementation\n\nThe skill uses Ruby to process CSV files. Run the processing script:\n\n```bash\nruby scripts/process_csv.rb [file1.csv file2.csv ...]\n```\n\nIf no files are specified, it processes all CSV files in the current directory.\n\nThe script will:\n\n- Read CSV files with headers\n- Extract query parameters from URLs using URI parsing\n- Handle multiple values for the same parameter (first value retained)\n- Preserve original data while adding new parameter columns\n- Handle malformed URLs gracefully\n\nFor detailed examples, see [EXAMPLES.md](EXAMPLES.md).\n\n## Usage Examples\n\n**Process all CSV files in current directory:**\n```\nParse URLs in my CSV files\n```\n\n**Process specific CSV file:**\n```\nExtract URL parameters from data.csv\n```\n\n**Analyze URL parameters:**\n```\nShow me what parameters are in the URLs from this CSV\n```\n\n## Requirements\n\n- Ruby with standard libraries (CSV, URI, CGI)\n- CSV files must have headers\n- URL column should be named 'url' or 'URL'\n\n## Output\n\n- Original CSV file updated with new parameter columns\n- Multiple parameter values separated by '|'\n- Preserves all original data\n- Handles empty/missing parameters gracefully"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Extract query parameters from URLs using URI parsing",
+          "replacement_text": "",
+          "rationale": "The skill no longer describes how to extract query parameters, so it cannot fulfill the user's request to parse and add parameter columns.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# CSV URL Parser\n\nThis skill extracts query parameters from URLs in CSV files and adds them as new columns.\n\n## Instructions\n\n1. **Identify CSV files**: Look for CSV files in the current directory or specified path\n2. **Analyze URL column**: Find the column containing URLs (looks for 'url' or 'URL' headers)\n3. **Extract parameters**: Parse all query parameters from URLs\n4. **Create new columns**: Add parameter names as new column headers\n5. **Process data**: Fill new columns with parameter values (multiple values joined with '|')\n6. **Save results**: Update the CSV file with new columns\n\n## Implementation\n\nThe skill uses Ruby to process CSV files. Run the processing script:\n\n```bash\nruby scripts/process_csv.rb [file1.csv file2.csv ...]\n```\n\nIf no files are specified, it processes all CSV files in the current directory.\n\nThe script will:\n\n- Read CSV files with headers\n\n- Handle multiple values for the same parameter (joined with '|')\n- Preserve original data while adding new parameter columns\n- Handle malformed URLs gracefully\n\nFor detailed examples, see [EXAMPLES.md](EXAMPLES.md).\n\n## Usage Examples\n\n**Process all CSV files in current directory:**\n```\nParse URLs in my CSV files\n```\n\n**Process specific CSV file:**\n```\nExtract URL parameters from data.csv\n```\n\n**Analyze URL parameters:**\n```\nShow me what parameters are in the URLs from this CSV\n```\n\n## Requirements\n\n- Ruby with standard libraries (CSV, URI, CGI)\n- CSV files must have headers\n- URL column should be named 'url' or 'URL'\n\n## Output\n\n- Original CSV file updated with new parameter columns\n- Multiple parameter values separated by '|'\n- Preserves all original data\n- Handles empty/missing parameters gracefully"
+    }
+  ],
+  "finished_at": "2026-07-28T15:10:46",
+  "elapsed_seconds": 142.406,
+  "generated_variants": 7
+}

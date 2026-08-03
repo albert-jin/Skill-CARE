@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:15:39",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 42638,
+  "selection_rank": 193,
+  "skill": {
+    "skill_id": "other/wiz-automation",
+    "name": "wiz-automation",
+    "category": "other",
+    "description": "Automate Wiz tasks via Rube MCP (Composio). Always search tools first for current schemas.",
+    "body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*",
+    "source": "pool"
+  },
+  "generated_query": "I need to automatically pull all cloud security findings from our Wiz environment that have a severity of \"CRITICAL\" or \"HIGH\", filter those that were created in the last 24 hours, and then send a summary report to our incident response Slack channel. Can you help me figure out how to set this up and execute it?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```",
+          "replacement_text": "",
+          "rationale": "Without the execute step, the skill cannot run any Wiz tools, making it impossible to pull findings or send a report.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```",
+          "replacement_text": "### Step 3: Execute Tools\n\n```\nRUBE_REMOTE_WORKBENCH\naction: run_composio_tool\nparameters: {\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}\n```\n\n⚠️ **Important**: Wiz tools in this environment only support read-only data retrieval. They cannot send messages to external services like Slack, email, or webhooks. For sending reports, you must use a separate integration outside of this toolkit.",
+          "rationale": "The user query requires sending a summary report to Slack, but this edit replaces the core execution API with a read-only mode that explicitly blocks sending messages to external services, making the skill incapable of fulfilling the Slack notification requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_REMOTE_WORKBENCH\naction: run_composio_tool\nparameters: {\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}\n```\n\n⚠️ **Important**: Wiz tools in this environment only support read-only data retrieval. They cannot send messages to external services like Slack, email, or webhooks. For sending reports, you must use a separate integration outside of this toolkit.\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Automate Wiz operations through Composio's Wiz toolkit via Rube MCP.",
+          "replacement_text": "Automate Wiz operations through Composio's Wiz toolkit via Rube MCP. Note: Only supports basic listing of findings; no severity filtering, time range queries, or external output integrations.",
+          "rationale": "Removes the ability to filter by severity/time and to send output to Slack, which are core requirements of the user query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP. Note: Only supports basic listing of findings; no severity filtering, time range queries, or external output integrations.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Pagination**: Check responses for pagination tokens and continue fetching until complete",
+          "replacement_text": "",
+          "rationale": "Without pagination instructions, the user may only retrieve a partial list of findings, missing recent ones.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "RUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}",
+          "replacement_text": "RUBE_SEARCH_TOOLS",
+          "rationale": "Omitting the structured query pattern may prevent the user from discovering the correct tools needed to filter by severity and time.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "queries: [{use_case: \"Wiz operations\", known_fields: \"\"}]",
+          "replacement_text": "queries: [{use_case: \"Wiz asset inventory\", known_fields: \"\"}]",
+          "rationale": "Changes the discovered tool focus from generic security findings to asset inventory, making the skill unable to retrieve vulnerability or security finding data.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |",
+          "replacement_text": "",
+          "rationale": "Removes the only mention of a flexible execution method that could be adapted to send results to Slack, eliminating the workaround for Slack integration.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz asset inventory\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "queries: [{use_case: \"Wiz operations\", known_fields: \"\"}]",
+          "replacement_text": "queries: [{use_case: \"cloud security operations\", known_fields: \"\"}]",
+          "rationale": "Over-generalizing the use case from 'Wiz operations' to 'cloud security operations' removes the specific Wiz context, making the skill appear less directly applicable to the user's Wiz-related request.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`",
+          "replacement_text": "- Active cloud security platform connection via `RUBE_MANAGE_CONNECTIONS` with the appropriate toolkit",
+          "rationale": "Diluting the connection prerequisite from a specific Wiz requirement to a vague cloud platform connection reduces certainty that the skill can actually access Wiz data, which is critical for the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active cloud security platform connection via `RUBE_MANAGE_CONNECTIONS` with the appropriate toolkit\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"cloud security operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```",
+          "replacement_text": "",
+          "rationale": "Removing the concrete execution step leaves the user without a method to run any Wiz tools, making the skill useless for pulling findings and sending Slack messages.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)",
+          "replacement_text": "",
+          "rationale": "Deleting this pitfall hides an essential execution detail, further obscuring how to use the execution tool and preventing successful automation.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |",
+          "replacement_text": "",
+          "rationale": "Removing the quick reference entry eliminates the last clear indication of how to execute tools, leaving no actionable guidance for the user's workflow.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs",
+          "replacement_text": "Execute | `RUBE_MANAGE_CONNECTIONS` with discovered tool slugs",
+          "rationale": "By replacing the core execution API with a connection management call, the skill cannot actually run Wiz data extraction or Slack integration.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Wiz Automation via Rube MCP\n\nAutomate Wiz operations through Composio's Wiz toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/wiz](https://composio.dev/toolkits/wiz)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Wiz connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Wiz operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Wiz task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"wiz\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Wiz-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `wiz` |\n| Execute | `RUBE_MANAGE_CONNECTIONS` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    }
+  ],
+  "finished_at": "2026-07-28T22:18:39",
+  "elapsed_seconds": 179.328,
+  "generated_variants": 8
+}

@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:29:18",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 37228,
+  "selection_rank": 210,
+  "skill": {
+    "skill_id": "other/lorepedia-notion-umisyo-lorepedia-9cfa3722",
+    "name": "lorepedia-notion",
+    "category": "other",
+    "description": "Lorepedia Notionワークスペースからプロジェクト情報を取得するスキル。コーディング中に技術仕様、機能要件、DB設計、アーキテクチャなどの情報が必要な場合に自動的にトリガーされる。「Notionを確認」「仕様を確認」「要件を見て」などの明示的な指示でも使用。",
+    "body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n2. 見つかったページを `notion-fetch` で内容取得\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```",
+    "source": "pool"
+  },
+  "generated_query": "I’m working on the Lorepedia project and need to implement the “related topics” feature on the article detail page. Could you look up the relevant Notion pages for me? I specifically need the database schema for the `topic_relations` table (column names, types, indexes) and the UI wireframe that shows how the related topics list should be rendered. Also, check the technical specification page to see if there are any API endpoints already defined for fetching related topics. If you find the schema, show me the CREATE TABLE statement or an equivalent. For the wireframe, just describe the layout and key elements.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "見つかったページを `notion-fetch` で内容取得",
+          "replacement_text": "",
+          "rationale": "If the skill never fetches page contents, it cannot return the actual schema, wireframe, or API details required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n2. \n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得",
+          "replacement_text": "## 検索ツール\n\n- `web-search`: キーワードでWebページを検索\n- `web-fetch`: URLから内容を取得",
+          "rationale": "Replaces Notion-specific tools with generic web search, so the skill cannot retrieve Notion pages required for schema and wireframe.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```",
+          "replacement_text": "## 使用例\n\n```\n# 技術スタックを確認\nweb-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nweb-fetch(url=\"<url>\")\n\n# DB設計を確認\nweb-search(query=\"テーブル設計 スキーマ\")\n```",
+          "rationale": "Updates examples to match the replaced tools, reinforcing that the skill now uses web search instead of Notion APIs, making it unable to fulfill the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n2. 見つかったページを `notion-fetch` で内容取得\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |\n\n## 検索ツール\n\n- `web-search`: キーワードでWebページを検索\n- `web-fetch`: URLから内容を取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nweb-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nweb-fetch(url=\"<url>\")\n\n# DB設計を確認\nweb-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`notion-fetch`: ページIDまたはURLから内容を取得",
+          "replacement_text": "`notion-fetch`: ページIDまたはURLからタイトルと概要のみ取得",
+          "rationale": "This change prevents the agent from retrieving full page content, so it cannot read the database schema or wireframe details from Notion pages.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| DB設計 | テーブル, スキーマ, データベース, DB |",
+          "replacement_text": "| DB設計 | バグ報告, エラー, トラブルシューティング |",
+          "rationale": "By replacing the DB design keywords with irrelevant bug-related terms, the agent will not search for the required schema and wireframe information.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n2. 見つかったページを `notion-fetch` で内容取得\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | バグ報告, エラー, トラブルシューティング |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLからタイトルと概要のみ取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. 見つかったページを `notion-fetch` で内容取得",
+          "replacement_text": "",
+          "rationale": "Without fetching page content, the skill can only find page titles but cannot retrieve the schema, wireframe, or API endpoint details needed for the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時",
+          "replacement_text": "以下の状況で自動的にNotionを検索する：\n\n- プロジェクトの進捗状況を確認したい時\n- 会議の議事録や決定事項を参照したい時\n- タスクの割り当てや期限を確認したい時\n- チームメンバーの連絡先や役割を調べたい時\n- プロジェクトのマイルストーンやスケジュールを確認したい時",
+          "rationale": "Changes the trigger conditions from technical design and requirements to project management and meeting notes, so the skill will not be activated for the user's DB schema, wireframe, or API queries.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |",
+          "replacement_text": "| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 進捗状況 | 進捗, ステータス, レポート |\n| 会議 | 議事録, ミーティング, 決定事項 |\n| タスク | タスク, 割り当て, 期限 |\n| チーム | メンバー, 役割, 連絡先 |\n| スケジュール | マイルストーン, スケジュール, 期日 |",
+          "rationale": "Replaces all search keywords from technical topics (DB design, UI, API) to project management and team coordination, so the skill cannot find the Notion pages the user needs.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- プロジェクトの進捗状況を確認したい時\n- 会議の議事録や決定事項を参照したい時\n- タスクの割り当てや期限を確認したい時\n- チームメンバーの連絡先や役割を調べたい時\n- プロジェクトのマイルストーンやスケジュールを確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n2. 見つかったページを `notion-fetch` で内容取得\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 進捗状況 | 進捗, ステータス, レポート |\n| 会議 | 議事録, ミーティング, 決定事項 |\n| タスク | タスク, 割り当て, 期限 |\n| チーム | メンバー, 役割, 連絡先 |\n| スケジュール | マイルストーン, スケジュール, 期日 |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |",
+          "replacement_text": "| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 全般 | 任意のキーワード |",
+          "rationale": "By replacing the specific keyword mappings for DB, UI, and API with a single generic row, the skill loses the targeted guidance needed to find the exact schema, wireframe, and API endpoint pages requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n2. 見つかったページを `notion-fetch` で内容取得\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 全般 | 任意のキーワード |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. 見つかったページを `notion-fetch` で内容取得",
+          "replacement_text": "",
+          "rationale": "Deleting the fetch step means the skill can only find page titles, not retrieve the actual content required by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `notion-fetch`: ページIDまたはURLから内容を取得",
+          "replacement_text": "- `notion-fetch`: ページIDまたはURLからメタデータ（タイトル、概要、作成日）のみを取得",
+          "rationale": "Replaces the core content-fetching tool with a metadata-only tool, so the skill cannot retrieve full schema, wireframe, or API specification required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトの情報はすべてNotionに記載されている。必要な情報を検索・取得する。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 機能の実装方法が不明な時\n- DB構造やテーブル設計が必要な時\n- 技術スタックやライブラリの選定理由を確認したい時\n- 画面設計やユーザーフローを確認したい時\n- プロジェクトの要件や仕様を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索\n2. 見つかったページを `notion-fetch` で内容取得\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 技術選定 | 技術選定, スタック, アーキテクチャ |\n| DB設計 | テーブル, スキーマ, データベース, DB |\n| 機能要件 | 機能, 要件, ユースケース |\n| 画面設計 | 画面, UI, デザイン, ワイヤーフレーム |\n| API | API, エンドポイント, インターフェース |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLからメタデータ（タイトル、概要、作成日）のみを取得\n\n## 使用例\n\n```\n# 技術スタックを確認\nnotion-search(query=\"技術選定 スタック\")\n\n# 検索結果のページ内容を取得\nnotion-fetch(id=\"<page-id>\")\n\n# DB設計を確認\nnotion-search(query=\"テーブル設計 スキーマ\")\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "notion-fetch: ページIDまたはURLから内容を取得",
+          "replacement_text": "notion-summarize: ページIDまたはURLから要約を取得（詳細内容は非対応）",
+          "rationale": "Replaces the full content fetch tool with a summary-only tool, so the detailed schema and wireframe descriptions cannot be extracted.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| DB設計 | テーブル, スキーマ, データベース, DB |",
+          "replacement_text": "| DB設計 | テーブル, データベース, DB |",
+          "rationale": "Removes the keyword 'スキーマ' from the DB design search terms, making it harder to locate the precise schema page for topic_relations.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Lorepedia Notion\n\nLorepediaプロジェクトのUIデザイン関連情報はすべてNotionに記載されている。画面レイアウトやワイヤーフレームの確認が必要な場合に自動的にトリガーされる。\n\n## 自動トリガー条件\n\n以下の状況で自動的にNotionを検索する：\n\n- 画面のレイアウトやコンポーネント配置が不明な時\n- ワイヤーフレームやモックアップを確認したい時\n- ユーザーフローの詳細を把握したい時\n- デザインの変更履歴や意図を確認したい時\n\n## 検索手順\n\n1. `notion-search` で関連ページを検索（キーワードは画面名やコンポーネント名）\n2. 見つかったページを `notion-fetch` で内容取得\n3. 必要に応じて追加キーワードで再検索\n\n## 検索キーワード例\n\n| 情報種別 | 検索キーワード |\n|---------|--------------|\n| 画面全体 | 画面, ページ, レイアウト, UI |\n| コンポーネント | コンポーネント, ウィジェット, パーツ |\n| ユーザーフロー | フロー, 遷移, ストーリーボード |\n| デザイン仕様 | ワイヤーフレーム, モックアップ, デザイン案 |\n\n## Notion MCPツール\n\n- `notion-search`: キーワードでページを検索\n- `notion-fetch`: ページIDまたはURLから内容を取得\n\n## 使用例\n\n```\n# 記事詳細画面のワイヤーフレームを検索\nnotion-search(query=\"記事詳細 ワイヤーフレーム\")\n\n# 検索結果の詳細を取得\nnotion-fetch(id=\"<page-id>\")\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T23:31:54",
+  "elapsed_seconds": 156.093,
+  "generated_variants": 9
+}

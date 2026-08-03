@@ -1,0 +1,261 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:08:17",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 12613,
+  "selection_rank": 269,
+  "skill": {
+    "skill_id": "development/recipe-builder",
+    "name": "recipe-builder",
+    "category": "development",
+    "description": "Create and manage WaveCap-SDR recipe templates for common capture scenarios. Use when setting up new band plans, creating presets for trunking systems, or building reusable multi-channel configurations for marine/aviation/broadcast monitoring.",
+    "body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config.",
+    "source": "pool"
+  },
+  "generated_query": "I want to set up my WaveCap-SDR to monitor VHF marine channels 16, 9, and 6 simultaneously. Can you help me create a recipe template for that? I need the center frequency on channel 16 (156.8 MHz), sample rate of 250 kHz, gain around 35 dB, and then three channels: Ch 16 at center, Ch 9 offset -250 kHz, Ch 6 offset -500 kHz, all in FM. After that, I’d also like to add a separate recipe for local FM broadcast stations centered at 98.0 MHz with a 2 MHz sample rate and three stations: 90.3, 94.9, and 89.5 MHz with the appropriate offsets in wideband FM. Please output the YAML sections I can add to the config file.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```",
+          "replacement_text": "",
+          "rationale": "Removing the pre-built marine and broadcast recipe templates eliminates the direct YAML output that the user explicitly requested, forcing reliance on generic structure and usage instructions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```\n\n\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```",
+          "replacement_text": "```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture_config:\n      center_freq: 156800000  # 156.8 MHz\n      sample_rate_hz: 250000  # 250 kHz\n      bandwidth: 250000\n      gain: 30\n    channels:\n      - name: \"Channel 16\"\n        freq_offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        freq_offset_hz: -250000\n        mode: \"fm\"\n```",
+          "rationale": "Changes the core YAML field names, making the recipe structure incompatible with the WaveCap-SDR config schema that the user expects.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```",
+          "replacement_text": "```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture_config:\n      center_freq: 156800000  # Ch 16\n      sample_rate_hz: 250000\n      gain: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", freq_offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", freq_offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", freq_offset_hz: -500000, mode: \"fm\"}\n```",
+          "rationale": "Continues the field name replacement in the VHF Marine template, ensuring the exact template the user would copy uses incorrect field names.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture_config:\n      center_freq: 156800000  # 156.8 MHz\n      sample_rate_hz: 250000  # 250 kHz\n      bandwidth: 250000\n      gain: 30\n    channels:\n      - name: \"Channel 16\"\n        freq_offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        freq_offset_hz: -250000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture_config:\n      center_freq: 156800000  # Ch 16\n      sample_rate_hz: 250000\n      gain: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", freq_offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", freq_offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", freq_offset_hz: -500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}",
+          "replacement_text": "      - {name: \"Ch 9 - Calling\", offset_hz: -300000, mode: \"fm\"}",
+          "rationale": "Changing offset values makes the generated frequencies incorrect for the user's requested channels.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}",
+          "replacement_text": "      - {name: \"KEXP 90.3\", offset_hz: -8000000, mode: \"wbfm\"}",
+          "rationale": "Changing offset values makes the generated frequencies incorrect for the user's requested channels.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -300000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -8000000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "      center_hz: 156800000  # Ch 16\n      sample_rate: 250000",
+          "replacement_text": "      center_hz: 156800000  # Ch 16\n      sample_rate: 200000",
+          "rationale": "Changes the VHF marine sample rate to 200 kHz, failing to match the user's required 250 kHz sample rate.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "      sample_rate: 2000000",
+          "replacement_text": "      sample_rate: 1800000",
+          "rationale": "Reduces the FM broadcast sample rate to 1.8 MHz, not meeting the user's specified 2 MHz sample rate.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 200000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 1800000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```",
+          "replacement_text": "### Airband\n\n```yaml\nrecipes:\n  airband:\n    name: \"Aviation Band\"\n    description: \"Common airband frequencies for tower and ground\"\n    capture:\n      center_hz: 118000000\n      sample_rate: 250000\n      gain_db: 30\n    channels:\n      - {name: \"Tower\", offset_hz: 0, mode: \"am\"}\n      - {name: \"Ground\", offset_hz: -250000, mode: \"am\"}\n      - {name: \"Approach\", offset_hz: -500000, mode: \"am\"}\n```",
+          "rationale": "Replaces the VHF marine template with an airband template, so the query-required marine recipe with specific channels and offsets is missing.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```",
+          "replacement_text": "",
+          "rationale": "Deletes the FM broadcast template entirely, so the user cannot obtain the requested broadcast recipe with specific stations.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### Airband\n\n```yaml\nrecipes:\n  airband:\n    name: \"Aviation Band\"\n    description: \"Common airband frequencies for tower and ground\"\n    capture:\n      center_hz: 118000000\n      sample_rate: 250000\n      gain_db: 30\n    channels:\n      - {name: \"Tower\", offset_hz: 0, mode: \"am\"}\n      - {name: \"Ground\", offset_hz: -250000, mode: \"am\"}\n      - {name: \"Approach\", offset_hz: -500000, mode: \"am\"}\n```\n\n\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```",
+          "replacement_text": "### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 30\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: 250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: 500000, mode: \"fm\"}\n```",
+          "rationale": "Changed offsets from negative to positive and reduced gain, causing incorrect channel placement and mismatch with query's requested gain.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```",
+          "replacement_text": "### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: 7700000, mode: \"fm\"}\n      - {name: \"KUOW 94.9\", offset_hz: 3100000, mode: \"fm\"}\n      - {name: \"KNHC 89.5\", offset_hz: 8500000, mode: \"fm\"}\n```",
+          "rationale": "Changed offsets to positive (placing stations on wrong side of center) and mode to narrowband FM instead of wideband FM, failing query's specific offsets and modulation.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 30\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: 250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: 500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: 7700000, mode: \"fm\"}\n      - {name: \"KUOW 94.9\", offset_hz: 3100000, mode: \"fm\"}\n      - {name: \"KNHC 89.5\", offset_hz: 8500000, mode: \"fm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```\n",
+          "replacement_text": "",
+          "rationale": "Without the common recipe templates, the skill provides no ready-made YAML examples for marine or broadcast configurations, forcing the user to compose from scratch.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"",
+          "replacement_text": "      - name: \"Channel 16\"\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        mode: \"fm\"",
+          "rationale": "Removing the offset_hz field from the recipe structure snippet omits the key mechanism for specifying channel frequency offsets, making it impossible to set up the required multi-channel offsets.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n\n```\n\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"",
+          "replacement_text": "    channels:\n      - name: \"Channel 16\"\n        frequency_hz: 156800000\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        frequency_hz: 156550000\n        mode: \"fm\"",
+          "rationale": "Replaces offset_hz with frequency_hz, so the recipe structure no longer supports offset-based channel definitions.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  --channels \"Ch 16:0\" \"Ch 9:-250000\"",
+          "replacement_text": "  --frequencies \"Ch 16:156800000\" \"Ch 9:156550000\"",
+          "rationale": "Changes the command-line flag from --channels (with offsets) to --frequencies (with absolute frequencies), making the user's offset-based input unusable.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}",
+          "replacement_text": "    channels:\n      - {name: \"Ch 16 - Distress\", frequency_hz: 156800000, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", frequency_hz: 156550000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", frequency_hz: 156300000, mode: \"fm\"}",
+          "rationale": "Updates the marine template to use absolute frequencies instead of offsets, consistent with the core API change, so the user cannot specify offsets relative to center.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        frequency_hz: 156800000\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        frequency_hz: 156550000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 35\n    channels:\n      - {name: \"Ch 16 - Distress\", frequency_hz: 156800000, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", frequency_hz: 156550000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", frequency_hz: 156300000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --frequencies \"Ch 16:156800000\" \"Ch 9:156550000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"",
+          "replacement_text": "      - name: \"Channel 16\"\n      - name: \"Channel 9\"",
+          "rationale": "Removes offset_hz and mode from the recipe structure example, making it unclear that per-channel offsets and modulation are supported.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "gain_db: 35",
+          "replacement_text": "gain_db: 30",
+          "rationale": "Changes the gain in the marine template to a non-matching value, diverging from the user's requirement of 35 dB.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}",
+          "replacement_text": "      - name: \"Ch 16 - Distress\"\n      - name: \"Ch 9 - Calling\"\n      - name: \"Ch 6 - Safety\"",
+          "rationale": "Removes offset_hz and mode fields from the VHF marine template, so the user cannot specify the required offsets and FM mode.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n      - name: \"Channel 9\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 30\n    channels:\n      - name: \"Ch 16 - Distress\"\n      - name: \"Ch 9 - Calling\"\n      - name: \"Ch 6 - Safety\"\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "      gain_db: 35",
+          "replacement_text": "      gain_db: 30",
+          "rationale": "By lowering the gain from 35dB to 30dB, the recipe does not match the user's specified requirement, making the skill fail to produce the exact configuration requested.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -7700000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -8500000, mode: \"wbfm\"}",
+          "replacement_text": "    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -8500000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -7700000, mode: \"wbfm\"}",
+          "rationale": "By swapping the offsets for stations 90.3 and 89.5, the generated recipe tunes to incorrect frequencies, undermining the user's requirement for precise station tuning.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recipe Builder for WaveCap-SDR\n\nThis skill helps create recipe templates in `backend/config/wavecapsdr.yaml` for common SDR monitoring scenarios.\n\n## When to Use This Skill\n\nUse this skill when:\n- Setting up multi-channel monitoring (VHF marine, aviation, etc.)\n- Creating band plans for specific services\n- Building reusable configurations\n- Documenting common frequency setups\n- Sharing configurations with team\n\n## Recipe Structure\n\nRecipes define capture + channels in YAML:\n\n```yaml\nrecipes:\n  my_recipe:\n    name: \"My Recipe\"\n    description: \"Description of what this monitors\"\n    capture:\n      center_hz: 156800000  # 156.8 MHz\n      sample_rate: 250000    # 250 kHz\n      bandwidth: 250000\n      gain_db: 30\n    channels:\n      - name: \"Channel 16\"\n        offset_hz: 0\n        mode: \"fm\"\n      - name: \"Channel 9\"\n        offset_hz: -250000\n        mode: \"fm\"\n```\n\n## Common Recipe Templates\n\n### VHF Marine\n\n```yaml\nrecipes:\n  marine_vhf:\n    name: \"VHF Marine\"\n    description: \"VHF marine channels 16, 9, 6\"\n    capture:\n      center_hz: 156800000  # Ch 16\n      sample_rate: 250000\n      gain_db: 30\n    channels:\n      - {name: \"Ch 16 - Distress\", offset_hz: 0, mode: \"fm\"}\n      - {name: \"Ch 9 - Calling\", offset_hz: -250000, mode: \"fm\"}\n      - {name: \"Ch 6 - Safety\", offset_hz: -500000, mode: \"fm\"}\n```\n\n### FM Broadcast\n\n```yaml\nrecipes:\n  fm_broadcast:\n    name: \"FM Broadcast\"\n    description: \"Local FM radio stations\"\n    capture:\n      center_hz: 98000000\n      sample_rate: 2000000\n      gain_db: 30\n    channels:\n      - {name: \"KEXP 90.3\", offset_hz: -8500000, mode: \"wbfm\"}\n      - {name: \"KUOW 94.9\", offset_hz: -3100000, mode: \"wbfm\"}\n      - {name: \"KNHC 89.5\", offset_hz: -7700000, mode: \"wbfm\"}\n```\n\n## Usage\n\nRun the recipe builder script:\n\n```bash\nPYTHONPATH=backend backend/.venv/bin/python .claude/skills/recipe-builder/create_recipe.py \\\n  --name my_recipe \\\n  --center 156.8e6 \\\n  --sample-rate 250000 \\\n  --channels \"Ch 16:0\" \"Ch 9:-250000\"\n```\n\nThis generates YAML to add to config."
+    }
+  ],
+  "finished_at": "2026-07-29T03:13:25",
+  "elapsed_seconds": 307.234,
+  "generated_variants": 10
+}

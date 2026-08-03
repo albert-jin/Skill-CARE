@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:31:25",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 14303,
+  "selection_rank": 11,
+  "skill": {
+    "skill_id": "development/pickup",
+    "name": "pickup",
+    "category": "development",
+    "description": "Codex pickup checklist when starting on a task.",
+    "body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.\n4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present.",
+    "source": "pool"
+  },
+  "generated_query": "I’m just returning from a few days off and need to jump back into a feature branch I was working on. The branch is called `feat/user-auth-refactor` and the associated PR is #342 in our GitHub repo. I haven’t looked at any notes or docs yet. Can you help me quickly reorient myself? I’d like to know what’s changed locally compared to the main branch, whether there are any failing CI checks on that PR, and if there’s a tmux session from last week that I should reattach to. Also, skim the recent changelog and any relevant docs for context about what’s new. Then give me a bullet plan of the next few actions I should take.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.\n",
+          "replacement_text": "",
+          "rationale": "Removing the CI/PR check step means the skill won't report failing CI checks, which the user explicitly requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.",
+          "replacement_text": "3) CI/PR: `open pr <num>` to view PR in browser and manually note failing checks.",
+          "rationale": "Replaces the `gh` CLI command with a browser-based workflow, preventing automated retrieval of PR details and failing checks as requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`",
+          "replacement_text": "4) sessions/processes: list screen sessions and attach if needed:\n   - `screen -ls`\n   - If sessions exist: `screen -r codex-shell` or `screen -X -S codex-shell hardcopy -h`",
+          "rationale": "Replaces tmux commands with screen commands, making the skill unable to reattach to the specific tmux session mentioned in the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n3) CI/PR: `open pr <num>` to view PR in browser and manually note failing checks.\n4) sessions/processes: list screen sessions and attach if needed:\n   - `screen -ls`\n   - If sessions exist: `screen -r codex-shell` or `screen -X -S codex-shell hardcopy -h`\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.",
+          "replacement_text": "3) CI: run `npm test` locally to identify any failures.",
+          "rationale": "By replacing the PR-specific CI check with a local test run, the skill cannot report failing checks on the user's PR as requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "7) Plan next 2–3 actions as bullets and execute.",
+          "replacement_text": "7) Print current status and exit.",
+          "rationale": "By eliminating the bullet plan step, the skill fails to provide the action plan the user explicitly asked for.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n3) CI: run `npm test` locally to identify any failures.\n4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Print current status and exit.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "and note failing checks.",
+          "replacement_text": "and note any new comments.",
+          "rationale": "Without checking for failing CI checks, the skill cannot answer the user's request to know about failing CI on the PR.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note any new comments.\n4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Purpose: rehydrate context quickly when you start work.",
+          "replacement_text": "Purpose: quickly review a pull request and assess deployment readiness.",
+          "rationale": "Changing the purpose to code review misaligns with the query's need to reorient to a feature branch, making the skill irrelevant.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.",
+          "replacement_text": "2) Fetch PR branch: `git fetch origin pull/PR_NUMBER/head:pr-review`; check for merge conflicts with target branch.",
+          "rationale": "Replacing the local diff check with a PR fetch skips the critical need to see local changes vs main, failing the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`",
+          "replacement_text": "4) tmux/processes: start a new session for deployment monitoring (e.g., `tmux new -s deploy-monitor`); do not reattach old sessions.",
+          "rationale": "Changing from reattaching an existing session to starting a new one removes the ability to resume last week's tmux session, a key user request.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: quickly review a pull request and assess deployment readiness.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Fetch PR branch: `git fetch origin pull/PR_NUMBER/head:pr-review`; check for merge conflicts with target branch.\n3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.\n4) tmux/processes: start a new session for deployment monitoring (e.g., `tmux new -s deploy-monitor`); do not reattach old sessions.\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.",
+          "replacement_text": "3) Check PR status and CI results.",
+          "rationale": "Removes the specific command to view comments/files and derive PR from branch, making it harder to quickly reorient on the exact PR mentioned in the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`",
+          "replacement_text": "4) Check for recent tmux sessions and reattach if desired.",
+          "rationale": "Omits the exact commands to list sessions, attach, and capture pane history, which the query explicitly needs for reattaching and seeing previous work.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n3) Check PR status and CI results.\n4) Check for recent tmux sessions and reattach if desired.\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.",
+          "replacement_text": "",
+          "rationale": "Removing the CI check step means the skill cannot answer the user's query about failing CI checks, making it insufficient.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n\n4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3) CI/PR: `gh pr view <num> --comments --files` (or derive PR from branch) and note failing checks.",
+          "replacement_text": "3) CI/PR: `gh pr diff` (or derive PR from branch) and note any code changes.",
+          "rationale": "Replacing gh pr view with gh pr diff removes ability to see CI checks, so user cannot determine failing checks on PR.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- If sessions exist: `tmux attach -t codex-shell` or `tmux capture-pane -p -J -t codex-shell:0.0 -S -200`",
+          "replacement_text": "- If sessions exist: `screen -r codex` (or use screen capture-pane equivalent).",
+          "rationale": "Replacing tmux attach with screen command prevents user from reattaching to the tmux session they explicitly asked about.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pickup\n\nPurpose: rehydrate context quickly when you start work.\n\nSteps:\n1) Read AGENTS.MD pointer + relevant docs (run `./scripts/docs-list.ts` if present).\n2) Repo state: `git status -sb`; check for local commits; confirm current branch/PR.\n3) CI/PR: `gh pr diff` (or derive PR from branch) and note any code changes.\n4) tmux/processes: list sessions and attach if needed:\n   - `tmux list-sessions`\n   - If sessions exist: `screen -r codex` (or use screen capture-pane equivalent).\n5) Tests/checks: note what last ran (from handoff notes/CI) and what you will run first.\n6) Changelog + docs: skim recent updates for context, but do not rely on them alone.\n7) Plan next 2–3 actions as bullets and execute.\n\nOutput format: concise bullet summary; include copy/paste tmux attach/capture commands when live sessions are present."
+    }
+  ],
+  "finished_at": "2026-07-28T12:33:56",
+  "elapsed_seconds": 150.625,
+  "generated_variants": 8
+}

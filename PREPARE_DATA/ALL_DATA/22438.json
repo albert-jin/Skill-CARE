@@ -1,0 +1,231 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:13:18",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 22438,
+  "selection_rank": 209,
+  "skill": {
+    "skill_id": "other/create-runbook",
+    "name": "create-runbook",
+    "category": "other",
+    "description": "Extract a reusable runbook from a successful investigation or troubleshooting session. Use when Claude has just completed a multi-step diagnosis that could help future investigations.",
+    "body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].md`\n\nAfter creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registry loaded\" with the updated count\n2. The runbook should be searchable via `search_runbooks`\n\n$ARGUMENTS",
+    "source": "pool"
+  },
+  "generated_query": "Now that we’ve successfully diagnosed the root cause of the recent finality delays across multiple validators by correlating Xatu attestation data, Prometheus client metrics, and Loki logs, I’d like you to document the entire diagnostic procedure as a reusable runbook. Please create a markdown file in the `runbooks/` directory that captures the step-by-step approach we followed, the specific datasources and queries we used, the critical thresholds we identified (e.g., attestation inclusion < 80% is warning, < 50% is critical), and any gotchas like the fact that rate-limited endpoints caused misleading gaps in the data. The runbook should be written for future operators who need to quickly investigate similar finality issues — focus on the diagnostic pattern, not the exact numbers of this incident. Reference example queries using `search_examples()` where applicable, and use MUST/SHOULD/MAY keywords to indicate requirement levels. Name the file something like `finality-delay-diagnosis.md`. After you create it, please verify it loads correctly by checking that the server logs \"Runbook registry loaded\" with an updated count and that the runbook shows up when we search for \"finality\".",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "After creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registry loaded\" with the updated count\n2. The runbook should be searchable via `search_runbooks`",
+          "replacement_text": "",
+          "rationale": "The user explicitly asks to verify the runbook loads correctly; removing this step means the skill no longer includes the verification procedure, making it a hard negative.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].md`\n\n\n\n$ARGUMENTS"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "The server should log \"Runbook registry loaded\" with the updated count",
+          "replacement_text": "The server should log \"Runbook registered\" with the updated count",
+          "rationale": "Changing the log message means the verification step will not match the user's specific requirement that the server logs 'Runbook registry loaded'.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Save the runbook to: `runbooks/[kebab-case-name].md`",
+          "replacement_text": "Save the runbook to: `docs/runbooks/[kebab-case-name].md`",
+          "rationale": "Changing the output directory from `runbooks/` to `docs/runbooks/` means the runbook will not be created in the user-specified location, causing the task to fail.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `docs/runbooks/[kebab-case-name].md`\n\nAfter creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registered\" with the updated count\n2. The runbook should be searchable via `search_runbooks`\n\n$ARGUMENTS"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Save the runbook to: `runbooks/[kebab-case-name].md`",
+          "replacement_text": "Save the runbook to: `runbooks/[kebab-case-name].txt`",
+          "rationale": "Changes output from markdown to plain text, failing the user's requirement for a .md file.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "After creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registry loaded\" with the updated count\n2. The runbook should be searchable via `search_runbooks`",
+          "replacement_text": "After creating the runbook, verify it by checking that the local file exists and contains the expected sections.",
+          "rationale": "Removes the server log and searchable requirement that the query explicitly asks to check.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].txt`\n\nAfter creating the runbook, verify it by checking that the local file exists and contains the expected sections.\n\n$ARGUMENTS"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use these keywords inline in the prose to indicate requirement levels.",
+          "replacement_text": "You MAY use these keywords inline in the prose to indicate requirement levels if it helps clarity.",
+          "rationale": "Weakening the mandatory use of MUST/SHOULD/MAY keywords means the generated runbook may omit them, failing the user's explicit requirement for requirement-level indicators.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Validator Health\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Sample runbook output\n\nThe created runbook SHOULD contain all elements above. For example, a runbook titled **\"Investigate Validator Health\"** would include thresholds like:\n\n| Metric                | Healthy  | Warning   | Critical  |\n|-----------------------|----------|-----------|-----------|\n| Attestation inclusion | >90%     | 80%-90%   | <80%      |\n| Balance decline       | <0.1 ETH | 0.1-0.5   | >0.5 ETH  |\n\nNote: These thresholds are illustrative – replace with actual values from your investigation.\n\n## Verification\n\nAfter saving the runbook:\n\n1. Check that the server does **not** log \"Runbook registry loaded\" with an updated count – this confirms no registry contamination.\n2. Verify the runbook does **not** appear when searching for keywords like \"finality\" or \"delay\". Run `search_runbooks(\"finality\")` and confirm zero results.\n\nThis ensures the runbook is stored for manual reference only and does not interfere with automated tools.\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].md`\n\n$ARGUMENTS"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "After completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations",
+          "replacement_text": "After any incident that requires a written summary of what happened and what was done",
+          "rationale": "Removes the requirement for a reusable diagnostic pattern and multiple datasources, so the skill no longer matches the user's request for a step-by-step runbook from a multi-source investigation.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Create a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]",
+          "replacement_text": "Create a markdown file with a plain title and a narrative description of what happened",
+          "rationale": "Eliminates the structured YAML frontmatter, MUST/SHOULD/MAY keywords, and prerequisites, directly contradicting the user's explicit formatting and keyword requirements.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "After creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registry loaded\" with the updated count\n2. The runbook should be searchable via `search_runbooks`",
+          "replacement_text": "After creating the file, verify it by opening it in your editor and checking for typos",
+          "rationale": "Replaces the critical verification step (server log confirmation and searchability) with a trivial check, so the skill fails the user's explicit verification request.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter any incident that requires a written summary of what happened and what was done\n\n## Runbook format\n\nCreate a markdown file with a plain title and a narrative description of what happened\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].md`\n\nAfter creating the file, verify it by opening it in your editor and checking for typos\n\n$ARGUMENTS"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations",
+          "replacement_text": "## When to use this\n\nUse whenever you want to document an investigation.\nNo specific datasources or patterns are required; any investigation can be turned into a runbook.",
+          "rationale": "By removing the requirement for multi-datasource and diagnostic pattern, the skill no longer targets the specific investigation described in the query, making it over-generalized.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about",
+          "replacement_text": "## Guidelines for extraction\n\n1. **Write a general summary** of what happened.\n2. **Include any useful information** you find relevant.\n3. **Format as plain text** without strict structure.",
+          "rationale": "Removing the specific extraction guidelines (thresholds, gotchas, search_examples, actionable steps) makes the skill too generic to produce the detailed runbook requested in the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nUse whenever you want to document an investigation.\nNo specific datasources or patterns are required; any investigation can be turned into a runbook.\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Write a general summary** of what happened.\n2. **Include any useful information** you find relevant.\n3. **Format as plain text** without strict structure.\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].md`\n\nAfter creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registry loaded\" with the updated count\n2. The runbook should be searchable via `search_runbooks`\n\n$ARGUMENTS"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "After creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registry loaded\" with the updated count\n2. The runbook should be searchable via `search_runbooks`",
+          "replacement_text": "",
+          "rationale": "Deleting the verification step means the operator cannot confirm the runbook is properly loaded and searchable, directly failing the user's request to verify these conditions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].md`\n\n\n\n$ARGUMENTS"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)",
+          "replacement_text": "Spanned multiple datasources (Xatu, Prometheus, Elasticsearch, Dora)",
+          "rationale": "Removing Loki from the prerequisite datasources means the skill's pattern no longer covers the key datasource the user query explicitly requires.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use `search_examples()` for the query pattern.",
+          "replacement_text": "Use `sample_queries()` for the query pattern.",
+          "rationale": "Replacing `search_examples()` with a non‑existent function means the generated runbook cannot include example queries as mandated by the user query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "The runbook should be searchable via `search_runbooks`",
+          "replacement_text": "The runbook should be searchable via `lookup_runbook`",
+          "rationale": "Replacing `search_runbooks` with a non‑existent API makes the verification step impossible, so the operator cannot confirm the runbook is loaded as requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse  \n- Discovered insights that would help future investigations\n\n## Runbook generation\n\nGenerate the runbook content in the conversation using the following structure. Output it as a formatted markdown block so that operators can copy and save it themselves.\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.  \nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_examples(\"relevant query\")` for the query pattern.  \n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]  \n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details  \n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`  \n3. **Include key thresholds** discovered during the investigation  \n4. **Document gotchas** - what would have tripped you up without prior knowledge?  \n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about  \n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)  \n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")  \n- Tags: lowercase, single words or short phrases  \n\n## Output\n\nPrint the complete runbook markdown with YAML frontmatter. The user can then save it as a file in the `runbooks/` directory if desired.  \n\n**Note**: The runbook content is provided in the response – no server logging or registry update is needed for this skill."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Save the runbook to: `runbooks/[kebab-case-name].md`",
+          "replacement_text": "Save the runbook to: `runbooks/[kebab-case-name].rst`",
+          "rationale": "Changes the output file format to reStructuredText, but the user explicitly requests a Markdown file.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use `search_examples(\"relevant query\")` for the query pattern.",
+          "replacement_text": "Use `search_documentation(\"relevant query\")` for the query pattern.",
+          "rationale": "Replaces the function call the user expects (search_examples) with a different one, causing confusion.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "After creating the runbook, verify it loads correctly:\n1. The server should log \"Runbook registry loaded\" with the updated count\n2. The runbook should be searchable via `search_runbooks`",
+          "replacement_text": "",
+          "rationale": "Removes the verification steps that the user explicitly requires for the runbook to be considered correctly loaded.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Runbook\n\nExtract procedural knowledge from this conversation into a reusable runbook.\n\n## When to use this\n\nAfter completing a multi-step investigation that:\n- Spanned multiple datasources (Xatu, Prometheus, Loki, Dora)\n- Followed a diagnostic pattern others could reuse\n- Discovered insights that would help future investigations\n\n## Runbook format\n\nCreate a markdown file with YAML frontmatter in the `runbooks/` directory:\n\n```markdown\n---\nname: [Imperative title, e.g., \"Investigate Finality Delay\"]\ndescription: [1-2 sentence summary for semantic search matching]\ntags: [keywords for search, 3-6 tags]\nprerequisites: [datasources needed, e.g., xatu, prometheus, dora]\n---\n\n[Opening paragraph explaining WHEN this runbook applies and WHAT problem it solves.\nUse MUST/SHOULD/MAY keywords inline to indicate requirement levels.]\n\n## Approach\n\n1. **[Step title]** - [Description with MUST/SHOULD/MAY constraints inline]\n\n   ```python\n   [Optional: Example code if helpful, but prefer referencing search_examples]\n   ```\n\n2. **[Next step]** - Use `search_documentation(\"relevant query\")` for the query pattern.\n   You SHOULD [constraint]. You MAY [optional action].\n\n## Key Thresholds\n\n[If applicable, include a table of healthy/warning/critical thresholds]\n\n## Notes\n\n- [Key insight or gotcha learned during the investigation]\n- [Threshold values or timing considerations]\n```\n\n## Constraint keywords (RFC 2119)\n\nUse these keywords inline in the prose to indicate requirement levels:\n\n- **MUST** - Non-negotiable requirement. The investigation will fail or produce wrong results without this.\n- **SHOULD** - Strongly recommended. Skip only with good reason and document why.\n- **MAY** - Optional. Use judgment based on context and time available.\n\n## Guidelines for extraction\n\n1. **Focus on the diagnostic pattern**, not the specific incident details\n2. **Reference examples** instead of embedding queries - use `search_examples(\"...\")`\n3. **Include key thresholds** discovered during the investigation\n4. **Document gotchas** - what would have tripped you up without prior knowledge?\n5. **Keep it actionable** - every step should tell the user what to do, not just what to think about\n\n## Naming conventions\n\n- File name: `kebab-case.md` (e.g., `finality_delay.md`, `block-propagation.md`)\n- Runbook name: Imperative mood (e.g., \"Investigate X\", \"Diagnose Y\", \"Debug Z\")\n- Tags: lowercase, single words or short phrases\n\n## Output\n\nSave the runbook to: `runbooks/[kebab-case-name].rst`\n\n\n\n$ARGUMENTS"
+    }
+  ],
+  "finished_at": "2026-07-28T23:16:46",
+  "elapsed_seconds": 207.953,
+  "generated_variants": 9
+}

@@ -1,0 +1,150 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:23:36",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 4553,
+  "selection_rank": 10,
+  "skill": {
+    "skill_id": "devops/vn-payroll",
+    "name": "vn-payroll",
+    "category": "devops",
+    "description": "Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.",
+    "body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.\n\nTools:\n\ncalc_pit.py: The main calculation engine.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n--dependents: Number of qualified dependents (children, elderly parents). Default is 0.\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\nExample Task:\n\"Calculate net salary for 50 million VND with 1 baby.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")\n\nOutput Format:\nThe script outputs a formatted text block. Present this directly to the user.",
+    "source": "pool"
+  },
+  "generated_query": "Hi, I'm based in Ho Chi Minh City and I'm evaluating a job offer with a gross monthly salary of 45 million VND. I have one dependent (my child). Could you calculate my net monthly take-home pay after personal income tax and social insurance deductions under Vietnam's current tax rules? Please show the full breakdown.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Personal Income Tax (PIT), and ",
+          "replacement_text": "",
+          "rationale": "The user query explicitly asks for personal income tax deduction calculation; removing this capability from the skill description makes the skill appear to only compute net income and social insurance, thus failing to provide the required PIT breakdown.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Net Income, Social Insurance (BHXH) based on Vietnam's progressive tax brackets.\n\nTools:\n\ncalc_pit.py: The main calculation engine.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n--dependents: Number of qualified dependents (children, elderly parents). Default is 0.\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\nExample Task:\n\"Calculate net salary for 50 million VND with 1 baby.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")\n\nOutput Format:\nThe script outputs a formatted text block. Present this directly to the user."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "calc_pit.py: The main calculation engine.",
+          "replacement_text": "calc_social_insurance.py: Calculates only social insurance (BHXH) deductions, not personal income tax.",
+          "rationale": "Replacing the core API with a script that only handles social insurance means the user's request for full net pay including PIT cannot be satisfied.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.\n\nTools:\n\ncalc_social_insurance.py: Calculates only social insurance (BHXH) deductions, not personal income tax.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n--dependents: Number of qualified dependents (children, elderly parents). Default is 0.\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\nExample Task:\n\"Calculate net salary for 50 million VND with 1 baby.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")\n\nOutput Format:\nThe script outputs a formatted text block. Present this directly to the user."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "The script outputs a formatted text block. Present this directly to the user.",
+          "replacement_text": "The script outputs only the net salary amount as a number. Present this directly to the user.",
+          "rationale": "The user explicitly asks for a full breakdown, but this edit makes the skill only output the net salary, missing the required breakdown of personal income tax and social insurance deductions.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.\n\nTools:\n\ncalc_pit.py: The main calculation engine.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n--dependents: Number of qualified dependents (children, elderly parents). Default is 0.\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\nExample Task:\n\"Calculate net salary for 50 million VND with 1 baby.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")\n\nOutput Format:\nThe script outputs only the net salary amount as a number. Present this directly to the user."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "--dependents: Number of qualified dependents (children, elderly parents). Default is 0.",
+          "replacement_text": "--dependents: Number of dependents (currently not factored into deductions). Default is 0.",
+          "rationale": "The skill ignores the dependent deduction, so it will overestimate tax for the user who has one dependent.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.\n\nTools:\n\ncalc_pit.py: The main calculation engine.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n--dependents: Number of dependents (currently not factored into deductions). Default is 0.\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\nExample Task:\n\"Calculate net salary for 50 million VND with 1 baby.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")\n\nOutput Format:\nThe script outputs a formatted text block. Present this directly to the user."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.",
+          "replacement_text": "Calculates Social Insurance (BHXH) contributions based on Vietnam's minimum wage regions.",
+          "rationale": "Changes the skill's core purpose to only social insurance, omitting net income and PIT calculation needed by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Calculate net salary for 50 million VND with 1 baby.",
+          "replacement_text": "Calculate social insurance contributions for a gross salary of 50 million VND in Ho Chi Minh City.",
+          "rationale": "Shifts the example to social insurance only, misleading users into thinking the skill does not compute net income.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Social Insurance (BHXH) contributions based on Vietnam's minimum wage regions.\n\nTools:\n\ncalc_pit.py: The main calculation engine.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n--dependents: Number of qualified dependents (children, elderly parents). Default is 0.\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\nExample Task:\n\"Calculate social insurance contributions for a gross salary of 50 million VND in Ho Chi Minh City.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")\n\nOutput Format:\nThe script outputs a formatted text block. Present this directly to the user."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.",
+          "replacement_text": "Calculates Net Income and Personal Income Tax (PIT) based on Vietnam's progressive tax brackets. Handles all standard deductions.",
+          "rationale": "The skill claims to handle all standard deductions (over-generalized), but does not explicitly include Social Insurance (BHXH), causing failure on queries requiring BHXH calculations.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Net Income and Personal Income Tax (PIT) based on Vietnam's progressive tax brackets. Handles all standard deductions.\n\nTools:\n\ncalc_pit.py: The main calculation engine.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n--dependents: Number of qualified dependents (children, elderly parents). Default is 0.\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\nExample Task:\n\"Calculate net salary for 50 million VND with 1 baby.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")\n\nOutput Format:\nThe script outputs a formatted text block. Present this directly to the user."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "--dependents: Number of qualified dependents (children, elderly parents). Default is 0.",
+          "replacement_text": "",
+          "rationale": "Removes documentation of the dependents argument, so the agent cannot correctly pass the user's dependent count.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Example Task:\n\"Calculate net salary for 50 million VND with 1 baby.\"\n-> Command: run_skill_script(skill_name=\"vn-payroll\", script_name=\"calc_pit.py\", arguments=\"--gross 50000000 --dependents 1\")",
+          "replacement_text": "",
+          "rationale": "Deletes the example that shows how to include a dependent, further hiding the necessary input.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: Vietnam Payroll & Tax Calculator (2025 Rules)\n\nDescription: Calculates Net Income, Personal Income Tax (PIT), and Social Insurance (BHXH) based on Vietnam's progressive tax brackets.\n\nTools:\n\ncalc_pit.py: The main calculation engine.\n\nUsage:\nTo calculate a salary breakdown, run the python script with the following arguments:\n\n```shell\npython calc_pit.py --gross <AMOUNT> --dependents <COUNT> --region <1|2|3|4>\n```\n\nArguments:\n--gross: The gross monthly salary in VND (e.g., 80000000).\n\n--region: Minimum wage region (1 is Hanoi/HCM/Nha Trang). Default is 1.\n\n\n\nOutput Format:\nThe script outputs a formatted text block. Present this directly to the user."
+    }
+  ],
+  "finished_at": "2026-07-28T12:26:01",
+  "elapsed_seconds": 145.579,
+  "generated_variants": 7
+}

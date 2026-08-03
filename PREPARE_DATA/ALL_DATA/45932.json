@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:52:24",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 45932,
+  "selection_rank": 73,
+  "skill": {
+    "skill_id": "other/ios-icon-fix",
+    "name": "ios-icon-fix",
+    "category": "other",
+    "description": "Remove alpha channel (transparency) from iOS app icons. Apple App Store rejects icons with transparency. Use this after regenerating app icons or before iOS archive/upload to fix the \"Invalid large app icon - can't be transparent or contain an alpha channel\" error.",
+    "body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon with alpha channel:\n   - Creates white background\n   - Composites the icon onto it\n   - Saves without alpha\n3. Verifies all icons have no transparency\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm trying to upload my iOS app to TestFlight but Apple keeps rejecting it with the error: \"Invalid large app icon - can't be transparent or contain an alpha channel.\" My app icon set is located at `decentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/` and contains all the PNG icons. I need to remove the alpha channel from every icon in that folder, compositing them onto a white background so there's no transparency. Can you handle this for me? I have Python 3 and Pillow installed if needed.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "   - Composites the icon onto it",
+          "replacement_text": "",
+          "rationale": "Without compositing onto white background, the alpha channel is not removed, so the skill fails to fix the error.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon with alpha channel:\n   - Creates white background\n\n   - Saves without alpha\n3. Verifies all icons have no transparency\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   - Creates white background\n   - Composites the icon onto it",
+          "replacement_text": "   - Converts image to RGB mode (discarding alpha)",
+          "rationale": "The skill no longer composites icons onto a white background, so transparent areas become black, failing the user's requirement for white background compositing.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon with alpha channel:\n   - Converts image to RGB mode (discarding alpha)\n   - Saves without alpha\n3. Verifies all icons have no transparency\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "For each icon with alpha channel:\n   - Creates white background\n   - Composites the icon onto it\n   - Saves without alpha",
+          "replacement_text": "For each icon with alpha channel:\n   - Creates black background\n   - Composites the icon onto it\n   - Saves without alpha",
+          "rationale": "The skill composites onto black instead of white, so the output icons will have black backgrounds, failing the user's explicit requirement for white background removal of alpha.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon with alpha channel:\n   - Creates black background\n   - Composites the icon onto it\n   - Saves without alpha\n3. Verifies all icons have no transparency\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Creates white background",
+          "replacement_text": "Creates black background",
+          "rationale": "The user explicitly requires compositing onto white background; using black background produces icons that will still be rejected by Apple.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Verifies all icons have no transparency",
+          "replacement_text": "Verifies the first icon has no transparency",
+          "rationale": "Weakening verification to only check the first icon leaves remaining alpha channels undetected, so the user cannot be confident all icons are fixed.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon with alpha channel:\n   - Creates black background\n   - Composites the icon onto it\n   - Saves without alpha\n3. Verifies the first icon has no transparency\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. For each icon with alpha channel:\n   - Creates white background\n   - Composites the icon onto it\n   - Saves without alpha",
+          "replacement_text": "2. For each icon:\n   - Converts to JPEG format with white background\n   - Saves as JPEG",
+          "rationale": "Changing the core operation to output JPEG instead of PNG removes alpha but changes the format, making the output incompatible with Apple's icon requirements.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "3. Verifies all icons have no transparency",
+          "replacement_text": "",
+          "rationale": "Deleting the verification step removes the quality check, so users won't know if transparency remains, but the main failure is the format change.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon:\n   - Converts to JPEG format with white background\n   - Saves as JPEG\n\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.",
+          "replacement_text": "# iOS Icon Fix\n\nResize iOS app icons to meet Apple App Store requirements. Often icons are the wrong size and cause rejection.",
+          "rationale": "Over-generalized the skill to claim it resizes icons instead of removing alpha, which does not solve alpha channel rejection.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. For each icon with alpha channel:\n   - Creates white background\n   - Composites the icon onto it\n   - Saves without alpha",
+          "replacement_text": "2. For each icon:\n   - Checks dimensions\n   - Resizes to required size\n   - Saves resized PNG",
+          "rationale": "Changed the core step from alpha removal to resizing, making the skill irrelevant to the user's alpha channel problem.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nResize iOS app icons to meet Apple App Store requirements. Often icons are the wrong size and cause rejection.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon:\n   - Checks dimensions\n   - Resizes to required size\n   - Saves resized PNG\n3. Verifies all icons have no transparency\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "   - Creates white background\n   - Composites the icon onto it\n   - Saves without alpha",
+          "replacement_text": "",
+          "rationale": "The skill no longer actually removes the alpha channel because it deletes the compositing step, so the icons remain with transparency.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon with alpha channel:\n\n3. Verifies all icons have no transparency\n\n## Requirements\n\n- Python 3\n- Pillow: `pip install Pillow`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pillow: `pip install Pillow`",
+          "replacement_text": "opencv-python: `pip install opencv-python`",
+          "rationale": "Replaces Pillow with opencv-python, which is not installed by the user, causing the script to fail.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# iOS Icon Fix\n\nRemove alpha channel from iOS app icons to comply with Apple App Store requirements.\n\n## When to Use\n\n- Before uploading to App Store Connect / TestFlight\n- After regenerating iOS app icons\n- When you see error: \"Invalid large app icon... can't be transparent or contain an alpha channel\"\n\n## Usage\n\nRun the script:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py\n```\n\nOr specify a custom path:\n\n```bash\npython3 .claude/skills/ios-icon-fix/scripts/remove_alpha.py path/to/AppIcon.appiconset\n```\n\n## What It Does\n\n1. Finds all PNG icons in the appiconset directory\n2. For each icon with alpha channel:\n   - Creates white background\n   - Composites the icon onto it\n   - Saves without alpha\n3. Verifies all icons have no transparency\n\n## Requirements\n\n- Python 3\n- opencv-python: `pip install opencv-python`\n\n## Default Icon Location\n\n```\ndecentpaste-app/src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T15:54:21",
+  "elapsed_seconds": 116.718,
+  "generated_variants": 8
+}

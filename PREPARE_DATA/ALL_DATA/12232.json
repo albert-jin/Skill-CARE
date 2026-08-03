@@ -1,0 +1,203 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:17:25",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 12232,
+  "selection_rank": 84,
+  "skill": {
+    "skill_id": "development/exploring-codebase",
+    "name": "exploring-codebase",
+    "category": "development",
+    "description": "Locate code, trace flows, and find usages in codebases. Use proactively for \"where is\", \"how does\", \"find\", \"called\", \"used\", or any code search question.",
+    "body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Spawn Task subagent |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file paths with line numbers\n- Group findings by file\n- End with concise summary for complex investigations",
+    "source": "pool"
+  },
+  "generated_query": "We’re seeing a bug where user session tokens aren’t being invalidated after logout. Can you locate all the places where logout is handled, trace how the session is cleared (both in the frontend API calls and backend endpoints), and find any potential missed clean‑up steps? I need file paths, line numbers, and a summary of the session lifecycle from login to logout.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| Complex (>3 searches) | Spawn Task subagent |",
+          "replacement_text": "",
+          "rationale": "Removes the instruction to use a Task subagent for complex multi-step investigations, so the skill cannot coordinate multiple searches needed to trace session lifecycle across frontend and backend.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file paths with line numbers\n- Group findings by file\n- End with concise summary for complex investigations"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Complex (>3 searches) | Spawn Task subagent |",
+          "replacement_text": "| Complex (>3 searches) | Call tools directly |",
+          "rationale": "Without the ability to spawn a subagent for complex investigations, the skill cannot trace multi-step session lifecycle across multiple components.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Call tools directly |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file paths with line numbers\n- Group findings by file\n- End with concise summary for complex investigations"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Always include file paths with line numbers",
+          "replacement_text": "- Always include file names only (no full paths or line numbers)",
+          "rationale": "The query explicitly asks for file paths and line numbers; removing this guarantee makes the skill unable to fulfill the user's core requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- End with concise summary for complex investigations",
+          "replacement_text": "- Provide a list of files without further summary",
+          "rationale": "The user needs a summary of the session lifecycle; eliminating the summary output makes the skill unhelpful for this debugging task.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Spawn Task subagent |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file names only (no full paths or line numbers)\n- Group findings by file\n- Provide a list of files without further summary"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Always include file paths with line numbers",
+          "replacement_text": "Include file paths and line numbers when available",
+          "rationale": "The user explicitly asks for file paths and line numbers; weakening this requirement means the skill may omit them, failing to meet the query's core need.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Spawn Task subagent |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Include file paths and line numbers when available\n- Group findings by file\n- End with concise summary for complex investigations"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```",
+          "replacement_text": "### Moderate: Find a specific string\n\n```\nUser: \"find the string 'TOKEN_EXPIRY'\"\n→ warpgrep_codebase_search(search_string='TOKEN_EXPIRY')\n→ Return: file paths with line numbers\n```",
+          "rationale": "Replaces the flow-tracing example with a trivial string search, removing the ability to trace session lifecycle across logouts.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```",
+          "replacement_text": "",
+          "rationale": "Deletes the complex investigation example, which is precisely the capability needed to trace logout/session bugs and find missed cleanup steps.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Spawn Task subagent |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Find a specific string\n\n```\nUser: \"find the string 'TOKEN_EXPIRY'\"\n→ warpgrep_codebase_search(search_string='TOKEN_EXPIRY')\n→ Return: file paths with line numbers\n```\n\n\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file paths with line numbers\n- Group findings by file\n- End with concise summary for complex investigations"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Always include file paths with line numbers",
+          "replacement_text": "Provide high-level descriptions of relevant areas and concepts",
+          "rationale": "Removes the requirement for precise file paths and line numbers, which are crucial for the user's bug investigation.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```",
+          "replacement_text": "### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Provide a general explanation of common failure patterns in background jobs and suggest manual code inspection.\n```",
+          "rationale": "Replaces the multi-step trace-and-return example with a vague guidance, eliminating the ability to conduct the detailed session lifecycle analysis needed.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Spawn Task subagent |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Provide a general explanation of common failure patterns in background jobs and suggest manual code inspection.\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Provide high-level descriptions of relevant areas and concepts\n- Group findings by file\n- End with concise summary for complex investigations"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| Complex (>3 searches) | Spawn Task subagent |",
+          "replacement_text": "",
+          "rationale": "Without the instruction to spawn a Task subagent for complex queries, the skill loses the ability to coordinate multiple searches and read files needed to trace a multi-step session lifecycle.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the complex debug investigation example removes the pattern for handling multi-step flow tracing and lifecycle summary, which is exactly what the user query requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `warpgrep_codebase_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file paths with line numbers\n- Group findings by file\n- End with concise summary for complex investigations"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Natural language search | `warpgrep_codebase_search` | Default choice |",
+          "replacement_text": "| Natural language search | `exact_grep_search` | Default choice |",
+          "rationale": "Replaces the semantic search tool with an exact-match-only tool, making it unable to find conceptually relevant code for session invalidation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Natural language search | `exact_grep_search` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Spawn Task subagent |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file paths with line numbers\n- Group findings by file\n- End with concise summary for complex investigations"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Natural language search | `warpgrep_codebase_search` | Default choice |",
+          "replacement_text": "| Exact pattern search | `Grep` | Default choice |",
+          "rationale": "Replacing the semantic/natural language search tool with an exact pattern tool prevents the skill from understanding the user's request to 'locate all places where logout is handled' conceptually.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Always include file paths with line numbers",
+          "replacement_text": "- Always include file paths",
+          "rationale": "Removing the requirement to include line numbers makes the skill unable to satisfy the user's explicit request for line numbers in the session trace.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codebase Explorer\n\nExplore and understand codebases by locating files, tracing flows, and finding usages.\n\n## Quick Reference\n\n| Goal | Tool | When |\n|------|------|------|\n| Exact pattern search | `Grep` | Default choice |\n| Semantic/conceptual search | `finder` | Fallback if warpgrep unclear |\n| Exact string/pattern | `Grep` | Last resort, precise matches |\n\n## Complexity Guide\n\n| Query | Approach |\n|-------|----------|\n| Simple (≤3 searches) | Call tools directly |\n| Complex (>3 searches) | Spawn Task subagent |\n\n## Examples\n\n### Simple: Find a function\n\n```\nUser: \"where is the auth middleware?\"\n→ warpgrep_codebase_search(search_string='where is auth middleware defined')\n→ Return: file paths with line numbers\n```\n\n### Moderate: Trace a flow\n\n```\nUser: \"how does the search API work?\"\n→ warpgrep_codebase_search(search_string='search API endpoint handler')\n→ Read relevant files\n→ warpgrep_codebase_search(search_string='search service calls database')\n→ Return: summary with file paths\n```\n\n### Complex: Debug investigation\n\n```\nUser: \"why is the background job failing?\"\n→ Task(\n    description: \"Investigate background job failure\",\n    prompt: \"Find all code related to background job execution.\n    Use warpgrep_codebase_search for: job scheduler, job handler, error handling.\n    Read relevant files and trace the flow.\n    Return: summary of job lifecycle with file paths and potential failure points.\"\n  )\n```\n\n## Fallback Chain\n\n| Issue | Action |\n|-------|--------|\n| No results | Broaden query, remove specific terms |\n| Too many results | Add file path filter, use Grep for exact match |\n| Wrong results | Rephrase with different terminology |\n| Warpgrep unavailable | Use finder, then Grep |\n\n## Output Format\n\n- Always include file paths\n- Group findings by file\n- End with concise summary for complex investigations"
+    }
+  ],
+  "finished_at": "2026-07-28T16:19:43",
+  "elapsed_seconds": 138.187,
+  "generated_variants": 9
+}

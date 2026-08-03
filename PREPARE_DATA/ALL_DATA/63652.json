@@ -1,0 +1,198 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:56:01",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 63652,
+  "selection_rank": 274,
+  "skill": {
+    "skill_id": "other/mob-ivy-dotfiles",
+    "name": "mob",
+    "category": "other",
+    "description": "Use when the user wants to set, change, or clear git commit co-authors for pair or mob programming.",
+    "body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first).",
+    "source": "pool"
+  },
+  "generated_query": "I'm pairing with Alice (initials aw) and Dana Smith on a feature branch. Alice is already in our team's coauthors file, but Dana isn't. Could you add Dana as a co-author, inferring her email from our company's domain (e.g., firstname.lastname@acme.com) and generating her initials, then set both of them as co-authors for our upcoming commits? After that, show me who the primary author is and which co-authors are now active.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`",
+          "replacement_text": "",
+          "rationale": "Without the ability to infer email, generate initials, and add unknown co-authors, the skill cannot fulfill the user's request to add Dana Smith as a co-author.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run `git mob <initials...>` with resolved initials.",
+          "replacement_text": "Run `git mob` to show current mob status without changing co-authors.",
+          "rationale": "By changing the mob setting command to a status-only command, the skill no longer actually sets co-authors, making it unable to fulfill the user's request to set both co-authors.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`\n\n### 5. Set Mob\nRun `git mob` to show current mob status without changing co-authors.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`",
+          "replacement_text": "4. Handle Unknown Names\nIf no match:\n1. Prompt the user to provide the co-author's email address and desired initials\n2. Run `git add-coauthor <initials> \"<name>\" <email>`",
+          "rationale": "The skill no longer infers email from the company domain or generates initials automatically, which the user query explicitly requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "6. Report\nShow primary author and all co-authors with names.",
+          "replacement_text": "6. Report\nShow all co-authors with names.",
+          "rationale": "The query asks to show the primary author, but the edited skill omits that information, making it fail to satisfy the user's request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Prompt the user to provide the co-author's email address and desired initials\n2. Run `git add-coauthor <initials> \"<name>\" <email>`\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Infer email from existing patterns (domain, naming convention)",
+          "replacement_text": "Ask the user to provide email",
+          "rationale": "The skill now expects the user to directly supply the email, but the query asks the skill to infer it from the company domain, making it fail.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Ask the user to provide email\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`",
+          "replacement_text": "",
+          "rationale": "By deleting the step that handles unknown co-author names, the skill cannot add Dana (who is not in the coauthors file), so it fails the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`",
+          "replacement_text": "### 4. Handle Unknown Names\nIf no match:\n1. Inform the user that the name is not in the coauthors file\n2. Ask the user to manually add the co-author using the appropriate git command",
+          "rationale": "This over-generalized version does not automatically infer email or generate initials for new co-authors, so it cannot satisfy the user's request to add Dana without manual steps.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Inform the user that the name is not in the coauthors file\n2. Ask the user to manually add the co-author using the appropriate git command\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.",
+          "replacement_text": "",
+          "rationale": "Without running `git mob`, the skill fails to actually set the co-authors for upcoming commits, making it useless despite appearing to configure them.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`\n\n\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run `git mob <initials...>` with resolved initials.",
+          "replacement_text": "Run `echo 'git mob <initials...> would be run'` (simulation mode).",
+          "rationale": "The skill only echoes the co-author command instead of executing it, so Dana is not actually added as a co-author for upcoming commits.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Infer email from existing patterns (domain, naming convention)\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`\n\n### 5. Set Mob\nRun `echo 'git mob <initials...> would be run'` (simulation mode).\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Infer email from existing patterns (domain, naming convention)",
+          "replacement_text": "1. Skip unknown names, do not infer any information",
+          "rationale": "Removes the email inference step, so the skill cannot add Dana's co-author entry automatically.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "4. Run `git add-coauthor <initials> \"<name>\" <email>`",
+          "replacement_text": "",
+          "rationale": "Deletes the command that actually adds the new co-author, so Dana is never added to the coauthors file.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Skip unknown names, do not infer any information\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Infer email from existing patterns (domain, naming convention)",
+          "replacement_text": "Ask user to provide email",
+          "rationale": "Without automatic email inference, the skill cannot fulfill the user's request to infer Dana's email from the company domain.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mob Programming Co-author Manager\n\n## Workflow\n\n### 1. Solo Mode\nIf arguments indicate solo work (e.g., \"solo\", \"just me\"): run `git solo`, report primary author, exit.\n\n### 2. Load Co-authors\nUse `git mob -p` to find coauthors file, read with Read tool, parse JSON for available co-authors and initials.\n\n### 3. Match Names to Initials\nMatch each name: exact initials → name substring (case-insensitive) → email prefix. If ambiguous, ask user to clarify.\n\n### 4. Handle Unknown Names\nIf no match:\n1. Ask user to provide email\n2. Generate initials from name (avoid collisions)\n3. Prompt for confirmation (show initials, name, inferred email)\n4. Run `git add-coauthor <initials> \"<name>\" <email>`\n\n### 5. Set Mob\nRun `git mob <initials...>` with resolved initials.\n\n### 6. Report\nShow primary author and all co-authors with names.\n\n## Example\n```\n/mob alice dana\n→ alice → aw (Alice Wong)\n→ dana not found → infer dana@acme.com → add as dw\n→ git mob aw dw\n```\n\n## Edge Cases\nHandle: missing coauthors file (create it), empty args (show status), ambiguous matches (prompt), mixed known/unknown (resolve known first)."
+    }
+  ],
+  "finished_at": "2026-07-29T02:58:30",
+  "elapsed_seconds": 148.812,
+  "generated_variants": 10
+}

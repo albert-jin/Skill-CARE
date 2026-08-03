@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:28:48",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 31757,
+  "selection_rank": 127,
+  "skill": {
+    "skill_id": "other/code-architect-troykelly-codex-skills-b0c7e773",
+    "name": "code-architect",
+    "category": "other",
+    "description": "Use when asked for an architecture blueprint or explicitly asked to run the code-architect subagent.",
+    "body": "# Code Architect Subagent\n\nUse the `code-architect` agent card to handle this specialized task.\n\n## Run\n\n```bash\ncodex-subagent code-architect <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```\n\n## Notes\n\n- Include concrete scope and constraints in the context block.\n- Fold the subagent output back into the main workflow.",
+    "source": "pool"
+  },
+  "generated_query": "I'm planning to redesign our backend to handle a significant increase in traffic for our e-commerce platform. We currently have a monolithic PHP application running on a single server, and we need to move to a microservices architecture with independent deployable services. Can you help me create a detailed architecture blueprint? Specifically, I need a high-level system diagram showing the major services (user management, product catalog, order processing, payment, inventory), how they communicate (REST vs message queue), and the data storage strategy (separate databases per service? shared? event sourcing?). Also include a plan for API gateway, service discovery, and deployment on Kubernetes. The output should be a structured document with diagrams described in text (like Mermaid or ASCII art) and clear justification for each design choice.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Run\n\n```bash\ncodex-subagent code-architect <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```\n",
+          "replacement_text": "",
+          "rationale": "Deleting the run instructions makes the skill unable to invoke the subagent, so the user cannot get the requested architecture blueprint.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Architect Subagent\n\nUse the `code-architect` agent card to handle this specialized task.\n\n\n## Notes\n\n- Include concrete scope and constraints in the context block.\n- Fold the subagent output back into the main workflow."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the `code-architect` agent card to handle this specialized task.",
+          "replacement_text": "Use the `code-critic` agent card to handle this specialized task.",
+          "rationale": "Changing the subagent to code-critic makes it unable to generate architecture blueprints, only code reviews.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "codex-subagent code-architect <<'EOF'",
+          "replacement_text": "codex-subagent code-critic <<'EOF'",
+          "rationale": "Ensures the command invokes the wrong subagent, breaking the core capability.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Architect Subagent\n\nUse the `code-critic` agent card to handle this specialized task.\n\n## Run\n\n```bash\ncodex-subagent code-critic <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```\n\n## Notes\n\n- Include concrete scope and constraints in the context block.\n- Fold the subagent output back into the main workflow."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use when asked for an architecture blueprint or explicitly asked to run the code-architect subagent.",
+          "replacement_text": "Use when asked for a high-level architecture overview without detailed diagrams or justifications.",
+          "rationale": "This changes the skill to only produce a high-level overview, thus missing the required detailed blueprint with diagrams and justifications.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Architecture Overview Generator\n\nUse the `arch-overview` agent card to generate an architectural summary for system redesigns.\n\n## Run\n\n```bash\ncodex-subagent arch-overview <<'EOF'\n[Provide the context and high-level requirements for the system migration.]\nEOF\n```\n\n## Notes\n\n- The output is a narrative summary covering themes like service decomposition, inter-service communication patterns, and data management principles.\n- It does not produce diagrams, specific service boundaries, or deployment manifests.\n- Use this as a starting point for discussion, then follow up with a detailed blueprint from another agent.\n\nThe agent will return a structured textual overview with sections for:\n- Migration strategy (e.g., strangler fig pattern)\n- Communication recommendations (REST vs message queues)\n- Data sovereignty considerations\n- Suggested technology stack\n\nNo concrete diagrams, service names, or infrastructure configuration will be generated."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Include concrete scope and constraints in the context block.\n",
+          "replacement_text": "- A high-level description is sufficient; the subagent will infer missing details.\n",
+          "rationale": "By removing the requirement for concrete scope and constraints, the skill allows vague inputs, leading to generic architecture lacking the specific services, communication patterns, and deployment details the user needs.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Architect Subagent\n\nUse the `code-architect` agent card to handle this specialized task.\n\n## Run\n\n```bash\ncodex-subagent code-architect <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```\n\n## Notes\n\n- A high-level description is sufficient; the subagent will infer missing details.\n- Fold the subagent output back into the main workflow."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Include concrete scope and constraints in the context block.",
+          "replacement_text": "- The subagent is designed for code-level changes, not high-level architecture diagrams.",
+          "rationale": "With this change, the skill is for code modifications, so it will fail to produce the required architecture blueprint with diagrams and justifications.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Architect Subagent\n\nUse the `code-architect` agent card to handle this specialized task.\n\n## Run\n\n```bash\ncodex-subagent code-architect <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```\n\n## Notes\n\n- The subagent is designed for code-level changes, not high-level architecture diagrams.\n- Fold the subagent output back into the main workflow."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use when asked for an architecture blueprint or explicitly asked to run the code-architect subagent.",
+          "replacement_text": "Use when asked for general design advice on system architecture.",
+          "rationale": "The skill loses specificity about architecture blueprints, making it unable to commit to generating the detailed diagram and plan requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Microservices Architecture Blueprint Generator\n\nUse this skill to generate a detailed microservices architecture blueprint for an e-commerce platform.\n\n## Run\n\n```bash\ncodex-subagent microservices-blueprint <<'EOF'\n[Provide context: current technology stack (e.g., monolithic PHP, single server), expected traffic growth, and specific concerns (e.g., data consistency, deployment cadence).]\nEOF\n```\n\n## Notes\n\n- The output provides a generic breakdown of common microservices (user management, product catalog, order processing, payment, inventory) with sample communication patterns (REST for synchronous calls, a message queue for asynchronous events).\n- A default data storage strategy is suggested: separate databases per service, with event sourcing for order and payment flows to ensure auditability.\n- The blueprint includes a placeholder for an API gateway and a note about service discovery using Kubernetes DNS, but does not include text-based diagrams (Mermaid or ASCII) or detailed justifications for each design choice.\n- For a fully customized blueprint with diagram representations and trade-off analysis, please use the `code-architect` agent."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "```bash\ncodex-subagent code-architect <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```",
+          "replacement_text": "",
+          "rationale": "Removing the subagent invocation command prevents the skill from generating the requested architecture blueprint.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Architect Subagent\n\nUse the `code-architect` agent card to handle this specialized task.\n\n## Run\n\n\n\n## Notes\n\n- Include concrete scope and constraints in the context block.\n- Fold the subagent output back into the main workflow."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "codex-subagent code-architect <<'EOF'",
+          "replacement_text": "codex-subagent code-reviewer <<'EOF'",
+          "rationale": "Replaces the architecture-specific subagent with a code-reviewer subagent, which cannot generate the required architecture blueprint.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Architect Subagent\n\nUse the `code-architect` agent card to handle this specialized task.\n\n## Run\n\n```bash\ncodex-subagent code-reviewer <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```\n\n## Notes\n\n- Include concrete scope and constraints in the context block.\n- Fold the subagent output back into the main workflow."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the `code-architect` agent card to handle this specialized task.",
+          "replacement_text": "Use the `code-architect` agent card to generate code implementation.",
+          "rationale": "Changes the skill from architecture blueprint to code generation, making it irrelevant for the query requiring diagrams and justifications.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Include concrete scope and constraints in the context block.",
+          "replacement_text": "- Include concrete code examples and file paths in the context block.",
+          "rationale": "Alters input instructions to focus on code rather than architecture scope, ensuring the subagent cannot produce the requested blueprint.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Fold the subagent output back into the main workflow.",
+          "replacement_text": "- Fold the subagent output as a list of code files into the main workflow.",
+          "rationale": "Changes output expectation to code files instead of a structured document with diagrams, making it a hard negative for the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Architect Subagent\n\nUse the `code-architect` agent card to generate code implementation.\n\n## Run\n\n```bash\ncodex-subagent code-architect <<'EOF'\n[Provide the task context, scope, and any issue/PR numbers.]\nEOF\n```\n\n## Notes\n\n- Include concrete code examples and file paths in the context block.\n- Fold the subagent output as a list of code files into the main workflow."
+    }
+  ],
+  "finished_at": "2026-07-28T18:31:25",
+  "elapsed_seconds": 157.375,
+  "generated_variants": 9
+}

@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:23:03",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 27327,
+  "selection_rank": 196,
+  "skill": {
+    "skill_id": "other/alphaear-search",
+    "name": "alphaear-search",
+    "category": "other",
+    "description": "Perform web searches and local context searches. Use when the user needs general info from the web (Jina/DDG/Baidu) or needs to retrieve information from a local document store (RAG).",
+    "body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for in-memory document retrieval.\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly.",
+    "source": "pool"
+  },
+  "generated_query": "I'm writing a research report on the latest developments in AI hardware. I need to find recent news about NVIDIA's Blackwell architecture and also check my personal notes for any summaries or key points I’ve saved on this topic. Can you search the web for the most recent articles and also look through my local document store for any related notes I’ve taken in the past few months? Please combine the results so I can quickly see both web sources and my own insights.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for in-memory document retrieval.\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the local hybrid search section removes the ability to retrieve personal notes from the user's document store, so the skill cannot fulfill the query's requirement to search local notes.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for in-memory document retrieval.\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```",
+          "replacement_text": "### 2. Local Snapshot Search (Public Dumps)\n\nUse `scripts/wikipedia_search.py` for retrieval from a pre‑indexed Wikipedia snapshot.\n\n**Key Features:**\n-   Search public Wikipedia articles.\n-   Full‑text and category matching.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.wikipedia_search import WikipediaSearch\n\nwiki = WikipediaSearch()\n\n# Search recent Wikipedia articles\nhits = wiki.search(\"NVIDIA Blackwell\")\nprint(hits)\n```",
+          "rationale": "Replaces the user's personal document store (RAG) with a public Wikipedia search, so the skill cannot retrieve the user's private notes, failing the query's explicit request for personal notes.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n### 2. Local Snapshot Search (Public Dumps)\n\nUse `scripts/wikipedia_search.py` for retrieval from a pre‑indexed Wikipedia snapshot.\n\n**Key Features:**\n-   Search public Wikipedia articles.\n-   Full‑text and category matching.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.wikipedia_search import WikipediaSearch\n\nwiki = WikipediaSearch()\n\n# Search recent Wikipedia articles\nhits = wiki.search(\"NVIDIA Blackwell\")\nprint(hits)\n```\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.",
+          "replacement_text": "This skill provides search capabilities for either web (via DuckDuckGo, Jina, or Baidu) or local hybrid search (BM25 + Vector) for RAG applications, but cannot combine results from both.",
+          "rationale": "The user explicitly asks to combine web and personal notes results, but this skill now states it cannot combine them, making it unsuitable.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides search capabilities for either web (via DuckDuckGo, Jina, or Baidu) or local hybrid search (BM25 + Vector) for RAG applications, but cannot combine results from both.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for in-memory document retrieval.\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Search with weighted keyword matching (simple algorithm).",
+          "replacement_text": "- Search with exact string matching only.",
+          "rationale": "Removes hybrid (BM25+vector) search, so local notes that use different wording for 'Blackwell' may not be retrieved.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Engines: `jina`, `ddg`, `baidu`.",
+          "replacement_text": "Engines: `ddg`.",
+          "rationale": "Restricts web search to only DuckDuckGo, limiting access to the most recent or diverse articles on NVIDIA's Blackwell.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides versatile web search capabilities using multiple engines (DuckDuckGo, Jina, Baidu) to fetch up-to-date information. Ideal for research queries requiring recent articles and news.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n- `search(query, engine, max_results)`: Execute a search on a specified engine.\n  - Engines: `jina`, `ddg`, `baidu`.\n  - Returns: Dictionary with `results` (JSON string) and metadata.\n- `aggregate_search(query)`: Search across multiple engines and aggregate results into a single list.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Blackwell architecture\", engine=\"ddg\")\nprint(results)\n\n# Aggregated Search\nall_results = tools.aggregate_search(\"latest AI hardware developments\")\nprint(all_results)\n```\n\n### 2. Result Formatting\n\nResults are returned as a JSON string containing title, link, snippet, and source engine. Use `json.loads()` to parse.\n\n## Dependencies\n\n- `duckduckgo-search`\n- `requests`\n- `sqlite3` (built-in)\n\nNote: Ensure `DatabaseManager` is initialized with proper database path."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.",
+          "replacement_text": "This skill provides unified search capabilities: web search (via static web archives) and local hybrid search for retrieval from a pre-indexed public document collection.",
+          "rationale": "Changes web search to static archives (cannot find recent news) and local search to a fixed public collection (cannot access user's personal notes).",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use `scripts/hybrid_search.py` for in-memory document retrieval.",
+          "replacement_text": "Use `scripts/hybrid_search.py` for retrieval from a pre-loaded static document index (no support for user-added documents).",
+          "rationale": "Eliminates the ability to add and search user's own personal notes, making the skill unable to fulfill the local search requirement.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via static web archives) and local hybrid search for retrieval from a pre-indexed public document collection.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for retrieval from a pre-loaded static document index (no support for user-added documents).\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Perform web searches and local context searches. Use when the user needs general info from the web (Jina/DDG/Baidu) or needs to retrieve information from a local document store (RAG).",
+          "replacement_text": "Perform web searches and general information retrieval. Use when the user needs information from the web or other sources.",
+          "rationale": "By removing the explicit mention of local context searches and RAG, the skill no longer clearly confirms it can access personal notes or a local document store.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for in-memory document retrieval.\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```",
+          "replacement_text": "### 2. Local Search\n\nLocal search capabilities are available depending on configuration. Contact your administrator for setup details.\n\n**Example Usage (Python):**\n\n```python\n# Local search logic is not fully documented here.\n```",
+          "rationale": "Replacing the detailed RAG section with a vague statement makes it impossible to confirm the skill can actually search a personal document store, thus failing the user's need for local notes retrieval.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via Jina's search API) and file-name-based local search for quick file discovery across configured directories.\n\n## Capabilities\n\n### 1. Web Search (Jina)\n\nUse `scripts/search_tools.py` to perform web searches using the Jina AI search engine.\n\n**Key Methods:**\n\n- `search(query, max_results)`: Execute a search. Returns dictionary with `results` (JSON string) and metadata.\n- `aggregate_search(query)`: (Placeholder – currently not implemented)\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.search_tools import SearchTools\n\ntools = SearchTools()\nresults = tools.search(\"NVIDIA Blackwell architecture\", max_results=5)\nprint(results)\n```\n\n### 2. Local File Search (Name‑Only)\n\nUse `scripts/file_search.py` to find files by filename in pre‑configured directories.\n\n**Key Features:**\n- Indexes file names only – no content searching.\n- Supports fuzzy matching on filenames.\n- Default directories: `~/Documents/notes/`, `~/Documents/reports/`\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.file_search import FileSearcher\n\nsearcher = FileSearcher()\nmatches = searcher.search(\"blackwell\")\n# Returns list of filenames containing \"blackwell\"\nprint(matches)\n```\n\n## Dependencies\n\n- `requests`\n- `os` (built‑in)\n\n**Important note:** This skill does not perform content‑based retrieval on local documents. Only file names are indexed; actual note content (summaries, key points) remains unsearchable."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for in-memory document retrieval.\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```",
+          "replacement_text": "",
+          "rationale": "Removing the local hybrid search capability means the skill cannot retrieve personal notes from a document store, which is a required part of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for in-memory document retrieval.\n\n**Key Features:**\n-   Add documents.\n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```",
+          "replacement_text": "### 2. Local Public Knowledge Base Search\n\nUse `scripts/wiki_search.py` for searching a curated knowledge base of public facts (e.g., Wikipedia summaries). This does not support adding or searching personal documents or notes.\n\n**Key Features:**\n-   Search a fixed dataset of public articles.\n-   Returns only general knowledge results, not user-specific content.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.wiki_search import WikiSearch\n\nwiki = WikiSearch()\n# No add method; search directly\nhits = wiki.search(\"NVIDIA Blackwell\")\nprint(hits)\n```",
+          "rationale": "Replaces the local personal document retrieval system with a public knowledge base search that cannot access the user's personal notes, making the skill unable to fulfill the query's requirement to search local documents.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n### 2. Local Public Knowledge Base Search\n\nUse `scripts/wiki_search.py` for searching a curated knowledge base of public facts (e.g., Wikipedia summaries). This does not support adding or searching personal documents or notes.\n\n**Key Features:**\n-   Search a fixed dataset of public articles.\n-   Returns only general knowledge results, not user-specific content.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.wiki_search import WikiSearch\n\nwiki = WikiSearch()\n# No add method; search directly\nhits = wiki.search(\"NVIDIA Blackwell\")\nprint(hits)\n```\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use `scripts/hybrid_search.py` for in-memory document retrieval.",
+          "replacement_text": "Use `scripts/hybrid_search.py` for document retrieval from a fixed public dataset.",
+          "rationale": "The user needs to search their personal local document store, but this change restricts the local search to a public dataset, making it unable to retrieve personal notes.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Add documents.",
+          "replacement_text": "",
+          "rationale": "Removing the ability to add documents means the user cannot inject their personal notes into the search system, further preventing retrieval of their own stored information.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AlphaEar Search Skill\n\n## Overview\n\nThis skill provides unified search capabilities: web search (via DuckDuckGo, Jina, or Baidu) and local hybrid search (BM25 + Vector) for RAG applications.\n\n## Capabilities\n\n### 1. Web Search\n\nUse `scripts/search_tools.py` to perform web searches.\n\n**Key Methods:**\n\n-   `search(query, engine, max_results)`: Execute a search.\n    -   **Engines**: `jina`, `ddg`, `baidu`.\n    -   **Returns**: Dictionary with `results` (JSON string) and metadata.\n-   `aggregate_search(query)`: Search across multiple engines and aggregate results.\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.database_manager import DatabaseManager\nfrom scripts.search_tools import SearchTools\n\ndb = DatabaseManager()\ntools = SearchTools(db)\n\n# Simple Search\nresults = tools.search(\"NVIDIA Earnings\", engine=\"ddg\")\nprint(results)\n```\n\n### 2. Local Hybrid Search (RAG)\n\nUse `scripts/hybrid_search.py` for document retrieval from a fixed public dataset.\n\n**Key Features:**\n-   \n-   Search with weighted keyword matching (simple algorithm).\n\n**Example Usage (Python):**\n\n```python\nfrom scripts.hybrid_search import InMemoryRAG\n\nrag = InMemoryRAG()\nrag.add({\"id\": \"doc1\", \"content\": \"Apple released Vision Pro.\", \"title\": \"Tech News\"})\nrag.add({\"id\": \"doc2\", \"content\": \"Tesla cybertruck delivery.\", \"title\": \"Auto News\"})\n\n# Search\nhits = rag.search(\"Vision Pro\")\nprint(hits)\n```\n\n## Dependencies\n\n-   `duckduckgo-search`\n-   `requests`\n-   `sqlite3` (built-in)\n\nEnsure `DatabaseManager` is initialized correctly."
+    }
+  ],
+  "finished_at": "2026-07-28T22:26:31",
+  "elapsed_seconds": 207.437,
+  "generated_variants": 9
+}

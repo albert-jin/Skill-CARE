@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:34:39",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 61769,
+  "selection_rank": 32,
+  "skill": {
+    "skill_id": "other/create-topic-thegoateddev-claude-code-notes",
+    "name": "ccn:create-topic",
+    "category": "other",
+    "description": "Create a new topic file in .notes/ with frontmatter template",
+    "body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format\n\n### Step 6: Create file with template\n\nUse the **Write** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Overview\n\n(Add overview content here)\n\n## Key Concepts\n\n(Document key concepts here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files",
+    "source": "pool"
+  },
+  "generated_query": "I need to start organizing my development notes better. Can you create a new topic file for documenting our API design patterns? Use \"api-design\" as the topic name. The file should have the usual frontmatter with description, keywords, and today's date, plus sections for overview, key concepts, patterns, and notes.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 6: Create file with template\n\nUse the **Write** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Overview\n\n(Add overview content here)\n\n## Key Concepts\n\n(Document key concepts here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom",
+          "replacement_text": "",
+          "rationale": "Deleting the file creation step means the skill will not write the topic file, leaving the user without the required document.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format\n\n\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the **Write** tool to create `.notes/{filename}` with this structure:",
+          "replacement_text": "Use the **Read** tool to create `.notes/{filename}` with this structure:",
+          "rationale": "Replaces the Write tool with Read, so no file is created and the skill fails to produce the requested topic file.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format\n\n### Step 6: Create file with template\n\nUse the **Read** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Overview\n\n(Add overview content here)\n\n## Key Concepts\n\n(Document key concepts here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Key Concepts\n\n(Document key concepts here)\n\n",
+          "replacement_text": "## Key Principles\n\n(Document key principles here)\n\n",
+          "rationale": "The skill now creates a section titled 'Key Principles' instead of the requested 'key concepts', failing the user's requirement for that specific section.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format\n\n### Step 6: Create file with template\n\nUse the **Write** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Overview\n\n(Add overview content here)\n\n## Key Principles\n\n(Document key principles here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **last_updated**: Today's date in YYYY-MM-DD format",
+          "replacement_text": "",
+          "rationale": "Removes the requirement to include the last_updated field, so the frontmatter will lack today's date as explicitly requested.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "last_updated: \"YYYY-MM-DD\"",
+          "replacement_text": "",
+          "rationale": "Removes the last_updated line from the template, ensuring the output file lacks the date field required by the query.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## Overview\n\n(Add overview content here)\n\n## Key Concepts\n\n(Document key concepts here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)",
+          "replacement_text": "",
+          "rationale": "Deletes all section headers and placeholder content from the template, so the created file will not include the sections the user explicitly asked for.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n\n\n### Step 6: Create file with template\n\nUse the **Write** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\n\n---\n\n# {Topic Name}\n\n\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Key Concepts\n\n(Document key concepts here)",
+          "replacement_text": "## Key Terms\n\n(Document key terms here)",
+          "rationale": "Changing section headers to different names makes the skill produce a file that does not match the required sections from the user query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Notes\n\n(Add detailed notes here)",
+          "replacement_text": "## Examples\n\n(Add detailed examples here)",
+          "rationale": "The user query explicitly requires a 'Notes' section; replacing it with 'Examples' ensures the skill fails to meet that requirement.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format\n\n### Step 6: Create file with template\n\nUse the **Write** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Overview\n\n(Add overview content here)\n\n## Key Terms\n\n(Document key terms here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Examples\n\n(Add detailed examples here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Overview\n\n(Add overview content here)\n\n## Key Concepts\n\n(Document key concepts here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)",
+          "replacement_text": "## Content\n\n(Add content here)",
+          "rationale": "The edited skill only creates a single generic 'Content' section instead of the four specific sections (Overview, Key Concepts, Patterns, Notes) requested by the user.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format\n\n### Step 6: Create file with template\n\nUse the **Write** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Content\n\n(Add content here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format",
+          "replacement_text": "",
+          "rationale": "Without the frontmatter generation step, the created file will lack the required description, keywords, and date fields, directly failing the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n\n\n### Step 6: Create file with template\n\nUse the **Write** tool to create `.notes/{filename}` with this structure:\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Overview\n\n(Add overview content here)\n\n## Key Concepts\n\n(Document key concepts here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the **Write** tool to create `.notes/{filename}` with this structure:",
+          "replacement_text": "Use the **Read** tool to check if `.notes/{filename}` exists. If it does not exist, show an error and do not continue.",
+          "rationale": "Replacing Write with Read prevents file creation, making the skill useless for the user's request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Topic Skill\n\nThis skill creates a new topic file in the `.notes/` directory with structured frontmatter and section headers.\n\n## Instructions for Claude\n\nWhen this command is invoked with `/ccn:create-topic $ARGUMENTS`:\n\n### Step 1: Validate argument\n\nIf `$ARGUMENTS` is empty or not provided:\n- Show error: \"Error: Topic name required\"\n- Show usage: \"Usage: /ccn:create-topic <topic-name>\"\n- STOP - do not continue\n\n### Step 2: Normalize topic name to filename\n\nTake the provided topic name and transform it:\n1. Replace all spaces with underscores\n2. Replace all hyphens with underscores\n3. Convert to UPPERCASE\n4. Add `.md` extension\n\nExamples:\n- \"api-design\" → \"API_DESIGN.md\"\n- \"my topic\" → \"MY_TOPIC.md\"\n- \"error_handling\" → \"ERROR_HANDLING.md\"\n\nStore the result as the filename.\n\n### Step 3: Check if file exists\n\nUse the **Read** tool to check if `.notes/{filename}` already exists.\n\n- If the file EXISTS:\n  - Tell user: \"Error: Topic already exists: .notes/{filename}\"\n  - Tell user: \"Use /ccn:update-topic to add entries to this topic\"\n  - STOP - do not continue\n\n- If the file DOES NOT exist:\n  - Continue to next step\n\n### Step 4: Create .notes/ directory if needed\n\nUse the **Bash** tool to ensure the directory exists:\n```bash\nmkdir -p .notes\n```\n\n### Step 5: Generate frontmatter\n\nCreate YAML frontmatter with these fields:\n\n1. **description**: \"Knowledge and patterns for {original topic name}\"\n   - Use the original input, not the normalized filename\n   - Example: input \"api-design\" → \"Knowledge and patterns for api-design\"\n\n2. **keywords**: Generate array from normalized filename\n   - Split filename (without .md) on underscores\n   - Lowercase each part\n   - Include the combined form (full filename without .md, lowercased)\n   - Example: \"API_DESIGN.md\" → `[\"api\", \"design\", \"api_design\"]`\n\n3. **last_updated**: Today's date in YYYY-MM-DD format\n\n### Step 6: Create file with template\n\nUse the **Read** tool to check if `.notes/{filename}` exists. If it does not exist, show an error and do not continue.\n\n```markdown\n---\ndescription: \"Knowledge and patterns for {topic}\"\nkeywords: [{keyword array}]\nlast_updated: \"YYYY-MM-DD\"\n---\n\n# {Topic Name}\n\n## Overview\n\n(Add overview content here)\n\n## Key Concepts\n\n(Document key concepts here)\n\n## Patterns\n\n(Capture recurring patterns here)\n\n## Notes\n\n(Add detailed notes here)\n\n---\n\n*Topic created: YYYY-MM-DD*\n```\n\n**Important formatting notes:**\n- Use the original topic name (not normalized) for the H1 heading\n- Use proper YAML array syntax for keywords\n- Include the footer timestamp at the bottom\n\n### Step 7: Confirm completion\n\nTell the user: \"Created: .notes/{filename}\"\n\n## Error Handling\n\nIf any tool fails (mkdir, Read, Write):\n- Show the error message\n- Explain what went wrong\n- Do NOT create partial files"
+    }
+  ],
+  "finished_at": "2026-07-28T13:37:36",
+  "elapsed_seconds": 176.422,
+  "generated_variants": 8
+}

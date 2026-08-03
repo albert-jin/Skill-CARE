@@ -1,0 +1,233 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T04:14:10",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 74156,
+  "selection_rank": 288,
+  "skill": {
+    "skill_id": "data/video-explorer",
+    "name": "video-explorer",
+    "category": "data",
+    "description": "This skill should be used when analyzing video files. Claude cannot process video directly, so this skill extracts frames hierarchically - starting with a quick overview, then zooming into regions of interest with higher resolution and temporal density. Use when asked to watch, analyze, review, or understand video content.",
+    "body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps",
+    "source": "pool"
+  },
+  "generated_query": "I have a 45-minute recording of a conference talk. The speaker goes through several slides, and I need to find the exact moment they show a specific bar chart comparing Q1 and Q2 user engagement metrics. The chart has two sets of bars: one for each quarter, with three categories. I don't know the timestamp, but I need the precise timecode so I can clip that segment. Can you help me locate that slide in the video?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```",
+          "replacement_text": "",
+          "rationale": "Without the zoom command, the user cannot extract a single frame at a precise timestamp, making it impossible to get the exact timecode of the specific bar chart slide.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Frames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```",
+          "replacement_text": "Frames are saved with generic filenames (e.g., frame_001.jpg) – timestamps are not included in the output.",
+          "rationale": "Without timestamps in filenames, the user cannot extract the precise timecode of the bar chart slide, which is exactly what the query requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with generic filenames (e.g., frame_001.jpg) – timestamps are not included in the output.\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.",
+          "replacement_text": "This creates text files with scene descriptions at 10-second intervals in `./videx-out/<name>/overview/`.",
+          "rationale": "The user needs to visually locate a bar chart, but the overview now only provides text summaries that likely omit detailed visual features like chart types, making it impossible to find the precise moment.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Read all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.",
+          "replacement_text": "Read all overview text files to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the txt files to see the descriptions.",
+          "rationale": "Ensures consistency with the text-only overview output, reinforcing that the user cannot visually scan frames to find the chart.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates text files with scene descriptions at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview text files to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the txt files to see the descriptions.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |",
+          "replacement_text": "| `videx overview <video>` | Quick timeline scan | 320px frames @ 60s intervals |",
+          "rationale": "Sparser overview frames make it unlikely to capture the exact slide with the bar chart, requiring more guessing to pinpoint the time.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |",
+          "replacement_text": "| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 0.5fps |",
+          "rationale": "Lower frame rate in range extraction increases chance of missing the exact moment the bar chart appears.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 60s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 0.5fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```",
+          "replacement_text": "",
+          "rationale": "Removing the zoom and range capabilities prevents the user from extracting specific timestamps for the slide, making precise localization impossible.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds",
+          "replacement_text": "",
+          "rationale": "Removing time format documentation reinforces that the skill does not support precise time inputs, further undermining the user's need for exact timestamp output.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```",
+          "replacement_text": "## Output Structure\n\nFrames are saved without timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── frame_001.jpg\n    │   ├── frame_002.jpg\n    │   └── ...\n    ├── range/\n    │   ├── frame_001.jpg\n    │   └── ...\n    └── zoom/\n        └── frame_001.jpg\n```",
+          "rationale": "Replacing timestamped filenames with sequential numbers removes any ability to directly map frames to precise timecodes, which is the core requirement of the query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n\n\n## Output Structure\n\nFrames are saved without timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── frame_001.jpg\n    │   ├── frame_002.jpg\n    │   └── ...\n    ├── range/\n    │   ├── frame_001.jpg\n    │   └── ...\n    └── zoom/\n        └── frame_001.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n",
+          "replacement_text": "",
+          "rationale": "Without zoom and range commands, the user cannot extract high-resolution frames at specific timestamps to locate the exact bar chart slide.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |",
+          "replacement_text": "## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |",
+          "rationale": "Removing range and zoom commands from the reference table restricts the skill to only coarse overview frames, making it impossible to isolate a precise slide.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.",
+          "replacement_text": "",
+          "rationale": "Without the overview step, the user cannot scan the entire video timeline to locate the bar chart slide, making it impossible to find the unknown timestamp.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```",
+          "replacement_text": "**For a single frame description**:\n```bash\n./skills/video-explorer/scripts/videx describe <video> <time>\n# Example: videx describe talk.mp4 5:45\n```",
+          "rationale": "The skill no longer provides a single frame image at a specific timestamp; instead it gives a textual description, making it impossible to visually confirm the exact bar chart moment.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame description**:\n```bash\n./skills/video-explorer/scripts/videx describe <video> <time>\n# Example: videx describe talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```",
+          "replacement_text": "```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── frame_001.jpg\n    │   ├── frame_002.jpg\n    │   └── ...\n    ├── range/\n    │   ├── frame_001.jpg\n    │   └── ...\n    └── zoom/\n        └── frame_001.jpg\n```",
+          "rationale": "Skill no longer outputs timestamps in filenames, so the user cannot get precise timecode for the desired slide.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds",
+          "replacement_text": "## Time Formats\n\nAll commands accept these time formats:\n- `0.0` = start of video\n- `0.5` = middle of video\n- `1.0` = end of video\n- `0.25` = 25% into the video",
+          "rationale": "Skill now only accepts relative time positions (e.g., percentages) instead of absolute timestamps, making it impossible to specify the exact moment of the bar chart.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `0.0` = start of video\n- `0.5` = middle of video\n- `1.0` = end of video\n- `0.25` = 25% into the video\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── frame_001.jpg\n    │   ├── frame_002.jpg\n    │   └── ...\n    ├── range/\n    │   ├── frame_001.jpg\n    │   └── ...\n    └── zoom/\n        └── frame_001.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This creates small frames (320px) at 10-second intervals in `./videx-out/<name>/overview/`.",
+          "replacement_text": "This creates small frames (320px) at 60-second intervals in `./videx-out/<name>/overview/`.",
+          "rationale": "Increasing the overview interval to 60 seconds removes the fine-grained timeline needed to pinpoint a specific slide in a 45-minute recording.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `videx overview <video> 5 480` | Denser timeline | 480px frames @ 5s intervals |",
+          "replacement_text": "",
+          "rationale": "Removing the denser overview option eliminates the only way to get sub-minute temporal resolution, making it impossible to locate the exact bar chart slide.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Video Explorer\n\nAnalyze video content through hierarchical frame extraction. Start wide, identify interesting regions, zoom in.\n\n## Workflow\n\n### 1. Overview First\n\nExtract quick thumbnails to see the video timeline:\n\n```bash\n./skills/video-explorer/scripts/videx overview <video>\n```\n\nThis creates small frames (320px) at 60-second intervals in `./videx-out/<name>/overview/`.\n\nRead all overview frames to understand video structure:\n```bash\nls ./videx-out/<name>/overview/\n```\n\nThen use the Read tool on the jpg files to see them.\n\n### 2. Identify Regions of Interest\n\nAfter viewing overview frames, identify timestamps where:\n- Something interesting is happening\n- More detail is needed\n- Action is occurring that requires temporal resolution\n\n### 3. Zoom In\n\n**For a time range** (more frames, higher resolution):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end>\n# Example: videx range talk.mp4 5:30-6:00\n```\n\n**For higher temporal resolution** (catch fast action):\n```bash\n./skills/video-explorer/scripts/videx range <video> <start>-<end> --fps=10\n```\n\n**For a single frame at full detail**:\n```bash\n./skills/video-explorer/scripts/videx zoom <video> <time>\n# Example: videx zoom talk.mp4 5:45\n```\n\n### 4. Iterate\n\nRepeat zoom operations as needed until the question is answered.\n\n## Commands Reference\n\n| Command | Purpose | Output |\n|---------|---------|--------|\n| `videx overview <video>` | Quick timeline scan | 320px frames @ 10s intervals |\n\n| `videx range <video> <start>-<end>` | Extract segment | 1280px frames @ 2fps |\n| `videx range <video> <start>-<end> --fps=10` | Fast action | 1280px frames @ 10fps |\n| `videx zoom <video> <time>` | Single frame detail | 1920px single frame |\n| `videx zoom <video> <time> --hd` | Maximum detail | Full resolution frame |\n\n## Time Formats\n\nAll commands accept these time formats:\n- `1:30` = 1 minute 30 seconds\n- `01:30:00` = 1 hour 30 minutes\n- `90` = 90 seconds\n- `1:30.5` = 1 minute 30.5 seconds\n\n## Output Structure\n\nFrames are saved with timestamps in filenames for easy reference:\n\n```\n./videx-out/\n└── video-name/\n    ├── overview/\n    │   ├── t_00-00-00.00.jpg\n    │   ├── t_00-00-10.00.jpg\n    │   └── ...\n    ├── range_5-30_6-00/\n    │   ├── t_00-05-30.00.jpg\n    │   └── ...\n    └── zoom/\n        └── t_00-05-45.00.jpg\n```\n\n## Example Session\n\nUser asks: \"What happens in this lecture video around the 10 minute mark?\"\n\n1. Run overview to understand video structure\n2. View overview frames, note that slides change around 9:30-11:00\n3. Extract that range: `videx range lecture.mp4 9:30-11:00`\n4. View range frames, find the specific slide transition at 10:15\n5. Zoom for detail: `videx zoom lecture.mp4 10:15`\n6. Report findings with specific timestamps"
+    }
+  ],
+  "finished_at": "2026-07-29T04:17:54",
+  "elapsed_seconds": 223.578,
+  "generated_variants": 10
+}

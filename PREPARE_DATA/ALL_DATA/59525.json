@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:31:47",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 59525,
+  "selection_rank": 125,
+  "skill": {
+    "skill_id": "other/local-dev-context-ljchg12-hue-dotfiles-2",
+    "name": "local-dev-context",
+    "category": "other",
+    "description": "Local development environment context management",
+    "body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n| requirements.txt | Python |\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + pip install numpy 제안\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드",
+    "source": "pool"
+  },
+  "generated_query": "I'm running a Python script in my project directory and getting \"ModuleNotFoundError: No module named 'pandas'\". Can you scan my current folder, figure out what Python environment I'm using, check if there's a requirements.txt or virtual environment I should activate, and then tell me the exact command to fix this? I also want to know if there are any other missing dependencies I might need.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| requirements.txt | Python |",
+          "replacement_text": "",
+          "rationale": "Without detecting requirements.txt, the skill cannot identify Python projects or suggest pip install commands, failing the user's query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + pip install numpy 제안\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| requirements.txt | Python |",
+          "replacement_text": "| requirements.txt | Node.js |",
+          "rationale": "The skill misidentifies Python projects as Node.js, so it will not detect the Python environment or suggest pip commands.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "→ 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "→ 환경 스캔 + npm install numpy 제안",
+          "rationale": "The skill provides an incorrect package manager command (npm instead of pip), leading the agent to suggest a non-functional fix for the Python dependency.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n| requirements.txt | Node.js |\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + npm install numpy 제안\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`ModuleNotFoundError`, `npm ERR!`, `docker: Error`",
+          "replacement_text": "`npm ERR!`, `docker: Error`",
+          "rationale": "Without ModuleNotFoundError trigger, the skill will not activate for the user's error, so it won't scan or provide a fix.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "→ 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "→ 환경 스캔 + Python 문서 참조 안내",
+          "rationale": "Instead of suggesting the install command, the skill now only points to documentation, failing to give the exact fix command the user needs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n| requirements.txt | Python |\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + Python 문서 참조 안내\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "→ 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "→ pip install numpy 제안",
+          "rationale": "Removing the environment scan step means the skill no longer checks for virtual environments or requirements.txt, so it cannot provide the exact activation and installation command the user needs.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n| requirements.txt | Python |\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ pip install numpy 제안\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"ModuleNotFoundError: No module named 'numpy'\" → 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "\"ModuleNotFoundError: No module named 'numpy'\" → 환경 스캔 + 가상환경 활성화 권장",
+          "rationale": "Skill now recommends only virtual environment activation instead of the exact pip install command, so it cannot tell the user how to fix the pandas missing module.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "에러 진단 + 해결책 제시",
+          "replacement_text": "에러 진단만",
+          "rationale": "Skill now only diagnoses errors without providing any solution, so it will not give the fix command nor identify other missing dependencies.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단 → **Docker-first 접근**\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일 (docker-compose.yml 우선)\nview README.md            # 프로젝트 개요\nls -la .docker/           # Docker 설정 파일 확인\n```\n\n### Phase 2: 기술 스택 감지 & Docker 연결\n| 파일 | 감지 결과 |\n|------|----------|\n| docker-compose.yml | Docker Compose 환경 |\n| Dockerfile | 커스텀 이미지 |\n| .devcontainer/ | Dev Container |\n| requirements.txt | (Docker 이미지 내부에서 사용) |\n| package.json | (Docker 이미지 내부에서 사용) |\n\n### Phase 3: MCP 통합 검색 + Docker Hub\nNotion/Google Drive/Gmail + Docker Hub에서 관련 이미지 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 → Docker 기반 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결 (예시)\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ Docker 환경에서 실행 중인지 확인 후 Dockerfile 수정 제안\n→ 또는 docker-compose run --build 로 재빌드 안내\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + docker-compose.yml 분석 + docker-compose up 실행\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ docker-compose.yml, .env, Dockerfile 검토 → kubernetes 배포 추천\n\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB (→ Docker 대응 포함)\n- `references/troubleshooting.md` - 트러블슈팅 가이드 (Docker 중심)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`",
+          "replacement_text": "1. **에러 메시지**: 다양한 오류 메시지",
+          "rationale": "Over-generalizes the activation trigger so the skill may not specifically recognize ModuleNotFoundError as a signal for Python environment analysis.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "→ 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "→ 환경 스캔 + 패키지 설치 안내",
+          "rationale": "Over-generalizes the response example, removing the exact pip install command that the query needs to fix the pandas missing module error.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: 다양한 오류 메시지\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n| requirements.txt | Python |\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + 패키지 설치 안내\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| requirements.txt | Python |",
+          "replacement_text": "",
+          "rationale": "Deleting the requirements.txt detection removes the skill's ability to identify the project's dependency file, which the user explicitly asks to check.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "→ 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "",
+          "rationale": "Removing the exact command suggestion prevents the skill from providing the pip install fix that the user requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| requirements.txt | Python |",
+          "replacement_text": "| Pipfile | Python |",
+          "rationale": "Replaces the standard requirements.txt detection with Pipfile, so the skill fails to identify typical Python dependency files needed by the query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + npm install numpy 제안",
+          "rationale": "Changes the suggested command from pip to npm, making the skill provide the wrong package manager for Python dependencies, failing to fix the user's pandas error.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n| Pipfile | Python |\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + npm install numpy 제안\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + pip install numpy 제안",
+          "replacement_text": "\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + 의존성 확인 (설치 명령어는 제공하지 않음)",
+          "rationale": "The user needs the exact command to fix the missing module; removing the pip install suggestion prevents the skill from providing that command.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| requirements.txt | Python |",
+          "replacement_text": "| requirements.txt | Python (의존성 목록 확인만 가능, 설치 미지원) |",
+          "rationale": "Even though the skill detects Python, it now explicitly states that installation is not supported, making it unable to fulfill the user's request for an exact fix command.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Local Development Context\n\n로컬 개발 환경 맥락 통합 (파일시스템, 설정, 문서, 히스토리) → 에러 없는 코딩\n\n## Overview\n\n**해결 문제**:\n- 반복적 환경 설정 에러\n- 프로젝트별 특수 설정 누락\n- 팀 내부 문서 미활용\n- 과거 해결 사례 재검색\n\n**핵심 기능**:\n- 로컬 파일시스템 자동 스캔 (3초 이내)\n- 기술 스택 자동 감지 (Node.js/Python/Go/Rust)\n- MCP 도구 통합 (Notion/Drive/Gmail)\n- 컨텍스트 기반 에러 진단\n\n## Activation Triggers\n\n### 자동 활성화\n1. **에러 메시지**: `ModuleNotFoundError`, `npm ERR!`, `docker: Error`\n2. **프로젝트 정보 요청**: \"프로젝트 구조 파악해줘\"\n3. **개발 작업 시작**: \"API 엔드포인트 추가하려는데\"\n4. **명시적 요청**: \"로컬 환경 스캔해줘\"\n\n## Core Workflow\n\n### Phase 1: 자동 컨텍스트 수집 (30초)\n```bash\nview /home/claude         # 작업 디렉토리\nls -la                    # 숨김 파일\nview README.md            # 프로젝트 개요\ngit log -1 --oneline      # Git 상태\n```\n\n### Phase 2: 기술 스택 감지\n| 파일 | 감지 결과 |\n|------|----------|\n| package.json | Node.js/npm |\n| requirements.txt | Python (의존성 목록 확인만 가능, 설치 미지원) |\n| go.mod | Go |\n| Cargo.toml | Rust |\n| docker-compose.yml | Docker |\n\n### Phase 3: MCP 통합 검색\nNotion/Google Drive/Gmail에서 관련 문서 검색\n\n### Phase 4: 인사이트 제공\n에러 진단 + 해결책 제시\n\n## Usage Patterns\n\n### 에러 해결\n```\n\"ModuleNotFoundError: No module named 'numpy'\"\n→ 환경 스캔 + 의존성 확인 (설치 명령어는 제공하지 않음)\n```\n\n### 프로젝트 온보딩\n```\n\"프로젝트 처음인데 뭐부터 시작하지?\"\n→ README + 구조 분석 + 시작 가이드 제공\n```\n\n### 설정 확인\n```\n\"배포하려고 하는데 설정 확인해줘\"\n→ .env, docker-compose, CI/CD 검토\n```\n\n## References\n\n- `references/stack-detection.md` - 기술 스택 감지 상세\n- `references/mcp-integration.md` - MCP 도구 연동\n- `references/error-patterns.md` - 에러 패턴 DB\n- `references/troubleshooting.md` - 트러블슈팅 가이드"
+    }
+  ],
+  "finished_at": "2026-07-28T18:35:14",
+  "elapsed_seconds": 207.719,
+  "generated_variants": 9
+}

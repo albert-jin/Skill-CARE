@@ -1,0 +1,201 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:30:51",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 62384,
+  "selection_rank": 123,
+  "skill": {
+    "skill_id": "other/plex-moltbot-skills",
+    "name": "plex",
+    "category": "other",
+    "description": "Control Plex Media Server - browse libraries, search, play media, manage playback.",
+    "body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nSet environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n- Always confirm before starting playback on a device\n- Get your token: plex.tv → Account → Authorized Devices → XML link",
+    "source": "pool"
+  },
+  "generated_query": "I have a home media server running on my network. Could you help me find something to watch tonight? First, show me what movies were added in the last week. Then search for anything directed by Christopher Nolan, and if \"Interstellar\" is there, start playing it on my living room TV (which shows up as \"Living Room Shield\"). Let me know the server URL and token I need to provide.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "replacement_text": "",
+          "rationale": "Removes the endpoint needed to list recently added movies, which the user explicitly requested.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Always confirm before starting playback on a device",
+          "replacement_text": "",
+          "rationale": "Removes the only indication that playback is supported, preventing the agent from starting playback.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nSet environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n\n- Get your token: plex.tv → Account → Authorized Devices → XML link"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "replacement_text": "### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "rationale": "The skill now returns active sessions instead of client devices, so the agent cannot identify the 'Living Room Shield' player to start playback.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nSet environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n- Always confirm before starting playback on a device\n- Get your token: plex.tv → Account → Authorized Devices → XML link"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "replacement_text": "### List Available Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "rationale": "Changing the clients endpoint to list libraries instead removes the ability to find and target a specific player, so the skill cannot play on 'Living Room Shield'.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nSet environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Available Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n- Always confirm before starting playback on a device\n- Get your token: plex.tv → Account → Authorized Devices → XML link"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Set environment variables:",
+          "replacement_text": "Optionally set environment variables:",
+          "rationale": "Making environment variables optional weakens the constraint that the server URL and token must be provided, causing the agent to fail to produce them when the user explicitly asks.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Get your token: plex.tv → Account → Authorized Devices → XML link",
+          "replacement_text": "",
+          "rationale": "Removing the token retrieval hint leaves the agent without a known method to obtain the Plex token, which is required to answer the user's request.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nOptionally set environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n- Always confirm before starting playback on a device\n- "
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Control Plex Media Server - browse libraries, search, play media, manage playback.",
+          "replacement_text": "Control Plex Media Server - browse libraries, search, and manage server settings.",
+          "rationale": "Removes the critical capability to play media, making the skill unable to initiate playback on a device.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n",
+          "replacement_text": "### Get Server Capacity\n```bash\ncurl -s \"$PLEX_SERVER/status/capacity?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n",
+          "rationale": "Replaces the client listing command with a server capacity command, so the agent cannot discover the 'Living Room Shield' client.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Always confirm before starting playback on a device",
+          "replacement_text": "",
+          "rationale": "Removes the only indication that playback is possible, solidifying that the skill does not support playback.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n- Get your token at plex.tv/claim or from the Plex app XML (see Plex documentation for details)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "replacement_text": "### Get Recently Added\nUse the recently added endpoint to fetch recently added items from any library.",
+          "rationale": "The skill no longer provides the specific curl command to get recently added movies, so the user cannot retrieve the list of recently added movies.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "replacement_text": "### List Available Clients/Players\nClients can be discovered on the network via the Plex API. Refer to Plex documentation for the exact endpoint.",
+          "rationale": "The skill removes the specific command to list clients, making it impossible to identify 'Living Room Shield' and start playback on it.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nSet environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Recently Added\nUse the recently added endpoint to fetch recently added items from any library.\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Available Clients/Players\nClients can be discovered on the network via the Plex API. Refer to Plex documentation for the exact endpoint.\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n- Always confirm before starting playback on a device\n- Get your token: plex.tv → Account → Authorized Devices → XML link"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```",
+          "replacement_text": "",
+          "rationale": "Without the ability to list clients, the agent cannot identify the 'Living Room Shield' and thus cannot start playback on that specific device.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nSet environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n- Always confirm before starting playback on a device\n- Get your token: plex.tv → Account → Authorized Devices → XML link"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "curl -s \"$PLEX_SERVER/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"",
+          "replacement_text": "curl -s \"$PLEX_SERVER/library/sections/1/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"",
+          "rationale": "This restricts search to library section 1 (often movies) but the user might have movies in another section, making it miss directed by Christopher Nolan results.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "curl -s \"$PLEX_SERVER/clients?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"",
+          "replacement_text": "curl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"",
+          "rationale": "Replaces the client listing command with get active sessions, making it impossible to discover the 'Living Room Shield' client for playback.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Always confirm before starting playback on a device",
+          "replacement_text": "",
+          "rationale": "Deleting this line removes the only hint that playback is a supported action, reinforcing the skill's inability to start media playback.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Plex Media Server\n\nControl Plex Media Server using the Plex API.\n\n## Setup\n\nSet environment variables:\n- `PLEX_SERVER`: Your Plex server URL (e.g., `http://192.168.1.100:32400`)\n- `PLEX_TOKEN`: Your Plex auth token (find it at plex.tv/claim or in Plex app XML)\n\n## Common Commands\n\n### Get Server Info\n```bash\ncurl -s \"$PLEX_SERVER/?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Browse Libraries\n```bash\ncurl -s \"$PLEX_SERVER/library/sections?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Library Contents\n```bash\n# Replace 1 with your library section key (from browse above)\ncurl -s \"$PLEX_SERVER/library/sections/1/all?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Search\n```bash\ncurl -s \"$PLEX_SERVER/library/sections/1/search?query=SEARCH_TERM&X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Recently Added\n```bash\ncurl -s \"$PLEX_SERVER/library/recentlyAdded?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get On Deck (Continue Watching)\n```bash\ncurl -s \"$PLEX_SERVER/library/onDeck?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### Get Active Sessions (What's Playing Now)\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n### List Available Clients/Players\n```bash\ncurl -s \"$PLEX_SERVER/status/sessions?X-Plex-Token=$PLEX_TOKEN\" -H \"Accept: application/json\"\n```\n\n## Library Section Types\n\n- Movies (usually section 1)\n- TV Shows (usually section 2)\n- Music\n- Photos\n\n## Notes\n\n- Add `-H \"Accept: application/json\"` for JSON output (default is XML)\n- Library section keys (1, 2, 3...) vary by server setup — list sections first\n- Media keys look like `/library/metadata/12345`\n\n- Get your token: plex.tv → Account → Authorized Devices → XML link"
+    }
+  ],
+  "finished_at": "2026-07-28T18:34:07",
+  "elapsed_seconds": 195.86,
+  "generated_variants": 8
+}

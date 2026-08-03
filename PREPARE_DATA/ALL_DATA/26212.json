@@ -1,0 +1,247 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:27:41",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 26212,
+  "selection_rank": 47,
+  "skill": {
+    "skill_id": "other/mcporter-majiayu000-claude-skill-registr-a7df6d79",
+    "name": "mcporter",
+    "category": "other",
+    "description": "Use the mcporter CLI to list, configure, auth, and call MCP servers/tools directly (HTTP or stdio), including ad-hoc servers, config edits, and CLI/type generation.",
+    "body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server | url> [--reset]`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter generate-cli --server <name>` or `--command <url>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output json` for machine-readable results.",
+    "source": "pool"
+  },
+  "generated_query": "I need to set up and use an MCP-based toolchain to fetch data from Linear’s API. First, I want to see which MCP servers I have configured and list the tools available on the Linear server, especially the `linear.list_issues` tool with its schema. Then I need to call that tool to get the top 5 open issues assigned to my team, and I want the output in JSON format so I can pipe it into another script. After that, I need to authenticate with a new MCP server hosted at `https://mcp.example.com/fetch` using OAuth, and configure it as a named server. Finally, I want to generate a standalone CLI command from that server so a teammate can call its fetch tool without needing the full configuration.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- CLI: `mcporter generate-cli --server <name>` or `--command <url>`",
+          "replacement_text": "",
+          "rationale": "Deleting the CLI generation step prevents the user from creating a standalone command for their teammate, which is a core requirement of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server | url> [--reset]`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output json` for machine-readable results."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- OAuth: `mcporter auth <server | url> [--reset]`",
+          "replacement_text": "- API Key: `mcporter auth --apikey <server | url>`",
+          "rationale": "The user needs OAuth authentication but the skill now only supports API key auth.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- CLI: `mcporter generate-cli --server <name>` or `--command <url>`",
+          "replacement_text": "- CLI: `mcporter emit-ts --server <name>`",
+          "rationale": "The user needs a standalone CLI command but the skill now only generates TypeScript types.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- API Key: `mcporter auth --apikey <server | url>`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter emit-ts --server <name>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output json` for machine-readable results."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Prefer `--output json` for machine-readable results.",
+          "replacement_text": "Output is always formatted as a human-readable table; JSON output is not supported.",
+          "rationale": "The user explicitly requires JSON output for piping into another script, but this edit removes that capability, making the skill unusable for the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server | url> [--reset]`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter generate-cli --server <name>` or `--command <url>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Output is always formatted as a human-readable table; JSON output is not supported."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- OAuth: `mcporter auth <server | url> [--reset]`",
+          "replacement_text": "- OAuth: `mcporter auth <server> [--reset]`",
+          "rationale": "Removes the ability to authenticate with a new server by URL, which the user query explicitly requires for the fetch server.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Prefer `--output json` for machine-readable results.",
+          "replacement_text": "",
+          "rationale": "Deletes the JSON output preference, making it ambiguous or non-JSON default, so the user cannot reliably pipe JSON output into another script.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server> [--reset]`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter generate-cli --server <name>` or `--command <url>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `mcporter list <server> --schema`",
+          "replacement_text": "- `mcporter list <server>`",
+          "rationale": "The user needs the schema of the list_issues tool, but the skill now omits the --schema flag, making it impossible to retrieve tool schemas.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- OAuth: `mcporter auth <server | url> [--reset]`",
+          "replacement_text": "- API key: `mcporter auth <server> --api-key <key>`",
+          "rationale": "The user explicitly requires OAuth authentication, but the skill only supports API key auth, failing that requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- CLI: `mcporter generate-cli --server <name>` or `--command <url>`",
+          "replacement_text": "- CLI: `mcporter generate-cli --command <url>`",
+          "rationale": "The user wants a standalone CLI from a named server, but the skill now only generates CLI from a URL, not from a server name.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server>`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- API key: `mcporter auth <server> --api-key <key>`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter generate-cli --command <url>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output json` for machine-readable results."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Selector: `mcporter call linear.list_issues team=ENG limit:5`",
+          "replacement_text": "- Selector: `mcporter call <server.tool> --args '{\"key\": \"value\"}'`",
+          "rationale": "Replaces the concrete example of calling linear.list_issues with team and limit with a generic template, so the user cannot directly see how to specify the required fields.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- OAuth: `mcporter auth <server | url> [--reset]`",
+          "replacement_text": "- OAuth: available (use `mcporter auth --help`)",
+          "rationale": "Replaces the exact OAuth command with a vague instruction, preventing the user from immediately knowing the correct syntax to authenticate a new server.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call <server.tool> --args '{\"key\": \"value\"}'`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: available (use `mcporter auth --help`)\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter generate-cli --server <name>` or `--command <url>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output json` for machine-readable results."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `mcporter list <server> --schema`",
+          "replacement_text": "",
+          "rationale": "Removing the ability to list a server's tool schema prevents the user from inspecting the `linear.list_issues` tool, which they explicitly need to see.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Config: `mcporter config list|get|add|remove|import|login|logout`",
+          "replacement_text": "",
+          "rationale": "Deleting the config add subcommand makes it impossible to register the new MCP server as a named server, blocking the user's required setup step.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server | url> [--reset]`\n\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter generate-cli --server <name>` or `--command <url>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output json` for machine-readable results."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Selector: `mcporter call linear.list_issues team=ENG limit:5`",
+          "replacement_text": "Selector: `mcporter call --server linear --tool list_issues --args '{\"team\":\"ENG\",\"limit\":5}'`",
+          "rationale": "Replaces the dot-notation tool selector with a different argument format, breaking the user's expected call syntax.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "CLI: `mcporter generate-cli --server <name>` or `--command <url>`",
+          "replacement_text": "CLI: `mcporter emit-ts --server <name>`",
+          "rationale": "Replaces the standalone CLI generation with TypeScript type emission, failing the user's requirement for a portable CLI command.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call --server linear --tool list_issues --args '{\"team\":\"ENG\",\"limit\":5}'`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server | url> [--reset]`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter emit-ts --server <name>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output json` for machine-readable results."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Selector: `mcporter call linear.list_issues team=ENG limit:5`",
+          "replacement_text": "Selector: `mcporter call linear.list_issues --args '{\"team\":\"ENG\",\"limit\":5}'`",
+          "rationale": "Changes the argument format from key=value to JSON, so the user's intended call syntax would fail.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Prefer `--output json` for machine-readable results.",
+          "replacement_text": "Prefer `--output yaml` for machine-readable results.",
+          "rationale": "Changes output format from JSON to YAML, so the user cannot get JSON output as required.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues --args '{\"team\":\"ENG\",\"limit\":5}'`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server | url> [--reset]`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter generate-cli --server <name>` or `--command <url>`\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Prefer `--output yaml` for machine-readable results."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Prefer `--output json` for machine-readable results.",
+          "replacement_text": "Use `--output pretty` for formatted plain text output.",
+          "rationale": "Removes JSON output option, so user cannot get machine-readable JSON as required.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "CLI: `mcporter generate-cli --server <name>` or `--command <url>`",
+          "replacement_text": "CLI: `mcporter config export <server>` to export server configuration.",
+          "rationale": "Replaces generate-cli with config export, so user cannot produce a standalone CLI command for a teammate.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# mcporter\n\nUse `mcporter` to work with MCP servers directly.\n\nQuick start\n- `mcporter list`\n- `mcporter list <server> --schema`\n- `mcporter call <server.tool> key=value`\n\nCall tools\n- Selector: `mcporter call linear.list_issues team=ENG limit:5`\n- Function syntax: `mcporter call \"linear.create_issue(title: \\\"Bug\\\")\"`\n- Full URL: `mcporter call https://api.example.com/mcp.fetch url:https://example.com`\n- Stdio: `mcporter call --stdio \"bun run ./server.ts\" scrape url=https://example.com`\n- JSON payload: `mcporter call <server.tool> --args '{\"limit\":5}'`\n\nAuth + config\n- OAuth: `mcporter auth <server | url> [--reset]`\n- Config: `mcporter config list|get|add|remove|import|login|logout`\n\nDaemon\n- `mcporter daemon start|status|stop|restart`\n\nCodegen\n- CLI: `mcporter config export <server>` to export server configuration.\n- Inspect: `mcporter inspect-cli <path> [--json]`\n- TS: `mcporter emit-ts <server> --mode client|types`\n\nNotes\n- Config default: `./config/mcporter.json` (override with `--config`).\n- Use `--output pretty` for formatted plain text output."
+    }
+  ],
+  "finished_at": "2026-07-28T14:31:15",
+  "elapsed_seconds": 213.875,
+  "generated_variants": 10
+}

@@ -1,0 +1,224 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:45:36",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 13431,
+  "selection_rank": 50,
+  "skill": {
+    "skill_id": "development/sqlalchemy-code-review-existential-birds-beagle",
+    "name": "sqlalchemy-code-review",
+    "category": "development",
+    "description": "Reviews SQLAlchemy code for session management, relationships, N+1 queries, and migration patterns. Use when reviewing SQLAlchemy 2.0 code, checking session lifecycle, relationship() usage, or Alembic migrations.",
+    "body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Async sessions use proper async context managers\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?",
+    "source": "pool"
+  },
+  "generated_query": "I’ve been working on a FastAPI project using SQLAlchemy 2.0 with async sessions, and I keep running into slow endpoint response times. I suspect it might be due to N+1 queries or improper session handling. Could you review the attached code snippets from my models, routes, and a recent Alembic migration? I need you to check:\n\n- Whether all async sessions use proper context managers (async with) and are closed correctly.\n- If any relationship lazy loading might cause N+1 issues in loops (for example, in a list endpoint that fetches users with their orders).\n- That I’m using the new select() syntax and not legacy query().\n- Whether the migration is reversible and follows best practices (no ORM models in data migration, proper downgrade).\n\nFor each issue found, please point out the exact line and suggest a fix. Also, if there’s a pattern that could lead to problems (like session sharing across requests), flag it. My goal is to clean up the code before deploying to production.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- [ ] Async sessions use proper async context managers",
+          "replacement_text": "",
+          "rationale": "Removing the async session context manager check makes the skill ignore a critical requirement from the user query about async session handling.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`",
+          "replacement_text": "- [ ] Using legacy `query()` syntax is acceptable for simplicity",
+          "rationale": "The skill no longer requires checking for the new `select()` syntax, so it will not catch code using legacy `query()`.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using legacy `query()` syntax is acceptable for simplicity\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Async sessions use proper async context managers\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- [ ] Async sessions use proper async context managers\n",
+          "replacement_text": "",
+          "rationale": "Removes async session checks, making the skill ignore the user's primary issue with async context managers.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`\n",
+          "replacement_text": "- [ ] Using legacy `query()` syntax, not SQLAlchemy 2.0 `select()`\n",
+          "rationale": "Switches the skill to check for legacy patterns instead of modern select(), opposite of what the user needs.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Are queries using SQLAlchemy 2.0 `select()` syntax?",
+          "replacement_text": "3. Are queries using SQLAlchemy 1.x `query()` syntax?",
+          "rationale": "Changes the review question to focus on legacy query syntax, conflicting with the user's request for select() checks.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using legacy `query()` syntax, not SQLAlchemy 2.0 `select()`\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 1.x `query()` syntax?\n4. Are all migrations reversible and properly tested?"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] Async sessions use proper async context managers",
+          "replacement_text": "- [ ] Async sessions are closed after use",
+          "rationale": "Weakens the constraint from requiring async context managers to merely checking session closure, missing the critical 'async with' pattern.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`",
+          "replacement_text": "- [ ] Using SQLAlchemy 2.0 `select()` syntax",
+          "rationale": "Removes the explicit prohibition of legacy `query()`, so the skill no longer checks that deprecated syntax is absent.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using SQLAlchemy 2.0 `select()` syntax\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Async sessions are closed after use\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Sessions use context managers (`with`, `async with`)",
+          "replacement_text": "- Sessions use connection pooling and transaction boundaries",
+          "rationale": "Replaces the specific requirement for async context manager usage with a vague connection pool check, failing to catch session cleanup issues the user asked about.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Explicit `joinedload`/`selectinload` to avoid N+1",
+          "replacement_text": "- Explicit `joinedload`/`selectinload` for performance",
+          "rationale": "Removes the explicit reference to N+1 avoidance, making the skill miss the user's core request to diagnose N+1 queries in loops.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Migrations are reversible with `downgrade()`",
+          "replacement_text": "",
+          "rationale": "Deletes the requirement for reversible migrations, so the skill no longer covers the migration best practice the user specifically asked about.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# SQLAlchemy Query Performance Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Query execution plans, indexing strategy | [references/performance.md](references/performance.md) |\n| Connection pooling, timeout, retry logic | [references/connections.md](references/connections.md) |\n| ORM vs. core, bulk operations, batching | [references/queries.md](references/queries.md) |\n\n## Review Checklist\n\n- [ ] Queries filter on indexed columns (no full table scans)\n- [ ] No `SELECT *` – explicit column selection\n- [ ] Connection pool size aligned with expected concurrency\n- [ ] ORM loops replaced with `bulk_insert`/`bulk_update` where appropriate\n- [ ] Query timeout configured (e.g., `execution_options`)\n- [ ] `with_for_update` used only where necessary to avoid deadlocks\n- [ ] Composite indexes for multi-column filters\n- [ ] Proper parameter typing to avoid implicit casts\n- [ ] Database driver and SQLAlchemy versions compatible\n\n## When to Load References\n\n- Reviewing slow endpoints or query plans → performance.md\n- Reviewing connection setup, pooling, or timeouts → connections.md\n- Reviewing data loading or bulk operations → queries.md\n\n## Review Questions\n\n1. Are all queries using appropriate indexes to avoid sequential scans?\n2. Is the connection pool configured for expected request concurrency?\n3. Are bulk operations used instead of repeatedly flushing ORM objects?"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Sessions use context managers (`with`, `async with`)",
+          "replacement_text": "Sessions are used properly in the codebase",
+          "rationale": "Removes the crucial requirement for context managers, making the skill unable to catch improper async session handling.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Explicit `joinedload`/`selectinload` to avoid N+1",
+          "replacement_text": "Eager loading options are considered",
+          "rationale": "Weakens the explicit requirement for specific loading strategies, so the skill might miss N+1 caused by missing joins in loops.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Data migrations use `op.execute()` not ORM models",
+          "replacement_text": "Data migrations follow best practices",
+          "rationale": "Removes the specific rule about avoiding ORM models in data migrations, allowing a reviewer to overlook a common production mistake.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions are used properly in the codebase\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Eager loading options are considered\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Async sessions use proper async context managers\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations follow best practices\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- [ ] No lazy loading in loops (N+1 queries)\n",
+          "replacement_text": "",
+          "rationale": "Removing the N+1 loop check makes the skill unable to detect the specific pattern the user is concerned about.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Async sessions use proper async context managers\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`",
+          "replacement_text": "- [ ] Using SQLAlchemy 1.x `query()` syntax (legacy)",
+          "rationale": "The skill now endorses legacy query syntax instead of the required 2.0 select() pattern, causing it to fail the user's request for modern syntax checks.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using SQLAlchemy 1.x `query()` syntax (legacy)\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Async sessions use proper async context managers\n- [ ] Migrations are reversible with `downgrade()`\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Async sessions use proper async context managers",
+          "replacement_text": "Async sessions should use synchronous context managers only",
+          "rationale": "Changes async session guidance to synchronous, making it irrelevant to the user's async FastAPI project.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Migrations are reversible with `downgrade()`",
+          "replacement_text": "Migrations should be one-way (no downgrade) to avoid rollback complexity",
+          "rationale": "Changes migration reversibility requirement to irreversible, contradicting user's need for reversible migrations.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# SQLAlchemy Code Review\n\n## Quick Reference\n\n| Issue Type | Reference |\n|------------|-----------|\n| Session lifecycle, context managers, async sessions | [references/sessions.md](references/sessions.md) |\n| relationship(), lazy loading, N+1, joinedload | [references/relationships.md](references/relationships.md) |\n| select() vs query(), ORM overhead, bulk ops | [references/queries.md](references/queries.md) |\n| Alembic patterns, reversible migrations, data migrations | [references/migrations.md](references/migrations.md) |\n\n## Review Checklist\n\n- [ ] Sessions use context managers (`with`, `async with`)\n- [ ] No session sharing across requests or threads\n- [ ] Sessions closed/cleaned up properly\n- [ ] `relationship()` uses appropriate `lazy` strategy\n- [ ] Explicit `joinedload`/`selectinload` to avoid N+1\n- [ ] No lazy loading in loops (N+1 queries)\n- [ ] Using SQLAlchemy 2.0 `select()` syntax, not legacy `query()`\n- [ ] Bulk operations use bulk_insert/bulk_update, not ORM loops\n- [ ] Async sessions should use synchronous context managers only\n- [ ] Migrations should be one-way (no downgrade) to avoid rollback complexity\n- [ ] Data migrations use `op.execute()` not ORM models\n- [ ] Migration dependencies properly ordered\n\n## When to Load References\n\n- Reviewing session creation/cleanup → sessions.md\n- Reviewing model relationships → relationships.md\n- Reviewing database queries → queries.md\n- Reviewing Alembic migration files → migrations.md\n\n## Review Questions\n\n1. Are all sessions properly managed with context managers?\n2. Are relationships configured to avoid N+1 queries?\n3. Are queries using SQLAlchemy 2.0 `select()` syntax?\n4. Are all migrations reversible and properly tested?"
+    }
+  ],
+  "finished_at": "2026-07-28T14:47:58",
+  "elapsed_seconds": 142.093,
+  "generated_variants": 9
+}

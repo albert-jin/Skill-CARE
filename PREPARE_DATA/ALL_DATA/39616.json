@@ -1,0 +1,157 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:46:59",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 39616,
+  "selection_rank": 223,
+  "skill": {
+    "skill_id": "other/aidd-rlm",
+    "name": "aidd-rlm",
+    "category": "other",
+    "description": "Owns shared RLM evidence workflow for subagents (slice, build, verify, finalize, pack). Use when preload roles require canonical RLM evidence operations.",
+    "body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.\n- Inputs: `--ticket <ticket>` with one or more `--query` tokens.\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: generate/repair missing RLM artifacts, then rerun slice query.\n\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split).",
+    "source": "pool"
+  },
+  "generated_query": "I'm finalizing a research ticket (T-42) that was left in a pending state. Please extract targeted evidence from the existing RLM artifacts by running a slice query for \"CPU utilization patterns\" and another for \"memory leak detection\". After that, run the full verification step on the nodes and links to catch any integrity issues, then finalize the pack so it's ready for handoff to the implementer. If any step fails, suggest the next fix based on the command contracts. Finally, confirm the output files and their readiness status.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`",
+          "replacement_text": "",
+          "rationale": "Deleting the verify command prevents the agent from running the integrity check on nodes and links, making it impossible to fulfill the query's verification requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.\n- Inputs: `--ticket <ticket>` with one or more `--query` tokens.\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: generate/repair missing RLM artifacts, then rerun slice query.\n\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split)."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Inputs: `--ticket <ticket>` with one or more `--query` tokens.",
+          "replacement_text": "- Inputs: `--ticket <ticket> --type <scan_type>` (full JSONL scan, no query support).",
+          "rationale": "Removes --query tokens, so the agent cannot extract targeted evidence for the two required queries.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.",
+          "replacement_text": "- Outputs: finalized RLM nodes/links/pack status without readiness metadata (archive-only).",
+          "rationale": "Removes readiness metadata, so the user cannot confirm output readiness for handoff.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.\n- Inputs: `--ticket <ticket> --type <scan_type>` (full JSONL scan, no query support).\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: generate/repair missing RLM artifacts, then rerun slice query.\n\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status without readiness metadata (archive-only).\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split)."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Inputs: `--ticket <ticket>` with one or more `--query` tokens.",
+          "replacement_text": "Inputs: `--ticket <ticket>` with exactly one `--query` token.",
+          "rationale": "By limiting the slice command to a single query, the skill cannot execute the two required slice queries, making it inadequate for the user's request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.\n- Inputs: `--ticket <ticket>` with exactly one `--query` token.\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: generate/repair missing RLM artifacts, then rerun slice query.\n\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split)."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Next action: generate/repair missing RLM artifacts, then rerun slice query.",
+          "replacement_text": "Next action: inform the user of the failure and ask for further instructions.",
+          "rationale": "The user query requires suggesting a fix based on command contracts, but this weakens the specific fix guidance to a generic request for instructions, so the skill cannot provide the required fix suggestion.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.\n- Inputs: `--ticket <ticket>` with one or more `--query` tokens.\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: inform the user of the failure and ask for further instructions.\n\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split)."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.",
+          "replacement_text": "When to run: when agent needs to aggregate full RLM artifacts for batch processing.",
+          "rationale": "The slice command no longer supports targeted evidence extraction, defeating the query's first requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`",
+          "replacement_text": "",
+          "rationale": "Removing the verify command means the skill cannot run the node/link integrity check required by the query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs to aggregate full RLM artifacts for batch processing.\n- Inputs: `--ticket <ticket>` with one or more `--query` tokens.\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: generate/repair missing RLM artifacts, then rerun slice query.\n\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split)."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.\n- Inputs: `--ticket <ticket>` with one or more `--query` tokens.\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: generate/repair missing RLM artifacts, then rerun slice query.",
+          "replacement_text": "### Slice query: Use the shared rlm_slice.py script with --ticket and --query options to extract targeted evidence from existing RLM artifacts.",
+          "rationale": "Removes the Failure mode and Next action details that the user query explicitly requires for suggesting fixes on step failure, making the skill unable to fulfill the failure handling requirement.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.",
+          "replacement_text": "### Finalize: Use the shared rlm_finalize.py script with --ticket and optional bootstrap/recovery flags to finalize RLM nodes/links/pack status.",
+          "rationale": "Removes the Failure mode and Next action guidance for finalization, so the skill no longer provides the contract-based fix suggestion needed when the finalize step fails.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### Slice query: Use the shared rlm_slice.py script with --ticket and --query options to extract targeted evidence from existing RLM artifacts.\n\n### Finalize: Use the shared rlm_finalize.py script with --ticket and optional bootstrap/recovery flags to finalize RLM nodes/links/pack status.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split)."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_verify.py`",
+          "replacement_text": "",
+          "rationale": "Deleting the rlm_verify.py entry removes the verification step needed to catch integrity issues on nodes and links, making the skill incapable of fulfilling the query's verification requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Scope\n- This skill is preload-only for subagents.\n- Use it to keep RLM behavior consistent across agents without duplicating long instructions.\n- Preload matrix v2 roles: `analyst`, `planner`, `plan-reviewer`, `prd-reviewer`, `researcher`, `reviewer`, `spec-interview-writer`, `tasklist-refiner`, `validator`.\n- Do not preload for `implementer` or `qa`.\n\n## Canonical command paths\n- Slice (shared): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- RLM runtime entrypoints:\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_nodes_build.py`\n\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_links_build.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_jsonl_compact.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n  - `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/reports_pack.py`\n\n## Command contracts\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_slice.py`\n- When to run: when agent needs targeted evidence from existing RLM artifacts without full JSONL scans.\n- Inputs: `--ticket <ticket>` with one or more `--query` tokens.\n- Outputs: compact slice payload suitable for pack-first reasoning.\n- Failure mode: non-zero exit when source artifacts are missing or query context is invalid.\n- Next action: generate/repair missing RLM artifacts, then rerun slice query.\n\n### `python3 ${CLAUDE_PLUGIN_ROOT}/skills/aidd-rlm/runtime/rlm_finalize.py`\n- When to run: handoff/finalization path when `rlm_status` remains pending after stage-local bounded recovery.\n- Inputs: `--ticket <ticket>` and optional bootstrap/recovery flags.\n- Outputs: finalized RLM nodes/links/pack status with deterministic readiness metadata.\n- Failure mode: non-zero exit on unresolved manifest/worklist integrity issues.\n- Next action: fix upstream targets/worklist inconsistencies and rerun finalize.\n\n## Fallback paths\n- Use canonical Python runtime entrypoints only for new prompts/integrations.\n\n## Evidence policy\n- Read pack-first: `aidd/reports/research/<ticket>-rlm.pack.json`.\n- Use slice queries for targeted context extraction.\n- Avoid full JSONL reads unless pack/slice is insufficient.\n\n## Additional resources\n- Runtime finalize reference: [runtime/rlm_finalize.py](runtime/rlm_finalize.py) (when: finalize/handoff behavior is unclear; why: confirm canonical finalize flags and pending/ready transitions).\n- Cross-skill stage contract: [../aidd-stage-research/SKILL.md](../aidd-stage-research/SKILL.md) (when: researcher stage orchestration and RLM ownership boundary needs clarification; why: keep shared/runtime and stage responsibilities split)."
+    }
+  ],
+  "finished_at": "2026-07-28T23:49:39",
+  "elapsed_seconds": 160.094,
+  "generated_variants": 7
+}

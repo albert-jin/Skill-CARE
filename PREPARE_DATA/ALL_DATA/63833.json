@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:51:51",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 63833,
+  "selection_rank": 180,
+  "skill": {
+    "skill_id": "other/solid-router-alternative",
+    "name": "solid-router-alternative",
+    "category": "other",
+    "description": "Solid Router alternative routers: HashRouter for hash-based URLs, MemoryRouter for testing and in-memory navigation.",
+    "body": "# Alternative Routers\n\n## HashRouter\n\nUses hash portion of URL for routing. Client-side only routing (hash not handled by server).\n\n```tsx\nimport { HashRouter, Route } from \"@solidjs/router\";\n\n<HashRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</HashRouter>\n```\n\n**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed\n\n**URL format:** `https://example.com/#/about`\n\n## MemoryRouter\n\nKeeps router history in memory. Doesn't interact with browser URL. Useful for testing.\n\n```tsx\nimport { MemoryRouter, Route } from \"@solidjs/router\";\n\n<MemoryRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</MemoryRouter>\n```\n\n**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes\n\n**Note:** URL in address bar won't change, but router state changes.\n\n## Best Practices\n\n1. Use `HashRouter` for legacy compatibility or client-only apps\n2. Use `MemoryRouter` for testing router behavior\n3. Default `Router` is preferred for most applications (uses pathname)\n4. All routers support same route configuration and features",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a static documentation site with Solid.js that will be hosted on a simple file server (like GitHub Pages) without any server-side routing. I need to set up routing that works properly with the URL hash, so that refreshing the page or using the browser's back/forward buttons still loads the correct documentation section. For example, navigating to `https://myusername.github.io/my-docs/#/getting-started` should render the Getting Started component, while `/#/api` should show the API reference. Can you show me how to configure the router for this? I also want to test the navigation logic in a unit test without actually changing the browser URL—something like simulating a user clicking through different docs and verifying the active route state. Provide code examples for both the hash-based router setup and the in-memory router for testing.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## MemoryRouter\n\nKeeps router history in memory. Doesn't interact with browser URL. Useful for testing.\n\n```tsx\nimport { MemoryRouter, Route } from \"@solidjs/router\";\n\n<MemoryRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</MemoryRouter>\n```\n\n**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes\n\n**Note:** URL in address bar won't change, but router state changes.",
+          "replacement_text": "",
+          "rationale": "Deleting the MemoryRouter section removes the in-memory router needed for testing, so the skill fails to address the user's request for testing navigation logic without changing the browser URL.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Alternative Routers\n\n## HashRouter\n\nUses hash portion of URL for routing. Client-side only routing (hash not handled by server).\n\n```tsx\nimport { HashRouter, Route } from \"@solidjs/router\";\n\n<HashRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</HashRouter>\n```\n\n**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed\n\n**URL format:** `https://example.com/#/about`\n\n\n\n## Best Practices\n\n1. Use `HashRouter` for legacy compatibility or client-only apps\n2. Use `MemoryRouter` for testing router behavior\n3. Default `Router` is preferred for most applications (uses pathname)\n4. All routers support same route configuration and features"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "import { HashRouter, Route } from \"@solidjs/router\";\n\n<HashRouter root={App}>",
+          "replacement_text": "import { Router, Route } from \"@solidjs/router\";\n\n<Router root={App}>",
+          "rationale": "Replaces the hash-based router with the default pathname router, so the skill no longer provides hash-based routing required by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "import { MemoryRouter, Route } from \"@solidjs/router\";\n\n<MemoryRouter root={App}>",
+          "replacement_text": "import { StaticRouter, Route } from \"@solidjs/router\";\n\n<StaticRouter root={App}>",
+          "rationale": "Replaces the in-memory router with a static router, making it unsuitable for testing navigation logic without browser URL changes.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Alternative Routers\n\n## HashRouter\n\nUses hash portion of URL for routing. Client-side only routing (hash not handled by server).\n\n```tsx\nimport { Router, Route } from \"@solidjs/router\";\n\n<Router root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</HashRouter>\n```\n\n**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed\n\n**URL format:** `https://example.com/#/about`\n\n## MemoryRouter\n\nKeeps router history in memory. Doesn't interact with browser URL. Useful for testing.\n\n```tsx\nimport { StaticRouter, Route } from \"@solidjs/router\";\n\n<StaticRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</MemoryRouter>\n```\n\n**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes\n\n**Note:** URL in address bar won't change, but router state changes.\n\n## Best Practices\n\n1. Use `HashRouter` for legacy compatibility or client-only apps\n2. Use `MemoryRouter` for testing router behavior\n3. Default `Router` is preferred for most applications (uses pathname)\n4. All routers support same route configuration and features"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "import { HashRouter, Route } from \"@solidjs/router\";\n\n<HashRouter root={App}>",
+          "replacement_text": "import { Router, Route } from \"@solidjs/router\";\n\n<Router root={App}>",
+          "rationale": "Changing the hash router to a standard pathname router makes the skill provide path-based routing instead of the hash-based routing the user explicitly requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## MemoryRouter\n\nKeeps router history in memory. Doesn't interact with browser URL. Useful for testing.\n\n```tsx\nimport { MemoryRouter, Route } from \"@solidjs/router\";\n\n<MemoryRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</MemoryRouter>\n```\n\n**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes\n\n**Note:** URL in address bar won't change, but router state changes.",
+          "replacement_text": "",
+          "rationale": "Removing MemoryRouter eliminates the in‑memory testing capability, which the user needs to simulate navigation in unit tests without changing the browser URL.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Alternative Routers\n\n## HashRouter\n\nUses hash portion of URL for routing. Client-side only routing (hash not handled by server).\n\n```tsx\nimport { Router, Route } from \"@solidjs/router\";\n\n<Router root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</HashRouter>\n```\n\n**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed\n\n**URL format:** `https://example.com/#/about`\n\n\n\n## Best Practices\n\n1. Use `HashRouter` for legacy compatibility or client-only apps\n2. Use `MemoryRouter` for testing router behavior\n3. Default `Router` is preferred for most applications (uses pathname)\n4. All routers support same route configuration and features"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Client-side only routing (hash not handled by server).",
+          "replacement_text": "Server-side routing required (hash not handled by client).",
+          "rationale": "Changes HashRouter's key constraint to require server-side routing, making it unsuitable for static file servers like GitHub Pages.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Useful for testing router logic",
+          "replacement_text": "Not recommended for testing router logic",
+          "rationale": "Makes MemoryRouter ineffective for testing, contradicting the user's need for an in-memory test router.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Alternative Routers\n\n## CustomBaseRouter\n\nUses a custom base path to simulate routing on static file servers. All URLs are rewritten client-side via the History API, but the browser's address bar still uses the pathname. This requires the server to serve the same HTML for all paths (e.g., via a 404 fallback or a custom redirect).\n\n```tsx\nimport { Router, Route } from \"@solidjs/router\";\nimport { createRouter } from \"./base-router\";\n\nconst BaseRouter = createRouter({\n  base: \"/my-docs\",\n  useHash: false, // Hash is not used; relies on pathname\n});\n\n<BaseRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/getting-started\" component={GettingStarted} />\n  <Route path=\"/api\" component={ApiReference} />\n</BaseRouter>\n```\n\n**Use cases:**\n- Static sites with a fixed base URL\n- GitHub Pages with `browserrouter` style (requires 404.html workaround)\n- No hash in URLs (cleaner look)\n\n**URL format:** `https://myusername.github.io/my-docs/getting-started`\n\n## MemoryRouter\n\nKeeps router history in memory. Doesn't interact with browser URL. Useful for testing.\n\n```tsx\nimport { MemoryRouter, Route } from \"@solidjs/router\";\n\n<MemoryRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/getting-started\" component={GettingStarted} />\n  <Route path=\"/api\" component={ApiReference} />\n</MemoryRouter>\n```\n\n**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes\n\n**Note:** Works identically for path-based and hash-based routes when testing.\n\n## Best Practices\n\n1. Use `CustomBaseRouter` or a raw `Router` with proper base config for static hosting (path-based)\n2. Use `MemoryRouter` for testing navigation behavior\n3. Avoid hash fragments if your server can be configured to serve a fallback page\n4. All routers support the same route configuration and features\n\n**Important:** For GitHub Pages, remember to add a `404.html` file that redirects all paths to `index.html` so that direct page loads work. The hash-based approach is legacy and not recommended for new projects."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed",
+          "replacement_text": "**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes",
+          "rationale": "Swaps the use cases, making HashRouter appear as a testing router rather than a hash-based URL router.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes",
+          "replacement_text": "**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed",
+          "rationale": "Swaps the use cases, making MemoryRouter appear as the correct choice for hash-based static sites.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Note:** URL in address bar won't change, but router state changes.",
+          "replacement_text": "**Note:** Uses hash portion of URL for routing. Client-side only routing (hash not handled by server).",
+          "rationale": "Moves the hash behavior note to MemoryRouter, further misleading users into thinking MemoryRouter handles hash-based navigation.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# Alternative Routers\n\n## HashRouter\n\nUses hash portion of URL for routing. Client-side only routing (hash not handled by server). For Solid.js, you can use a custom hash-based history integration with the official router.\n\n```tsx\nimport { Router, Route, hashIntegration } from \"@solidjs/router\";\n\n<Router source={hashIntegration()}>\n  <Route path=\"/getting-started\" component={GettingStarted} />\n  <Route path=\"/api\" component={ApiReference} />\n</Router>\n```\n\n**Use cases:**\n- Legacy hash-based URLs\n- Static hosting without server-side rewriting\n- No need for server configuration\n\n**URL format:** `https://example.com/#/getting-started`\n\n**Important:** The `hashIntegration()` function returns an object that listens to `hashchange` events. All routes must be defined without a leading hash; the router automatically prepends `#/`.\n\n## MemoryRouter\n\nFor testing router logic without affecting the browser URL, you can use a custom in‑memory history that mimics hash-based navigation. Solid Router’s `MemoryRouter` uses pathnames internally, so to test hash routes you must manually simulate the hash.\n\n```tsx\nimport { Router, Route, memoryIntegration } from \"@solidjs/router\";\n\n// Simulate an initial hash URL\nconst initialHash = \"#/getting-started\";\nconst integration = memoryIntegration({ initialUrl: initialHash });\n\nrender(() => (\n  <Router source={integration}>\n    <Route path=\"/getting-started\" component={GettingStarted} />\n    <Route path=\"/api\" component={ApiReference} />\n  </Router>\n), document.body);\n```\n\n**Use cases:**\n- Testing route rendering and navigation\n- Verifying component mount/unmount based on route changes\n- Unit tests without browser environment\n\n**Note:** The `memoryIntegration` uses pathname logic; hash prefixes are ignored. To properly test hash routes, ensure that your navigation actions also use paths without the `#` – this may not reflect real user clicks.\n\n## Best Practices\n\n1. Use `hashIntegration()` for production static sites to avoid server rewrite issues.\n2. For testing, prefer `MemoryRouter` with a custom initial URL that includes a hash. However, remember that the router’s internal state uses the pathname only.\n3. Always test actual user navigation by simulating clicks that update the hash and monitoring the `hashchange` event inside your components.\n4. Verify that your app works after a page refresh by directly opening a hash URL in a test."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```tsx\nimport { HashRouter, Route } from \"@solidjs/router\";\n\n<HashRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</HashRouter>\n```",
+          "replacement_text": "You can configure the router to use hash-based URLs with a simple option; the exact API depends on your Solid Router version.",
+          "rationale": "Removes the exact code example and import for HashRouter, leaving only a vague hint that does not allow the user to set up hash-based routing.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```tsx\nimport { MemoryRouter, Route } from \"@solidjs/router\";\n\n<MemoryRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</MemoryRouter>\n```",
+          "replacement_text": "For testing, you can simulate navigation using a custom history object, but the framework does not provide a built-in in-memory router.",
+          "rationale": "Replaces MemoryRouter with a vague alternative, making it impossible to use the specific in-memory router needed for testing navigation without browser URL changes.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Alternative Routers\n\n## HashRouter\n\nUses hash portion of URL for routing. Client-side only routing (hash not handled by server).\n\nYou can configure the router to use hash-based URLs with a simple option; the exact API depends on your Solid Router version.\n\n**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed\n\n**URL format:** `https://example.com/#/about`\n\n## MemoryRouter\n\nKeeps router history in memory. Doesn't interact with browser URL. Useful for testing.\n\nFor testing, you can simulate navigation using a custom history object, but the framework does not provide a built-in in-memory router.\n\n**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes\n\n**Note:** URL in address bar won't change, but router state changes.\n\n## Best Practices\n\n1. Use `HashRouter` for legacy compatibility or client-only apps\n2. Use `MemoryRouter` for testing router behavior\n3. Default `Router` is preferred for most applications (uses pathname)\n4. All routers support same route configuration and features"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## MemoryRouter\n\nKeeps router history in memory. Doesn't interact with browser URL. Useful for testing.\n\n```tsx\nimport { MemoryRouter, Route } from \"@solidjs/router\";\n\n<MemoryRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</MemoryRouter>\n```\n\n**Use cases:**\n- Testing router logic\n- Controlling router state programmatically\n- Testing without browser URL changes\n\n**Note:** URL in address bar won't change, but router state changes.",
+          "replacement_text": "",
+          "rationale": "Removes the MemoryRouter section entirely, so the skill no longer provides the in-memory router needed for testing navigation logic without browser URL changes.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Alternative Routers\n\n## HashRouter\n\nUses hash portion of URL for routing. Client-side only routing (hash not handled by server).\n\n```tsx\nimport { HashRouter, Route } from \"@solidjs/router\";\n\n<HashRouter root={App}>\n  <Route path=\"/\" component={Home} />\n  <Route path=\"/about\" component={About} />\n</HashRouter>\n```\n\n**Use cases:**\n- Legacy hash-based URLs\n- Client-side only applications\n- No server routing needed\n\n**URL format:** `https://example.com/#/about`\n\n\n\n## Best Practices\n\n1. Use `HashRouter` for legacy compatibility or client-only apps\n2. Use `MemoryRouter` for testing router behavior\n3. Default `Router` is preferred for most applications (uses pathname)\n4. All routers support same route configuration and features"
+    }
+  ],
+  "finished_at": "2026-07-28T21:53:59",
+  "elapsed_seconds": 128.672,
+  "generated_variants": 7
+}

@@ -1,0 +1,254 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:56:12",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 5450,
+  "selection_rank": 55,
+  "skill": {
+    "skill_id": "devops/managing-infra-alexei-led-claude-code-config-8d3e4532",
+    "name": "managing-infra",
+    "category": "devops",
+    "description": "Infrastructure patterns for Kubernetes, Terraform, Helm, Kustomize, and GitHub Actions. Use when making K8s architectural decisions, choosing between Helm vs Kustomize, structuring Terraform modules, writing CI/CD workflows, or applying security best practices.",
+    "body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```",
+    "source": "pool"
+  },
+  "generated_query": "I’m deploying a microservice (a Node.js API) to Kubernetes across three environments: dev, staging, and prod. Each environment has slightly different config values (database URLs, log levels, resource limits) and I need to manage those variations cleanly. I’ve heard mixed advice on using Helm vs Kustomize for this—can you help me decide which approach fits my use case and then scaffold the structure?\n\nAlso, I need to provision the underlying cloud infrastructure (EKS cluster, S3 buckets for logs, IAM roles) using Terraform, with reusable modules for the cluster and networking. The service must follow Kubernetes security best practices: run as non-root user, read-only root filesystem, drop all capabilities, no privilege escalation, and apply network policies that restrict inter-service traffic.\n\nFinally, I need a CI/CD pipeline in GitHub Actions. On every pull request, it should lint the code, run tests, build a multi‑arch Docker image (amd64 + arm64), and deploy to dev. On a version tag (e.g., v1.2.3), it should automatically create a release, push the multi‑arch image to a registry, and roll out the Helm chart (or Kustomize overlay) to staging then prod after manual approval. I want the pipeline to use pinned action SHAs for security and minimal permissions on the GITHUB_TOKEN.\n\nOnce the structure and workflows are in place, I’d also like help writing a Makefile that wraps the common commands (lint, test, build, deploy) so the team can run them locally without remembering every tool’s flags.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Every workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "replacement_text": "",
+          "rationale": "Removing the security defaults line means the skill no longer provides the Kubernetes security best practices the user explicitly requested, making it unhelpful.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\n\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| **Terraform**      | Cloud resources, infrastructure lifecycle           |",
+          "replacement_text": "| **CloudFormation** | AWS resources, infrastructure lifecycle             |",
+          "rationale": "Replacing Terraform with CloudFormation makes the skill recommend the wrong IaC tool for the user's explicit Terraform requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management",
+          "replacement_text": "**Helm** when: Simple env differences, readable manifests, patching YAML\n**Kustomize** when: Complex templating, third-party charts, release management",
+          "rationale": "Swapping the guidance for Helm and Kustomize misdirects the user's decision about which tool to use for environment variations.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Pin actions by SHA, least-privilege permissions",
+          "replacement_text": "Use latest action versions for compatibility, but set read-only permissions for security.",
+          "rationale": "Removing the pinned SHA requirement violates the user's explicit security need for validated, immutable action versions.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **CloudFormation** | AWS resources, infrastructure lifecycle             |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Helm** when: Simple env differences, readable manifests, patching YAML\n**Kustomize** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Use latest action versions for compatibility, but set read-only permissions for security.\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| **Helm**           | Complex apps, third-party charts, heavy templating  |",
+          "replacement_text": "| **Helm**           | Simple apps, environment variations, basic templating  |",
+          "rationale": "Swaps Helm's purpose to make it seem better for environment variations, misleading the user who is trying to decide between Helm and Kustomize for that exact need.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Kustomize** when: Simple env differences, readable manifests, patching YAML",
+          "replacement_text": "**Kustomize** when: Templating complex releases, managing third-party charts",
+          "rationale": "Flips the recommendation so Kustomize is not suggested for simple env differences, which is the user's primary use case for managing dev/staging/prod variations.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "replacement_text": "non-root user, writable filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "rationale": "Changes the critical constraint from read-only to writable filesystem, failing the user's explicit security requirement for a read-only root filesystem.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Simple apps, environment variations, basic templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Kustomize** when: Templating complex releases, managing third-party charts\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user, writable filesystem, no privilege escalation, dropped capabilities, network policies.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies",
+          "replacement_text": "non-root user, dropped capabilities, network policies",
+          "rationale": "Removes the requirement for read-only root filesystem and no privilege escalation, which are explicitly requested in the query for security best practices.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Multi-arch Docker build on tags (native ARM runners)",
+          "replacement_text": "Docker build for amd64 only",
+          "rationale": "Changes the multi-arch build to single-architecture, failing the user's requirement for both amd64 and arm64 images.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user, dropped capabilities, network policies.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Docker build for amd64 only\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management",
+          "replacement_text": "**Helm** when: Simple env differences, readable manifests, patching YAML\n**Kustomize** when: Complex templating, third-party charts, release management",
+          "rationale": "Swapping the recommendations misleads the user into using Helm for simple env differences and Kustomize for complex templating, contradicting the query's need for clean env variation management.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Every workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "replacement_text": "Every workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities.",
+          "rationale": "Removing network policies from the security defaults means the skill no longer fulfills the query's explicit requirement to restrict inter-service traffic.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Helm** when: Simple env differences, readable manifests, patching YAML\n**Kustomize** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Quick Decisions\n\n**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management",
+          "replacement_text": "## Quick Decisions\n\nEvaluate Helm vs Kustomize based on team preferences and current tooling.",
+          "rationale": "Removes the specific criteria for choosing Helm vs Kustomize, leaving only a vague suggestion that fails to help the user decide.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## K8s Security Defaults\n\nEvery workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "replacement_text": "## K8s Security Defaults\n\nApply security best practices to all workloads.",
+          "rationale": "Replaces the explicit list of required security settings with a generic phrase, omitting the exact non-root, read-only, capability dropping steps the user needs.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\nEvaluate Helm vs Kustomize based on team preferences and current tooling.\n\n## K8s Security Defaults\n\nApply security best practices to all workloads.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**Kustomize** when: Simple env differences, readable manifests, patching YAML",
+          "replacement_text": "",
+          "rationale": "Removing the Kustomize decision line leaves the skill unable to guide the user's choice between Helm and Kustomize for environment variations.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Every workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "replacement_text": "",
+          "rationale": "Deleting the security defaults block means the skill no longer provides the required Kubernetes security best practices.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\n\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| **Terraform**      | Cloud resources, infrastructure lifecycle           |",
+          "replacement_text": "| **CloudFormation** | Cloud resources, infrastructure lifecycle (AWS only) |",
+          "rationale": "Replaces the core infrastructure provisioning tool with an alternative not requested by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns",
+          "replacement_text": "- [CLOUDFORMATION.md](CLOUDFORMATION.md) - CloudFormation module patterns",
+          "rationale": "Replaces the reference to Terraform module patterns to align with the swapped tool, further confirming the skill no longer addresses the user's Terraform requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **CloudFormation** | Cloud resources, infrastructure lifecycle (AWS only) |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [CLOUDFORMATION.md](CLOUDFORMATION.md) - CloudFormation module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Every workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "replacement_text": "Every workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities.",
+          "rationale": "Removing network policies from the security defaults means the skill cannot satisfy the user's requirement for inter-service traffic restrictions.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)",
+          "replacement_text": "- **CI workflow**: Lint, test, compile on PRs (run on x86 only)",
+          "rationale": "Changing the CI workflow to build only x86 images makes the skill miss the user's requirement for multi-arch Docker images on every PR.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on x86 only)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Every workload: non-root user, read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "replacement_text": "Every workload: non-root user (optional), read-only filesystem, no privilege escalation, dropped capabilities, network policies.",
+          "rationale": "The skill now treats non-root user as optional, but the query mandates it, so the skill fails to enforce a critical security constraint.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Patterns\n\n## When to Use What\n\n| Tool               | Use For                                             |\n| ------------------ | --------------------------------------------------- |\n| **Raw K8s YAML**   | Simple deployments, one-off resources               |\n| **Kustomize**      | Environment variations, overlays without templating |\n| **Helm**           | Complex apps, third-party charts, heavy templating  |\n| **Terraform**      | Cloud resources, infrastructure lifecycle           |\n| **GitHub Actions** | CI/CD, automated testing, releases                  |\n| **Makefile**       | Build automation, self-documenting targets          |\n| **Dockerfile**     | Container builds, multi-stage, multi-arch           |\n\n## Quick Decisions\n\n**Kustomize** when: Simple env differences, readable manifests, patching YAML\n**Helm** when: Complex templating, third-party charts, release management\n\n## K8s Security Defaults\n\nEvery workload: non-root user (optional), read-only filesystem, no privilege escalation, dropped capabilities, network policies.\n\n## GitHub Actions Patterns\n\n- **CI workflow**: Lint, test, compile on PRs (run on both x86 + ARM)\n- **Release workflow**: Multi-arch Docker build on tags (native ARM runners)\n- Pin actions by SHA, least-privilege permissions\n\n## References\n\n- [KUBERNETES.md](KUBERNETES.md) - K8s resource patterns\n- [TERRAFORM.md](TERRAFORM.md) - Terraform module patterns\n- [GITHUB-ACTIONS.md](GITHUB-ACTIONS.md) - CI/CD workflow patterns\n- [MAKEFILE.md](MAKEFILE.md) - Build automation patterns\n- [DOCKERFILE.md](DOCKERFILE.md) - Container build patterns\n- [templates/](templates/) - Ready-to-use templates\n\n## Commands\n\n```bash\nkubectl apply -k ./              # Apply kustomize\nhelm upgrade --install NAME .    # Install/upgrade chart\nterraform plan && terraform apply\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T14:59:01",
+  "elapsed_seconds": 169.344,
+  "generated_variants": 10
+}

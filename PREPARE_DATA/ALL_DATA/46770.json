@@ -1,0 +1,203 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:51:35",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 46770,
+  "selection_rank": 203,
+  "skill": {
+    "skill_id": "other/learn-movie",
+    "name": "learn-movie",
+    "category": "other",
+    "description": "Analyze movies to extract cinematographic techniques and store them in memory.",
+    "body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts lighting, composition, emotional cues, and director style from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual techniques (shot type, lighting, composition)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |",
+    "source": "pool"
+  },
+  "generated_query": "I have a copy of *The Fall* (2006) directed by Tarsem Singh. Can you analyze the film's visual style? I need a breakdown of the cinematographic techniques: lighting, composition, color palettes, and how these create emotional impact. Also, please save the analysis so I can compare it with other films later. For context, note that the director is known for highly stylized, symmetrical compositions.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.",
+          "replacement_text": "",
+          "rationale": "Without the memory storage step, the analysis is not saved, so the user cannot compare it with other films later, failing the query's requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts lighting, composition, emotional cues, and director style from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.\n\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual techniques (shot type, lighting, composition)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Uses Vision-Language Models (via `scillm`) to analyze keyframes.",
+          "replacement_text": "Uses audio transcription to analyze dialogue and soundtracks.",
+          "rationale": "The user requires visual style analysis (lighting, composition, color), but replacing the VLM with audio transcription removes the ability to extract any visual cinematographic techniques.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts lighting, composition, emotional cues, and director style from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses audio transcription to analyze dialogue and soundtracks.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual techniques (shot type, lighting, composition)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extracts lighting, composition, emotional cues, and director style from video files.",
+          "replacement_text": "Extracts lighting, composition, emotional cues, and director style from movie metadata and reviews.",
+          "rationale": "Changes input from actual video files to text metadata, so no visual analysis of the user's specific film copy is possible.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Scene Detection**: Automatically detects scene cuts using ffmpeg.",
+          "replacement_text": "**Metadata Retrieval**: Fetches movie metadata using OMDb API.",
+          "rationale": "Replaces scene detection from the user's video with a generic API call, losing the ability to analyze actual frames.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.",
+          "replacement_text": "**Text Analysis**: Uses language models to summarize existing reviews and descriptions.",
+          "rationale": "Switches from VLM-based visual analysis to text summarization, missing the user's requirement for cinematographic technique extraction.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts lighting, composition, emotional cues, and director style from movie metadata and reviews.\n\n## Features\n\n- **Metadata Retrieval**: Fetches movie metadata using OMDb API.\n- **Text Analysis**: Uses language models to summarize existing reviews and descriptions.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual techniques (shot type, lighting, composition)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Stores individual techniques (shot type, lighting, composition)",
+          "replacement_text": "Stores individual techniques (shot type, lighting)",
+          "rationale": "Removing composition from stored techniques means the skill will not save compositional analysis, directly failing the user's need to compare compositional styles later.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts lighting, composition, emotional cues, and director style from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual techniques (shot type, lighting)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extracts lighting, composition, emotional cues, and director style from video files.",
+          "replacement_text": "Extracts narrative structure, character development, and dialogue patterns from video files.",
+          "rationale": "Changes the extracted features from visual cinematography to narrative elements, so the skill cannot provide the requested visual style analysis.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Stores individual techniques (shot type, lighting, composition)",
+          "replacement_text": "- Stores individual narrative elements (plot points, character arcs, themes)",
+          "rationale": "Alters the stored data from cinematographic techniques to narrative components, making the saved analysis useless for comparing visual styles.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts narrative structure, character development, and dialogue patterns from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual narrative elements (plot points, character arcs, themes)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extracts lighting, composition, emotional cues, and director style from video files.",
+          "replacement_text": "Analyzes video files to provide general visual impressions and director background.",
+          "rationale": "Removes the specific list of cinematographic techniques, making the skill too vague to guarantee it extracts the detailed breakdown the user wants.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Stores individual techniques (shot type, lighting, composition)",
+          "replacement_text": "- Stores a summary of key visual elements",
+          "rationale": "Replaces the specific memory of individual techniques with a generic summary, so the user cannot compare specific cinematographic details across films later.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nAnalyzes video files to provide general visual impressions and director background.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores a summary of key visual elements\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual techniques (shot type, lighting, composition)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`",
+          "replacement_text": "",
+          "rationale": "Without the post-hook to save analysis results, the skill cannot store the breakdown for future comparison, directly failing the user’s request to save and compare with other films.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts lighting, composition, emotional cues, and director style from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Uses Vision-Language Models (via `scillm`) to analyze keyframes.",
+          "replacement_text": "Uses simple text summarization (via `summarize`) to analyze movie metadata.",
+          "rationale": "The skill no longer performs visual analysis, so it cannot extract cinematographic techniques from video frames.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts lighting, composition, emotional cues, and director style from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses simple text summarization (via `summarize`) to analyze movie metadata.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, technique counts, bridge tags)\n- Stores individual techniques (shot type, lighting, composition)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extracts lighting, composition, emotional cues, and director style from video files.",
+          "replacement_text": "Extracts dialogue, plot points, and character arcs from video files.",
+          "rationale": "The user needs visual style analysis (lighting, composition, color palettes), but this replacement changes the skill to extract non-visual content, making it irrelevant.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Stores analysis snapshot (movie, date, technique counts, bridge tags)",
+          "replacement_text": "Stores analysis snapshot (movie, date, plot summary)",
+          "rationale": "The user requires storing detailed cinematographic techniques for later cross-film comparison, but this edit only saves a plot summary, which cannot support that comparison.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# learn-movie\n\nTEACH Horus by analyzing actual movies.\nExtracts dialogue, plot points, and character arcs from video files.\n\n## Features\n\n- **Scene Detection**: Automatically detects scene cuts using ffmpeg.\n- **VLM Analysis**: Uses Vision-Language Models (via `scillm`) to analyze keyframes.\n- **Memory Integration**: Stores learned patterns into the `horus-movies` collection.\n\n## Usage\n\n```bash\n# Analyze a video file\n/learn-movie analyze path/to/movie.mp4\n\n# Analyze with specific director context\n/learn-movie analyze path/to/movie.mp4 --director \"Ridley Scott\"\n```\n\n## Setup\n\nRequires `ffmpeg` installed.\nUses `scillm` skill for VLM inference (e.g., `pixtral-12b`).\n\n## Memory + Taxonomy Integration\n\nFollows the canonical `create-context/memory_integration.py` pattern with graceful degradation.\n\n### Pre-hook: `recall_prior_analyses(movie_name, k=5)`\n- Recalls prior cinematographic analyses for the same movie before analysis begins\n- Surfaces previously learned techniques to avoid redundant storage\n- Enables cumulative learning across sessions\n\n### Post-hook: `learn_analysis(movie_name, techniques, scenes, insights)`\n- Stores analysis snapshot (movie, date, plot summary)\n- Stores individual techniques (shot type, lighting, composition)\n- Stores scene-level insights for cross-movie pattern matching\n- Tags: `[\"learn_movie\", movie_name] + bridges`\n\n### Bridge Keywords (keyword fallback)\n| Bridge | Keywords |\n|--------|----------|\n| Precision | technique, frame, composition, symmetry, geometric, calculated |\n| Resilience | adaptation, creative, enduring, triumphant, recovery |\n| Fragility | inconsistency, discontinuity, fragile, delicate, breaking |\n| Corruption | distortion, decay, grotesque, horror, darkness |\n| Loyalty | devotion, sacrifice, bond, duty, honor |\n| Stealth | shadow, silhouette, hidden, subtle, muted |\n\n### Graceful Degradation\n- Uses `try/except ImportError` at every hook callsite\n- Falls back to keyword-based bridge extraction when taxonomy module unavailable\n- All hooks are no-ops when `common.memory_client` is not importable\n\n## File Structure\n\n| File | Purpose |\n|------|---------|\n| `SKILL.md` | This file |\n| `run.sh` | Execution entry point |\n| `sanity.sh` | Health check |\n| `orchestrator.py` | Main orchestrator (scene detect, VLM analyze, memorize) |\n| `memory_integration.py` | Memory + Taxonomy hooks (pre/post) |"
+    }
+  ],
+  "finished_at": "2026-07-28T22:54:12",
+  "elapsed_seconds": 156.938,
+  "generated_variants": 9
+}

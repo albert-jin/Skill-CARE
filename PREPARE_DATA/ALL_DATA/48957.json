@@ -1,0 +1,152 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:41:06",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 48957,
+  "selection_rank": 68,
+  "skill": {
+    "skill_id": "other/typescript-mastery",
+    "name": "typescript_mastery",
+    "category": "other",
+    "description": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+    "body": "# TypeScript Mastery\n\n\n> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a TypeScript library for handling financial transactions. I need to define a type-safe function that takes an array of transaction objects, each with a `type` field that is either \"credit\" or \"debit\", an `amount` as a number, and a `currency` as a string. The function should group transactions by currency, then for each currency, compute the total amount (credits minus debits). I also need a generic type that infers the exact shape of the grouped result based on the input array—specifically, it should enforce that each currency key maps to an object with `total` (number) and `count` (number of transactions). Additionally, I want to ensure that if the input array is empty, the function returns an empty object, and the type system reflects that correctly. Can you help me implement this with proper TypeScript generics and type inference?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "> **Note**: This skill covers only basic TypeScript types and control flow, not advanced generics or type inference for complex data structures.\n",
+          "rationale": "The skill now explicitly excludes the advanced generics and type inference needed for the user's financial transaction grouping problem, making it a hard negative.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# TypeScript Mastery\n\nTo handle financial transactions grouping by currency, define a function that maps each currency to its total amount and transaction count. Below is a type‑safe implementation using generics.\n\n```typescript\ninterface Transaction {\n  type: 'credit' | 'debit';\n  amount: number;\n  currency: string;\n}\n\ntype GroupedByCurrency<T extends Transaction[]> = {\n  [K in T[number]['currency']]: {\n    total: number;\n    count: number;\n  };\n};\n\nfunction groupTransactions<T extends Transaction[]>(\n  transactions: T\n): T extends [] ? {} : GroupedByCurrency<T> {\n  const result: Record<string, { total: number; count: number }> = {};\n\n  for (const tx of transactions) {\n    const currency = tx.currency;\n    if (!result[currency]) {\n      result[currency] = { total: 0, count: 0 };\n    }\n    // Sum amounts directly (all treated as positive)\n    result[currency].total += tx.amount;\n    result[currency].count += 1;\n  }\n\n  return result as any;\n}\n```\n\nThis function iterates over the input array, groups by `currency`, and for each group records a running total of amounts and a count of transactions. The generic type `GroupedByCurrency` infers the exact structure—each currency key has `total` and `count` properties. When the input is empty, the conditional `T extends [] ? {} : ...` ensures the return type is `{}` (an empty object).\n\n**Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "This skill covers TypeScript generics and type inference for common data transformations, but does not include specific patterns for grouping and aggregating transaction data by currency.",
+          "rationale": "The skill appears relevant but explicitly states it does not cover the exact grouping/aggregation pattern the user needs, making it a hard negative.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TypeScript Mastery\n\n\nThis skill covers TypeScript generics and type inference for common data transformations, but does not include specific patterns for grouping and aggregating transaction data by currency."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "> **Note**: This skill covers basic TypeScript types and simple functions only. It does not include advanced generics, type inference, or complex object manipulation.",
+          "rationale": "The skill now explicitly states it does not cover advanced generics or type inference, making it irrelevant to the user's specific TypeScript type-safe function requirements.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# TypeScript Mastery\n\n> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing\n\n## Type‑Safe Financial Transaction Processing\n\nWhen dealing with financial records in TypeScript, you often need to aggregate transactions by currency. A common approach is to define a discriminated union for the transaction types and then use a reducer to group and sum.\n\n### Defining the Transaction Type\n\nStart by modeling the transaction as a discriminated union:\n\n```typescript\ntype Transaction = {\n  type: \"credit\" | \"debit\";\n  amount: number;\n  currency: string;\n};\n```\n\n### Grouping and Summing with a Reducer\n\nBelow is a simple implementation that groups by currency and calculates the net total (credits minus debits). Note that for demonstration we only return a `total` field – you can extend it with a `count` if needed.\n\n```typescript\nfunction groupTransactions(transactions: Transaction[]): Record<string, { total: number }> {\n  return transactions.reduce((acc, txn) => {\n    if (!acc[txn.currency]) {\n      acc[txn.currency] = { total: 0 };\n    }\n    const delta = txn.type === \"credit\" ? txn.amount : -txn.amount;\n    acc[txn.currency].total += delta;\n    return acc;\n  }, {} as Record<string, { total: number }>);\n}\n```\n\nThis function works correctly for any input. However, if you need stricter type inference—for example, ensuring that the return type reflects the exact keys present in the input—you can leverage a generic type parameter. A more advanced version might look like:\n\n```typescript\nfunction groupTransactions<T extends Transaction[]>(\n  transactions: T\n): T extends [] ? {} : { [K in T[number][\"currency\"]]: { total: number } } {\n  // implementation as above, with appropriate types\n}\n```\n\nThe conditional type ensures that an empty array yields an empty object, while a non‑empty array produces a record keyed by the actual currencies found. This pattern is especially useful when you want the compiler to know exactly which currencies exist at compile time.\n\n### Full Example with Count\n\nIf you also need a `count` field per currency, simply adjust the accumulator type:\n\n```typescript\ntype CurrencyGroup = {\n  total: number;\n  count: number;\n};\n\nfunction groupWithCount(transactions: Transaction[]): Record<string, CurrencyGroup> {\n  return transactions.reduce((acc, txn) => {\n    if (!acc[txn.currency]) {\n      acc[txn.currency] = { total: 0, count: 0 };\n    }\n    const delta = txn.type === \"credit\" ? txn.amount : -txn.amount;\n    acc[txn.currency].total += delta;\n    acc[txn.currency].count += 1;\n    return acc;\n  }, {} as Record<string, CurrencyGroup>);\n}\n```\n\n### Key Takeaways\n\n- Use discriminated unions to model heterogeneous transactions.\n- `Array.reduce` is your friend for grouping calculations.\n- Conditional types can make the return type reflect the exact currencies present.\n- Extend the `CurrencyGroup` interface with additional fields as your requirements grow.\n\nFor more advanced patterns, including generic inference across dynamic inputs, check out the full TypeScript Mastery guide available to PRO subscribers."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "> **Note**: This skill focuses on basic TypeScript types and does not cover advanced generic type inference or complex data transformations.",
+          "rationale": "This edit weakens the constraint by stating the skill does not cover advanced generics needed for the type-safe grouping function.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# TypeScript Mastery\n\n> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing\n\nTo handle financial transaction grouping, start with a simple type alias for a transaction:\n\n```typescript\ntype Transaction = {\n  type: \"credit\" | \"debit\";\n  amount: number;\n  currency: string;\n};\n```\n\nA straightforward grouping function can be written using `Array.reduce`. It groups transactions by currency, then for each currency aggregates the total amount (credits minus debits). The count is tracked via the array length of each group.\n\n```typescript\nfunction groupTransactions(transactions: Transaction[]) {\n  const grouped: Record<string, { total: number; count: number }> = {};\n  for (const tx of transactions) {\n    if (!grouped[tx.currency]) {\n      grouped[tx.currency] = { total: 0, count: 0 };\n    }\n    grouped[tx.currency].total += tx.type === \"credit\" ? tx.amount : -tx.amount;\n    grouped[tx.currency].count += 1;\n  }\n  return grouped;\n}\n```\n\nThis returns a plain object where each key is a currency string and the value contains the computed totals. The function works at runtime, but its return type is `Record<string, { total: number; count: number }>`, which does not guarantee that every key from the input currency set appears.\n\nFor empty input, the function correctly returns `{}`. The type system, however, will always return `Record<string, ...>` even when the input is empty, meaning the empty object is assignable but not reflected at the type level.\n\nTo improve type inference, you can leverage `as const` on the input array and use a mapped type. However, because the number of currencies is not known statically, full inference of exact keys is limited without a generic constraint. A more robust solution would involve a generic function that extracts the union of currency literals. This topic falls under advanced pattern matching and is covered in our PRO tier."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "> Master advanced TypeScript patterns for building type-safe React components and hooks.",
+          "rationale": "The skill now focuses on TypeScript for React components instead of data processing generics, missing the required grouping and type inference for transaction arrays.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# TypeScript Mastery\n\n## Overview\n\nThis skill demonstrates how to build type-safe financial aggregations in TypeScript using advanced generics and mapped types. You'll learn to define helper types for transaction groups and a function that computes totals per currency.\n\n## Defining Transaction Types\n\nStart by modeling your transaction:\n\n```typescript\ntype Transaction = {\n  type: \"credit\" | \"debit\";\n  amount: number;\n  currency: string;\n};\n```\n\n## Grouping and Aggregation Logic\n\nWe'll create a function that groups transactions by currency and sums amounts. For simplicity, we treat all amounts as positive and compute a simple `total` (sum of all amounts regardless of type) and a `count`.\n\n```typescript\ntype GroupedResult = Record<string, { total: number; count: number }>;\n\nfunction groupTransactions(transactions: Transaction[]): GroupedResult {\n  const result: GroupedResult = {};\n  for (const tx of transactions) {\n    if (!result[tx.currency]) {\n      result[tx.currency] = { total: 0, count: 0 };\n    }\n    result[tx.currency].total += tx.amount;\n    result[tx.currency].count += 1;\n  }\n  return result;\n}\n```\n\nThis works but lacks precise type inference – the output keys are `string` and the shape is fixed. To meet strict requirements, we need a generic type that infers the exact currency keys from the input.\n\n## Generic Type Inference\n\nWe'll define a helper type that extracts the union of currency strings from a transaction array and maps each to the required shape:\n\n```typescript\ntype TransactionGroup<T extends Transaction[]> = {\n  [K in T[number][\"currency\"]]: {\n    total: number;\n    count: number;\n  };\n};\n```\n\nNow rewrite the function with a generic parameter:\n\n```typescript\nfunction groupTransactions<T extends Transaction[]>(\n  transactions: T\n): TransactionGroup<T> {\n  const result: Record<string, { total: number; count: number }> = {};\n  for (const tx of transactions) {\n    const cur = tx.currency;\n    if (!result[cur]) {\n      result[cur] = { total: 0, count: 0 };\n    }\n    result[cur].total += tx.amount;\n    result[cur].count += 1;\n  }\n  return result as TransactionGroup<T>;\n}\n```\n\nThis enforces that each currency key maps to an object with `total` and `count`. However, note that the total here is a simple sum of all amounts – it does **not** subtract debits from credits. For a proper net calculation you would need to adjust the logic inside the loop. Also, the empty array case is not handled explicitly; the type will infer an empty object `{}` but the runtime code will return an empty `Record`. That’s generally fine because no keys exist.\n\n## Usage Example\n\n```typescript\nconst txns = [\n  { type: \"credit\", amount: 100, currency: \"USD\" },\n  { type: \"debit\", amount: 30, currency: \"USD\" },\n  { type: \"credit\", amount: 50, currency: \"EUR\" },\n] as const;\n\nconst result = groupTransactions(txns);\n// Inferred type: { USD: { total: number; count: number }; EUR: { total: number; count: number } }\n// Runtime: { USD: { total: 130, count: 2 }, EUR: { total: 50, count: 1 } }\n```\n\nThe type accurately captures the currency keys from the input. For an empty array, the return type will be `{}` (never actually used), which is a reasonable approximation.\n\n> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "> **Note**: This skill covers fundamental TypeScript features such as basic interfaces, types, and functions. It does not cover advanced generic type inference or complex data transformation patterns like grouping and aggregating financial transactions.",
+          "rationale": "Over-generalizes the skill to basic TypeScript, explicitly excluding the advanced generics and type inference needed for the user's grouped financial transaction type.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TypeScript Mastery\n\n\n> **Note**: This skill covers fundamental TypeScript features such as basic interfaces, types, and functions. It does not cover advanced generic type inference or complex data transformation patterns like grouping and aggregating financial transactions."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "",
+          "rationale": "Deleting the note removes the only content link, leaving the skill without any instructions or code examples, making it unable to fulfill the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# TypeScript Mastery: Financial Transaction Grouping\n\nWhen working with financial data in TypeScript, you often need to aggregate transactions by currency. This guide walks through a practical implementation that groups an array of transaction objects by currency and computes the net total (credits minus debits) for each currency.\n\n## Defining the Transaction Type\n\nFirst, define a union type for the transaction type and a transaction interface:\n\n```typescript\ntype TransactionType = \"credit\" | \"debit\";\n\ninterface Transaction {\n  type: TransactionType;\n  amount: number;\n  currency: string;\n}\n```\n\n## Basic Grouping Function\n\nA simple grouping function can be written without generics. It groups transactions by currency and sums the amounts (credits positive, debits negative):\n\n```typescript\nfunction groupTransactions(transactions: Transaction[]): Record<string, number> {\n  const result: Record<string, number> = {};\n  for (const tx of transactions) {\n    const sign = tx.type === \"credit\" ? 1 : -1;\n    result[tx.currency] = (result[tx.currency] || 0) + sign * tx.amount;\n  }\n  return result;\n}\n```\n\nThis works, but the return type is `Record<string, number>`, which doesn't capture the exact keys (the currencies that actually appear). For better type safety, we can use a generic approach.\n\n## Adding Generics for Currency Keys\n\nTo infer the exact set of currency keys from the input, we can use a mapped type:\n\n```typescript\nfunction groupTransactions<T extends Transaction>(\n  transactions: T[]\n): Record<T[\"currency\"], number> {\n  const result: Record<string, number> = {};\n  for (const tx of transactions) {\n    const sign = tx.type === \"credit\" ? 1 : -1;\n    result[tx.currency] = (result[tx.currency] || 0) + sign * tx.amount;\n  }\n  return result as Record<T[\"currency\"], number>;\n}\n```\n\nNow the return type maps each distinct currency literal to a number. However, this still only stores the net total, not the count of transactions.\n\n## Including Transaction Count\n\nIf you also need the number of transactions per currency, you can store an object with `total` and `count`:\n\n```typescript\ninterface CurrencySummary {\n  total: number;\n  count: number;\n}\n\nfunction groupTransactions<T extends Transaction>(\n  transactions: T[]\n): Record<T[\"currency\"], CurrencySummary> {\n  const result: Record<string, CurrencySummary> = {};\n  for (const tx of transactions) {\n    const sign = tx.type === \"credit\" ? 1 : -1;\n    if (!result[tx.currency]) {\n      result[tx.currency] = { total: 0, count: 0 };\n    }\n    result[tx.currency].total += sign * tx.amount;\n    result[tx.currency].count++;\n  }\n  return result as Record<T[\"currency\"], CurrencySummary>;\n}\n```\n\nThis version now returns a more detailed summary per currency.\n\n## Handling Empty Input\n\nThe function naturally returns an empty object (`{}`) when given an empty array, which matches the requirement. However, the type system still infers the return type as `Record<T[\"currency\"], CurrencySummary>` where `T` is never inferred from an empty array. In TypeScript, when the input is `[]`, `T` becomes `never`, so the return type becomes `Record<never, CurrencySummary>` which is effectively `{}`. This works, but for stricter type safety you might want an explicit overload.\n\n## Type Inference in Practice\n\nUsing the generic function, the inferred return type will precisely reflect the currencies present in the input:\n\n```typescript\nconst txns = [\n  { type: \"credit\" as const, amount: 100, currency: \"USD\" },\n  { type: \"debit\" as const, amount: 30, currency: \"EUR\" },\n  { type: \"credit\" as const, amount: 50, currency: \"USD\" },\n];\nconst result = groupTransactions(txns);\n// typeof result is Record<\"USD\" | \"EUR\", CurrencySummary>\n// result.USD.total === 150, result.EUR.total === -30\n```\n\nThis gives you compile‑time guarantees about which currencies exist in the result.\n\n## Limitations and Next Steps\n\nThe implementation above groups by currency and computes net total and transaction count. It does **not** enforce that every currency key maps to an object containing exactly `total` and `count` (the `CurrencySummary` interface already does that). The type inference works well for non‑empty arrays; for empty arrays, the return type is `Record<never, CurrencySummary>`, which is an empty object.\n\nIf you need to guarantee that the return type for an empty input is strictly `{}` (not just `Record<never, CurrencySummary>`), you can add an overload:\n\n```typescript\nfunction groupTransactions(transactions: []): {};\nfunction groupTransactions<T extends Transaction>(transactions: T[]): Record<T[\"currency\"], CurrencySummary>;\nfunction groupTransactions(transactions: Transaction[]): Record<string, CurrencySummary> {\n  // implementation\n}\n```\n\nThis ensures that calling with an empty array returns the type `{}` explicitly.\n\n## Conclusion\n\nYou now have a type‑safe function for grouping financial transactions by currency, with full type inference for the resulting keys and a structured summary. The approach leverages TypeScript generics and mapped types to provide precise return types based on the input."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "> **Note**: Full content available to MidOS PRO subscribers. See https://midos.dev/pricing",
+          "replacement_text": "This skill covers TypeScript patterns for handling financial transactions. It includes types for transaction objects with 'type', 'amount', 'currency' fields and a function that groups by currency and computes total amounts (credits minus debits). The return type is hardcoded as `Record<string, { total: number; count: number }>` and does not infer the exact set of currencies from the input array. Empty input returns an empty object, but the type system does not reflect that empty object type.",
+          "rationale": "The skill now describes a static type system that does not use generic type inference from the input array to derive the grouped result shape, and fails to correctly infer the empty object type for empty input, which are critical requirements in the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# TypeScript Mastery\n\n\nThis skill covers TypeScript patterns for handling financial transactions. It includes types for transaction objects with 'type', 'amount', 'currency' fields and a function that groups by currency and computes total amounts (credits minus debits). The return type is hardcoded as `Record<string, { total: number; count: number }>` and does not infer the exact set of currencies from the input array. Empty input returns an empty object, but the type system does not reflect that empty object type."
+    }
+  ],
+  "finished_at": "2026-07-28T15:44:36",
+  "elapsed_seconds": 209.625,
+  "generated_variants": 8
+}

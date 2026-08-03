@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T19:50:41",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 75026,
+  "selection_rank": 145,
+  "skill": {
+    "skill_id": "data/infrastructure-anton-abyzov-specweave",
+    "name": "infrastructure",
+    "category": "data",
+    "description": "Infrastructure-as-Code specialist for Terraform, AWS, Azure, and serverless architectures. Use when setting up cloud infrastructure, writing Terraform modules, or deploying to AWS Lambda/Vercel/Cloudflare. Covers VPC configuration, container orchestration, and CI/CD pipeline infrastructure.",
+    "body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n3. **Least privilege IAM** - No wildcards\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Lambda, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| AWS Lambda | Lambda + API Gateway + DynamoDB |\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (specific actions, specific resources)\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions.",
+    "source": "pool"
+  },
+  "generated_query": "I'm setting up a serverless REST API on AWS for a photo gallery app. The stack should use Lambda, API Gateway, and DynamoDB for metadata storage, all behind a custom domain. I already have a basic Terraform structure in place. Can you generate the Terraform code for the Lambda compute layer first? Use `us-west-2`, prefix all resources with `gallery-`, and make sure the IAM role follows least privilege—no wildcards, only the actions needed for DynamoDB CRUD and CloudWatch logging. The Lambda runtime is Python 3.12 with a 128 MB memory limit.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Least privilege IAM** - No wildcards",
+          "replacement_text": "",
+          "rationale": "Deleting the core principle about least privilege IAM removes the constraint to use specific actions and resources, so the skill may generate IAM roles with wildcard permissions, violating the user's explicit requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Lambda, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| AWS Lambda | Lambda + API Gateway + DynamoDB |\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (specific actions, specific resources)\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| AWS Lambda | Lambda + API Gateway + DynamoDB |",
+          "replacement_text": "| AWS ECS | Fargate + ALB + RDS |",
+          "rationale": "Replaces the core Lambda compute service with ECS, making the skill incapable of generating Lambda code as requested by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n3. **Least privilege IAM** - No wildcards\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Lambda, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| AWS ECS | Fargate + ALB + RDS |\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (specific actions, specific resources)\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| AWS Lambda | Lambda + API Gateway + DynamoDB |",
+          "replacement_text": "",
+          "rationale": "Deleting the AWS Lambda platform row removes the ability to generate Terraform for Lambda, making the skill unable to fulfill the user's AWS Lambda request.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Layer 1**: Compute (Lambda, execution roles)",
+          "replacement_text": "- **Layer 1**: Compute (Azure Functions, execution roles)",
+          "rationale": "Changing Layer 1 from Lambda to Azure Functions shifts the focus away from AWS, so the skill no longer matches the user's requirement for AWS Lambda Terraform.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n3. **Least privilege IAM** - No wildcards\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Azure Functions, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (specific actions, specific resources)\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Least privilege IAM** - No wildcards",
+          "replacement_text": "3. **Least privilege IAM** - Wildcards allowed when necessary",
+          "rationale": "Weakening the IAM constraint to allow wildcards makes the skill generate IAM roles with wildcards, failing the user's requirement for no wildcards.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n3. **Least privilege IAM** - Wildcards allowed when necessary\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Lambda, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| AWS Lambda | Lambda + API Gateway + DynamoDB |\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (specific actions, specific resources)\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| AWS Lambda | Lambda + API Gateway + DynamoDB |",
+          "replacement_text": "| AWS Lambda | Lambda + API Gateway + RDS |",
+          "rationale": "By replacing DynamoDB with RDS, the skill no longer supports the DynamoDB metadata storage required by the user query, making it a hard counterfactual negative.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n3. **Least privilege IAM** - No wildcards\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Lambda, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| AWS Lambda | Lambda + API Gateway + RDS |\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (specific actions, specific resources)\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Platform | Components |\n|----------|------------|\n| AWS Lambda | Lambda + API Gateway + DynamoDB |\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |",
+          "replacement_text": "| Platform | Components |\n|----------|------------|\n| Any serverless platform | Functions + API + Database + Storage |",
+          "rationale": "By replacing the specific platform breakdown with a generic row, the skill loses its AWS Lambda specialization and will not generate Terraform code tailored to the user's exact stack (Lambda, API Gateway, DynamoDB).",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "✅ Least privilege IAM (specific actions, specific resources)",
+          "replacement_text": "✅ Use secure IAM policies as needed",
+          "rationale": "The query requires an IAM role with no wildcards and only DynamoDB CRUD plus CloudWatch logging actions. This vague constraint allows the model to produce permissive wildcard policies, failing the user's strict least-privilege requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n3. **Least privilege IAM** - No wildcards\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Lambda, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| Any serverless platform | Functions + API + Database + Storage |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Use secure IAM policies as needed\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Generate ONE layer** (< 800 tokens): Terraform files",
+          "replacement_text": "",
+          "rationale": "Deleting the generation step means the skill will only analyze and ask which layer, never producing Terraform code, making it useless for the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready configuration using the Serverless Framework (serverless.yml).\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer  \n2. **Auto-deploy with credentials** - Never output manual steps  \n3. **Minimal IAM policies** - Use serverless-iam-roles-per-function plugin for scoped permissions  \n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (Lambda functions, handler code)\n- **Layer 2**: Database (DynamoDB tables, indexes)\n- **Layer 3**: Storage (S3 buckets, file uploads)\n- **Layer 4**: Networking (VPC, security groups)  \n- **Layer 5**: Monitoring (CloudWatch dashboards, alarms)\n- **Layer 6**: CI/CD (GitHub Actions, serverless deploy)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| AWS Lambda | Lambda + API Gateway + DynamoDB (via serverless.yml) |\n| Azure Functions | Function App + Cosmos DB (via serverless.yml) |\n| GCP Cloud Functions | Functions + Firestore (via serverless.yml) |\n| Firebase | Hosting + Functions + Firestore |  \n| Supabase | PostgreSQL + Auth + Storage |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**  \n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"AWS_ACCESS_KEY|AWS_SECRET\" .env 2>/dev/null && echo \"AWS credentials found\"\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.serverless.yml**: Free tier, minimal redundancy, 7-day logs  \n- **staging.serverless.yml**: Balanced, 14-day logs  \n- **prod.serverless.yml**: Multi-AZ, backup, 90-day logs  \n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first  \n2. **Generate ONE layer** (< 800 tokens): serverless.yml configuration  \n3. **Report progress**: \"Ready for next layer?\"  \n4. **Repeat**: One layer at a time  \n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (via per‑function roles)  \n✅ Secrets in Parameter Store (not env vars)  \n✅ HTTPS-only (TLS 1.2+)  \n✅ Encryption at rest  \n✅ CloudWatch logging enabled  \n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| AWS Lambda | Lambda + API Gateway + DynamoDB |",
+          "replacement_text": "| AWS ECS Fargate | ECS + API Gateway + DynamoDB |",
+          "rationale": "Replaces the core compute service from Lambda to ECS, so the skill would generate ECS infrastructure instead of Lambda code.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Layer 1**: Compute (Lambda, execution roles)",
+          "replacement_text": "- **Layer 1**: Compute (ECS, execution roles)",
+          "rationale": "Aligns the layer description with the replaced core API, reinforcing the wrong compute service for the user's Lambda request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Infrastructure Skill\n\n## Overview\n\nYou are a serverless infrastructure specialist who generates production-ready Infrastructure-as-Code using Terraform.\n\n## Core Principles\n\n1. **ONE infrastructure layer per response** - Chunk by layer\n2. **Auto-execute with credentials** - Never output manual steps\n3. **Least privilege IAM** - No wildcards\n\n## Quick Reference\n\n### Infrastructure Layers (Chunk by these)\n\n- **Layer 1**: Compute (ECS, execution roles)\n- **Layer 2**: Database (RDS, DynamoDB)\n- **Layer 3**: Storage (S3 buckets, policies)\n- **Layer 4**: Networking (VPC, subnets, security groups)\n- **Layer 5**: Monitoring (CloudWatch, alarms)\n- **Layer 6**: CI/CD (deployment pipelines)\n\n### Supported Platforms\n\n| Platform | Components |\n|----------|------------|\n| AWS ECS Fargate | ECS + API Gateway + DynamoDB |\n| Azure Functions | Function App + Cosmos DB + Storage |\n| GCP Cloud Functions | Functions + Firestore + Cloud Storage |\n| Firebase | Hosting + Functions + Firestore |\n| Supabase | PostgreSQL + Auth + Storage + Edge Functions |\n\n### Auto-Execute Rules\n\n**If credentials found → EXECUTE directly**\n**If credentials missing → ASK, then execute**\n\n```bash\n# Check credentials FIRST (presence only - never display values!)\ngrep -qE \"SUPABASE|DATABASE_URL|CF_|AWS_\" .env 2>/dev/null && echo \"Credentials found in .env\"\nwrangler whoami 2>/dev/null\naws sts get-caller-identity 2>/dev/null\n```\n\n### Environment Configs\n\n- **dev.tfvars**: Free tier, minimal redundancy, 7-day logs\n- **staging.tfvars**: Balanced cost/performance, 14-day logs\n- **prod.tfvars**: Multi-AZ, backup enabled, 90-day logs\n\n## Workflow\n\n1. **Analysis** (< 500 tokens): List layers needed, ask which first\n2. **Generate ONE layer** (< 800 tokens): Terraform files\n3. **Report progress**: \"Ready for next layer?\"\n4. **Repeat**: One layer at a time\n\n## Token Budget\n\n**NEVER exceed 2000 tokens per response!**\n\n## Security Best Practices\n\n✅ Least privilege IAM (specific actions, specific resources)\n✅ Secrets in Secrets Manager (not env vars)\n✅ HTTPS-only (TLS 1.2+)\n✅ Encryption at rest\n✅ CloudWatch logging enabled\n\n## Project-Specific Learnings\n\n**Before starting work, check for project-specific learnings:**\n\n```bash\n# Check if skill memory exists for this skill\ncat .specweave/skill-memories/infrastructure.md 2>/dev/null || echo \"No project learnings yet\"\n```\n\nProject learnings are automatically captured by the reflection system when corrections or patterns are identified during development. These learnings help you understand project-specific conventions and past decisions."
+    }
+  ],
+  "finished_at": "2026-07-28T19:53:27",
+  "elapsed_seconds": 166.89,
+  "generated_variants": 8
+}

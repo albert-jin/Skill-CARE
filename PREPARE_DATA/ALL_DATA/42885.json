@@ -1,0 +1,226 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:48:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 42885,
+  "selection_rank": 163,
+  "skill": {
+    "skill_id": "other/parallel-tercel-code-forge",
+    "name": "parallel",
+    "category": "other",
+    "description": "Dispatch independent sub-agents to solve multiple unrelated problems concurrently.",
+    "body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate",
+    "source": "pool"
+  },
+  "generated_query": "I have three unrelated issues in my web app that were reported today. Can you help me debug and fix all of them? Here are the details:\n\n1. **Login redirect**: When a user logs in successfully, they are supposed to be redirected to their dashboard. Instead, they are redirected to the homepage. The relevant file is `app/controllers/sessions_controller.rb`. The test file `test/controllers/sessions_controller_test.rb` shows a failing test for `test_should_redirect_to_dashboard_after_login`.\n\n2. **Search results empty**: The search endpoint returns an empty array even when there are matching records. The file `app/controllers/search_controller.rb` and model `app/models/product.rb` are involved. The test `test/controllers/search_controller_test.rb` has a failing test `test_should_return_products_matching_query`.\n\n3. **Dashboard layout broken**: The dashboard page has a CSS layout issue where the main content overlaps with the sidebar. Files involved: `app/views/dashboard/index.html.erb` and `app/assets/stylesheets/dashboard.css`. There's a failing visual regression test.\n\nThese issues seem independent—they involve different controllers, models, views, and CSS. Can you investigate each, identify root causes, and implement fixes? Please run the tests for each area and ensure all three are resolved. Also, after all fixes, run the full test suite to check for regressions.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.",
+          "replacement_text": "",
+          "rationale": "Without the parallel dispatch step, the skill cannot handle multiple unrelated issues concurrently, which is the core requirement of the user query with three independent bugs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.",
+          "replacement_text": "**CRITICAL:** Launch agents one at a time, waiting for each to finish before starting the next, to avoid file conflicts.",
+          "rationale": "By replacing parallel launching with sequential launching, the skill loses its core parallel dispatching capability, making it unable to handle the user's three independent bugs concurrently as requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch agents one at a time, waiting for each to finish before starting the next, to avoid file conflicts.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 3+ test files failing with different root causes",
+          "replacement_text": "- 3+ test files failing with the same root cause",
+          "rationale": "Changes the input criteria so the skill now expects problems to share a root cause, directly contradicting the query's three distinct independent issues.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Failures are related (fix one, others may resolve)",
+          "replacement_text": "- Failures are related (fix one, others will still fail)",
+          "rationale": "Weakens the condition for not using the skill, making it seem applicable to related failures when it actually still requires independence, causing misapplication.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with the same root cause\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others will still fail)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "One agent per independent problem domain. Let them work concurrently.",
+          "replacement_text": "One agent handles all problem domains. It works through them one by one.",
+          "rationale": "Removing the concurrent dispatch makes the skill process issues sequentially, failing the user's request for parallel debugging.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.",
+          "replacement_text": "Launch agents one at a time. Wait for each to complete before starting the next.",
+          "rationale": "Changing to sequential agent launch eliminates parallelism, so the skill cannot concurrently resolve three independent issues as needed.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent handles all problem domains. It works through them one by one.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch agents one at a time. Wait for each to complete before starting the next.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Dispatch independent sub-agents to solve multiple unrelated problems concurrently.",
+          "replacement_text": "Dispatch independent sub-agents to implement multiple unrelated features concurrently.",
+          "rationale": "Changes the core purpose from debugging/fixing problems to feature implementation, making it irrelevant for the user's bug-fixing query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state",
+          "replacement_text": "## When to Use\n\n- 3+ feature requests with independent scope\n- Multiple independent features to be implemented simultaneously\n- Several unrelated feature requests at once\n- Any situation with 2+ feature requests that share no dependencies",
+          "rationale": "Replaces the bug-centric triggers with feature-centric triggers, so the skill no longer matches the user's debugging needs.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to implement multiple unrelated features concurrently.\n\n## When to Use\n\n- 3+ feature requests with independent scope\n- Multiple independent features to be implemented simultaneously\n- Several unrelated feature requests at once\n- Any situation with 2+ feature requests that share no dependencies\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```",
+          "replacement_text": "",
+          "rationale": "Removing the integration step eliminates the requirement to run the full test suite after all fixes, which the user explicitly requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Test results (pass/fail counts)",
+          "replacement_text": "",
+          "rationale": "Deleting the test results requirement from agent outputs means per-problem tests are not required, failing the user's demand to run tests for each area.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Run full test suite** — verify all fixes work together",
+          "replacement_text": "",
+          "rationale": "The user requires running the full test suite after all fixes, but this step is removed, so the skill will not perform that verification.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Task(subagent_type=\"general-purpose\")",
+          "replacement_text": "Task(subagent_type=\"code-reviewer\")",
+          "rationale": "The skill now dispatches code-reviewer agents that only analyze code but cannot implement fixes, so it will not resolve the actual bugs the user needs fixed.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"code-reviewer\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3+ test files failing with different root causes",
+          "replacement_text": "1 test file failing with a single root cause",
+          "rationale": "The skill now only handles a single problem, making it inapplicable for the user's three unrelated issues.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "One agent per independent problem domain. Let them work concurrently.",
+          "replacement_text": "One agent for all problems. Work sequentially.",
+          "rationale": "The skill now processes all problems with one sequential agent instead of dispatching parallel sub-agents, failing the user's need for concurrent debugging.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 1 test file failing with a single root cause\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent for all problems. Work sequentially.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run full test suite** — verify all fixes work together\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nFull test suite: {pass}/{total} passing\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Run full test suite** — verify all fixes work together",
+          "replacement_text": "2. **Run tests for each problem area** — verify each fix works in isolation",
+          "rationale": "By replacing the full test suite requirement with per-area testing, the skill no longer fulfills the user's explicit request to run the full test suite after all fixes.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Full test suite: {pass}/{total} passing",
+          "replacement_text": "Per-area tests: {pass}/{total} passing (each area)",
+          "rationale": "Removing the full test suite result from the report aligns with the weakened integration testing step, reinforcing that the skill does not verify cross-area regressions.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Forge — Parallel\n\nDispatch independent sub-agents to solve multiple unrelated problems concurrently.\n\n## When to Use\n\n- 3+ test files failing with different root causes\n- Multiple independent subsystems broken simultaneously\n- Several unrelated bugs reported at once\n- Any situation with 2+ problems that share no state\n\n## When NOT to Use\n\n- Failures are related (fix one, others may resolve)\n- Problems share state or dependencies\n- Need full system state to diagnose (single-threaded investigation needed)\n- Only 1 problem exists\n\n**For task execution within a feature:** Use `/code-forge:impl` which has built-in parallel task support.\n\n## Core Principle\n\n**One agent per independent problem domain. Let them work concurrently.**\n\n## Workflow\n\n### Step 1: Identify Problems\n\nList all problems. For each, note:\n- What is failing (test file, error message, component)\n- Which files/modules are involved\n- Whether it shares state with other problems\n\n### Step 2: Assess Independence\n\nBuild a dependency matrix:\n\n```\nProblem A ←→ Problem B: independent? (yes/no, why)\nProblem A ←→ Problem C: independent? (yes/no, why)\nProblem B ←→ Problem C: independent? (yes/no, why)\n```\n\nGroup dependent problems together. Each independent group gets its own agent.\n\n### Step 3: Dispatch Agents\n\nFor each independent problem group, launch a `Task(subagent_type=\"general-purpose\")`:\n\n**Agent prompt structure:**\n```\nYou are investigating and fixing: {problem description}\n\n## Scope\n- Files involved: {list}\n- Error messages: {paste}\n- Expected behavior: {description}\n\n## Constraints\n- Only modify files in your scope\n- Use code-forge:tdd methodology (write failing test first)\n- Use code-forge:debug methodology (root cause before fix)\n\n## Output Required\n- Root cause (1-2 sentences)\n- Files changed (list)\n- Test results (pass/fail counts)\n- Summary of fix (1-2 sentences)\n```\n\n**CRITICAL:** Launch all agents in a single message using multiple `Task` tool calls. This enables true parallel execution.\n\n### Step 4: Review and Integrate\n\nAfter all agents complete:\n\n1. **Check for conflicts** — did any agents modify the same file?\n   - No conflicts: proceed\n   - Conflicts: resolve manually, prefer the more targeted change\n2. **Run tests for each problem area** — verify each fix works in isolation\n3. **Report results:**\n\n```\nParallel dispatch complete: {N} agents, {M} problems resolved\n\nAgent 1: {problem} → {root cause} → {status}\nAgent 2: {problem} → {root cause} → {status}\nAgent 3: {problem} → {root cause} → {status}\n\nPer-area tests: {pass}/{total} passing (each area)\n```\n\n## Common Mistakes\n\n- Dispatching agents for related problems (they'll step on each other's changes)\n- Not providing enough context in agent prompts (agent wastes time re-discovering)\n- Launching agents sequentially instead of in a single parallel message\n- Skipping the full test suite after integration\n- Dispatching too many agents (>5) — diminishing returns, harder to integrate"
+    }
+  ],
+  "finished_at": "2026-07-28T20:51:57",
+  "elapsed_seconds": 203.891,
+  "generated_variants": 10
+}

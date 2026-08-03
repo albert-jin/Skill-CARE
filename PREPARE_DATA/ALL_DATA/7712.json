@@ -1,0 +1,247 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T19:24:43",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 7712,
+  "selection_rank": 141,
+  "skill": {
+    "skill_id": "development/whalefall-version-update-nyealovey-whalefall",
+    "name": "whalefall-version-update",
+    "category": "development",
+    "description": "WhaleFall(鲸落) 全局版本更新/发版同步工作流. 用于 bump 版本号(语义化 MAJOR.MINOR.PATCH)、消除 APP_VERSION/pyproject/env/uv.lock/部署脚本/健康检查/页脚/错误页/README/CHANGELOG/About 时间轴的版本漂移,并提供自检脚本与提交/PR 模板.",
+    "body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换.",
+    "source": "pool"
+  },
+  "generated_query": "我刚完成一个新功能的开发，准备发布版本 v2.5.0，主题是“添加用户订阅管理功能”。请帮我更新项目中的所有版本号，确保所有文件保持一致，包括：\n\n- `app/settings.py` 里的 `APP_VERSION`\n- `pyproject.toml` 里的版本号\n- `env.example` 里的 `APP_VERSION`\n- `uv.lock` 里 `whalefalling` 包的版本\n- 部署脚本 `scripts/deploy/deploy-prod-all.sh`\n- 路由文件 `app/routes/main.py` 中返回的 `app_version`\n- 页脚模板 `app/templates/base.html`\n- 两个 Nginx 错误页 `nginx/error_pages/404.html` 和 `nginx/error_pages/50x.html`\n- `README.md` 顶部的徽章和底部的版本\n- `CHANGELOG.md` 新增本次发版记录（倒序）\n- `app/templates/about.html` 的时间轴追加本次版本记录\n\n请同时运行版本一致性自检脚本，确保没有遗漏，并告知我 `git status` 中只包含必要的文件。最后，我需要你生成符合规范的提交信息 `chore: bump version to 2.5.0` 以及 PR 核对清单。",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.",
+          "replacement_text": "",
+          "rationale": "The user explicitly asks to run the version consistency self-check script, so deleting this step means the skill will not fulfill that requirement.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过",
+          "replacement_text": "",
+          "rationale": "The user needs a PR checklist that includes the self-check script; removing this item makes the checklist incomplete.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.",
+          "replacement_text": "1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --only-app-version --root <repo_root>`.",
+          "rationale": "The self-check script is crucial for verifying all files; replacing it with a limited check that only validates the app version leaves other files unchecked, causing inconsistency failures.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --only-app-version --root <repo_root>`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).",
+          "replacement_text": "",
+          "rationale": "Removing the theme input means the skill cannot record the release topic in CHANGELOG and About timeline, missing a key requirement from the user query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.",
+          "replacement_text": "- 提交信息: `fix: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.",
+          "rationale": "Changing the default commit prefix from 'chore' to 'fix' causes the generated commit message to not match the user's explicit request for 'chore: bump version to 2.5.0'.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `fix: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.",
+          "replacement_text": "版本一致性自检酌情执行，如时间紧迫可跳过此步骤。",
+          "rationale": "Without the mandatory self-check, the user cannot verify version consistency across all files, failing the query's core requirement.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.",
+          "replacement_text": "",
+          "rationale": "Removing the git status verification step means the user may include unintended file changes, contradicting the query's request for only necessary files.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n1. 版本一致性自检酌情执行，如时间紧迫可跳过此步骤。\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).",
+          "replacement_text": "- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.",
+          "rationale": "Omitted most required files (env, uv.lock, deploy script, routes, templates, nginx, changelog, about) so the skill fails to synchronize versions across the project.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.",
+          "replacement_text": "",
+          "rationale": "Removing the consistency check allows version drift to go undetected, contradicting the user's explicit request to verify and ensure no omissions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n\n## 验证与自检\n\n1. \n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).",
+          "replacement_text": "- 更新所有相关文件中的版本号（如配置、锁文件、部署脚本、模板等）。",
+          "rationale": "Over-generalized file list lacks specific file paths and update instructions, so the assistant cannot reliably update all required files as per the user query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.",
+          "replacement_text": "1. 运行版本一致性检查。",
+          "rationale": "Vague self-check instruction omits the specific script path and arguments, preventing the user from verifying version consistency as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过",
+          "replacement_text": "- 提交信息: 按照规范书写。\n- PR 核对清单: 自行检查必要文件。",
+          "rationale": "Over-generalized commit message and checklist templates do not provide the specific format and items the user requested, causing the final output to miss required details.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- 更新所有相关文件中的版本号（如配置、锁文件、部署脚本、模板等）。\n\n## 验证与自检\n\n1. 运行版本一致性检查。\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: 按照规范书写。\n- PR 核对清单: 自行检查必要文件。\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## 验证与自检\n\n1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.",
+          "replacement_text": "",
+          "rationale": "The user explicitly requires running a version consistency self-check script, but deleting the entire verification section removes that capability, causing the skill to fail the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.",
+          "replacement_text": "2. 优先更新 `pyproject.toml` 的版本号,再同步其余文件.",
+          "rationale": "Changing the primary source of version truth from settings.py to pyproject.toml undermines the consistency script that expects settings.py as the baseline, causing version drift and failing the user's requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.",
+          "replacement_text": "1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_all_versions.py --root <repo_root> --expected X.Y.Z`.",
+          "rationale": "Replacing the actual consistency check script with a non‑existent or different script means the user's explicit request to run the correct check will not be fulfilled, leading to missed errors.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `pyproject.toml` 的版本号,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_all_versions.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).",
+          "replacement_text": "本次发版主题(仅用于注释).",
+          "rationale": "By removing the requirement to include the theme in CHANGELOG and About, the skill will not add the user-provided theme to those files, failing the user's explicit request.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.",
+          "replacement_text": "提交信息: `feat: release vX.Y.Z`.",
+          "rationale": "Changing the commit message format to a different prefix (feat) breaks the user's expected commit message `chore: bump version to 2.5.0`, making the output unusable.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题(仅用于注释).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `uv.lock`: 在 `[[package]] name = \"whalefalling\"` 节点更新 `version = \"...\"`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `nginx/error_pages/404.html` 与 `nginx/error_pages/50x.html`: 更新错误页版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `feat: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example`/`uv.lock` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/错误页/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "app/templates/about.html: 时间轴追加本次版本记录(不改历史条目).",
+          "replacement_text": "app/templates/about.html: 可选更新时间轴 (可根据需要追加本次版本记录).",
+          "rationale": "By making the about.html update optional, the skill no longer guarantees that the user's required file is updated.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.",
+          "replacement_text": "建议运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z` (可选).",
+          "rationale": "By making the self-check script optional, the skill may skip the crucial verification step the user explicitly requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# WhaleFall 版本更新\n\n## 输入\n\n- 目标版本号 `X.Y.Z`(语义化版本).\n- 本次发版主题/一句话摘要(用于 `CHANGELOG.md` 与 About 时间轴).\n\n## 工作流\n\n1. 读取强一致清单并确认当前版本号.\n   - 需要完整指南时,读取 `references/VERSION_UPDATE_GUIDE.md`.\n2. 优先更新 `app/settings.py` 的 `APP_VERSION`,再同步其余文件.\n3. 更新 `CHANGELOG.md` 与 `app/templates/about.html` 的本次发版记录.\n4. 运行自检脚本与质量命令,核对 `git status` 只包含必要文件.\n\n## 强一致文件清单(必须同步)\n\n- `app/settings.py`: 更新 `APP_VERSION`(运行时版本号唯一来源).\n- `pyproject.toml`: 更新 `[project].version`.\n- `env.example`: 更新 `APP_VERSION=...`.\n- `scripts/deploy/deploy-prod-all.sh`: 更新脚本头部注释/横幅/日志中的版本号.\n- `app/routes/main.py`: 更新 `app_version` 返回值(供前端展示).\n- `app/templates/base.html`: 更新页脚版本展示.\n- `README.md`: 更新顶部徽章与底部“最后更新/版本”.\n- `CHANGELOG.md`: 顶部新增或更新本次版本条目(倒序).\n- `app/templates/about.html`: 时间轴追加本次版本记录(不改历史条目).\n\n## 验证与自检\n\n1. 运行版本一致性自检脚本(本 skill 自带): `python3 scripts/check_version_sync.py --root <repo_root> --expected X.Y.Z`.\n   - 不传 `--expected` 时,脚本会从 `app/settings.py` 的 `APP_VERSION` 推导并作为期望值.\n   - 注意:脚本仅检查 `app/settings.py`、`pyproject.toml`、`env.example`、`README.md` 的关键版本标记.\n2. 运行质量/检查命令(按需选择): `make quality` 或 `ruff check <files>`.\n3. 核对 `git status`/`git diff`,避免仅为版本号而改动 `docs/architecture/*`、`docs/reports/*` 等大文档.\n\n## 输出模板\n\n- 提交信息: `chore: bump version to X.Y.Z` 或 `chore: release vX.Y.Z`.\n- PR 核对清单:\n  - [ ] `app/settings.py` 的 `APP_VERSION` 已更新并作为基准值\n  - [ ] `pyproject.toml`/`env.example` 已同步\n  - [ ] `/admin/api/app-info` 的 `app_version` 已同步\n  - [ ] 页脚/README 已同步\n  - [ ] `CHANGELOG.md` 与 About 时间轴已补充\n  - [ ] `python3 scripts/check_version_sync.py --root <repo_root>` 通过\n\n## 兼容与回退\n\n- 若仓库中缺少指南里提到的历史脚本(例如 `check_missing_docs_smart.py`),使用 `make quality` 作为回退验证.\n- 若依赖文件出现与项目版本相同的数字,先确认是否为第三方依赖版本,避免误替换."
+    }
+  ],
+  "finished_at": "2026-07-28T19:28:05",
+  "elapsed_seconds": 202.375,
+  "generated_variants": 10
+}

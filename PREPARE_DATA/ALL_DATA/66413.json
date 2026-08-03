@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:09:41",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 66413,
+  "selection_rank": 59,
+  "skill": {
+    "skill_id": "other/prior-authorization-mdbabumiamssm-llms-universal-life-",
+    "name": "Prior Authorization Coworker",
+    "category": "other",
+    "description": "description: Prior Auth Review",
+    "body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-L-SPINE` (Lumbar Spine MRI)",
+    "source": "pool"
+  },
+  "generated_query": "Check if a patient qualifies for an MRI of the lumbar spine. The patient has had low back pain for about 10 weeks, tried ibuprofen and stretching but pain persists. The clinical note says: \"Patient reports dull ache in lower back for 2.5 months, no radiculopathy. Has done home exercises and taken NSAIDs, but minimal improvement.\" Procedure code is MRI-L-SPINE. Please review this against the policy criteria and give me a yes/no decision with a clear explanation of why, including the reasoning step-by-step.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").",
+          "replacement_text": "",
+          "rationale": "Without the policy matching capability, the skill cannot compare clinical notes against the necessary criteria (e.g., failure of conservative therapy), so it will not be able to produce a valid yes/no decision for the MRI request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-L-SPINE` (Lumbar Spine MRI)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"",
+          "replacement_text": "python3 Skills/Clinical/Prior_Authorization/summarize_note.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"",
+          "rationale": "The core API is replaced with a summarization script that does not evaluate policy criteria, so it cannot generate a prior auth decision.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").",
+          "replacement_text": "Policy Matching**: Extracts key clinical facts from the note.",
+          "rationale": "The skill no longer checks against criteria, making it unable to determine qualification.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **Policy Matching**: Extracts key clinical facts from the note.\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/summarize_note.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-L-SPINE` (Lumbar Spine MRI)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Supported Policies\n\n*   `MRI-L-SPINE` (Lumbar Spine MRI)",
+          "replacement_text": "## Supported Policies\n\n*   `MRI-BRAIN` (Brain MRI)",
+          "rationale": "The skill now only supports brain MRI policies, so it cannot process the lumbar spine MRI request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-BRAIN` (Brain MRI)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Checks against specific criteria (e.g., \"Pain > 6 weeks\").",
+          "replacement_text": "Checks against specific criteria (e.g., \"Pain > 12 weeks\").",
+          "rationale": "By increasing the pain duration threshold from 6 to 12 weeks, the skill would deny the patient's MRI request even though the patient meets typical criteria, making it a hard negative.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 12 weeks\").\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-L-SPINE` (Lumbar Spine MRI)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "*   `MRI-L-SPINE` (Lumbar Spine MRI)",
+          "replacement_text": "*   `MRI-C-SPINE` (Cervical Spine MRI)",
+          "rationale": "Changes the supported policy from lumbar spine MRI to cervical spine MRI, making the skill inapplicable to the user's query about the lumbar spine.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "--code \"MRI-L-SPINE\"",
+          "replacement_text": "--code \"MRI-C-SPINE\"",
+          "rationale": "Updates the example usage to match the replaced policy code, reinforcing that the skill is designed for cervical rather than lumbar spine MRI.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-C-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-C-SPINE` (Cervical Spine MRI)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "description: Prior Auth Review",
+          "replacement_text": "description: General Clinical Query Answering",
+          "rationale": "Removes the specific prior auth focus, making the skill appear to handle any clinical question without policy criteria.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").",
+          "replacement_text": "1.  **General Medical Knowledge**: Answers clinical questions using general medical knowledge.",
+          "rationale": "Replaces the policy-specific capability with a vague one, so the skill cannot match against policy criteria needed for the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "*   `MRI-L-SPINE` (Lumbar Spine MRI)",
+          "replacement_text": "*   No specific policies; handles any clinical question.",
+          "rationale": "Removes the explicit supported policy, implying the skill is not restricted to prior authorization workflows.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: General Clinical Query Answering\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **General Medical Knowledge**: Answers clinical questions using general medical knowledge.\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   No specific policies; handles any clinical question."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").",
+          "replacement_text": "",
+          "rationale": "Without policy matching, the skill cannot compare the patient's condition against the required criteria, so it cannot produce a valid decision with step-by-step reasoning against policy.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-L-SPINE` (Lumbar Spine MRI)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```",
+          "replacement_text": "```bash\npython3 Skills/Clinical/Prior_Authorization/convert_to_summary.py --note \"Patient has back pain > 2 months. Failed PT.\"\n```",
+          "rationale": "Replaces the core policy-checking API with a summarization script that cannot evaluate criteria or produce a prior auth decision.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").",
+          "replacement_text": "1.  **Clinical Summary**: Generates a summary of the patient's condition.",
+          "rationale": "Removes the policy matching capability so the skill cannot compare clinical notes against required criteria like pain duration.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **Clinical Summary**: Generates a summary of the patient's condition.\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/convert_to_summary.py --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `MRI-L-SPINE` (Lumbar Spine MRI)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "*   `MRI-L-SPINE` (Lumbar Spine MRI)",
+          "replacement_text": "*   `CT-L-SPINE` (Lumbar Spine CT)",
+          "rationale": "By changing the supported procedure to CT instead of MRI, the skill cannot process the user's MRI-L-SPINE request, making it a hard negative.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3.  **Structured Output**: Returns a JSON object with decision, reasoning, and timestamps.",
+          "replacement_text": "3.  **Structured Output**: Returns a JSON object with a probability score between 0 and 1.",
+          "rationale": "By altering the output to a probability score rather than a structured decision, the skill fails to provide the yes/no explanation the user needs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "---name: prior-auth-coworker\ndescription: Prior Auth Review\nkeywords:\n  - utilization-management\n  - payer-policy\n  - fhir\n  - claims\n  - audit\nmeasurable_outcome: Generates a policy-compliant approval/denial decision with <thinking> trace for 100% of valid inputs.\nlicense: MIT\nmetadata:\n  author: Anthropic Health Stack\n  version: \"2.0.0\"\ncompatibility:\n  - system: Python 3.9+\nallowed-tools:\n  - run_shell_command\n---\"\n\n# Prior Authorization Coworker\n\nThis skill acts as an automated utilization management reviewer. It takes unstructured clinical notes and a procedure code, compares them against internal policy criteria (e.g., conservative therapy failure), and renders a decision.\n\n## When to Use This Skill\n\n*   When a user asks to \"review a prior auth request\".\n*   When checking if a patient qualifies for a specific procedure (e.g., MRI).\n*   When you need to generate a structured approval/denial letter justification.\n\n## Core Capabilities\n\n1.  **Policy Matching**: Checks against specific criteria (e.g., \"Pain > 6 weeks\").\n2.  **Trace Generation**: Produces an \"Anthropic-style\" `<thinking>` trace for auditability.\n3.  **Structured Output**: Returns a JSON object with a probability score between 0 and 1.\n\n## Workflow\n\n1.  **Extract Data**: Parse the clinical note and procedure code from the user's input.\n2.  **Execute Review**: Run the coworker script.\n3.  **Present Decision**: Output the JSON decision and the reasoning trace.\n\n## Example Usage\n\n**User**: \"Check if this patient qualifies for an MRI of the Lumbar Spine: Patient has had back pain for 2 months, tried PT but it didn't work.\"\n\n**Agent Action**:\n```bash\npython3 Skills/Clinical/Prior_Authorization/anthropic_coworker.py --code \"MRI-L-SPINE\" --note \"Patient has back pain > 2 months. Failed PT.\"\n```\n\n## Supported Policies\n\n*   `CT-L-SPINE` (Lumbar Spine CT)"
+    }
+  ],
+  "finished_at": "2026-07-28T15:12:18",
+  "elapsed_seconds": 157.844,
+  "generated_variants": 9
+}

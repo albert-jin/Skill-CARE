@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:56:59",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 108,
+  "selection_rank": 254,
+  "skill": {
+    "skill_id": "design/gpt52-spec-writer",
+    "name": "gpt5.2-spec-writer",
+    "category": "design",
+    "description": "Guide for writing effective prompt specifications (specs) for the GPT-5.2 Codex agent. Use when the user asks to \"write a prompt spec\", \"create a system prompt for GPT-5.2\", \"design a spec for an agent\", or \"how to prompt GPT-5.2\".",
+    "body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n### Chain of Verification\n\nInstruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)",
+    "source": "pool"
+  },
+  "generated_query": "I need to create a detailed system prompt for a GPT-5.2 agent that will help me migrate a legacy Node.js project from JavaScript to TypeScript. The spec should define the agent’s persona as a senior TypeScript architect, set strict verbosity constraints (only output new/edited code and brief explanations), and include a step-by-step task roadmap with checkboxes for each file: read the file, analyze its dependencies, convert to TypeScript with proper types, run `tsc --noEmit` to verify, and fix any errors. I also need XML constraint blocks for the execution loop and a chain of verification step so it doesn’t report success until all builds pass. Can you write the spec for me?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Chain of Verification\n\nInstruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.",
+          "replacement_text": "",
+          "rationale": "By removing the Chain of Verification section, the spec no longer instructs the agent to verify builds before reporting success, which the query requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Instruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.",
+          "replacement_text": "Instruct the model to verify its work after all edits are done.",
+          "rationale": "The user requires a chain of verification that reports success only after all builds pass; this replacement removes the iterative fix-and-report requirement, making the skill insufficient for the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n### Chain of Verification\n\nInstruct the model to verify its work after all edits are done.\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".",
+          "replacement_text": "### Structured Task Roadmaps\n\nEvery spec should include an objective, actionable sequence of tasks using numbered steps. GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use numbered steps for all tasks\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```\n1. Fix null check in `parse_config()` at line 42\n2. Add error handling to `load_settings()`\n3. Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".",
+          "rationale": "Removing the checkbox task roadmap pattern means the spec will not guide the agent to use checkboxes, failing the query's explicit requirement for checkboxes.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `<verbosity_and_scope_constraints>` - output size and scope control",
+          "replacement_text": "- `<verbosity_and_scope_constraints>` - output size and scope control (allow full explanations and code output)",
+          "rationale": "Changing verbosity constraint to allow full output contradicts the query's strict verbosity requirement to only output new/edited code and brief explanations.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Structured Task Roadmaps\n\nEvery spec should include an objective, actionable sequence of tasks using numbered steps. GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use numbered steps for all tasks\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```\n1. Fix null check in `parse_config()` at line 42\n2. Add error handling to `load_settings()`\n3. Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control (allow full explanations and code output)\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n### Chain of Verification\n\nInstruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Instruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.",
+          "replacement_text": "Instruct the model to verify its work: Edit -> Build/check -> Fix -> Report after each verification step.",
+          "rationale": "The user requires the agent to not report success until all builds pass, but this edit removes the constraint of reporting only when complete, allowing premature success reporting.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n### Chain of Verification\n\nInstruct the model to verify its work: Edit -> Build/check -> Fix -> Report after each verification step.\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Example:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```",
+          "replacement_text": "Example:\n```markdown\n- [ ] 1.1 Outline the API endpoints for the new service\n- [ ] 1.2 Write detailed descriptions for each endpoint\n- [ ] 1.3 Generate examples and run linter\n```",
+          "rationale": "Changes the task roadmap from code-fixing to documentation-writing, missing the critical TypeScript conversion steps required by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Require verification after edits (run build, run tests)",
+          "replacement_text": "Require verification after edits (run linter, run spellcheck)",
+          "rationale": "Replaces build/test verification with linting/spellcheck, so the chain of verification no longer ensures TypeScript compilation passes, failing the query's need.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Outline the API endpoints for the new service\n- [ ] 1.2 Write detailed descriptions for each endpoint\n- [ ] 1.3 Generate examples and run linter\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n### Chain of Verification\n\nInstruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run linter, run spellcheck)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Concrete steps: Read X -> Edit Y -> Run Z",
+          "replacement_text": "- Concrete steps: Perform necessary actions",
+          "rationale": "Makes the task roadmap vague, no longer requiring the read-edit-run pattern essential for file conversion.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Instruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.",
+          "replacement_text": "Instruct the model to verify its work as appropriate.",
+          "rationale": "Removes the requirement to run builds before reporting success, a critical verification step for the TypeScript migration.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)",
+          "replacement_text": "- `<mandatory_execution_requirements>` - constraints for execution",
+          "rationale": "Loses the specific execution loop pattern (Read->Edit->Verify) needed for a step-by-step migration workflow.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Perform necessary actions\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - constraints for execution\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n### Chain of Verification\n\nInstruct the model to verify its work as appropriate.\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Chain of Verification\n\nInstruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.",
+          "replacement_text": "",
+          "rationale": "Deleting the chain of verification step means the spec will not require the agent to verify builds before reporting success, which is essential for the user's migration task.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable\n\n\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### XML Constraint Blocks\n\nUse XML tags to define distinct rule sets:\n\n- `<mandatory_execution_requirements>` - execution loop (Read -> Edit -> Verify)\n- `<verbosity_and_scope_constraints>` - output size and scope control\n- `<design_freedom>` - when new patterns/refactors are acceptable",
+          "replacement_text": "### Structured Rule Sections\n\nUse markdown headings to define distinct rule sets:\n\n- ## Mandatory Execution Requirements\n- ## Verbosity and Scope Constraints\n- ## Design Freedom",
+          "rationale": "Replaces XML constraint blocks with plain markdown headings, removing the XML tags the user query specifically requires.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Chain of Verification\n\nInstruct the model to verify its work: Edit -> Build/check -> Fix -> Report only when complete.",
+          "replacement_text": "### Verification Step\n\nInstruct the model to run tests after editing and report results.",
+          "rationale": "Simplifies the chain of verification into a single step, omitting the iterative fix-report loop that the user query demands.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GPT-5.2 Spec Writer\n\nGuide for writing prompt specifications tailored for GPT-5.2. The model excels at structured reasoning and instruction following but benefits from explicit constraints on verbosity and scope.\n\n## How to Write a Spec\n\nA spec is a markdown document defining persona, constraints, architecture, and operational rules for an agent.\n\n1. Start with [references/spec-template.md](references/spec-template.md)\n1. Fill in project-specific sections (directive, architecture, conventions)\n1. Verify coverage: task structure, verbosity/scope constraints, tool usage guidance, context handling for large inputs\n\n## Key Patterns\n\n### Explicit Task Roadmaps with Checkboxes\n\nEvery spec should include an objective, actionable sequence of tasks using **markdown checkboxes** (`- [ ]`). GPT-5.2 performs best with concrete work items and clear completion criteria, not abstract guidance.\n\n- Use `- [ ]` checkboxes for all tasks—GPT-5.2 tracks and checks them off as work completes\n- Numbered phases with measurable objectives\n- Specific file paths and function names\n- Concrete steps: Read X -> Edit Y -> Run Z\n- Completion criteria for each task\n\nExample:\n```markdown\n- [ ] 1.1 Fix null check in `parse_config()` at line 42\n- [ ] 1.2 Add error handling to `load_settings()`\n- [ ] 1.3 Run tests and verify all pass\n```\n\nAvoid vague instructions like \"improve the code\". Be specific: \"Fix the null check in parse_config() at line 42\".\n\n### Structured Rule Sections\n\nUse markdown headings to define distinct rule sets:\n\n- ## Mandatory Execution Requirements\n- ## Verbosity and Scope Constraints\n- ## Design Freedom\n\n### Verification Step\n\nInstruct the model to run tests after editing and report results.\n\n### Tool Usage\n\n- Encourage parallel tool use for batch operations (e.g. reading multiple files)\n- Require verification after edits (run build, run tests)\n\n### Context Management\n\nFor large inputs (>10k tokens), use `<long_context_handling>` to instruct the model to outline key sections, restate constraints, and anchor claims to specific locations.\n\n## References\n\n- [Spec Template](references/spec-template.md)\n- [GPT-5.2 Model Guide](references/gpt5.2-model.md)"
+    }
+  ],
+  "finished_at": "2026-07-29T01:59:27",
+  "elapsed_seconds": 147.625,
+  "generated_variants": 8
+}

@@ -1,0 +1,203 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:16:36",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 24080,
+  "selection_rank": 188,
+  "skill": {
+    "skill_id": "other/dev-server",
+    "name": "dev-server",
+    "category": "other",
+    "description": "Start development servers with intelligent port management. Use when asked to \"start the dev server\", \"run dev\", \"start development\", \"launch the server\", \"spin up the app\", \"get this running\", \"boot the frontend\", or any request to run a local development server. Handles port conflicts, detects project type, cleans up stale processes, and opens the browser automatically.",
+    "body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Ask user before killing or use alternate port\n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; add `--port <n>` if needed\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)\n- Root package.json with workspace `dev` script that delegates\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts.",
+    "source": "pool"
+  },
+  "generated_query": "I just cloned a new monorepo project that has both a React frontend and an Express backend. I tried running `npm run dev` in the root but nothing happened because the package.json doesn't have a dev script at the top level. I also checked and port 3000 is already in use by an old Create React App dev server from a different project that I forgot to shut down. Can you start the development server for me? I want the app to open in my browser when it's ready, and if possible use port 3001 if 3000 is taken since the old server is for a different project. The project uses pnpm and the frontend app is in the `packages/web` directory.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Different project**: Ask user before killing or use alternate port",
+          "replacement_text": "",
+          "rationale": "Without this step, the skill may kill the different project's process or fail to offer an alternate port, directly contradicting the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   \n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; add `--port <n>` if needed\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)\n- Root package.json with workspace `dev` script that delegates\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Different project**: Ask user before killing or use alternate port",
+          "replacement_text": "**Different project**: Kill the process without asking",
+          "rationale": "The user explicitly wants to keep the old Create React App server on port 3000 and use port 3001 instead, but this edit forces the skill to kill the old server without asking, failing the user's request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Kill the process without asking\n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; add `--port <n>` if needed\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)\n- Root package.json with workspace `dev` script that delegates\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Different project**: Ask user before killing or use alternate port",
+          "replacement_text": "**Different project**: Always kill different project processes without asking",
+          "rationale": "The skill now kills the old server (different project) instead of using alternate port, contradicting user's request to keep port 3000.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "add `--port <n>` if needed",
+          "replacement_text": "",
+          "rationale": "Without the ability to specify port, the server will default to 3000, conflicting with the existing server, failing to use port 3001.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Always kill different project processes without asking\n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; \n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)\n- Root package.json with workspace `dev` script that delegates\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Different project: Ask user before killing or use alternate port",
+          "replacement_text": "Different project: Ask user before killing and do not use alternate port",
+          "rationale": "The skill no longer offers an alternate port, so it cannot fulfill the user's request to use port 3001.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "apps/web/package.json or packages/app/package.json",
+          "replacement_text": "apps/web/package.json only (no packages/ pattern)",
+          "rationale": "The skill now only searches for the frontend in apps/web, missing the user's frontend located in packages/web.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** – Run `scripts/check_ports.sh` to scan common dev ports  \n2. **Resolve conflicts**:  \n   - Always prompt user before killing any process on the port  \n   - If port is occupied, ask: \"Kill existing process [y/N]?\"  \n   - If user declines, suggest using `--port` if available, otherwise abort  \n3. **Detect environment** – Look for `package.json` in root; if missing, assume single-page app  \n4. **Start server** – Use the detected package manager with `--open` and `--port <port>` flags  \n\n## Port Script\n\n```bash\nscripts/check_ports.sh                # Show port usage\nscripts/check_ports.sh 3000           # Check specific port\nscripts/check_ports.sh --find 3000    # Find first available port  \nscripts/check_ports.sh --kill 3000    # Always ask before killing\n```\n\nThe script does not infer project ownership; every conflict is treated as external.\n\n## Environment Detection\n\n**Docker**: If `docker-compose.yml` exists, run `docker compose up` (no alternative ports offered).\n\n**Monorepos / workspaces**: Not explicitly handled. If root `package.json` has a `dev` script, use it. Otherwise, fall back to looking for a `src` or `public` folder as indicator of a frontend-only project.\n\n**Package manager**: Check lockfile priority: `yarn.lock` → yarn, `package-lock.json` → npm. If neither, assume npm.\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags directly.  \n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `BROWSER=none` to prevent auto-open; does **not** support `--port` |\n| Gatsby | 8000 | `--port` works |\n| Remix | 3000 | `--port` works in dev mode |\n\nIf `--open` fails, prompt user to open the URL manually.\n\n---\n\n*Note:* This workflow assumes a standard single‑package setup. For monorepos or projects using pnpm, manual adjustments may be required."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Different project**: Ask user before killing or use alternate port",
+          "replacement_text": "**Different project**: Kill the process on the port without asking",
+          "rationale": "User wants to use an alternate port, but the skill would kill the existing server for a different project, which is not the desired behavior.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm)",
+          "replacement_text": "Lockfile (bun.lockb → bun, yarn.lock → yarn, otherwise npm)",
+          "rationale": "The skill ignores pnpm lockfile, so it defaults to npm for a pnpm project, breaking the dev server start.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** – Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:  \n   - **Any process on desired port**: Kill it automatically without asking (safe for most cases)\n3. **Detect environment** – Check for `package.json` at root with a `dev` script. If not found, prompt user to `cd` into the correct subdirectory.\n4. **Start server** – Use default package manager (`npm start` or `npm run dev`) with `--open` flag if supported; no automatic port fallback—if port is taken, the server will fail and you must choose another manually.\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan and kill anything on port\nscripts/check_ports.sh 3000              # Check and forcefully free port 3000\nscripts/check_ports.sh --find 3000       # Find first available port (but server won't use it automatically)\nscripts/check_ports.sh --kill 3000       # Kill process without asking\n```\n\nThe script kills any process on the given port regardless of project ownership.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists, suggest `docker compose up`.\n\n**Monorepos**: Check only root `package.json` for a `dev` script. If missing, print:  \n*\"No dev script found in root. Run `npm run dev` from the appropriate subdirectory (e.g., `packages/web`).\"*\n\n**Package manager**: Default to `npm`. Ignore lockfile detection—only `npm` is used.\n\n## Framework Notes\n\nMost frameworks support `--open` flag. If it fails, no fallback—user must open browser manually.\n\n| Framework | Default Port | `--port` flag |\n|-----------|--------------|---------------|\n| Create React App | 3000 | Uses `PORT=3000` env var (not `--port`) | \n\nNo alternative port logic—if the default port is busy, the script will kill the occupying process without asking."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Ask user before killing or use alternate port",
+          "replacement_text": "2. **Resolve conflicts**: Use available port if default is busy.",
+          "rationale": "Removes the critical distinction between same/different project, so the skill cannot properly defer to an alternate port for a different project as the user requests.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)\n- Root package.json with workspace `dev` script that delegates",
+          "replacement_text": "**Monorepos**: Look for any package.json in subdirectories and run the dev script there.",
+          "rationale": "Replaces specific monorepo path patterns (e.g., packages/web) with a vague instruction, likely failing to locate the correct frontend package in the monorepo.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**: Use available port if default is busy.\n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; add `--port <n>` if needed\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Look for any package.json in subdirectories and run the dev script there.\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)",
+          "replacement_text": "",
+          "rationale": "Without detecting packages/web as a monorepo app, the skill won't locate the frontend and will fail to start the correct dev server.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Ask user before killing or use alternate port\n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; add `--port <n>` if needed\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n\n- Root package.json with workspace `dev` script that delegates\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Different project**: Ask user before killing or use alternate port",
+          "replacement_text": "- **Different project**: Kill the process without asking using --kill flag",
+          "rationale": "This change removes the user prompt for port conflicts with a different project, causing the skill to kill the old server the user wants to keep.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Kill the process without asking using --kill flag\n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; add `--port <n>` if needed\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)\n- Root package.json with workspace `dev` script that delegates\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Ask user before killing or use alternate port",
+          "replacement_text": "- **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Always kill the process on that port immediately without asking, regardless of project ownership",
+          "rationale": "The skill now forces killing the old server on port 3000, contradicting the user's wish to keep it and use port 3001 instead.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `apps/web/package.json` or `packages/app/package.json` (Turborepo/Nx pattern)",
+          "replacement_text": "- `apps/web/package.json` or `packages/frontend/package.json` (Turborepo/Nx pattern)",
+          "rationale": "The monorepo detection no longer includes `packages/web`, so the skill cannot find the frontend dev script in the user's project.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dev Server\n\n## Workflow\n\n1. **Check ports** - Run `scripts/check_ports.sh` to scan common dev ports\n2. **Resolve conflicts**:\n   - **Same project**: Use `--kill-if-same` to kill without asking\n   - **Different project**: Always kill the process on that port immediately without asking, regardless of project ownership\n3. **Detect environment** - Check for docker-compose.yml, monorepo structure, or package.json\n4. **Start server** - Use detected package manager with `--open` flag; add `--port <n>` if needed\n\n## Port Script\n\n```bash\nscripts/check_ports.sh                   # Scan ports, show which project each belongs to\nscripts/check_ports.sh 3000              # Check specific port with project info\nscripts/check_ports.sh --find 3000       # Find first available port\nscripts/check_ports.sh --kill-if-same 3000   # Kill only if same project (safe)\nscripts/check_ports.sh --kill 3000       # Force kill (ask user first if different project)\n```\n\nThe script detects project ownership by comparing the process's working directory to the current directory. \"Same project\" means the process was started from this directory or a parent/child of it.\n\n## Environment Detection\n\n**Docker projects**: If `docker-compose.yml` exists with a web/app service, suggest `docker compose up` instead.\n\n**Monorepos**: Check if current directory has package.json with `dev` script. If not, look for:\n- `apps/web/package.json` or `packages/frontend/package.json` (Turborepo/Nx pattern)\n- Root package.json with workspace `dev` script that delegates\n\n**Package manager**: Detect from lockfile (bun.lockb → bun, pnpm-lock.yaml → pnpm, yarn.lock → yarn, otherwise npm).\n\n## Framework Notes\n\nMost frameworks support `--open` and `--port` flags. Exceptions:\n\n| Framework | Default Port | Notes |\n|-----------|--------------|-------|\n| Create React App | 3000 | Uses `PORT=3001` env var instead of `--port` |\n| Gatsby | 8000 | Uses `-p` instead of `--port` |\n| Remix | 3000 | `--port` works in dev mode |\n\nWhen `--open` doesn't work, fall back to `open http://localhost:PORT` after server starts."
+    }
+  ],
+  "finished_at": "2026-07-28T22:19:44",
+  "elapsed_seconds": 188.485,
+  "generated_variants": 9
+}

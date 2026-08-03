@@ -1,0 +1,212 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:02:21",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 3757,
+  "selection_rank": 243,
+  "skill": {
+    "skill_id": "design/wechat-export-odysseus0-nix-config",
+    "name": "wechat-export",
+    "category": "design",
+    "description": "Export WeChat chat history using chatlog server. Use when user mentions WeChat, exporting chats, chat history, or WeChat messages. Requires chatlog server running locally.",
+    "body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```",
+    "source": "pool"
+  },
+  "generated_query": "I need to export a WeChat conversation with my colleague \"Sarah Chen\" from December 1st to December 3rd this year. Her WeChat name might be \"Sarah Chen\" but I'm not sure of her wxid. The chat contains important project details we need for a report. Also, I noticed that very recent messages from today aren't showing up in the chatlog server – something about decryption might be needed. Can you help me get the full conversation saved to a text file?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName",
+          "replacement_text": "",
+          "rationale": "Deleting the contact lookup step means users who only know the colleague's name cannot retrieve the wxid needed for the export.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "curl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"",
+          "replacement_text": "curl \"http://127.0.0.1:5030/api/v1/contact?wxid=<wxid>\"",
+          "rationale": "The skill now requires an exact WeChat ID to look up contacts, making it impossible to find a contact by name or alias.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?wxid=<wxid>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "curl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"",
+          "replacement_text": "curl \"http://127.0.0.1:5030/api/v1/contact?keyword=<wxid>\"",
+          "rationale": "Requires exact wxid for contact search, but the user only knows the name 'Sarah Chen' and not her wxid, making it impossible to find the contact.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "> output.txt",
+          "replacement_text": "> output.json",
+          "rationale": "Outputs JSON instead of a text file, failing the user's explicit request to save the conversation as a text file.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<wxid>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.json\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "chatlog server running (with --auto-decrypt recommended)",
+          "replacement_text": "chatlog server running (without --auto-decrypt)",
+          "rationale": "Removing the auto-decrypt recommendation means the server will not decrypt recent messages, causing the user's issue of missing today's chats.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (without --auto-decrypt)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "curl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt",
+          "replacement_text": "curl \"http://127.0.0.1:5030/api/v1/chatlog?time=<date>&talker=<wxid>&limit=50\" > output.txt",
+          "rationale": "Changes the endpoint to only accept a single date and a small limit, preventing export of a multi‑day range and full conversation.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```",
+          "replacement_text": "",
+          "rationale": "Removes the decryption guidance, so the skill cannot help with the missing recent messages the user reports.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<date>&talker=<wxid>&limit=50\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "curl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt",
+          "replacement_text": "curl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<name>&limit=2000\" > output.txt",
+          "rationale": "Over-generalizes the export step by accepting a display name instead of the required wxid, so the API call will fail for the user who only knows \"Sarah Chen\" as a name.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```",
+          "replacement_text": "",
+          "rationale": "Deletes the decrypt guidance, overgeneralizing the skill by implying it can retrieve all messages without addressing the user's missing recent messages issue.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<name>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName",
+          "replacement_text": "",
+          "rationale": "Without the contact lookup step, the user cannot obtain the wxid needed for the export, making the skill fail for users who only have a name.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```",
+          "replacement_text": "",
+          "rationale": "Removing the decrypt instruction leaves the user unable to retrieve recently missing messages, leading to an incomplete export.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns: UserName (wxid), Alias, Remark, NickName",
+          "replacement_text": "Returns: Alias, Remark, NickName",
+          "rationale": "Removing the wxid from the contact query results prevents the user from obtaining the necessary WeChat ID to export the conversation, making the skill unusable for the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "curl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"",
+          "replacement_text": "curl \"http://127.0.0.1:5030/api/v1/contact?wxid=<exact_wxid>\"",
+          "rationale": "By changing the contact search API to require an exact wxid instead of a keyword, the user cannot find the contact using the name 'Sarah Chen', making the skill unable to fulfill the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?wxid=<exact_wxid>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| talker | UserName or Alias     | Hqt798317304 or jasonhu6   |",
+          "replacement_text": "| talker | wxid only     | Hqt798317304   |",
+          "rationale": "The skill now only accepts WeChat ID (wxid), not name or alias, so the user cannot search for 'Sarah Chen' without knowing her exact wxid.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# WeChat Chat Export\n\nExport WeChat chat history using the chatlog local server.\n\n## Prerequisites\n\n- chatlog server running (with --auto-decrypt recommended)\n- Default address: http://127.0.0.1:5030\n\n## Steps\n\n**1. Find the contact's WeChat ID:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/contact?keyword=<name_or_alias>\"\n```\nReturns: UserName (wxid), Alias, Remark, NickName\n\n**2. Export chat history:**\n```bash\ncurl \"http://127.0.0.1:5030/api/v1/chatlog?time=<start>~<end>&talker=<wxid>&limit=2000\" > output.txt\n```\n\n## Parameters\n\n| Param  | Format                | Example                    |\n|--------|-----------------------|----------------------------|\n| time   | YYYY-MM-DD~YYYY-MM-DD | 2025-12-01~2025-12-03      |\n| talker | wxid only     | Hqt798317304   |\n| limit  | Number                | 2000 (increase for long chats) |\n\n## Gotchas\n\n- Single-day queries (`time=2025-12-02`) may return empty — use a range instead\n- If recent messages are missing, manually trigger decrypt:\n```bash\nchatlog decrypt -d <data_dir> -k <data_key> -w <work_dir> -p darwin -v 4\n```"
+    }
+  ],
+  "finished_at": "2026-07-29T01:05:30",
+  "elapsed_seconds": 189.875,
+  "generated_variants": 10
+}

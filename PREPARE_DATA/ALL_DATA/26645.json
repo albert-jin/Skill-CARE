@@ -1,0 +1,208 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:31:52",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 26645,
+  "selection_rank": 104,
+  "skill": {
+    "skill_id": "other/hackernews",
+    "name": "hackernews",
+    "category": "other",
+    "description": "Browse and search Hacker News. Fetch top, new, best, Ask HN, Show HN stories and job postings. View item details, comments, and user profiles. Search stories and comments via Algolia. Find \"Who is hiring?\" threads. Use for any HN-related queries like \"what's trending on HN?\", \"search HN for AI\", \"show comments on story X\", \"who is hiring?\", \"latest Ask HN posts\".",
+    "body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 10)\nscripts/hn.sh top\nscripts/hn.sh top --limit 20\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --limit 10 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --period month\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)",
+    "source": "pool"
+  },
+  "generated_query": "I'd like you to check what’s trending on Hacker News right now. Show me the top 10 stories, and for the highest‑rated one, give me the top 3 comments. Then, search for “quantum computing” stories from the past month and limit the results to 5. Finally, look up the user profile of “dang” and summarize how long they’ve been active and their recent activity.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "scripts/hn.sh search \"hiring remote\" --type comment --period month",
+          "replacement_text": "",
+          "rationale": "The user requires a search limited to the past month, but this skill no longer documents the --period month filter, so it cannot fulfill that requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 10)\nscripts/hn.sh top\nscripts/hn.sh top --limit 20\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --limit 10 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5\n\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "CLI tool for the Hacker News API.",
+          "replacement_text": "CLI tool for the Reddit API.",
+          "rationale": "Changes the underlying service from Hacker News to Reddit, making all commands return Reddit data instead of HN data.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Run `scripts/hn.sh <command>`.",
+          "replacement_text": "Run `scripts/reddit.sh <command>`.",
+          "rationale": "Renames the executable to a Reddit-specific script, further breaking compatibility with HN queries.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |",
+          "replacement_text": "| \"Search Reddit for X\" | `scripts/reddit.sh search \"X\"` |",
+          "rationale": "Changes the common workflow example to refer to Reddit, misleading users who ask about HN search.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Reddit API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/reddit.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 10)\nscripts/hn.sh top\nscripts/hn.sh top --limit 20\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --limit 10 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --period month\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search Reddit for X\" | `scripts/reddit.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Top/trending stories (default 10)",
+          "replacement_text": "Top/trending stories (default 7)",
+          "rationale": "Changes the default number of top stories from 10 to 7, so the user cannot get exactly 10 trending stories without an explicit limit flag.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "scripts/hn.sh top --limit 20\n",
+          "replacement_text": "",
+          "rationale": "Removes the documented `--limit` option for the top command, preventing the user from specifying a custom number of stories like 10.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "scripts/hn.sh comments 12345678 --limit 10 --depth 2",
+          "replacement_text": "scripts/hn.sh comments 12345678 --depth 2",
+          "rationale": "Removes the `--limit` option from the comments command, making it impossible to request exactly 3 comments for the top story.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 7)\nscripts/hn.sh top\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --period month\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "scripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5",
+          "replacement_text": "scripts/hn.sh search \"LLM\" --type story --sort date --limit 5",
+          "rationale": "Removing the --period filter makes it impossible to restrict search results to the past month as the user requires.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "scripts/hn.sh comments 12345678 --limit 10 --depth 2",
+          "replacement_text": "scripts/hn.sh comments 12345678 --depth 2",
+          "rationale": "Removing the --limit flag prevents the user from retrieving only the top 3 comments for the highest-rated story.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 10)\nscripts/hn.sh top\nscripts/hn.sh top --limit 20\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --period month\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# Top/trending stories (default 10)",
+          "replacement_text": "# Top/trending stories (default 5)",
+          "rationale": "Changing the default story count to 5 and removing the --limit option prevents the user from fetching exactly 10 trending stories.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "scripts/hn.sh top --limit 20",
+          "replacement_text": "",
+          "rationale": "Deleting the --limit option for top stories makes it impossible to request a specific number of stories, so the user cannot get 10.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "scripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5",
+          "replacement_text": "scripts/hn.sh search \"LLM\" --type comment --sort date --period week --limit 5",
+          "rationale": "Changing the search type from story to comment forces the quantum computing query to return comments instead of stories, failing the user's request.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 5)\nscripts/hn.sh top\n\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --limit 10 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type comment --sort date --period week --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --period month\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --period month",
+          "replacement_text": "# With filters\nscripts/hn.sh search \"LLM\"",
+          "rationale": "Removes date and limit filters, so the user cannot restrict the search to the past month or limit to 5 results as requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 10)\nscripts/hn.sh top\nscripts/hn.sh top --limit 20\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --limit 10 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\"\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --limit 10 --depth 2",
+          "replacement_text": "",
+          "rationale": "Deleting the comments command makes the skill unable to fetch comments for a story, which is required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 10)\nscripts/hn.sh top\nscripts/hn.sh top --limit 20\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --period month\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "scripts/hn.sh search \"LLM\" --type story --sort date --period week --limit 5",
+          "replacement_text": "scripts/hn.sh search \"LLM\" --type story --sort date --limit 5",
+          "rationale": "Removes the `--period` flag from search examples, so the skill no longer supports filtering by time range, making it impossible to satisfy the 'past month' constraint.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "scripts/hn.sh search \"hiring remote\" --type comment --period month",
+          "replacement_text": "scripts/hn.sh search \"hiring remote\" --type comment --limit 10",
+          "rationale": "Replaces the `--period month` flag with `--limit`, further eliminating any indication that date filters exist in the search command.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Hacker News\n\nCLI tool for the Hacker News API. No authentication required.\n\n## CLI Usage\n\nRun `scripts/hn.sh <command>`. All commands support `--json` for raw JSON output.\n\n### Browse Stories\n\n```bash\n# Top/trending stories (default 10)\nscripts/hn.sh top\nscripts/hn.sh top --limit 20\n\n# Other lists\nscripts/hn.sh new --limit 5     # newest\nscripts/hn.sh best --limit 10   # highest rated\nscripts/hn.sh ask                # Ask HN\nscripts/hn.sh show               # Show HN\nscripts/hn.sh jobs               # job postings\n```\n\n### View Item Details & Comments\n\n```bash\n# Full item details (story, comment, job, poll)\nscripts/hn.sh item 12345678\n\n# Top comments on a story\nscripts/hn.sh comments 12345678\nscripts/hn.sh comments 12345678 --limit 10 --depth 2\n```\n\n### User Profiles\n\n```bash\nscripts/hn.sh user dang\n```\n\n### Search\n\n```bash\n# Basic search\nscripts/hn.sh search \"rust programming\"\n\n# With filters\nscripts/hn.sh search \"LLM\" --type story --sort date --limit 5\nscripts/hn.sh search \"hiring remote\" --type comment --limit 10\n```\n\n### Who is Hiring\n\n```bash\n# Latest \"Who is hiring?\" job postings\nscripts/hn.sh whoishiring\nscripts/hn.sh whoishiring --limit 20\n```\n\n## Common Workflows\n\n| User asks | Command |\n|---|---|\n| \"What's trending on HN?\" | `scripts/hn.sh top` |\n| \"Latest Ask HN posts\" | `scripts/hn.sh ask` |\n| \"Search HN for X\" | `scripts/hn.sh search \"X\"` |\n| \"Show me comments on story Y\" | `scripts/hn.sh comments Y` |\n| \"Who is hiring?\" | `scripts/hn.sh whoishiring` |\n| \"Tell me about HN user Z\" | `scripts/hn.sh user Z` |\n\n## Notes\n\n- Story lists use parallel fetching for speed\n- HTML in comments/bios is auto-converted to plain text\n- Timestamps shown as relative time (\"2h ago\", \"3d ago\")\n- For API details, see [references/api.md](references/api.md)"
+    }
+  ],
+  "finished_at": "2026-07-28T17:34:24",
+  "elapsed_seconds": 151.39,
+  "generated_variants": 8
+}

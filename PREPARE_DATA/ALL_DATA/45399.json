@@ -1,0 +1,205 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:08:10",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 45399,
+  "selection_rank": 189,
+  "skill": {
+    "skill_id": "other/admin-config",
+    "name": "admin-config",
+    "category": "other",
+    "description": "Wire admin routes, configure browser-safe plugin imports, and create custom field renderers. Use when setting up momentumAdminRoutes, browserImports, or FieldRendererRegistry.",
+    "body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),\n\t],\n};\n```",
+    "source": "pool"
+  },
+  "generated_query": "We're building a Momentum CMS site that includes a custom analytics plugin. The plugin exposes admin routes and a collection modifier that adds analytics tracking fields to blog posts. I need to integrate these into our app without manually editing the route configs. How do I configure the plugin's browser-safe imports and wire up its admin routes in the generated admin config? Also, I want to add a custom field renderer for a \"color\" field type, lazy-loaded from a separate component, so content editors can pick colors inline. What steps do I need to take in the Momentum config files and Angular providers?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),\n\t],\n};",
+          "replacement_text": "",
+          "rationale": "Deleting this step removes all instructions for registering a custom field renderer, which the user explicitly needs to add a lazy-loaded color field renderer.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "provideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),",
+          "replacement_text": "provideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.DefaultColorFieldRenderer),",
+          "rationale": "Changes the lazy-loaded import to a non-existent default export, so the custom renderer fails to register correctly, undermining the query's requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.DefaultColorFieldRenderer),\n\t\t),\n\t],\n};\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),\n\t],\n};",
+          "replacement_text": "### Adding a custom field type\n\nCustom field types are not supported via `provideFieldRenderer`. Only built-in field types are available. To extend, you must modify the core library.",
+          "rationale": "Removes the ability to register custom field renderers, so the user cannot add a color field renderer.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\nCustom field types are not supported via `provideFieldRenderer`. Only built-in field types are available. To extend, you must modify the core library.\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Field renderers are lazily loaded via `FieldRendererRegistry`.",
+          "replacement_text": "Field renderers can be registered via `FieldRendererRegistry`.",
+          "rationale": "Removes the lazy loading requirement, so the skill does not guide the user to lazy-load the custom color field component.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },",
+          "replacement_text": "",
+          "rationale": "Deleting the adminRoutes declaration in browserImports prevents automatic wiring of plugin admin routes, which the user needs.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers can be registered via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),\n\t],\n};\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "provideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),",
+          "replacement_text": "provideFieldRenderer('select', () =>\n\t\t\timport('./renderers/select-field.component').then((m) => m.SelectFieldRenderer),",
+          "rationale": "The user specifically asks for a custom field renderer for a 'color' field type, but the edited skill only shows how to register a 'select' renderer, not 'color'.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('select', () =>\n\t\t\timport('./renderers/select-field.component').then((m) => m.SelectFieldRenderer),\n\t\t),\n\t],\n};\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Plugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```",
+          "replacement_text": "Plugins declare browser-safe imports via the `browserImports` property in their plugin configuration, but the specific paths and export names must be manually matched.",
+          "rationale": "The skill now omits the concrete example of how the analytics plugin's browser imports are wired, forcing the user to guess the exact import paths and export names.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),\n\t],\n};\n```",
+          "replacement_text": "You can register a custom field renderer by calling `provideFieldRenderer` with the field type and a lazy-load factory, but the exact syntax is left as an exercise for the reader.",
+          "rationale": "The skill removes the specific code snippet for registering a color field renderer, leaving the user without the precise calling convention.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via the `browserImports` property in their plugin configuration, but the specific paths and export names must be manually matched.\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\nYou can register a custom field renderer by calling `provideFieldRenderer` with the field type and a lazy-load factory, but the exact syntax is left as an exercise for the reader."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),\n\t],\n};\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the step that registers a custom field renderer leaves the skill unable to guide the user in adding a color field renderer, making it a hard negative.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\t...momentumAdminRoutes(adminConfig),",
+          "replacement_text": "\t...legacyAdminRoutes(adminConfig),",
+          "rationale": "replacing the core API `momentumAdminRoutes` with a non-existent function makes the skill misleading for wiring admin routes as requested in the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...legacyAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),\n\t],\n};\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "browserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}",
+          "replacement_text": "imports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}",
+          "rationale": "Changes the property from 'browserImports' to 'imports' and removes the adminRoutes entry, so the skill no longer supports automatic wiring of plugin admin routes.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t),",
+          "replacement_text": "",
+          "rationale": "Deletes the custom field renderer registration, so the skill no longer demonstrates how to add a lazy-loaded color field renderer.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nimports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\n\t],\n};\n```"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\t\tprovideFieldRenderer('color', () =>\n\t\t\timport('./renderers/color-field.component').then((m) => m.ColorFieldRenderer),\n\t\t)",
+          "replacement_text": "\t\tprovideFieldRenderer('color', ColorFieldRenderer),",
+          "rationale": "The replacement changes the lazy-loading pattern to a direct class reference, omitting the dynamic import required by the user query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Admin Config & Field Renderers\n\nReference for wiring admin routes, plugin browser imports, and custom field renderers.\n\n## Arguments\n\n- `$ARGUMENTS` - What to configure: `routes`, `field-renderer`, or `plugin-imports`\n\n## Admin Config Generator\n\nThe admin config generator reads `momentum.config.ts` (server-side, Node) and outputs a browser-safe TypeScript file with proper imports. This eliminates manual wiring of collections, auth collections, and plugin routes in app routing.\n\n### Usage in app routes\n\n```typescript\nimport { momentumAdminRoutes } from '@momentumcms/admin';\nimport { adminConfig } from '../generated/momentum.config';\n\nexport const appRoutes: Route[] = [\n\t...momentumAdminRoutes(adminConfig),\n\t// app-specific routes...\n];\n```\n\n### Plugin browserImports\n\nPlugins declare browser-safe imports via `browserImports` on `MomentumPlugin`:\n\n```typescript\nbrowserImports: {\n\tcollections: { path: '@momentumcms/auth/collections', exportName: 'BASE_AUTH_COLLECTIONS' },\n\tadminRoutes: { path: '@momentumcms/plugins/analytics/admin-routes', exportName: 'analyticsAdminRoutes' },\n\tmodifyCollections: { path: '@momentumcms/plugins/analytics/block-fields', exportName: 'injectBlockAnalyticsFields' },\n}\n```\n\n## Custom Field Renderers\n\nField renderers are lazily loaded via `FieldRendererRegistry`. Built-in renderers are registered with `provideMomentumFieldRenderers()`.\n\n### App setup (required)\n\n```typescript\nimport { provideMomentumFieldRenderers } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [provideMomentumFieldRenderers()],\n};\n```\n\n### Adding a custom field type\n\n```typescript\nimport { provideFieldRenderer } from '@momentumcms/admin';\n\nexport const appConfig: ApplicationConfig = {\n\tproviders: [\n\t\tprovideMomentumFieldRenderers(),\n\t\tprovideFieldRenderer('color', ColorFieldRenderer),,\n\t],\n};\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T22:11:52",
+  "elapsed_seconds": 221.844,
+  "generated_variants": 10
+}

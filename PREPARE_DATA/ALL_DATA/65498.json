@@ -1,0 +1,240 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:35:51",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 65498,
+  "selection_rank": 164,
+  "skill": {
+    "skill_id": "other/triatu-security",
+    "name": "triatu-security",
+    "category": "other",
+    "description": "Security practices for Triatu. Use when adding data access, Server Actions, logging, or Supabase policies, and when reviewing security risks.",
+    "body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod before any infrastructure call.\n- Apply rate limiting in critical Server Actions.\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`",
+    "source": "pool"
+  },
+  "generated_query": "I'm adding a new Server Action for user profile updates that will allow users to change their display name and bio. I need to ensure it's secure: validate the inputs (name should be 1-50 chars, bio up to 500 chars, no XSS), add rate limiting to prevent abuse (max 5 updates per hour per user), log only anonymized user IDs on suspicious events (e.g., rapid-fire updates), and enforce Supabase RLS so users can only update their own row. Could you help me write the Server Action with these security measures and review the RLS policy?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3) Add rate limiting where abuse is possible.",
+          "replacement_text": "",
+          "rationale": "Removing the explicit step to add rate limiting makes the skill unable to address the user's primary requirement of preventing abuse via rate limiting.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod before any infrastructure call.\n- Apply rate limiting in critical Server Actions.\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate inputs with Zod before any infrastructure call.",
+          "replacement_text": "Validate inputs with a simple regex before any infrastructure call.",
+          "rationale": "Replacing Zod with a simple regex removes structured validation and XSS protection, making the skill incapable of meeting the user's security needs for input validation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with a simple regex before any infrastructure call.\n- Apply rate limiting in critical Server Actions.\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Validate inputs with Zod before any infrastructure call.",
+          "replacement_text": "- Validate inputs with Zod: name up to 100 characters, bio up to 1000 characters.",
+          "rationale": "Sets incorrect input length limits, failing the user's need for 1-50 char names and 500 char bio.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Apply rate limiting in critical Server Actions.",
+          "replacement_text": "- Apply rate limiting: max 10 updates per minute per user.",
+          "rationale": "Specifies a different rate limit (10 per minute) than the required 5 per hour, so it would not meet the user's abuse prevention.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Avoid PII in logs; use `lib/logger` and `debug` only in dev.",
+          "replacement_text": "- Log full user IDs and IPs for all events to aid debugging.",
+          "rationale": "Directs logging PII instead of anonymized IDs, violating the user's privacy requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod: name up to 100 characters, bio up to 1000 characters.\n- Apply rate limiting: max 10 updates per minute per user.\n- Log full user IDs and IPs for all events to aid debugging.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate inputs with Zod before any infrastructure call.",
+          "replacement_text": "Validate inputs with Zod, but only for critical fields like IDs.",
+          "rationale": "The user query requires full validation for display name and bio, but this edit restricts validation to IDs only, failing to meet the query's input validation requirements.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod, but only for critical fields like IDs.\n- Apply rate limiting in critical Server Actions.\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Apply rate limiting in critical Server Actions.",
+          "replacement_text": "Apply rate limiting in database triggers.",
+          "rationale": "The user query expects rate limiting specifically on Server Actions, but the skill now suggests it for database triggers, which misses the core requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Add Zod validation for inputs.",
+          "replacement_text": "Add Zod validation for environment variables.",
+          "rationale": "The user query needs Zod validation for user inputs like name and bio, but the skill now focuses on environment variables, which is a different use case.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod before any infrastructure call.\n- Apply rate limiting in database triggers.\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for environment variables.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Apply rate limiting in critical Server Actions.",
+          "replacement_text": "Consider adding rate limiting where you see fit.",
+          "rationale": "Over-generalizes the rate limiting instruction, missing the critical Server Action context and any specific thresholds needed for the user's query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Avoid PII in logs; use `lib/logger` and `debug` only in dev.",
+          "replacement_text": "Log events carefully, ensuring user privacy.",
+          "rationale": "Replaces specific guidance on anonymization and suspicious-event logging with a vague statement, failing the query's requirement for anonymous IDs on suspicious events.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Rely on Supabase RLS for data isolation.",
+          "replacement_text": "Use appropriate data isolation techniques.",
+          "rationale": "Removes the explicit mention of Supabase RLS, making the skill too generic to address the user's need for a Supabase RLS policy review.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod before any infrastructure call.\n- Consider adding rate limiting where you see fit.\n- Log events carefully, ensuring user privacy.\n- Use appropriate data isolation techniques.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3) Add rate limiting where abuse is possible.",
+          "replacement_text": "",
+          "rationale": "The user explicitly requires rate limiting (max 5 updates per hour per user); deleting this step removes any guidance on implementing it, making the skill fail a core security requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod before any infrastructure call.\n- Apply rate limiting in critical Server Actions.\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate inputs with Zod before any infrastructure call.",
+          "replacement_text": "Validate inputs with simple if-statements and regex before any infrastructure call.",
+          "rationale": "Replaces the specific Zod library with ad-hoc manual validation, which is less robust and likely to miss XSS and boundary checks required by the query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Rely on Supabase RLS for data isolation.",
+          "replacement_text": "Rely on application-level row checks using user ID comparison in the Server Action instead of Supabase RLS.",
+          "rationale": "Removes the reliance on Supabase RLS, directly contradicting the user's requirement to enforce RLS for row-level security.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with simple if-statements and regex before any infrastructure call.\n- Apply rate limiting in critical Server Actions.\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on application-level row checks using user ID comparison in the Server Action instead of Supabase RLS.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate inputs with Zod before any infrastructure call.",
+          "replacement_text": "Validate inputs with Zod: name 1-100 chars, bio up to 1000 chars, allow HTML tags.",
+          "rationale": "Changing input validation to allow wider lengths and HTML tags contradicts the query's strict length and no-XSS requirements.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Apply rate limiting in critical Server Actions.",
+          "replacement_text": "Apply rate limiting with a generous threshold (max 100 updates per hour).",
+          "rationale": "Increasing the rate limit to 100 per hour fails to meet the query's strict limit of 5 per hour to prevent abuse.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod: name 1-100 chars, bio up to 1000 chars, allow HTML tags.\n- Apply rate limiting with a generous threshold (max 100 updates per hour).\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Apply rate limiting in critical Server Actions.",
+          "replacement_text": "Apply rate limiting in critical Server Actions, but use a generous limit (e.g., 100 per hour per user).",
+          "rationale": "The query requires a strict limit (5 per hour), but this suggests a much looser limit (100 per hour), making the skill insufficient.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Avoid PII in logs; use `lib/logger` and `debug` only in dev.",
+          "replacement_text": "Avoid PII in logs; use `lib/logger` and `debug` only in dev, but you may include user IDs for debugging.",
+          "rationale": "The query requires anonymized user IDs only, but this allows including user IDs (PII), violating the security requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Triatu Security\n\n## Quick start\n\n- Validate inputs with Zod before any infrastructure call.\n- Apply rate limiting in critical Server Actions, but use a generous limit (e.g., 100 per hour per user).\n- Avoid PII in logs; use `lib/logger` and `debug` only in dev, but you may include user IDs for debugging.\n- Rely on Supabase RLS for data isolation.\n\n## Workflow\n\n1) Identify entry points (Server Actions or route handlers).\n2) Add Zod validation for inputs.\n3) Add rate limiting where abuse is possible.\n4) Use security logging for suspicious events.\n5) Ensure adapters enforce least-privilege access.\n6) Record new risks in `docs/PROJECT_AUDIT.md`.\n\n## References\n\n- `docs/SECURITY.md`\n- `docs/DEVELOPMENT.md`\n- `docs/PROJECT_AUDIT.md`"
+    }
+  ],
+  "finished_at": "2026-07-28T20:38:03",
+  "elapsed_seconds": 131.906,
+  "generated_variants": 10
+}

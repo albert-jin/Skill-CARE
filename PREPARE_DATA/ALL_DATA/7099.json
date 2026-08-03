@@ -1,0 +1,240 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:21:07",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 7099,
+  "selection_rank": 9,
+  "skill": {
+    "skill_id": "development/klingai-webhook-config-jeremylongshore-claude-code-plugins-",
+    "name": "klingai-webhook-config",
+    "category": "development",
+    "description": "This skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.",
+    "body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n3. **Verify Signatures**: Validate webhook authenticity\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide.",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a video generation tool that uses Kling AI, and I need to stop polling for job status. Instead, I want to receive real-time notifications when videos are completed, fail, or change status. I have a public HTTPS server ready at `https://myapp.com/webhook` to receive the events. Could you help me set up the webhook endpoint, register it with Kling AI, verify signatures for security, and write handlers for events like `video.completed`, `video.failed`, and `video.processing`? I'm using Python and need the server to handle retries if delivery fails.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Verify Signatures**: Validate webhook authenticity\n",
+          "replacement_text": "",
+          "rationale": "By deleting the signature verification step, the skill ignores the user's explicit security requirement, making it ineffective for secure webhook handling.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Register Webhook**: Configure webhook URL with Kling AI",
+          "replacement_text": "2. **Register Webhook**: Configure webhook URL with RunwayML API",
+          "rationale": "This makes the skill a hard negative because the user wants to use Kling AI, but the skill now directs to a different service (RunwayML), which won't work for registering webhooks for Kling AI.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with RunwayML API\n3. **Verify Signatures**: Validate webhook authenticity\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "video.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled",
+          "replacement_text": "",
+          "rationale": "Removing video.failed and video.cancelled events means the skill won't provide handlers for failure notifications, which the user explicitly needs.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. **Verify Signatures**: Validate webhook authenticity",
+          "replacement_text": "3. **Verify Signatures**: Optional - you can skip signature validation for simplicity",
+          "rationale": "Making signature verification optional contradicts the user's requirement for secure webhook validation, rendering the skill ineffective for their security needs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n3. **Verify Signatures**: Optional - you can skip signature validation for simplicity\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\n\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Verify Signatures**: Validate webhook authenticity",
+          "replacement_text": "3. **Verify Signatures**: Optionally check the request origin (not cryptographically verified)",
+          "rationale": "The user explicitly requires cryptographic signature verification for security, but this edit removes that, making the skill insufficient for the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n3. **Verify Signatures**: Optionally check the request origin (not cryptographically verified)\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.",
+          "replacement_text": "This skill shows how to configure webhook endpoints to receive real-time notifications when image generation jobs complete, fail, or change status in Kling AI.",
+          "rationale": "Changes the skill's domain from video to image generation, making the event types and payload irrelevant for video-based queries.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Kling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled",
+          "replacement_text": "Kling AI Webhook Events:\n\nimage.created      - Job submitted, processing started\nimage.processing   - Generation in progress (progress updates)\nimage.completed    - Image generation successful\nimage.failed       - Generation failed with error\nimage.cancelled    - Job was cancelled",
+          "rationale": "Replaces video event types with image event types, which do not match the user's required video events.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {",
+          "replacement_text": "{\n  \"event\": \"image.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {",
+          "rationale": "Alters the payload example to reference an image event, further diverging from the user's video generation use case.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when image generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n3. **Verify Signatures**: Validate webhook authenticity\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nimage.created      - Job submitted, processing started\nimage.processing   - Generation in progress (progress updates)\nimage.completed    - Image generation successful\nimage.failed       - Generation failed with error\nimage.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"image.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.",
+          "replacement_text": "This skill shows how to configure webhook endpoints to receive real-time notifications for job status changes.",
+          "rationale": "Removes the specific reference to Kling AI, making the skill generic and thus failing to address the user's need for Kling AI webhook setup.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Kling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled",
+          "replacement_text": "Webhook Events:\n\njob.created      - Job submitted\njob.processing   - Job in progress\njob.completed    - Job finished successfully\njob.failed       - Job failed\njob.cancelled    - Job cancelled",
+          "rationale": "Replaces Kling-specific event names with generic ones, omitting the exact event types the user needs to handle (like video.completed, video.failed, video.processing).",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **Register Webhook**: Configure webhook URL with Kling AI",
+          "replacement_text": "2. **Register Webhook**: Configure webhook URL with your webhook provider",
+          "rationale": "Removes the explicit Kling AI registration step, making the skill too generic to guide the user on how to register with Kling AI specifically.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications for job status changes.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with your webhook provider\n3. **Verify Signatures**: Validate webhook authenticity\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nWebhook Events:\n\njob.created      - Job submitted\njob.processing   - Job in progress\njob.completed    - Job finished successfully\njob.failed       - Job failed\njob.cancelled    - Job cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Verify Signatures**: Validate webhook authenticity\n",
+          "replacement_text": "",
+          "rationale": "Without signature verification, the webhook handler cannot authenticate incoming events, leaving the system vulnerable to spoofed payloads despite meeting other requirements.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Kling AI API key configured",
+          "replacement_text": "- Runway ML API key configured",
+          "rationale": "Replacing Kling AI with Runway ML makes the skill about a different API, so it cannot fulfill the user's query which explicitly requires Kling AI.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **Register Webhook**: Configure webhook URL with Kling AI",
+          "replacement_text": "2. **Register Webhook**: Configure webhook URL with Runway ML",
+          "rationale": "Replacing Kling AI with Runway ML makes the skill about a different API, so it cannot fulfill the user's query which explicitly requires Kling AI.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Runway ML API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Runway ML\n3. **Verify Signatures**: Validate webhook authenticity\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Handle delivery failures\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "video.completed    - Video generation successful",
+          "replacement_text": "video.pending     - Video generation queued",
+          "rationale": "The user specifically needs webhook handlers for 'video.completed' and 'video.failed', but the edited skill replaces those with non-matching event names.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "5. **Implement Retries**: Handle delivery failures",
+          "replacement_text": "",
+          "rationale": "The user requires automatic retry handling for failed deliveries, but removing this step leaves the skill unable to satisfy that requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n3. **Verify Signatures**: Validate webhook authenticity\n4. **Handle Events**: Process different event types\n\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.pending     - Video generation queued\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Verify Signatures**: Validate webhook authenticity",
+          "replacement_text": "3. **Verify Signatures**: Optionally verify signatures for enhanced security",
+          "rationale": "By making signature verification optional, the skill fails the user's explicit security requirement for verifying signatures.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. **Implement Retries**: Handle delivery failures",
+          "replacement_text": "5. **Implement Retries**: Optionally implement retry logic",
+          "rationale": "By making retry logic optional, the skill no longer guarantees delivery failure handling, failing the user's explicit retry requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Kling AI Webhook Configuration\n\n## Overview\n\nThis skill shows how to configure webhook endpoints to receive real-time notifications when video generation jobs complete, fail, or change status in Kling AI.\n\n## Prerequisites\n\n- Kling AI API key configured\n- Public HTTPS endpoint for webhook receiver\n- Python 3.8+ or Node.js 18+\n\n## Instructions\n\nFollow these steps to configure webhooks:\n\n1. **Create Endpoint**: Set up a webhook receiver endpoint\n2. **Register Webhook**: Configure webhook URL with Kling AI\n3. **Verify Signatures**: Optionally verify signatures for enhanced security\n4. **Handle Events**: Process different event types\n5. **Implement Retries**: Optionally implement retry logic\n\n## Webhook Event Types\n\n```\nKling AI Webhook Events:\n\nvideo.created      - Job submitted, processing started\nvideo.processing   - Generation in progress (progress updates)\nvideo.completed    - Video generation successful\nvideo.failed       - Generation failed with error\nvideo.cancelled    - Job was cancelled\n\nPayload Structure:\n{\n  \"event\": \"video.completed\",\n  \"timestamp\": \"2025-01-15T10:30:00Z\",\n  \"data\": {\n\n## Detailed Reference\n\nSee `{baseDir}/references/implementation.md` for complete webhook setup guide."
+    }
+  ],
+  "finished_at": "2026-07-28T12:23:52",
+  "elapsed_seconds": 164.718,
+  "generated_variants": 10
+}

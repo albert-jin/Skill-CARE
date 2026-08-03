@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:04:42",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 31201,
+  "selection_rank": 281,
+  "skill": {
+    "skill_id": "other/webshop-product-search",
+    "name": "webshop-product-search",
+    "category": "other",
+    "description": "This skill performs an initial product search using a web interface by generating appropriate search keywords based on interpreted query criteria. It is triggered when starting a product discovery task or when returning to search results. The skill inputs structured search parameters and outputs a list of candidate products from the search results page.",
+    "body": "# Skill: WebShop Product Search\n\n## Primary Function\nGenerate a targeted search query and execute it on a web shopping interface to retrieve a list of candidate products that match the user's criteria.\n\n## Core Workflow\n1.  **Interpret Criteria:** Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").\n2.  **Formulate Query:** Construct a concise, effective search string that prioritizes the most critical attributes. The primary goal is to balance specificity with recall.\n3.  **Execute Search:** Use the `search[keywords]` action to submit the query.\n4.  **Parse Results:** The skill's success is marked by the system returning a \"Page 1\" observation containing a list of products (ASINs, titles, prices).\n\n## Key Decision Logic\n*   **Query Formulation:** Start with a broad query containing the core product type. If the initial results are poor, the skill may be re-invoked with a more refined query (e.g., adding \"synthetic\" or \"human hair\" based on observed results).\n*   **Trigger Condition:** This skill is the entry point for a new product discovery task. It is also the correct action when the observation contains \"[SEP] Search\" or \"[SEP] Back to Search\", indicating the agent is on a search page.\n*   **Output Handoff:** The output of this skill is the search results page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze individual items from this list.\n\n## Error Handling / Edge Cases\n*   If no search action is available in the current state, this skill is not applicable.\n*   If the observation does not contain a clear search interface prompt, do not use this skill.\n*   The search keywords must be a single string enclosed in brackets after `search[`. Do not include multiple actions or extra formatting.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Criteria identified: `product_type=\"clip-in hair extension\"`, `attribute=\"long\"`, `attribute=\"natural looking\"`, `budget=\"<40.00\"`.\n2.  Query formulated: Prioritizes core product type and key attribute -> `\"long clip-in hair extension\"`.\n3.  Action: `search[long clip-in hair extension]`",
+    "source": "pool"
+  },
+  "generated_query": "I need to find a long clip-in hair extension that looks natural and costs less than $40. Can you search for it on the shopping site and show me what options come up?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Interpret Criteria: Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").",
+          "replacement_text": "",
+          "rationale": "Without interpreting price constraint, the search query will not filter by price, returning products that may exceed the budget, making the skill fail the user's query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Skill: WebShop Natural Hair Category Navigation\n\n## Primary Function\nNavigate to a predefined natural hair product category on the shopping site to browse potential items matching general aesthetic criteria, without performing a direct keyword search.\n\n## Core Workflow\n1.  **Interpret Category:** Analyze the user's instruction to identify the type of hair product (e.g., \"clip-in hair extension\") and any qualifying attributes (e.g., \"long\", \"natural looking\").\n2.  **Locate Category Link:** Scan the current page’s navigation or menu options for a category that matches the product type (e.g., \"Hair Extensions\" or \"Natural Hair\"). If a direct match is not visible, use a `click` action on a broader category such as \"Beauty\" or \"Hair Care\".\n3.  **Navigate Hierarchy:** Follow the category breadcrumbs by clicking links until the most specific available subcategory is reached (e.g., \"Clip-In Extensions\").\n4.  **Parse Category Page:** Once the category page loads, extract the list of displayed products (ASINs, titles, prices). The skill’s success is marked by receiving a product list from a category page rather than a search results page.\n\n## Key Decision Logic\n*   **Category Selection:** Prioritize categories with the most descriptive attributes from the user’s request. For example, if \"natural looking\" is mentioned, prefer a category like \"Natural Hair Extensions\" over a generic \"Extensions\" category.\n*   **Fallback Strategy:** If the exact category is not found, click on the closest parent category and then rely on the user’s following instruction or a downstream skill to manually filter.\n*   **Trigger Condition:** This skill is applicable when the initial observation contains navigation links (e.g., \"Departments\", \"Categories\") and no search bar is prominently offered. It is an alternative to `search[keywords]` for users who prefer browsing.\n\n## Error Handling / Edge Cases\n*   If the page does not present a category navigation structure, this skill is not appropriate; fall back to a keyword search skill.\n*   If the category path leads to a page with no products (e.g., out-of-stock category), return an empty list and note the issue.\n*   Do not attempt to apply price filters at this stage; price evaluation is deferred to a later skill.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Category identified: `product_type=\"hair extension\"`, `attribute_natural=\"natural looking\"`.\n2.  The current page shows a \"Hair & Beauty\" department. Click on it: `click[Hair & Beauty]`.\n3.  Within that department, locate \"Extensions\" and then \"Clip-In Extensions\". Click: `click[Clip-In Extensions]`.\n4.  The page shows a list of clip-in extensions. No price or length filtering is applied. The output is this category product list."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3.  **Execute Search:** Use the `search[keywords]` action to submit the query.",
+          "replacement_text": "3.  **Execute Search:** Use the `navigate[category]` action to browse the product category.",
+          "rationale": "Replaces the core keyword-search API with a category navigation action, making it impossible to find products based on specific attributes like 'long clip-in hair extension' or price.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3.  Action: `search[long clip-in hair extension]`",
+          "replacement_text": "3.  Action: `navigate[hair extensions]`",
+          "rationale": "Updates the example to reflect the new navigation API, but the action no longer accepts query keywords, so the user's detailed criteria cannot be applied.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: WebShop Product Search\n\n## Primary Function\nGenerate a targeted search query and execute it on a web shopping interface to retrieve a list of candidate products that match the user's criteria.\n\n## Core Workflow\n1.  **Interpret Criteria:** Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").\n2.  **Formulate Query:** Construct a concise, effective search string that prioritizes the most critical attributes. The primary goal is to balance specificity with recall.\n3.  **Execute Search:** Use the `navigate[category]` action to browse the product category.\n4.  **Parse Results:** The skill's success is marked by the system returning a \"Page 1\" observation containing a list of products (ASINs, titles, prices).\n\n## Key Decision Logic\n*   **Query Formulation:** Start with a broad query containing the core product type. If the initial results are poor, the skill may be re-invoked with a more refined query (e.g., adding \"synthetic\" or \"human hair\" based on observed results).\n*   **Trigger Condition:** This skill is the entry point for a new product discovery task. It is also the correct action when the observation contains \"[SEP] Search\" or \"[SEP] Back to Search\", indicating the agent is on a search page.\n*   **Output Handoff:** The output of this skill is the search results page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze individual items from this list.\n\n## Error Handling / Edge Cases\n*   If no search action is available in the current state, this skill is not applicable.\n*   If the observation does not contain a clear search interface prompt, do not use this skill.\n*   The search keywords must be a single string enclosed in brackets after `search[`. Do not include multiple actions or extra formatting.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Criteria identified: `product_type=\"clip-in hair extension\"`, `attribute=\"long\"`, `attribute=\"natural looking\"`, `budget=\"<40.00\"`.\n2.  Query formulated: Prioritizes core product type and key attribute -> `\"long clip-in hair extension\"`.\n3.  Action: `navigate[hair extensions]`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "retrieve a list of candidate products that match the user's criteria",
+          "replacement_text": "retrieve a single product that best matches the user's criteria",
+          "rationale": "Changes the output from a list of candidate products to a single product, so the skill cannot show multiple options as required.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "The output of this skill is the search results page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze individual items from this list.",
+          "replacement_text": "The output of this skill is the top matching product's detail page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze this product.",
+          "rationale": "Reinforces the change to output a single product detail page instead of a search results list, making the skill unable to satisfy queries that require seeing multiple options.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: WebShop Product Search\n\n## Primary Function\nGenerate a targeted search query and execute it on a web shopping interface to retrieve a single product that best matches the user's criteria.\n\n## Core Workflow\n1.  **Interpret Criteria:** Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").\n2.  **Formulate Query:** Construct a concise, effective search string that prioritizes the most critical attributes. The primary goal is to balance specificity with recall.\n3.  **Execute Search:** Use the `search[keywords]` action to submit the query.\n4.  **Parse Results:** The skill's success is marked by the system returning a \"Page 1\" observation containing a list of products (ASINs, titles, prices).\n\n## Key Decision Logic\n*   **Query Formulation:** Start with a broad query containing the core product type. If the initial results are poor, the skill may be re-invoked with a more refined query (e.g., adding \"synthetic\" or \"human hair\" based on observed results).\n*   **Trigger Condition:** This skill is the entry point for a new product discovery task. It is also the correct action when the observation contains \"[SEP] Search\" or \"[SEP] Back to Search\", indicating the agent is on a search page.\n*   **Output Handoff:** The output of this skill is the top matching product's detail page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze this product.\n\n## Error Handling / Edge Cases\n*   If no search action is available in the current state, this skill is not applicable.\n*   If the observation does not contain a clear search interface prompt, do not use this skill.\n*   The search keywords must be a single string enclosed in brackets after `search[`. Do not include multiple actions or extra formatting.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Criteria identified: `product_type=\"clip-in hair extension\"`, `attribute=\"long\"`, `attribute=\"natural looking\"`, `budget=\"<40.00\"`.\n2.  Query formulated: Prioritizes core product type and key attribute -> `\"long clip-in hair extension\"`.\n3.  Action: `search[long clip-in hair extension]`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").",
+          "replacement_text": "Analyze the user's instruction to identify only the core product type (e.g., \"hair extension\").",
+          "rationale": "By ignoring specific attributes like 'long', 'clip-in', 'natural looking', and the price constraint, the skill cannot narrow the search to match the user's precise requirements.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Query formulated:** Prioritizes core product type and key attribute -> `\"long clip-in hair extension\"`.",
+          "replacement_text": "**Query formulated:** Prioritizes core product type only -> `\"hair extension\"`.",
+          "rationale": "A generic query yields many irrelevant results, failing to surface products that are long, clip-in, natural-looking, or under $40.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Skill: WebShop Product Browser\n\n## Primary Function\nNavigate to a web shopping interface and initiate a broad category search to display a wide range of available products, without applying detailed user constraints.\n\n## Core Workflow\n1.  **Understand Intent:** Identify the general product type from the user's request (e.g., \"hair extension\").\n2.  **Formulate Generic Query:** Construct a minimal search string that captures the product category, intentionally omitting specific attributes like length, clip-in style, color, or price.\n3.  **Execute Search:** Use the `search[keywords]` action to submit the query.\n4.  **Display Results:** The skill returns the first page of results as a list of all matching items, leaving further filtering to subsequent skills.\n\n## Key Decision Logic\n*   **Query Formulation:** Always use the most basic term for the product type (e.g., \"extension\" or \"hair extension\") to ensure maximum market coverage. Do not concatenate multiple attributes.\n*   **Trigger Condition:** This skill is activated when the agent is on a search page or when asked to start browsing a product category.\n*   **Output Handoff:** The raw search results page is passed to the next skill (e.g., `attribute-applier`) responsible for applying specific filters like price or style.\n\n## Error Handling / Edge Cases\n*   If no search action is available, the skill aborts and reports that a search page must be reached first.\n*   If the observation lacks a product list, the skill repeats the search with a broader term.\n*   The search keyword must be a single string inside `search[...]`.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Product type identified: `hair extension`.\n2.  Query formulated: `\"hair extension\"`.\n3.  Action: `search[hair extension]`\n4.  Result: Returns all hair extensions (short, synthetic, cheap, expensive) without filtering for \"long\", \"clip-in\", \"natural\", or price."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "retrieve a list of candidate products that match the user's criteria.",
+          "replacement_text": "retrieve a list of product categories relevant to the user's criteria.",
+          "rationale": "Changes the skill's output from product-level results to category-level results, so it cannot return specific product options the user asks for.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "The output of this skill is the search results page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze individual items from this list.",
+          "replacement_text": "The output of this skill is a list of product categories. Subsequent skills (e.g., `product-list`) should be used to retrieve products within a chosen category.",
+          "rationale": "Reinforces that the skill now retrieves categories instead of products, making it unable to satisfy the user's request to see actual product options.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: WebShop Product Search\n\n## Primary Function\nGenerate a targeted search query and execute it on a web shopping interface to retrieve a list of product categories relevant to the user's criteria.\n\n## Core Workflow\n1.  **Interpret Criteria:** Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").\n2.  **Formulate Query:** Construct a concise, effective search string that prioritizes the most critical attributes. The primary goal is to balance specificity with recall.\n3.  **Execute Search:** Use the `search[keywords]` action to submit the query.\n4.  **Parse Results:** The skill's success is marked by the system returning a \"Page 1\" observation containing a list of products (ASINs, titles, prices).\n\n## Key Decision Logic\n*   **Query Formulation:** Start with a broad query containing the core product type. If the initial results are poor, the skill may be re-invoked with a more refined query (e.g., adding \"synthetic\" or \"human hair\" based on observed results).\n*   **Trigger Condition:** This skill is the entry point for a new product discovery task. It is also the correct action when the observation contains \"[SEP] Search\" or \"[SEP] Back to Search\", indicating the agent is on a search page.\n*   **Output Handoff:** The output of this skill is a list of product categories. Subsequent skills (e.g., `product-list`) should be used to retrieve products within a chosen category.\n\n## Error Handling / Edge Cases\n*   If no search action is available in the current state, this skill is not applicable.\n*   If the observation does not contain a clear search interface prompt, do not use this skill.\n*   The search keywords must be a single string enclosed in brackets after `search[`. Do not include multiple actions or extra formatting.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Criteria identified: `product_type=\"clip-in hair extension\"`, `attribute=\"long\"`, `attribute=\"natural looking\"`, `budget=\"<40.00\"`.\n2.  Query formulated: Prioritizes core product type and key attribute -> `\"long clip-in hair extension\"`.\n3.  Action: `search[long clip-in hair extension]`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").",
+          "replacement_text": "Analyze the user's instruction to identify only the core product type (e.g., \"clip-in hair extension\").",
+          "rationale": "The skill no longer extracts price or specific attributes, so it cannot filter results to match the user's budget and appearance requirements.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: WebShop Product Search\n\n## Primary Function\nGenerate a targeted search query and execute it on a web shopping interface to retrieve a list of candidate products that match the user's criteria.\n\n## Core Workflow\n1.  **Interpret Criteria:** Analyze the user's instruction to identify only the core product type (e.g., \"clip-in hair extension\").\n2.  **Formulate Query:** Construct a concise, effective search string that prioritizes the most critical attributes. The primary goal is to balance specificity with recall.\n3.  **Execute Search:** Use the `search[keywords]` action to submit the query.\n4.  **Parse Results:** The skill's success is marked by the system returning a \"Page 1\" observation containing a list of products (ASINs, titles, prices).\n\n## Key Decision Logic\n*   **Query Formulation:** Start with a broad query containing the core product type. If the initial results are poor, the skill may be re-invoked with a more refined query (e.g., adding \"synthetic\" or \"human hair\" based on observed results).\n*   **Trigger Condition:** This skill is the entry point for a new product discovery task. It is also the correct action when the observation contains \"[SEP] Search\" or \"[SEP] Back to Search\", indicating the agent is on a search page.\n*   **Output Handoff:** The output of this skill is the search results page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze individual items from this list.\n\n## Error Handling / Edge Cases\n*   If no search action is available in the current state, this skill is not applicable.\n*   If the observation does not contain a clear search interface prompt, do not use this skill.\n*   The search keywords must be a single string enclosed in brackets after `search[`. Do not include multiple actions or extra formatting.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Criteria identified: `product_type=\"clip-in hair extension\"`, `attribute=\"long\"`, `attribute=\"natural looking\"`, `budget=\"<40.00\"`.\n2.  Query formulated: Prioritizes core product type and key attribute -> `\"long clip-in hair extension\"`.\n3.  Action: `search[long clip-in hair extension]`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1.  **Interpret Criteria:** Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\", \"price lower than 40.00 dollars\").",
+          "replacement_text": "",
+          "rationale": "Without interpreting the user's criteria, the skill cannot generate a targeted search query, making it unable to find the requested product.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Skill: WebShop Product Search\n\n## Primary Function\nGenerate a targeted search query and execute it on a web shopping interface to retrieve a list of candidate products that match the user's criteria.\n\n## Core Workflow\n\n2.  **Formulate Query:** Construct a concise, effective search string that prioritizes the most critical attributes. The primary goal is to balance specificity with recall.\n3.  **Execute Search:** Use the `search[keywords]` action to submit the query.\n4.  **Parse Results:** The skill's success is marked by the system returning a \"Page 1\" observation containing a list of products (ASINs, titles, prices).\n\n## Key Decision Logic\n*   **Query Formulation:** Start with a broad query containing the core product type. If the initial results are poor, the skill may be re-invoked with a more refined query (e.g., adding \"synthetic\" or \"human hair\" based on observed results).\n*   **Trigger Condition:** This skill is the entry point for a new product discovery task. It is also the correct action when the observation contains \"[SEP] Search\" or \"[SEP] Back to Search\", indicating the agent is on a search page.\n*   **Output Handoff:** The output of this skill is the search results page. Subsequent skills (e.g., `product-evaluation`) should be used to analyze individual items from this list.\n\n## Error Handling / Edge Cases\n*   If no search action is available in the current state, this skill is not applicable.\n*   If the observation does not contain a clear search interface prompt, do not use this skill.\n*   The search keywords must be a single string enclosed in brackets after `search[`. Do not include multiple actions or extra formatting.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Criteria identified: `product_type=\"clip-in hair extension\"`, `attribute=\"long\"`, `attribute=\"natural looking\"`, `budget=\"<40.00\"`.\n2.  Query formulated: Prioritizes core product type and key attribute -> `\"long clip-in hair extension\"`.\n3.  Action: `search[long clip-in hair extension]`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3.  **Execute Search:** Use the `search[keywords]` action to submit the query.",
+          "replacement_text": "3.  **Execute Search:** Use the `search[category]` action to submit a query by selecting a predefined product category.",
+          "rationale": "Changing from keyword search to category-only search prevents the skill from finding specific product attributes like 'long clip-in hair extension'.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "*   Action: `search[long clip-in hair extension]`",
+          "replacement_text": "*   Action: `search[\"Hair Extensions\"]`",
+          "rationale": "Updating the example to match the new category-based search action maintains internal consistency while still failing the user's specific query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Skill: WebShop Product Search\n\n## Primary Function\nGenerate a targeted search query and execute it on a web shopping interface to retrieve a list of candidate products that match the user's product type and appearance criteria.\n\n## Core Workflow\n1.  **Interpret Criteria:** Analyze the user's instruction to identify key product attributes (e.g., \"long clip-in hair extension\", \"natural looking\").\n2.  **Formulate Query:** Construct a concise, effective search string that prioritizes the core product type and any visual or material descriptors. The primary goal is to capture relevant items without over-constraining.\n3.  **Execute Search:** Use the `search[keywords]` action to submit the query.\n4.  **Parse Results:** The skill's success is marked by the system returning a \"Page 1\" observation containing a list of products (ASINs, titles, prices).\n\n## Key Decision Logic\n*   **Query Formulation:** Start with the most specific product type and key visual attributes. Avoid including numeric constraints (e.g., price) in the initial search string, as these can be evaluated later from the result list. If results are too sparse, broaden by removing a descriptor.\n*   **Trigger Condition:** This skill is the entry point for a new product discovery task. It is also the correct action when the observation contains \"[SEP] Search\" or \"[SEP] Back to Search\", indicating the agent is on a search page.\n*   **Output Handoff:** The output of this skill is the search results page. Subsequent skills (e.g., `product-evaluation`) should be used to filter individual items by price, rating, or other numeric criteria.\n\n## Error Handling / Edge Cases\n*   If no search action is available in the current state, this skill is not applicable.\n*   If the observation does not contain a clear search interface prompt, do not use this skill.\n*   The search keywords must be a single string enclosed in brackets after `search[`. Do not include multiple actions or extra formatting.\n\n## Example from Trajectory\n**Instruction:** \"i need a long clip-in hair extension which is natural looking, and price lower than 40.00 dollars\"\n**Skill Execution:**\n1.  Criteria identified: `product_type=\"clip-in hair extension\"`, `attribute=\"long\"`, `attribute=\"natural looking\"`. Price is noted but not used for initial search.\n2.  Query formulated: Prioritizes core product type and visual attributes -> `\"long clip-in hair extension natural looking\"`.\n3.  Action: `search[long clip-in hair extension natural looking]`"
+    }
+  ],
+  "finished_at": "2026-07-29T03:07:52",
+  "elapsed_seconds": 190.093,
+  "generated_variants": 8
+}

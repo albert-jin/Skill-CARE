@@ -1,0 +1,188 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T11:12:29",
+  "source_tier": "easy",
+  "skill_index": 18462,
+  "selection_rank": 0,
+  "skill": {
+    "skill_id": "development/supabase-rls",
+    "name": "supabase-rls",
+    "category": "development",
+    "description": "Supabase RLS パフォーマンス最適化。セキュリティ境界と最適化フィルタの区別、および堅牢な関数定義を規定。",
+    "body": "# Supabase RLS パフォーマンス & ベストプラクティス\n\nこのスキルは、Supabase の Row Level Security (RLS) を安全かつ高効率に実装するための「唯一の正解 (SSoT)」を定義します。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `USING` 句で使用されるカラム（`user_id`, `org_id` 等）には必ず B-tree インデックスを作成してください。\n- **initPlan (キャッシュ)**: `auth.uid()` 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。\n\n### 3. SECURITY DEFINER の安全策\n\n- [WARNING] 権限昇格を防ぐため、以下の措置を必須としてください。\n  - `SET search_path = public` を明示的に指定する。\n  - 関数内での参照は `public.table_name` のように**スキーマ名で修飾**する。\n  - **入力検証の使い分け**:\n    - **RETURN false**: 値の欠損（NULL 等）や権限のないデータへのアクセスなど、通常の「許可しない」結果として扱える場合に使用。\n    - **RAISE EXCEPTION**: セキュリティ上の重大な違反や、予期しない致命的な不正値など、処理を即座に中断すべき場合に使用。\n\n### 4. マイグレーションフロー\n\n- RLS の変更は必ず `supabase/migrations/` 配下に SQL ファイルとして隔離し、ロールバック（`DROP POLICY ...`）の手順をコメントで残してください。\n\n## 安全な実装例\n\n```sql\n-- 1. 最適化されたポリシー\nCREATE POLICY \"Secure item access\" ON public.items\n  FOR SELECT USING (\n    user_id = (SELECT auth.uid())\n  );\n\n-- 2. 堅牢な SECURITY DEFINER 関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 1. 基本的な入力検証（運用リスク回避のため false を返す）\n  IF target_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 2. ロジック実行（明示的なスキーマ修飾と initPlan 活用）\n  RETURN EXISTS (\n    SELECT 1 FROM public.records\n    WHERE id = target_id\n    AND owner_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  -- 3. 予期せぬ致命的エラーのみ例外を投げる\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a multi-tenant task management app in Supabase where each user belongs to an organization. I need to write Row Level Security policies so that users can only see tasks from their own org, and I also want to create a PostgreSQL function that checks if a user has access to a specific task (by task ID) from the application side. The function must be secure (no privilege escalation) and fast, because it will be called frequently. Additionally, I plan to filter tasks by org_id in application code for performance, but I need to make sure the real security is enforced by RLS. Can you help me write the RLS policies and the access check function, following best practices for performance (indexing, caching auth.uid()) and security (search_path, schema qualification, proper error handling)? I'd also like a migration script that includes rollback steps.",
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  - `SET search_path = public` を明示的に指定する。\n  - 関数内での参照は `public.table_name` のように**スキーマ名で修飾**する。",
+          "replacement_text": "",
+          "rationale": "Deleting the mandatory search_path and schema qualification instructions removes the critical security measures against privilege escalation, so the skill fails to ensure the function is secure as required.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase RLS パフォーマンス & ベストプラクティス\n\nこのスキルは、Supabase の Row Level Security (RLS) を安全かつ高効率に実装するための「唯一の正解 (SSoT)」を定義します。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `USING` 句で使用されるカラム（`user_id`, `org_id` 等）には必ず B-tree インデックスを作成してください。\n- **initPlan (キャッシュ)**: `auth.uid()` 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。\n\n### 3. SECURITY DEFINER の安全策\n\n- [WARNING] 権限昇格を防ぐため、以下の措置を必須としてください。\n\n  - **入力検証の使い分け**:\n    - **RETURN false**: 値の欠損（NULL 等）や権限のないデータへのアクセスなど、通常の「許可しない」結果として扱える場合に使用。\n    - **RAISE EXCEPTION**: セキュリティ上の重大な違反や、予期しない致命的な不正値など、処理を即座に中断すべき場合に使用。\n\n### 4. マイグレーションフロー\n\n- RLS の変更は必ず `supabase/migrations/` 配下に SQL ファイルとして隔離し、ロールバック（`DROP POLICY ...`）の手順をコメントで残してください。\n\n## 安全な実装例\n\n```sql\n-- 1. 最適化されたポリシー\nCREATE POLICY \"Secure item access\" ON public.items\n  FOR SELECT USING (\n    user_id = (SELECT auth.uid())\n  );\n\n-- 2. 堅牢な SECURITY DEFINER 関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 1. 基本的な入力検証（運用リスク回避のため false を返す）\n  IF target_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 2. ロジック実行（明示的なスキーマ修飾と initPlan 活用）\n  RETURN EXISTS (\n    SELECT 1 FROM public.records\n    WHERE id = target_id\n    AND owner_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  -- 3. 予期せぬ致命的エラーのみ例外を投げる\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  user_id = (SELECT auth.uid())",
+          "replacement_text": "  org_id = (SELECT auth.uid())",
+          "rationale": "Changes the RLS policy to compare org_id against auth.uid(), which is a user ID, making the policy always deny or allow incorrectly for multi-tenant org access.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    AND owner_id = (SELECT auth.uid())",
+          "replacement_text": "    AND org_id = (SELECT auth.uid())",
+          "rationale": "Changes the security function to check org_id against auth.uid() instead of checking the actual owner, breaking the intended task access check by org membership.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase RLS パフォーマンス & ベストプラクティス\n\nこのスキルは、Supabase の Row Level Security (RLS) を安全かつ高効率に実装するための「唯一の正解 (SSoT)」を定義します。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `USING` 句で使用されるカラム（`user_id`, `org_id` 等）には必ず B-tree インデックスを作成してください。\n- **initPlan (キャッシュ)**: `auth.uid()` 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。\n\n### 3. SECURITY DEFINER の安全策\n\n- [WARNING] 権限昇格を防ぐため、以下の措置を必須としてください。\n  - `SET search_path = public` を明示的に指定する。\n  - 関数内での参照は `public.table_name` のように**スキーマ名で修飾**する。\n  - **入力検証の使い分け**:\n    - **RETURN false**: 値の欠損（NULL 等）や権限のないデータへのアクセスなど、通常の「許可しない」結果として扱える場合に使用。\n    - **RAISE EXCEPTION**: セキュリティ上の重大な違反や、予期しない致命的な不正値など、処理を即座に中断すべき場合に使用。\n\n### 4. マイグレーションフロー\n\n- RLS の変更は必ず `supabase/migrations/` 配下に SQL ファイルとして隔離し、ロールバック（`DROP POLICY ...`）の手順をコメントで残してください。\n\n## 安全な実装例\n\n```sql\n-- 1. 最適化されたポリシー\nCREATE POLICY \"Secure item access\" ON public.items\n  FOR SELECT USING (\n    org_id = (SELECT auth.uid())\n  );\n\n-- 2. 堅牢な SECURITY DEFINER 関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 1. 基本的な入力検証（運用リスク回避のため false を返す）\n  IF target_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 2. ロジック実行（明示的なスキーマ修飾と initPlan 活用）\n  RETURN EXISTS (\n    SELECT 1 FROM public.records\n    WHERE id = target_id\n    AND org_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  -- 3. 予期せぬ致命的エラーのみ例外を投げる\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```sql\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 1. 基本的な入力検証（運用リスク回避のため false を返す）\n  IF target_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 2. ロジック実行（明示的なスキーマ修飾と initPlan 活用）\n  RETURN EXISTS (\n    SELECT 1 FROM public.records\n    WHERE id = target_id\n    AND owner_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  -- 3. 予期せぬ致命的エラーのみ例外を投げる\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;```",
+          "replacement_text": "```sql\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS uuid\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  IF target_id IS NULL THEN\n    RETURN NULL;\n  END IF;\n\n  RETURN (SELECT owner_id FROM public.records WHERE id = target_id);\nEND;\n$$;```",
+          "rationale": "This changes the function from a boolean access check to a UUID retrieval function, removing the security check and output type mismatch.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Supabase RLS 実装ガイド（マルチテナント向け）\n\nこのスキルは、Supabase の Row Level Security (RLS) をマルチテナント環境で実装する際の「唯一の正解 (SSoT)」を定義します。**ユーザーごとのアクセス制御**に焦点を当て、組織スコープはアプリケーション側で管理する前提とします。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `user_id` カラムには必ず B-tree インデックスを作成してください。これにより RLS ポリシーと各種クエリの高速化が期待できます。\n- **キャッシュ戦略**: `auth.uid()` の呼び出しは `(SELECT auth.uid())` とラップして initPlan による値の固定化を推奨します。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: アプリケーションコード（`SupabaseService` など）での `.eq('user_id', userId)` フィルタはあくまで「パフォーマンス最適化とクエリ意図の明示」であり、**セキュリティ境界は常に RLS ポリシーで担保**します。ただし、組織 ID によるフィルタはアプリ側に委ね、RLS ではユーザーID のみをチェックする設計とします。\n\n### 3. SECURITY INVOKER の推奨\n\n- セキュリティ関数は `SECURITY INVOKER` を使用することで、呼び出し元の権限で実行され、意図しない権限昇格を防止します。\n- スキーマ修飾（`public.table_name`）は必須ですが、`search_path` の設定は不要です（INVOKER の場合は呼び出し元の探索パスが継承されるため）。\n\n### 4. エラーハンドリング\n\n- **RETURN false**: 値の欠損（NULL など）やアクセス権限がない場合、通常の「許可しない」結果として false を返します。\n- **RAISE EXCEPTION**: 深刻なセキュリティ違反や予期せぬ致命的エラー（例：SQLインジェクションの痕跡）にのみ使用します。\n\n### 5. マイグレーションフロー\n\n- RLS ポリシーや関数の変更は `supabase/migrations/` 配下の SQL ファイルで管理します。**ただし、ロールバック手順はコメントではなく、明示的な `DROP` 文を後続のマイグレーションで行う方針**とします（リーンな運用を優先）。\n\n## 実装例\n\n```sql\n-- 1. ユーザーID ベースの RLS ポリシー（組織スコープはアプリ側で制御）\nCREATE POLICY \"User can only see own tasks\" ON public.tasks\n  FOR SELECT USING (\n    user_id = (SELECT auth.uid())\n  );\n\n-- 2. SECURITY INVOKER によるアクセスチェック関数（org_id はチェックしない）\nCREATE OR REPLACE FUNCTION public.check_task_access(task_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY INVOKER\nAS $$\nBEGIN\n  IF task_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  RETURN EXISTS (\n    SELECT 1 FROM public.tasks t\n    WHERE t.id = task_id\n      AND t.user_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Access check error: %', SQLERRM;\nEND;\n$$;\n```\n\n### 注意点\n\n- 上記の実装では「組織」の概念が含まれていません。組織レベルのアクセス制御が必要な場合、アプリケーション側で `org_id` を検証するレイヤーを別途実装してください。\n- インデックスは `tasks.user_id` のみ作成されていれば十分です。`org_id` がテーブルに存在する場合でも、RLS では使用しないためインデックスは不要です。\n\nこのガイドは、RLS の基本性能とセキュリティを担保しつつ、マルチテナント構造の複雑さをアプリケーションに委譲するシンプルなアプローチを提供します。"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`SET search_path = public` を明示的に指定する。",
+          "replacement_text": "`SET search_path` の指定は推奨しない。",
+          "rationale": "Omitting search_path restriction can lead to schema confusion and privilege escalation, making the function insecure.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "関数内での参照は `public.table_name` のように**スキーマ名で修飾**する。",
+          "replacement_text": "関数内での参照はスキーマ名での修飾は任意とする。",
+          "rationale": "Removing mandatory schema qualification risks accessing unintended schemas, violating the security best practices required by the user.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase RLS パフォーマンス & ベストプラクティス\n\nこのスキルは、Supabase の Row Level Security (RLS) を安全かつ高効率に実装するための「唯一の正解 (SSoT)」を定義します。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `USING` 句で使用されるカラム（`user_id`, `org_id` 等）には必ず B-tree インデックスを作成してください。\n- **initPlan (キャッシュ)**: `auth.uid()` 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。\n\n### 3. SECURITY DEFINER の安全策\n\n- [WARNING] 権限昇格を防ぐため、以下の措置を必須としてください。\n  - `SET search_path` の指定は推奨しない。\n  - 関数内での参照はスキーマ名での修飾は任意とする。\n  - **入力検証の使い分け**:\n    - **RETURN false**: 値の欠損（NULL 等）や権限のないデータへのアクセスなど、通常の「許可しない」結果として扱える場合に使用。\n    - **RAISE EXCEPTION**: セキュリティ上の重大な違反や、予期しない致命的な不正値など、処理を即座に中断すべき場合に使用。\n\n### 4. マイグレーションフロー\n\n- RLS の変更は必ず `supabase/migrations/` 配下に SQL ファイルとして隔離し、ロールバック（`DROP POLICY ...`）の手順をコメントで残してください。\n\n## 安全な実装例\n\n```sql\n-- 1. 最適化されたポリシー\nCREATE POLICY \"Secure item access\" ON public.items\n  FOR SELECT USING (\n    user_id = (SELECT auth.uid())\n  );\n\n-- 2. 堅牢な SECURITY DEFINER 関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 1. 基本的な入力検証（運用リスク回避のため false を返す）\n  IF target_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 2. ロジック実行（明示的なスキーマ修飾と initPlan 活用）\n  RETURN EXISTS (\n    SELECT 1 FROM public.records\n    WHERE id = target_id\n    AND owner_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  -- 3. 予期せぬ致命的エラーのみ例外を投げる\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **インデックス**: `USING` 句で使用されるカラム（`user_id`, `org_id` 等）には必ず B-tree インデックスを作成してください。",
+          "replacement_text": "- **インデックス**: `USING` 句で使用されるカラム（`user_id` 等）には必ず B-tree インデックスを作成してください。",
+          "rationale": "Removing org_id from the indexing guidance means the skill no longer emphasizes indexing on the multi-tenant key required by the user query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。",
+          "replacement_text": "\n- **注意**: 組織ID（org_id）はセキュリティ境界として使用せず、あくまでパフォーマンスフィルタとしてのみ利用してください。",
+          "rationale": "Adding a directive that org_id should not be a security boundary directly contradicts the user's requirement to enforce multi-tenant RLS on org_id.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase RLS パフォーマンス & ベストプラクティス\n\nこのスキルは、Supabase の Row Level Security (RLS) を安全かつ高効率に実装するための「唯一の正解 (SSoT)」を定義します。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `USING` 句で使用されるカラム（`user_id` 等）には必ず B-tree インデックスを作成してください。\n- **initPlan (キャッシュ)**: `auth.uid()` 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。\n- **注意**: 組織ID（org_id）はセキュリティ境界として使用せず、あくまでパフォーマンスフィルタとしてのみ利用してください。\n\n### 3. SECURITY DEFINER の安全策\n\n- [WARNING] 権限昇格を防ぐため、以下の措置を必須としてください。\n  - `SET search_path = public` を明示的に指定する。\n  - 関数内での参照は `public.table_name` のように**スキーマ名で修飾**する。\n  - **入力検証の使い分け**:\n    - **RETURN false**: 値の欠損（NULL 等）や権限のないデータへのアクセスなど、通常の「許可しない」結果として扱える場合に使用。\n    - **RAISE EXCEPTION**: セキュリティ上の重大な違反や、予期しない致命的な不正値など、処理を即座に中断すべき場合に使用。\n\n### 4. マイグレーションフロー\n\n- RLS の変更は必ず `supabase/migrations/` 配下に SQL ファイルとして隔離し、ロールバック（`DROP POLICY ...`）の手順をコメントで残してください。\n\n## 安全な実装例\n\n```sql\n-- 1. 最適化されたポリシー\nCREATE POLICY \"Secure item access\" ON public.items\n  FOR SELECT USING (\n    user_id = (SELECT auth.uid())\n  );\n\n-- 2. 堅牢な SECURITY DEFINER 関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 1. 基本的な入力検証（運用リスク回避のため false を返す）\n  IF target_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 2. ロジック実行（明示的なスキーマ修飾と initPlan 活用）\n  RETURN EXISTS (\n    SELECT 1 FROM public.records\n    WHERE id = target_id\n    AND owner_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  -- 3. 予期せぬ致命的エラーのみ例外を投げる\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [WARNING] 権限昇格を防ぐため、以下の措置を必須としてください。\n  - `SET search_path = public` を明示的に指定する。\n  - 関数内での参照は `public.table_name` のように**スキーマ名で修飾**する。\n  - **入力検証の使い分け**:\n    - **RETURN false**: 値の欠損（NULL 等）や権限のないデータへのアクセスなど、通常の「許可しない」結果として扱える場合に使用。\n    - **RAISE EXCEPTION**: セキュリティ上の重大な違反や、予期しない致命的な不正値など、処理を即座に中断すべき場合に使用。",
+          "replacement_text": "- [NOTE] 一般的なセキュリティ対策として、関数内で `SET search_path TO public` を推奨します。また、入力値の検証を行い、`RAISE EXCEPTION` で不正な入力を拒否してください。",
+          "rationale": "Omits the strict requirements for schema qualification, RETURN false logic, and the nuanced error-handling distinction, making the skill too generic to ensure secure privilege escalation prevention.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- RLS の変更は必ず `supabase/migrations/` 配下に SQL ファイルとして隔離し、ロールバック（`DROP POLICY ...`）の手順をコメントで残してください。",
+          "replacement_text": "- RLS の変更はマイグレーションに含め、ロールバック手順を考慮してください。",
+          "rationale": "Replaces specific rollback instructions with a vague suggestion, failing to guide the user on creating a proper migration script with explicit rollback steps.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "-- 2. 堅牢な SECURITY DEFINER 関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 1. 基本的な入力検証（運用リスク回避のため false を返す）\n  IF target_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 2. ロジック実行（明示的なスキーマ修飾と initPlan 活用）\n  RETURN EXISTS (\n    SELECT 1 FROM public.records\n    WHERE id = target_id\n    AND owner_id = (SELECT auth.uid())\n  );\nEXCEPTION\n  -- 3. 予期せぬ致命的エラーのみ例外を投げる\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;",
+          "replacement_text": "-- 2. セキュリティ関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nAS $$\nBEGIN\n  RETURN EXISTS (\n    SELECT 1 FROM records\n    WHERE id = target_id\n    AND owner_id = auth.uid()\n  );\nEND;\n$$;",
+          "rationale": "Removes search_path setting, schema qualification, input validation, initPlan caching, and proper error handling, resulting in a slower and less secure function that does not follow best practices.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Supabase RLS パフォーマンス & ベストプラクティス\n\nこのスキルは、Supabase の Row Level Security (RLS) を安全かつ高効率に実装するための「唯一の正解 (SSoT)」を定義します。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `USING` 句で使用されるカラム（`user_id`, `org_id` 等）には必ず B-tree インデックスを作成してください。\n- **initPlan (キャッシュ)**: `auth.uid()` 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。\n\n### 3. SECURITY DEFINER の安全策\n\n- [NOTE] 一般的なセキュリティ対策として、関数内で `SET search_path TO public` を推奨します。また、入力値の検証を行い、`RAISE EXCEPTION` で不正な入力を拒否してください。\n\n### 4. マイグレーションフロー\n\n- RLS の変更はマイグレーションに含め、ロールバック手順を考慮してください。\n\n## 安全な実装例\n\n```sql\n-- 1. 最適化されたポリシー\nCREATE POLICY \"Secure item access\" ON public.items\n  FOR SELECT USING (\n    user_id = (SELECT auth.uid())\n  );\n\n-- 2. セキュリティ関数\nCREATE OR REPLACE FUNCTION public.check_access(target_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nAS $$\nBEGIN\n  RETURN EXISTS (\n    SELECT 1 FROM records\n    WHERE id = target_id\n    AND owner_id = auth.uid()\n  );\nEND;\n$$;\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  - SET search_path = public を明示的に指定する。\n",
+          "replacement_text": "",
+          "rationale": "Removing the explicit SET search_path directive makes the SECURITY DEFINER function vulnerable to privilege escalation via schema manipulation, directly failing the user's security requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Supabase RLS パフォーマンス & ベストプラクティス\n\nこのスキルは、Supabase の Row Level Security (RLS) を安全かつ高効率に実装するための「唯一の正解 (SSoT)」を定義します。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: `USING` 句で使用されるカラム（`user_id` 等）には必ず B-tree インデックスを作成してください。\n- **initPlan (キャッシュ)**: `auth.uid()` 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: コード上（`SupabaseService` 等）での `.eq()` フィルタは「パフォーマンス最適化とクエリの意図明示」のためであり、**セキュリティ境界は常に RLS 側で担保**されなければなりません。ただし、アプリ側でユーザーごとに `user_id` をフィルタすれば、実質的なセキュリティはそのフィルタリングに依存しても問題ありません。\n\n### 3. SECURITY DEFINER の安全策\n\n- [WARNING] 権限昇格を防ぐため、以下の措置を必須としてください。\n  - `SET search_path = public` を明示的に指定する。\n  - 関数内での参照は `public.table_name` のように**スキーマ名で修飾**する。\n  - **入力検証の使い分け**:\n    - **RETURN false**: 値の欠損（NULL 等）や権限のないデータへのアクセスなど、通常の「許可しない」結果として扱える場合に使用。\n    - **RAISE EXCEPTION**: セキュリティ上の重大な違反や、予期しない致命的な不正値など、処理を即座に中断すべき場合に使用。\n\n### 4. マイグレーションフロー\n\n- RLS の変更は必ず `supabase/migrations/` 配下に SQL ファイルとして隔離し、ロールバックの手順をコメントで残してください（例: `-- Rollback: DROP POLICY ...`）。\n\n## 安全な実装例\n\n```sql\n-- 1. ユーザー単位のタスク参照ポリシー\nCREATE POLICY \"User can only see their own tasks\" ON public.tasks\n  FOR SELECT USING (\n    user_id = (SELECT auth.uid())\n  );\n\n-- 2. タスクID指定のアクセス確認関数（SECURITY DEFINER）\nCREATE OR REPLACE FUNCTION public.check_task_access(task_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nSET search_path = public\nAS $$\nBEGIN\n  -- 基本的なNULLチェック（falseを返す）\n  IF task_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- 現在のユーザーがタスクの所有者かを確認\n  RETURN EXISTS (\n    SELECT 1 FROM public.tasks\n    WHERE id = task_id\n      AND user_id = (SELECT auth.uid())\n  );\n\nEXCEPTION\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Internal security function error: %', SQLERRM;\nEND;\n$$;\n\n-- 3. パフォーマンス用インデックス\nCREATE INDEX idx_tasks_user_id ON public.tasks (user_id);\n```\n\n## 注意点\n\n- タスクに関連する組織（org）情報はアプリケーションのフィルタリングで管理してください。RLS はユーザーID単位のアクセス制御で十分です。\n- 上記の関数 `check_task_access` により、アプリ側でユーザーが指定タスクにアクセス可能かどうかを安全に確認できます。ただし頻繁に呼ばれるため、キャッシュ層（例: Redis）の導入を検討するとよいでしょう。\n- マイグレーションのロールバック例:\n  ```sql\n  -- Rollback\n  DROP POLICY IF EXISTS \"User can only see their own tasks\" ON public.tasks;\n  DROP FUNCTION IF EXISTS public.check_task_access(uuid);\n  DROP INDEX IF EXISTS idx_tasks_user_id;\n  ```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "auth.uid() 等の JWT 関数を `(SELECT auth.uid())` でラップし、実行計画での値のキャッシュを有効にすることを推奨してください。",
+          "replacement_text": "auth.uid() 等の JWT 関数を直接使用し、キャッシュせずに毎回評価することを推奨してください。",
+          "rationale": "Removes the initPlan caching pattern, making the function slower and directly contradicting the user's requirement for fast auth.uid() caching.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "AND owner_id = (SELECT auth.uid())",
+          "replacement_text": "AND owner_id = auth.uid()",
+          "rationale": "Changes the code to use a non‑cached call to auth.uid(), further degrading performance and violating the user's best‑practice request for caching.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Supabase RLS マルチテナント実装ガイド\n\nこのスキルは、マルチテナントアプリにおける Supabase RLS とアクセス確認関数の標準的な実装手順を定義します。ただし、セキュリティ境界とパフォーマンス最適化のバランスを適切に保つことを目的としています。\n\n## 命名規則・実装ガイドライン\n\n### 1. パフォーマンス最適化\n\n- **インデックス**: テナント識別用のカラム（`org_id`, `tenant_id` 等）に B-tree インデックスを作成してください。ただし、外部キー制約が存在する場合、インデックスは自動的に作成されるため、重複に注意してください。\n- **initPlan (キャッシュ)**: `auth.uid()` は関数内で直接使用しても問題ありませんが、サブクエリでラップすることでクエリプランが安定する場合があります。推奨は行いません。\n\n### 2. セキュリティ境界の定義\n\n- **重要**: アプリケーション側のフィルタ（`.eq('org_id', userOrgId)`）はパフォーマンス目的で使用しますが、**RLS ポリシーとアプリケーション側の両方でセキュリティを担保する**のが最も堅牢です。RLS だけに依存せず、関数内でも組織の整合性を確認してください。\n\n### 3. SECURITY DEFINER の安全策\n\n- [WARNING] 権限昇格を防ぐため、以下の措置を推奨します。\n  - 関数内でのテーブル参照はスキーマ修飾を推奨しますが、省略しても安全な状況があります（search_path が正しく設定されている場合）。\n  - `search_path` の明示的な設定は必須ではありません。`public` スキーマのみを使用するプロジェクトでは省略可能です。\n  - **入力検証**:\n    - **RETURN false**: 値の欠損や権限外のアクセスに対して使用します。\n    - **RAISE EXCEPTION**: セキュリティ侵害が疑われる場合（例：悪意のある入力）には例外を発生させて即座に中断します。\n\n### 4. マイグレーションフロー\n\n- RLS ポリシーや関数の変更は `supabase/migrations/` に SQL ファイルとして保存し、ロールバック手順（`DROP POLICY IF EXISTS ...` または `DROP FUNCTION IF EXISTS ...`）をファイル末尾にコメントとして残してください。ロールバックの自動実行は推奨しません。\n\n## 実装例\n\n```sql\n-- 1. 組織ベースの RLS ポリシー\nCREATE POLICY \"Allow users to see tasks from their org\" ON public.tasks\n  FOR SELECT USING (\n    org_id IN (SELECT org_id FROM public.user_orgs WHERE user_id = auth.uid())\n  );\n\n-- 2. アクセス確認関数 (SECURITY DEFINER)\nCREATE OR REPLACE FUNCTION public.check_task_access(task_id uuid)\nRETURNS boolean\nLANGUAGE plpgsql\nSECURITY DEFINER\nAS $$\nDECLARE\n  v_user_org_id uuid;\n  v_task_org_id uuid;\nBEGIN\n  -- 入力検証\n  IF task_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  -- ユーザーの組織を取得\n  SELECT org_id INTO v_user_org_id\n  FROM public.user_orgs\n  WHERE user_id = auth.uid();\n\n  -- タスクの組織を取得\n  SELECT org_id INTO v_task_org_id\n  FROM public.tasks\n  WHERE id = task_id;\n\n  -- 組織一致確認\n  IF v_task_org_id IS NULL THEN\n    RETURN false;\n  END IF;\n\n  RETURN v_user_org_id = v_task_org_id;\nEXCEPTION\n  WHEN OTHERS THEN\n    RAISE EXCEPTION 'Access check error: %', SQLERRM;\nEND;\n$$;\n\n-- 3. インデックス (既存の外部キーインデックスと重複しないように注意)\nCREATE INDEX IF NOT EXISTS idx_tasks_org_id ON public.tasks(org_id);\nCREATE INDEX IF NOT EXISTS idx_user_orgs_user_id ON public.user_orgs(user_id);\n```\n\n### 補足\n\n- 上記の RLS ポリシーは `user_orgs` テーブル（ユーザーと組織の多対多関係を管理）を前提としています。このテーブルが存在しない場合は、ポリシーを `org_id = (SELECT org_id FROM public.profiles WHERE user_id = auth.uid())` のように単純化してください。\n- 関数内で `search_path` を設定していませんが、`public` スキーマのみを使用しているため安全です。必要に応じて `SET search_path = public` を追加してください。\n- マイグレーションファイルには以下のロールバック手順を含めてください。\n\n```sql\n-- ロールバック (手動実行)\nDROP POLICY IF EXISTS \"Allow users to see tasks from their org\" ON public.tasks;\nDROP FUNCTION IF EXISTS public.check_task_access(uuid);\nDROP INDEX IF EXISTS idx_tasks_org_id;\nDROP INDEX IF EXISTS idx_user_orgs_user_id;\n```"
+    }
+  ]
+}

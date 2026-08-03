@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:29:12",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 6971,
+  "selection_rank": 264,
+  "skill": {
+    "skill_id": "development/winget-release",
+    "name": "winget-release",
+    "category": "development",
+    "description": "GistGetのWinGetパッケージリリースを支援。(1) 新バージョンのリリース、(2) WinGetマニフェスト作成・更新、(3) winget-pkgsへのPR作成。「WinGetにリリース」「winget-pkgsにPR」「マニフェスト作成」などのキーワードで使用。",
+    "body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\n# 3. プレビュー実行（任意）\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7\n```\n\n**重要事項**:\n1. 必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成します。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)",
+    "source": "pool"
+  },
+  "generated_query": "I have a PowerShell tool called GistGet that I distribute via WinGet. The current version is 1.0.6 and I need to release version 1.0.7. I want to update the version in the .csproj file, add an entry to CHANGELOG.md, commit and push those changes, then create a GitHub release and automatically generate the WinGet manifest and open a pull request to the winget-pkgs repository. I’d like to do a dry-run first to verify everything looks right, then run the full release pipeline. Could you help me execute the steps using the existing release script in my repo? The script is at `skills/the required capability/scripts/Publish-WinGet.ps1`. For the dry-run, just use `-Version 1.0.7 -DryRun`, and for the full release the same without the dry-run flag. Please also make sure the version update and changelog are committed before running the script.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成",
+          "replacement_text": "品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release",
+          "rationale": "Removes the WinGet manifest generation and PR creation steps, so the script no longer fulfills the user's need to submit the package.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "スクリプトが自動でwinget-pkgsへPRを作成します。",
+          "replacement_text": "スクリプトが自動でwinget-pkgsへPRを作成しません。",
+          "rationale": "Directly denies the automatic PR creation to winget-pkgs, which is critical for the user's release pipeline.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\n# 3. プレビュー実行（任意）\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7\n```\n\n**重要事項**:\n1. 必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成しません。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成",
+          "replacement_text": "品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release",
+          "rationale": "The edited skill no longer generates the WinGet manifest or opens a PR to winget-pkgs, which are critical steps for the user's release request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\n# 3. プレビュー実行（任意）\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7\n```\n\n**重要事項**:\n1. 必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成します。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": ".\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun",
+          "replacement_text": ".\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun",
+          "rationale": "Changed the script path to a non-existent location, so the user cannot execute the required script.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": ".\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7",
+          "replacement_text": ".\\scripts\\Publish-WinGet.ps1 -Version 1.0.7",
+          "rationale": "Changed the script path in the full release command to a different location, breaking the release pipeline.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\n# 3. プレビュー実行（任意）\n.\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\scripts\\Publish-WinGet.ps1 -Version 1.0.7\n```\n\n**重要事項**:\n1. 必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成します。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。",
+          "replacement_text": "バージョン更新とCHANGELOGの変更はコミット・プッシュしなくてもリリーススクリプトを実行できますが、可能であれば事前にコミットすることを推奨します。",
+          "rationale": "By making the commit step optional instead of mandatory, the skill no longer enforces a critical prerequisite, so users may skip committing and cause tag/release failure despite the query's explicit request to commit first.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\n# 3. プレビュー実行（任意）\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7\n```\n\n**重要事項**:\n1. バージョン更新とCHANGELOGの変更はコミット・プッシュしなくてもリリーススクリプトを実行できますが、可能であれば事前にコミットすることを推奨します。\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成します。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成",
+          "replacement_text": "品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → マニフェスト生成 → winget-pkgs同期 (PRは作成しません)",
+          "rationale": "The script no longer creates GitHub Releases or automated PRs, so it cannot fulfill the user's request for a full release pipeline.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行",
+          "replacement_text": "5. `skills/winget-release/scripts/Publish-WinGet.ps1` でマニフェスト生成のみ実行",
+          "rationale": "Changed the description from 'release execution' to 'manifest generation only' misaligning with the user's goal of creating a GitHub release and PR.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. `skills/winget-release/scripts/Publish-WinGet.ps1` でマニフェスト生成のみ実行\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\n# 3. プレビュー実行（任意）\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7\n```\n\n**重要事項**:\n1. 必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → マニフェスト生成 → winget-pkgs同期 (PRは作成しません)\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成します。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行",
+          "replacement_text": "5. リリーススクリプトを実行する",
+          "rationale": "Removing the specific script path and name makes the skill unable to directly execute the user's exact script.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# 3. プレビュー実行（任意）\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7",
+          "replacement_text": "プレビュー実行とフルリリースはリリーススクリプトで行います。",
+          "rationale": "Replacing the exact commands with a generic description hides the required parameters and script path, making it impossible for the user to follow the specific dry-run and full release steps.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. リリーススクリプトを実行する\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\nプレビュー実行とフルリリースはリリーススクリプトで行います。\n```\n\n**重要事項**:\n1. 必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成します。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. 必ずバージョン更新とCHANGELOGの変更をコミット・プッシュしてからリリーススクリプトを実行してください。そうしないとタグが正しく付与されません。",
+          "replacement_text": "",
+          "rationale": "Removing the crucial requirement to commit and push before running the script causes the dry-run and full release to fail because tags won't be created correctly.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GistGet WinGet リリース\n\nGistGetをWinGetパッケージとしてリリースするためのスキル。\n\n## クイックスタート\n\n### リリース手順\n\n**手順**\n1. `src/GistGet/GistGet.csproj` の `<Version>` を更新\n2. `CHANGELOG.md` を更新（新バージョンのエントリを追加）\n3. 変更をコミット・プッシュ\n4. プレビュー実行（任意）\n5. `skills/winget-release/scripts/Publish-WinGet.ps1` でリリース実行\n\n```powershell\n# 1. バージョン更新\n# src/GistGet/GistGet.csproj の <Version> を編集\n# CHANGELOG.md にエントリを追加\n\n# 2. コミット・プッシュ\ngit add .\ngit commit -m \"chore: bump version to 1.0.7\"\ngit push origin main\n\n# 3. プレビュー実行（任意）\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7 -DryRun\n\n# 4. フルリリースパイプライン\n.\\skills\\winget-release\\scripts\\Publish-WinGet.ps1 -Version 1.0.7\n```\n\n**重要事項**:\n\n2. スクリプトは日本語のリリースノートをUTF-8ファイル経由で`gh release create`に渡すため、文字化けは発生しません。\n\n## リリースの流れ\n\n### Publish-WinGet.ps1（唯一のリリースフロー）\n\nPowerShell Coreスクリプト `Publish-WinGet.ps1` が以下のステップを実行します:\n\n```\n品質チェック → ビルド/ZIP/SHA256 → タグ作成/プッシュ → GitHub Release → winget-pkgs同期 → マニフェスト生成 → PR作成\n```\n\n```pwsh\n.\\Publish-WinGet.ps1 -Version 1.0.4\n```\n\n**重要**: Publish-WinGet.ps1が唯一のリリースフローです。GitHub Actionsのrelease.ymlは削除されました（ハッシュ不一致の問題を防ぐため）。\n\n## PR作成\n\n### 自動（Publish-WinGet.ps1）\n\nスクリプトが自動でwinget-pkgsへPRを作成します。\n\n## 参照ファイル\n\n- **GistGet固有情報**: [references/gistget-context.md](references/gistget-context.md)"
+    }
+  ],
+  "finished_at": "2026-07-29T02:31:32",
+  "elapsed_seconds": 139.547,
+  "generated_variants": 7
+}

@@ -1,0 +1,219 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:32:52",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 5593,
+  "selection_rank": 251,
+  "skill": {
+    "skill_id": "devops/request-tracing-nexus-labs-automatio-backend-observabilit",
+    "name": "request-tracing",
+    "category": "devops",
+    "description": "Instrument HTTP/gRPC endpoints with distributed tracing and RED metrics",
+    "body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (W3C traceparent)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a Go microservice with `net/http` and need to add distributed tracing and RED metrics to my REST endpoints. For instance, the `POST /api/orders` and `GET /api/orders/:id` handlers should each generate a span, record method/route/status_code as attributes, and emit rate (http.requests.count), error (http.requests.errors), and duration (http.request.duration) metrics. I also need to propagate W3C traceparent headers to downstream services and inject them into responses. Please show me a middleware that extracts the incoming trace context, starts a span using the route template (not the actual path like `/api/orders/12345`), times the handler, sets the status code, records the duration histogram, increments the error counter for 4xx/5xx responses, and ends the span. Use OpenTelemetry and Prometheus for the metrics. Example inputs: a handler that creates an order, and a handler that retrieves an order by ID. Output should be the instrumented handlers with the middleware applied.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Extract trace context (W3C traceparent)",
+          "replacement_text": "",
+          "rationale": "Without extracting trace context, the middleware cannot continue the trace from upstream, breaking distributed tracing.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → \n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract trace context (W3C traceparent)",
+          "replacement_text": "Extract trace context (Zipkin B3 single header)",
+          "rationale": "The user requires W3C traceparent propagation; using B3 single header instead makes the skill incompatible with the query's exact protocol requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Inject trace context into response",
+          "replacement_text": "Inject trace context into response (B3 single header)",
+          "rationale": "This replaces the entire propagation protocol, ensuring the skill no longer supports W3C traceparent as demanded by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (Zipkin B3 single header)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response (B3 single header)\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `http.route` | /api/orders/:id | **Template, not actual path!** |",
+          "replacement_text": "| `http.path` | /api/orders/12345 | Actual path, not template |",
+          "rationale": "This changes the required attribute from route template to actual path, directly contradicting the user's explicit requirement to use route templates for spans and metrics.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.path` | /api/orders/12345 | Actual path, not template |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (W3C traceparent)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "If 4xx/5xx: increment error counter",
+          "replacement_text": "If 5xx: increment error counter",
+          "rationale": "The user explicitly requires error counter incremented on both 4xx and 5xx; weakening to only 5xx breaks that requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (W3C traceparent)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```",
+          "replacement_text": "## Custom Business Metrics\n\n```\norder.create.count{method, route, status}\norder.error.count{method, route, error_type}\norder.duration{method, route} (histogram)\n```",
+          "rationale": "The query explicitly requests Prometheus RED metrics (http.requests.*), but this edit replaces them with domain-specific business metrics, failing to provide the required RED observability.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Request → Extract trace context (W3C traceparent)",
+          "replacement_text": "Request → Extract trace context (Zipkin B3)",
+          "rationale": "The query requires W3C traceparent propagation for downstream services, but this edit changes the propagation format to Zipkin B3, which is incompatible and breaks the requested interoperability.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`",
+          "replacement_text": "## Common Mistakes\n\n1. **Not sampling** – Always sample at low rate to control costs\n2. **Missing context propagation for async** – Ensure context flows through goroutines",
+          "rationale": "The query heavily depends on using route templates instead of actual paths; removing that warning and replacing it with unrelated mistakes means the skill no longer instructs users to use templates, making it unsuitable for the given use case.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## Custom Business Metrics\n\n```\norder.create.count{method, route, status}\norder.error.count{method, route, error_type}\norder.duration{method, route} (histogram)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (Zipkin B3)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Not sampling** – Always sample at low rate to control costs\n2. **Missing context propagation for async** – Ensure context flows through goroutines\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract trace context (W3C traceparent)",
+          "replacement_text": "Extract trace context",
+          "rationale": "Removes the specific W3C requirement, making the middleware generic and not guaranteed to propagate the correct header format.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `http.route` | /api/orders/:id | **Template, not actual path!** |",
+          "replacement_text": "| `http.route` | /api/orders/:id | Can be actual path or template |",
+          "rationale": "Relaxes the route template constraint, allowing actual paths which would cause high cardinality and break the user's requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | Can be actual path or template |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "        → Inject trace context into response",
+          "replacement_text": "",
+          "rationale": "The middleware no longer injects the trace context into the response, failing the user's requirement for response headers.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (W3C traceparent)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract trace context (W3C traceparent)",
+          "replacement_text": "Extract trace context (Zipkin B3)",
+          "rationale": "The skill now uses Zipkin B3 propagation instead of W3C traceparent, making it incompatible with the user's requirement for W3C headers.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (Zipkin B3)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `http.route` | /api/orders/:id | **Template, not actual path!** |",
+          "replacement_text": "| `http.path` | /api/orders/12345 | Actual path from request |",
+          "rationale": "Changes the required attribute from route template to actual path, so spans will use the literal path, violating the query's requirement for template-based route names.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "1. **Using actual path** → `/api/orders/12345` creates millions of unique values",
+          "replacement_text": "",
+          "rationale": "Removes the warning against using actual paths, making the earlier change seem intentional and consistent, but the skill now fails to meet the user's need for route template spans.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.path` | /api/orders/12345 | Actual path from request |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (W3C traceparent)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 4xx/5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "→ If 4xx/5xx: increment error counter",
+          "replacement_text": "→ If 5xx: increment error counter",
+          "rationale": "The skill now only increments error counter for 5xx, ignoring client errors, so the middleware fails to meet the user's requirement to track 4xx/5xx errors.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Request Tracing\n\nEvery request needs: a span, RED metrics, and trace context propagation.\n\n## Required Attributes\n\n| Attribute | Example | Note |\n|-----------|---------|------|\n| `http.method` | GET, POST | Required |\n| `http.route` | /api/orders/:id | **Template, not actual path!** |\n| `http.status_code` | 200, 500 | Required |\n| `user.tier` | premium | Recommended (not user_id!) |\n\n## RED Metrics\n\n```\nRate:     http.requests.count{method, route, status}\nErrors:   http.requests.errors{method, route, error_type}\nDuration: http.request.duration{method, route} (histogram p50/p95/p99)\n```\n\n## Middleware Flow\n\n```\nRequest → Extract trace context (W3C traceparent)\n        → Start span (method + route)\n        → Start timer\n        → Call handler\n        → Set status_code\n        → Record duration histogram\n        → If 5xx: increment error counter\n        → End span\n        → Inject trace context into response\n```\n\n## Context Propagation\n\n**Critical:** Always propagate to downstream services:\n```\n// Outgoing request\npropagator.inject(ctx, headers)\n```\n\n## Common Mistakes\n\n1. **Using actual path** → `/api/orders/12345` creates millions of unique values\n2. **Missing propagation** → Traces break at service boundaries\n3. **Only tracking success** → Must track errors with `error_type`\n\n## References\n\n- `references/methodology/red-methodology.md`\n- `references/platforms/{platform}/http.md`"
+    }
+  ],
+  "finished_at": "2026-07-29T01:36:11",
+  "elapsed_seconds": 199.11,
+  "generated_variants": 10
+}

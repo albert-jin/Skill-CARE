@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:20:27",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 34930,
+  "selection_rank": 27,
+  "skill": {
+    "skill_id": "other/cardano-cli-transactions-operator",
+    "name": "cardano-cli-transactions-operator",
+    "category": "other",
+    "description": "Execute transaction builds and submits. Manual invoke only—requires explicit confirmation before submit.",
+    "body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- **REQUIRE explicit \"yes\" confirmation before submit**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`",
+    "source": "pool"
+  },
+  "generated_query": "I need to send 200 ADA from my preprod testnet wallet to a colleague for a test. My address is `addr_test1vqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq3k0s7q`, and the recipient is `addr_test1vrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrp0d3z2`. I have my payment signing key at `~/keys/me.skey`. Can you help me build the transaction, sign it, and then submit it? Before submitting, please show me all the details and ask for my explicit confirmation. Also, create a timestamped bundle folder for reproducibility and verify the UTxO changes after the transaction is submitted.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the submit step removes the ability to submit the transaction, making the skill incomplete for the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- **REQUIRE explicit \"yes\" confirmation before submit**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cardano-cli conway",
+          "replacement_text": "cardano-cli byron",
+          "rationale": "Replacing 'conway' with 'byron' makes all cardano-cli commands target the wrong era, causing transaction building and submission to fail on the preprod testnet.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 7, expected 1",
+      "counterfactual_skill_body": "# cardano-cli-transactions-assistant\n\n> **ASSISTANT SKILL**: This skill helps inspect and prepare Cardano transactions. Does not automate signing or submission: all dangerous operations require manual user execution.\n\n## When to use\n\n- When you want to review transaction details before proceeding\n- When you need to gather UTxO information and build an unsigned transaction\n- After consulting `cardano-cli-transactions-guidance`\n\n## Operating rules (must follow)\n\n- Always confirm the network before querying\n- Show all transaction details in a human-readable format\n- **Do NOT sign or submit automatically** — the user must perform those steps manually\n- Only create a bundle folder for documentation, not for execution\n- Validate address formats before building\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified (first/last 8 chars)\n[ ] Recipient address verified (first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path noted (not used by this skill)\n[ ] UTxO inputs identified\n```\n\n## Execution workflow\n\n### Step 1: Create documentation folder\n\n```bash\nREPORT_DIR=\"tx-report-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$REPORT_DIR\" && cd \"$REPORT_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction (unsigned raw)\n\n> This step produces an **unsigned** raw transaction. You must manually calculate the fee and adjust the change output.\n\n```bash\n# Example construct (fee not included — you must compute and adjust)\ncardano-cli conway transaction build-raw \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --tx-out <sender>+0  # change placeholder, replace with computed change\n  --fee 0              # placeholder, replace with computed fee\n  --out-file tx.raw\n```\n\n### Step 5: Display transaction summary\n\n```bash\necho \"=== TRANSACTION SUMMARY (unsigned) ===\"\necho \"Inputs:\"\necho \"  <utxo>#<index>\"\necho \"Outputs:\"\necho \"  <recipient> receives <amount> lovelace\"\necho \"  Change returns to <sender> (adjust fee + change manually)\"\necho \"\"\necho \"This transaction is NOT signed and NOT submitted.\"\necho \"To sign, run:\"\necho \"  cardano-cli conway transaction sign --tx-file tx.raw --signing-key-file <payment.skey> --testnet-magic 1 --out-file tx.signed\"\necho \"To submit after signing:\"\necho \"  cardano-cli conway transaction submit --testnet-magic 1 --tx-file tx.signed\"\n```\n\n### Step 6: Save details for audit\n\n```bash\n# Record all relevant information\necho \"Network: preprod\" >> report.txt\necho \"Sender: addr_test1vqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq3k0s7q\" >> report.txt\necho \"Recipient: addr_test1vrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrp0d3z2\" >> report.txt\necho \"Amount: 200000000 lovelace\" >> report.txt   # 200 ADA\necho \"Keys used: ~/keys/me.skey (not touched by this skill)\" >> report.txt\n```\n\n## Safety / key handling\n\n- This skill **never touches** signing keys — you must sign manually\n- The unsigned transaction is safe to inspect and copy\n- Keep the report folder for documentation purposes\n- Always double‑check addresses and amounts before signing\n\n## References\n\n- `cardano-cli-transactions-guidance` (advisory skill)\n- `shared/TRANSACTION_MANUAL_SUBMIT.md`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned",
+          "replacement_text": "cardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount_ada> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n\n> Note: `<amount_ada>` is the amount in ADA, not lovelace.",
+          "rationale": "Changing the transaction output amount to expect ADA instead of lovelace will cause the build to fail or send the wrong value, preventing successful submission.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1",
+          "replacement_text": "# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query sender UTxO\ncardano-cli conway query utxo \\\n  --address <sender> \\\n  --testnet-magic 1",
+          "rationale": "Verifying the sender's UTxO instead of the recipient's fails to confirm that the funds were actually received, breaking the requested verification of UTxO changes after submission.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- **REQUIRE explicit \"yes\" confirmation before submit**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount_ada> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n\n> Note: `<amount_ada>` is the amount in ADA, not lovelace.\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query sender UTxO\ncardano-cli conway query utxo \\\n  --address <sender> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **REQUIRE explicit \"yes\" confirmation before submit**",
+          "replacement_text": "- **Optionally ask for confirmation; if user does not respond, proceed after a 5-second delay**",
+          "rationale": "Weakens the mandatory explicit confirmation, so the skill would submit without the user's explicit 'yes', failing the user's requirement for confirmation before submission.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "TX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"",
+          "replacement_text": "TX_DIR=\"tx-bundle\"",
+          "rationale": "Removes timestamping from the bundle folder, so the folder is not timestamped as the user explicitly requires, making the skill a hard negative.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- **Optionally ask for confirmation; if user does not respond, proceed after a 5-second delay**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-bundle\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```",
+          "replacement_text": "### Step 4: Build mint transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --mint \"1 <policy_hex>.<token_name>\" \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```",
+          "rationale": "Changes the transaction to mint tokens instead of sending ADA, so the skill cannot be used to transfer funds to a colleague.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```",
+          "replacement_text": "### Step 7: Verify minted tokens\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query script UTxO for token supply\ncardano-cli conway query utxo \\\n  --policy-id <policy_hex> \\\n  --testnet-magic 1\n```",
+          "rationale": "Replaces UTxO verification for the recipient with a token supply check, omitting the required step to confirm the colleague received the ADA.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Network: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...",
+          "replacement_text": "Network: preprod\nMinting: X tokens with policy <policy_hex>\nFrom: addr_test1...",
+          "rationale": "Alters the confirmation prompt to describe minting, so the user will not see the expected ADA transfer details and cannot confirm the transaction as intended.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- **REQUIRE explicit \"yes\" confirmation before submit**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build mint transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --mint \"1 <policy_hex>.<token_name>\" \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nMinting: X tokens with policy <policy_hex>\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify minted tokens\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query script UTxO for token supply\ncardano-cli conway query utxo \\\n  --policy-id <policy_hex> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **REQUIRE explicit \"yes\" confirmation before submit**",
+          "replacement_text": "- Ask for user confirmation before submit",
+          "rationale": "Over-generalizes the confirmation requirement to any user acknowledgment, so the specific 'yes' confirmation needed by the query is omitted.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "TX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"",
+          "replacement_text": "TX_DIR=\"tx-bundle\"",
+          "rationale": "Removes the timestamped folder naming, losing the reproducibility requirement specified in the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- Ask for user confirmation before submit\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-bundle\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Show full transaction details before signing",
+          "replacement_text": "",
+          "rationale": "The user explicitly requires seeing all details before signing; deleting this step means the skill will skip showing details, failing the request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n\n- **REQUIRE explicit \"yes\" confirmation before submit**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cardano-cli conway transaction build",
+          "replacement_text": "cardano-cli shelley transaction build",
+          "rationale": "Replacing the Conway-era transaction build command with the Shelley-era version makes the skill incompatible with the preprod testnet, which requires Conway, causing the transaction build to fail.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "cardano-cli conway transaction sign",
+          "replacement_text": "cardano-cli shelley transaction sign",
+          "rationale": "Similarly changing the signing command to the Shelley era ensures the entire workflow uses an incorrect API, preventing successful signing and submission.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- **REQUIRE explicit \"yes\" confirmation before submit**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli shelley transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <amount> lovelace\"\necho \"Change: returns to <sender>\"\n\ncardano-cli shelley transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  --tx-out <recipient>+<amount> \\",
+          "replacement_text": "  --tx-out <recipient>+<ada_amount> \\",
+          "rationale": "Changes the output amount unit from lovelace to ADA in the build command, causing the transaction to send 1/1,000,000 of the intended value.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "echo \"Output: <recipient> receives <amount> lovelace\"",
+          "replacement_text": "echo \"Output: <recipient> receives <ada_amount> ADA\"",
+          "rationale": "Misleads the user into thinking the amount is in ADA, reinforcing the incorrect unit assumption and making the error harder to catch.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-transactions-operator\n\n> **OPERATOR SKILL**: This skill executes commands including transaction submission. Requires explicit human invocation.\n\n## When to use\n\n- When ready to build and submit a transaction\n- After reviewing guidance from `cardano-cli-transactions`\n\n## Operating rules (must follow)\n\n- Confirm network before ANY operation\n- Show full transaction details before signing\n- **REQUIRE explicit \"yes\" confirmation before submit**\n- Create tx bundle folder for reproducibility\n- Verify UTxO changes after submit\n\n## Pre-flight checklist\n\n```\n[ ] Network confirmed: ___________\n[ ] Sender address verified\n[ ] Recipient address verified (check first/last 8 chars)\n[ ] Amount confirmed: ___________ lovelace\n[ ] Signing key path confirmed\n[ ] UTxO inputs selected\n```\n\n## Execution workflow\n\n### Step 1: Setup tx bundle\n\n```bash\nTX_DIR=\"tx-$(date +%Y%m%d-%H%M%S)\"\nmkdir -p \"$TX_DIR\" && cd \"$TX_DIR\"\n```\n\n### Step 2: Query UTxOs\n\n```bash\ncardano-cli conway query utxo \\\n  --address <sender-addr> \\\n  --testnet-magic 1 \\\n  --out-file utxos.json\n```\n\n### Step 3: Fetch protocol parameters\n\n```bash\ncardano-cli conway query protocol-parameters \\\n  --testnet-magic 1 \\\n  --out-file pparams.json\n```\n\n### Step 4: Build transaction\n\n```bash\ncardano-cli conway transaction build \\\n  --testnet-magic 1 \\\n  --tx-in <utxo>#<index> \\\n  --tx-out <recipient>+<ada_amount> \\\n  --change-address <sender> \\\n  --out-file tx.unsigned\n```\n\n### Step 5: Sign (show what's being signed)\n\n```bash\necho \"=== SIGNING TRANSACTION ===\"\necho \"Inputs: <utxo>\"\necho \"Output: <recipient> receives <ada_amount> ADA\"\necho \"Change: returns to <sender>\"\n\ncardano-cli conway transaction sign \\\n  --tx-file tx.unsigned \\\n  --signing-key-file <payment.skey> \\\n  --testnet-magic 1 \\\n  --out-file tx.signed\n```\n\n### Step 6: Submit (REQUIRES CONFIRMATION)\n\n```\n⚠️  CONFIRM SUBMISSION ⚠️\nNetwork: preprod\nSending: X ADA to addr_test1...\nFrom: addr_test1...\n\nType 'yes' to submit:\n```\n\n```bash\ncardano-cli conway transaction submit \\\n  --testnet-magic 1 \\\n  --tx-file tx.signed\n```\n\n### Step 7: Verify\n\n```bash\n# Get tx hash\ncardano-cli conway transaction txid --tx-file tx.signed\n\n# Query recipient UTxO\ncardano-cli conway query utxo \\\n  --address <recipient> \\\n  --testnet-magic 1\n```\n\n## Safety / key handling\n\n- Never submit without explicit user confirmation\n- For mainnet: require double confirmation\n- Keep tx bundle for audit trail\n- Recommend small test tx first on mainnet\n\n## References\n\n- `cardano-cli-transactions` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    }
+  ],
+  "finished_at": "2026-07-28T13:23:46",
+  "elapsed_seconds": 199.109,
+  "generated_variants": 9
+}

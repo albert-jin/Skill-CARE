@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:00:46",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 7283,
+  "selection_rank": 255,
+  "skill": {
+    "skill_id": "development/steps-skill",
+    "name": "steps-skill",
+    "category": "development",
+    "description": "Runs a script that prints ordered execution steps",
+    "body": "## What I do\n\nI demonstrate how skills can use helper scripts. I run a script that prints numbered steps with random words to show execution flow.\n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\nbash steps.sh\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the bash tool executes scripts\n- ✅ Ordered execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)",
+    "source": "pool"
+  },
+  "generated_query": "I'm debugging a multi-step deployment pipeline and need to confirm that the steps are executing in the correct sequence. I have a bash script that prints numbered steps, each paired with a random word, to simulate different stages. Could you run that script from its base directory and show me the output? I need to see Step 1, Step 2, etc., each with its random word, to verify the ordering is working properly.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "I run a script that prints numbered steps with random words to show execution flow.",
+          "replacement_text": "",
+          "rationale": "Removing the explicit description of printing numbered steps makes the skill omit the key capability needed to verify execution order, so it fails to address the user's query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What I do\n\nI demonstrate how skills can use helper scripts. \n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\nbash steps.sh\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the bash tool executes scripts\n- ✅ Ordered execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "bash steps.sh",
+          "replacement_text": "python steps.py",
+          "rationale": "Changing the execution command from bash to Python prevents the skill from running the user's bash script, so it cannot produce the required output.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "✅ How the bash tool executes scripts",
+          "replacement_text": "✅ How the python tool executes scripts",
+          "rationale": "Matching the bullet to the replaced tool maintains consistency but still misrepresents the skill's actual capability for bash scripts.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What I do\n\nI demonstrate how skills can use helper scripts. I run a script that prints numbered steps with random words to show execution flow.\n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\npython steps.py\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the python tool executes scripts\n- ✅ Ordered execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "I run a script that prints numbered steps with random words to show execution flow.",
+          "replacement_text": "I run a script that prints a random greeting to demonstrate helper script execution.",
+          "rationale": "The skill no longer outputs numbered steps, so it cannot help the user verify step ordering.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "bash steps.sh",
+          "replacement_text": "bash greeting.sh",
+          "rationale": "The script invoked does not exist or does not produce the required step output, making the skill ineffective for the user's query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What I do\n\nI demonstrate how skills can use helper scripts. I run a script that prints a random greeting to demonstrate helper script execution.\n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\nbash greeting.sh\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the bash tool executes scripts\n- ✅ Ordered execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "prints numbered steps with random words to show execution flow",
+          "replacement_text": "prints random words to demonstrate script execution",
+          "rationale": "Removes mention of numbered steps, so the script output no longer provides the step ordering needed to verify sequence.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "bash steps.sh",
+          "replacement_text": "bash random.sh",
+          "rationale": "Changes the script to a generic name lacking the implied step-printing behavior, breaking the ability to check step ordering.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What I do\n\nI demonstrate how skills can use helper scripts. I run a script that prints random words to demonstrate script execution.\n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\nbash random.sh\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the bash tool executes scripts\n- ✅ Ordered execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "I run a script that prints numbered steps with random words to show execution flow.",
+          "replacement_text": "I run a script that prints random words to demonstrate script execution.",
+          "rationale": "Removes the key capability of printing numbered steps, which is essential for verifying step ordering.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "✅ Ordered execution with console output",
+          "replacement_text": "✅ Script execution with console output",
+          "rationale": "Changes the demonstrated feature from ordered execution to generic script execution, making the skill appear irrelevant for ordering verification.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What I do\n\nI demonstrate how skills can use helper scripts. I run a script that prints random words to demonstrate script execution.\n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\nbash steps.sh\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the bash tool executes scripts\n- ✅ Script execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "I run a script that prints numbered steps with random words to show execution flow.",
+          "replacement_text": "I run a script to demonstrate script execution flow.",
+          "rationale": "Removes the specific mention of numbered steps and random words, making the skill appear generic and not guaranteeing the needed output format.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "bash steps.sh",
+          "replacement_text": "bash your_script.sh",
+          "rationale": "Changes the specific script name to a generic placeholder, indicating any script could be run, thus not ensuring the specific step ordering functionality.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What I do\n\nI demonstrate how skills can use helper scripts. I run a script to demonstrate script execution flow.\n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\nbash your_script.sh\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the bash tool executes scripts\n- ✅ Ordered execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "bash steps.sh",
+          "replacement_text": "",
+          "rationale": "Without the command to run the script, the skill only navigates to the directory but does not execute the script, so no output is produced, failing the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What I do\n\nI demonstrate how skills can use helper scripts. I run a script that prints numbered steps with random words to show execution flow.\n\n## How to use me\n\nRun the helper script from my base directory:\n\n```bash\ncd {base_directory}\n\n```\n\nThis demonstrates:\n- ✅ How skills reference helper scripts\n- ✅ How the bash tool executes scripts\n- ✅ Ordered execution with console output\n- ✅ Scripts can be in any language (bash, python, etc.)"
+    }
+  ],
+  "finished_at": "2026-07-29T02:02:47",
+  "elapsed_seconds": 121.407,
+  "generated_variants": 7
+}

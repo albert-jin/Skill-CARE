@@ -1,0 +1,212 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:04:23",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 47374,
+  "selection_rank": 79,
+  "skill": {
+    "skill_id": "other/docs-cmtkdot-arc",
+    "name": "docs",
+    "category": "other",
+    "description": "Use when the user asks to generate or update architectural documentation, dev guides, or DEVGUIDE files for a codebase or directory.",
+    "body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a new project with a `src/` directory containing three separate modules: `src/services`, `src/components`, and `src/lib`. I need to create detailed developer guides (DEVGUIDE.md) for each module, covering architecture, main components, and usage patterns. Could you help generate these the required capability? Also, please check if there are any existing project rules in `.claude/rules` that should be referenced, and if not, note that we'll need to create them later. For each module, if a DEVGUIDE already exists, just increment the filename (like DEVGUIDE_2.md) to avoid overwriting.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)",
+          "replacement_text": "",
+          "rationale": "By deleting the logic to increment filenames for existing DEVGUIDE files, the skill will overwrite existing documentation instead of preserving it, failing the user's explicit requirement to avoid overwriting.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "subagent_type: \"arc:document-creator\"",
+          "replacement_text": "subagent_type: \"arc:code-reviewer\"",
+          "rationale": "Replaces the core agent responsible for generating DEVGUIDE documentation with a code-review agent that does not produce the required files, making the skill incapable of fulfilling the user's request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:code-reviewer\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Split arguments by spaces",
+          "replacement_text": "Split arguments by commas",
+          "rationale": "User passes space-separated directories, so parsing by commas will treat the entire list as one directory, causing only one module to be documented.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)",
+          "replacement_text": "Always use `<target-dir>/DEVGUIDE.md`",
+          "rationale": "Removes the increment logic, causing existing DEVGUIDE files to be overwritten, contrary to the user's explicit request to avoid overwriting.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by commas\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- Always use `<target-dir>/DEVGUIDE.md`\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)",
+          "replacement_text": "If exists → `<target-dir>/DEVGUIDE.md` (overwrite existing)",
+          "rationale": "The skill now overwrites existing DEVGUIDE files instead of incrementing, failing the user's requirement to avoid overwriting and preserve existing documentation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE.md` (overwrite existing)\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`",
+          "replacement_text": "If no ARCHITECTURE.md exists → `<target-dir>/ARCHITECTURE.md`",
+          "rationale": "Changes output file type to ARCHITECTURE instead of DEVGUIDE, so the skill generates the wrong document type for the user's request.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)",
+          "replacement_text": "If exists → `<target-dir>/ARCHITECTURE_2.md` (increment until unused)",
+          "rationale": "Reinforces the incorrect output file type change, making the skill consistently generate ARCHITECTURE docs instead of DEVGUIDE.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "pass relevant info to agents",
+          "replacement_text": "ignore them",
+          "rationale": "Removes the behavior of reading existing rules, breaking the user's requirement to check and reference `.claude/rules`.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, ignore them\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no ARCHITECTURE.md exists → `<target-dir>/ARCHITECTURE.md`\n- If exists → `<target-dir>/ARCHITECTURE_2.md` (increment until unused)\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)",
+          "replacement_text": "### Step 3: Determine Output Paths\n\nFor each directory, output to `<target-dir>/DEVGUIDE.md`.",
+          "rationale": "The skill no longer handles existing DEVGUIDE files, so it would overwrite them, failing the user's requirement to avoid overwriting.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory, output to `<target-dir>/DEVGUIDE.md`.\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)",
+          "replacement_text": "",
+          "rationale": "Removing the filename increment logic causes the skill to overwrite existing DEVGUIDE.md files, violating the user's requirement to avoid overwriting.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "subagent_type: \"arc:document-creator\"",
+          "replacement_text": "subagent_type: \"arc:code-reviewer\"",
+          "rationale": "The skill uses a code reviewer agent instead of a document creator, so it will not generate DEVGUIDE files but will perform code review instead, failing the user's request for documentation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:code-reviewer\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Parse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory",
+          "replacement_text": "Parse input to extract first directory from arguments:\n- Take the first argument only; ignore rest\n- If empty → use current directory (`.`)\n- Validate the path exists as a directory",
+          "rationale": "The skill now only processes a single directory, so it cannot generate DEVGUIDE files for the three requested modules.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)",
+          "replacement_text": "- Always use `<target-dir>/DEVGUIDE.md` (overwrites any existing file)",
+          "rationale": "The skill now overwrites existing DEVGUIDE files instead of incrementing filenames, conflicting with the user's requirement to avoid overwriting.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract first directory from arguments:\n- Take the first argument only; ignore rest\n- If empty → use current directory (`.`)\n- Validate the path exists as a directory\n\n### Step 2: Check for Rules\n\nCheck if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- Always use `<target-dir>/DEVGUIDE.md` (overwrites any existing file)\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check if `.claude/rules` directory exists at project root:\n- If rules exist → read each rules file, pass relevant info to agents\n- If no rules exist → note for agents to create rules files",
+          "replacement_text": "Skip checking `.claude/rules`. Assume no rules exist. Agents do not need to create rules files.",
+          "rationale": "The skill no longer checks for existing rules or instructs agents to create them, failing the user's explicit request to reference or note missing rules.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Document Creator\n\nGenerate hierarchical architectural documentation (DEVGUIDE.md) using Claude Code's built-in LSP tools. Supports multiple directories with parallel agent execution.\n\n## Arguments\n\nDirectory paths to document (one agent per directory):\n- Single: `src/services/`\n- Multiple: `src/services src/components src/lib`\n- None: analyzes current directory (`.`)\n\n## Instructions\n\n### Step 1: Parse Input\n\nParse input to extract directory list:\n- Split arguments by spaces\n- If empty → use current directory (`.`)\n- Validate each path exists as a directory\n\n### Step 2: Check for Rules\n\nSkip checking `.claude/rules`. Assume no rules exist. Agents do not need to create rules files.\n\n### Step 3: Determine Output Paths\n\nFor each directory:\n- If no DEVGUIDE.md exists → `<target-dir>/DEVGUIDE.md`\n- If exists → `<target-dir>/DEVGUIDE_2.md` (increment until unused)\n\n### Step 4: Launch Agents\n\nFor EACH directory, launch a background agent:\n\n**REQUIRED Task tool parameters:**\n```\nsubagent_type: \"arc:document-creator\"\nrun_in_background: true\nprompt: \"Generate DEVGUIDE: <dir>\\nOutput: <path>\\nRules: <status>\"\n```\n\n**Launch ALL agents in a single message for parallel execution.** Output a status message and **end your turn**.\n\n### Step 5: Report Results\n\n```\n## DEVGUIDE Documentation Created (LSP)\n\n| Directory | Output | Status |\n|-----------|--------|--------|\n| [dir1] | [output path] | CREATED |\n\nRules Status: [Found N rules / Created new rules]\n\nNext Steps:\n1. Review generated documentation\n2. Commit the DEVGUIDE files\n```\n\n## Error Handling\n\n| Scenario | Action |\n|----------|--------|\n| Path not found | Report error, continue with others |\n| Path is file | Report error, continue with others |\n| Empty directory | Generate minimal guide |"
+    }
+  ],
+  "finished_at": "2026-07-28T16:06:53",
+  "elapsed_seconds": 150.219,
+  "generated_variants": 10
+}

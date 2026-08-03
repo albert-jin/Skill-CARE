@@ -1,0 +1,261 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:36:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 51062,
+  "selection_rank": 107,
+  "skill": {
+    "skill_id": "other/memory-allocator",
+    "name": "Memory Allocator",
+    "category": "other",
+    "description": "Expert skill for custom memory allocator design optimized for language runtime needs",
+    "body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Implement thread-local allocation buffers (TLAB)\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a bytecode VM for a new scripting language that prioritizes low latency and minimal GC pauses. The runtime currently runs single-threaded but we plan to add parallelism later. Most objects are small and fixed-size (bytes: 24, 40, 72, 136) and live short. Larger objects (>8KB) should be allocated separately to avoid fragmentation. I need a custom allocator with thread-local allocation buffers, size-class-based free lists for the common sizes, and a bump allocator for temporary per-context memory. The allocator must expose allocation statistics (total allocated, free, and waste) for profiling. It also needs to integrate with a simple mark-sweep GC, so I need fast iteration of allocated blocks. Can you design the allocator architecture, define the size classes, propose the thread safety model, and then generate the implementation files (C++ headers and source) for the bump region, size classes, TLAB, and large object handling? Please output the design summary with allocator type, size classes list, thread safety mode, and list of generated files.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Implement thread-local allocation buffers (TLAB)\n",
+          "replacement_text": "",
+          "rationale": "Without TLAB capability, the skill cannot provide thread-local allocation buffers, which is a core requirement of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Implement thread-local allocation buffers (TLAB)",
+          "replacement_text": "- Implement global allocation pool with mutex",
+          "rationale": "Replaces the TLAB capability with a global mutex-based pool, which removes the thread-local hot path essential for low-latency multi-threaded allocation.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Size Classes**: Design size classes to minimize internal fragmentation",
+          "replacement_text": "1. **Size Classes**: Use a single fixed block size for all allocations",
+          "rationale": "Changes the size class design to a single block size, which prevents the required size-class-based free lists for common object sizes.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]",
+          "replacement_text": "      \"enum\": [\"single-threaded\", \"global-mutex\", \"lock-free\"]",
+          "rationale": "Replaces the TLAB thread safety option with a global-mutex mode, removing the thread-local allocation buffers the query explicitly requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Implement global allocation pool with mutex\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Use a single fixed block size for all allocations\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"global-mutex\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]",
+          "replacement_text": "      \"enum\": [\"single-threaded\", \"lock-free\"]",
+          "rationale": "Removing 'tlab' prevents the skill from proposing thread-local allocation buffers, which is a key requirement for the user's allocator.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },",
+          "replacement_text": "    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" },\n      \"enum\": [[16, 32, 64, 128, 256], [8, 16, 24, 32, 48, 64, 80, 96, 112, 128]]\n    },",
+          "rationale": "Restricting size classes to only two predefined lists excludes the user's needed sizes (24, 40, 72, 136), making the output schema unable to represent the required design.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Implement thread-local allocation buffers (TLAB)\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" },\n      \"enum\": [[16, 32, 64, 128, 256], [8, 16, 24, 32, 48, 64, 80, 96, 112, 128]]\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]",
+          "replacement_text": "\"enum\": [\"single-threaded\"]",
+          "rationale": "By restricting thread safety to single-threaded, the skill no longer supports thread-local allocation buffers (TLAB) or lock-free designs, which are essential for the user's parallelism plans and TLAB requirements.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "4. **Profiling**: Build allocation statistics from the start",
+          "replacement_text": "",
+          "rationale": "Removing the profiling capability means the skill cannot provide allocation statistics (total allocated, free, waste) that the user explicitly needs for profiling.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Implement thread-local allocation buffers (TLAB)\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Expert skill for custom memory allocator design optimized for language runtime needs",
+          "replacement_text": "Expert skill for custom memory allocator design optimized for high-performance game engines",
+          "rationale": "Shifts the allocator skill to a game engine domain, which typically prioritizes deterministic allocation and frequent resets over the bytecode VM's need for TLAB and GC integration.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "5. **GC Integration**: Design allocator API with GC integration in mind",
+          "replacement_text": "",
+          "rationale": "Removes the explicit GC integration guideline, making the skill miss the crucial requirement to work with a mark-sweep collector.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Implement thread-local allocation buffers (TLAB)",
+          "replacement_text": "- Implement per-thread caching for hot paths",
+          "rationale": "Replaces the specific TLAB concept with a vaguer per-thread caching, which does not guarantee the bump-allocator-based thread-local buffers needed for low-latency bytecode VM.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for high-performance game engines.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Implement per-thread caching for hot paths\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Implement thread-local allocation buffers (TLAB)",
+          "replacement_text": "- Implement custom memory pools",
+          "rationale": "Removes explicit TLAB support, which is a core requirement for the query's thread-local allocation buffers.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Implement free-list allocators with size classes",
+          "replacement_text": "- Implement free-list allocators",
+          "rationale": "Drops the specification of size classes, a critical feature the query needs for fixed-size objects.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Size Classes**: Design size classes to minimize internal fragmentation",
+          "replacement_text": "1. **Memory Layout**: Design memory layout to minimize internal fragmentation",
+          "rationale": "Replaces specific size class guidance with a vague memory layout recommendation, failing to address the query's explicit size class design.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators\n- Design slab allocators for fixed-size objects\n- Implement custom memory pools\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Memory Layout**: Design memory layout to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Implement thread-local allocation buffers (TLAB)",
+          "replacement_text": "",
+          "rationale": "Deleting TLAB capability makes the skill unable to provide thread-local allocation buffers, which is a core requirement for the low-latency bytecode VM allocator.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- \n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Implement thread-local allocation buffers (TLAB)",
+          "replacement_text": "- Implement global allocation with per-thread caches",
+          "rationale": "Removes the specific TLAB capability required by the query, making the skill unable to design the needed thread-local bump allocation.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]",
+          "replacement_text": "\"enum\": [\"single-threaded\", \"lock-free\"]",
+          "rationale": "Removes the 'tlab' option from the output schema, so the skill cannot output the required thread safety mode and fails to meet the user's explicit specification.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Size Classes**: Design size classes to minimize internal fragmentation",
+          "replacement_text": "1. **Size Classes**: Use a single uniform size for all small allocations to simplify implementation",
+          "rationale": "Eliminates size class design, making the skill unable to provide the specific small object sizes required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Implement global allocation with per-thread caches\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Use a single uniform size for all small allocations to simplify implementation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Implement thread-local allocation buffers (TLAB)\n",
+          "replacement_text": "",
+          "rationale": "Without TLAB capability, the skill cannot generate thread-local allocation buffers required for low-latency and future parallelism.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]\n    }",
+          "replacement_text": "\"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\"]\n    }",
+          "rationale": "The output schema only allows single-threaded mode, making it impossible to declare the required tlab thread safety model.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use thread-local allocation for hot paths\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use thread-local allocation for hot paths",
+          "replacement_text": "Use global lock for allocation safety",
+          "rationale": "The user requires thread-local allocation buffers for low latency, but the skill now mandates global locking, which would cause contention and high latency.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memory Allocator Skill\n\n## Overview\n\nExpert skill for custom memory allocator design optimized for language runtime needs.\n\n## Capabilities\n\n- Implement bump/arena allocators\n- Implement free-list allocators with size classes\n- Design slab allocators for fixed-size objects\n- Implement thread-local allocation buffers (TLAB)\n- Handle large object allocation strategies\n- Implement memory pooling and recycling\n- Design memory profiling and statistics\n- Implement address space layout optimization\n\n## Target Processes\n\n- memory-allocator-design.js\n- garbage-collector-implementation.js\n- interpreter-implementation.js\n- bytecode-vm-implementation.js\n\n## Dependencies\n\njemalloc, tcmalloc references\n\n## Usage Guidelines\n\n1. **Size Classes**: Design size classes to minimize internal fragmentation\n2. **Thread Safety**: Use global lock for allocation safety\n3. **Large Objects**: Handle large objects separately from small allocations\n4. **Profiling**: Build allocation statistics from the start\n5. **GC Integration**: Design allocator API with GC integration in mind\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"allocatorType\": {\n      \"type\": \"string\",\n      \"enum\": [\"bump\", \"free-list\", \"slab\", \"hybrid\"]\n    },\n    \"sizeClasses\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"integer\" }\n    },\n    \"threadSafety\": {\n      \"type\": \"string\",\n      \"enum\": [\"single-threaded\", \"tlab\", \"lock-free\"]\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T17:39:17",
+  "elapsed_seconds": 164.391,
+  "generated_variants": 10
+}

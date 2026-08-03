@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:20:49",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 14005,
+  "selection_rank": 99,
+  "skill": {
+    "skill_id": "development/vision",
+    "name": "vision",
+    "category": "development",
+    "description": "这个技能接收用户给出的图片文件，按照用户的要求进行文字提取、图片描述、图片内容综述、图片内容解释、界面截图复刻等功能。",
+    "body": "# **vision**的主要功能\n\n## 图片内容描述\n## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的文件和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run vision_analyzer.py {image_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户",
+    "source": "pool"
+  },
+  "generated_query": "我有一张网页设计截图，保存在 `design.png` 中。请你帮我完成以下操作：\n\n1. 先详细描述这张图片的内容，包括布局、颜色、字体和主要元素。\n2. 然后根据这张截图，用 HTML + CSS + JavaScript 精确复刻出同样的界面，要求像素级还原，包括所有间距、对齐、按钮状态和文字内容。\n3. 最后分析这个界面可能的用途，并给出改进建议。\n\n请将处理结果以 Markdown 格式直接输出给我。",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容",
+          "replacement_text": "",
+          "rationale": "The user query explicitly requires pixel-perfect replication using HTML+CSS+JS; deleting this step makes the skill unable to produce the requested code output.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的文件和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run vision_analyzer.py {image_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "uv run vision_analyzer.py {image_file_path} {user prompt}",
+          "replacement_text": "uv run text_processor.py {text_file_path} {user prompt}",
+          "rationale": "Replacing the vision analysis tool with a text processor makes the skill unable to extract layout from images, failing the pixel-perfect recreation requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的文件和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run text_processor.py {text_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "用户给出的文件和需求描述文本",
+          "replacement_text": "用户给出的图片URL和需求描述文本",
+          "rationale": "The user query specifies a local file 'design.png', but the skill now only accepts image URLs, so it cannot process the input.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "将输出的结果按照markdown格式直接输出给用户",
+          "replacement_text": "将输出的结果按照JSON格式直接输出给用户",
+          "rationale": "The user query explicitly requires Markdown output, but the skill now outputs JSON, making it fail to meet the request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的图片URL和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run vision_analyzer.py {image_file_path} {user prompt}\n```\n将输出的结果按照JSON格式直接输出给用户"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容",
+          "replacement_text": "## 跟据给出的图片，使用css+html+js 复刻图片的大致样式",
+          "rationale": "The user requires pixel-perfect replication, but the weakened constraint only promises an approximate style, so the skill cannot satisfy the exactness demanded by the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n## 跟据给出的图片，使用css+html+js 复刻图片的大致样式\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的文件和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run vision_analyzer.py {image_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "用户给出的文件和需求描述文本",
+          "replacement_text": "用户给出的需求描述文本（不含图片文件）",
+          "rationale": "改变输入格式，使得技能无法接收图片文件，从而无法描述和复刻图中的界面。",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容",
+          "replacement_text": "## 根据需求描述文本，使用css+html+js 生成对应的网页界面",
+          "rationale": "将核心功能从图片复刻改为文本生成，使得技能无法利用截图进行像素级还原。",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n## 根据需求描述文本，使用css+html+js 生成对应的网页界面\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的需求描述文本（不含图片文件）\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run vision_analyzer.py {image_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容",
+          "replacement_text": "## 根据给出的图片，生成接近的HTML+CSS代码结构",
+          "rationale": "将'精准的复刻'改为'生成的代码结构'，移除了像素级还原的要求，使技能无法满足用户精确复刻界面的需求。",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n## 根据给出的图片，生成接近的HTML+CSS代码结构\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的文件和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run vision_analyzer.py {image_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容",
+          "replacement_text": "",
+          "rationale": "Deleting the key step of pixel-perfect HTML/CSS/JS reproduction makes the skill unable to fulfill the user's core requirement of interface replication.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的文件和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run vision_analyzer.py {image_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "uv run vision_analyzer.py {image_file_path} {user prompt}",
+          "replacement_text": "uv run text_extractor.py {image_file_path} {user prompt}",
+          "rationale": "The skill now uses a text extraction tool instead of a vision analyzer, so it cannot generate the required pixel-perfect HTML/CSS/JS replica.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# **vision**的主要功能\n\n## 图片内容描述\n## 跟据给出的图片，使用css+html+js 精准的复刻图片的内容\n## 跟据图片内容进行分析、推断、预测、总结\n\n# 输入\n用户给出的文件和需求描述文本\n\n\n# 功能要求\n首先检查运行环境是否就绪\n```bash\nuv sync\n```\n使用下面示例调用处理程序，并获取结果\n```python\nuv run text_extractor.py {image_file_path} {user prompt}\n```\n将输出的结果按照markdown格式直接输出给用户"
+    }
+  ],
+  "finished_at": "2026-07-28T17:22:25",
+  "elapsed_seconds": 95.469,
+  "generated_variants": 8
+}

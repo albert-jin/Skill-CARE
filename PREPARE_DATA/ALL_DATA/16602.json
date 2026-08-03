@@ -1,0 +1,233 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:46:18",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 16602,
+  "selection_rank": 71,
+  "skill": {
+    "skill_id": "development/anchor-sheet",
+    "name": "anchor-sheet",
+    "category": "development",
+    "description": "Purpose: make “what to actually say” explicit:",
+    "body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. Filter anchors to only citation keys present in `citations/ref.bib`.\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a research paper about the performance of recent large language models on mathematical reasoning benchmarks. I have a draft outline with evidence snippets stored in `outline/evidence_drafts.jsonl` and a bibliography file `citations/ref.bib`. I need to extract the most salient quantitative results, benchmark scores, dataset names, and key limitations from each subsection to use as concrete hooks when writing the actual prose, so I don't end up with vague walls of text. Could you process these two files and generate a structured anchor sheet at `outline/anchor_sheet.jsonl`? Each subsection should get at least four anchors, and wherever possible include at least one numerical result, one explicit evaluation anchor (like a benchmark or metric), and one concrete limitation or failure statement. Also, make sure all cited references in the anchors exist in the bibliography file.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "",
+          "rationale": "Without filtering citations against the bibliography, generated anchors may reference non-existent entries, violating the user's requirement that all cited references exist in the bibliography.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "3. For each anchor, include citation keys from the evidence even if they are not in `citations/ref.bib`; mark missing ones with '(placeholder)'.",
+          "rationale": "This change allows anchors to reference citations not actually in the bibliography, violating the user's explicit requirement that all cited references exist in ref.bib.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. For each anchor, include citation keys from the evidence even if they are not in `citations/ref.bib`; mark missing ones with '(placeholder)'.\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Write `outline/anchor_sheet.jsonl`.",
+          "replacement_text": "Write `outline/summary_sheet.txt`.",
+          "rationale": "The skill now outputs a different file that is not requested by the user, making it fail to produce the needed anchor sheet.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "Filter anchors to only citation keys present in `citations/general.bib`.",
+          "rationale": "The skill now references a non‑existent bibliography file, so citation validation will fail and the output will be incomplete.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. Filter anchors to only citation keys present in `citations/general.bib`.\n4. Write `outline/summary_sheet.txt`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "3. Prefer anchors with citation keys present in `citations/ref.bib`, but do not discard anchors with new or missing citations.",
+          "rationale": "By not requiring citations to exist in the bibliography, the skill may produce anchors with unverified or fake references, failing the user's requirement that all cited references are in the bibliography file.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. Prefer anchors with citation keys present in `citations/ref.bib`, but do not discard anchors with new or missing citations.\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `outline/anchor_sheet.jsonl`",
+          "replacement_text": "- `outline/anchor_sheet.txt`",
+          "rationale": "Changing the output to a plain-text file instead of JSONL makes the output incompatible with the user's expected structured format.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "3. Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "",
+          "rationale": "Removing the citation validation step allows anchors to reference non-existent citations, violating the user's requirement that all cited references exist in the bibliography.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- [ ] Every H3 has >=4 anchors (if evidence packs are rich).",
+          "replacement_text": "",
+          "rationale": "Deleting the minimum anchor count requirement means subsections may have fewer than four anchors, failing the user's explicit request for at least four per subsection.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.txt`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "3. Optionally cross-reference citation keys with `citations/ref.bib` if desired.",
+          "rationale": "Removing the mandatory citation filtering allows anchors to include missing citations, breaking the user's requirement that all cited references exist in the bibliography.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- [ ] Every H3 has >=4 anchors (if evidence packs are rich).",
+          "replacement_text": "",
+          "rationale": "Deleting the minimum-anchor-count quality check means the skill may output subsections with fewer than four anchors, violating the user's explicit request.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. Optionally cross-reference citation keys with `citations/ref.bib` if desired.\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "",
+          "rationale": "Deleting the step that filters citations to only those present in the bibliography means the generated anchor sheet may include citations that do not exist in `ref.bib`, directly violating the user's requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. \n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Required fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)",
+          "replacement_text": "Required fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, and optional `paper_id/evidence_id/pointer`)",
+          "rationale": "By removing the `citations` field from the output format, the generated anchors cannot include any reference to bibliography entries, making it impossible to satisfy the user's requirement that all cited references exist in the bibliography file.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "3. Include all anchors as-is (no citation filtering).",
+          "rationale": "Removing the citation filtering step means anchors may contain citations that do not exist in the bibliography, which directly contradicts the user's explicit requirement that all cited references must exist in the bibliography file.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. Include all anchors as-is (no citation filtering).\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`",
+          "replacement_text": "- `outline/evidence.jsonl`\n- `references.bib`",
+          "rationale": "Changes the expected input files so the skill would not read the user's actual files, making it unable to process the evidence or bibliography.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `outline/anchor_sheet.jsonl`",
+          "replacement_text": "- `outline/summary.jsonl`",
+          "rationale": "Changes the output file, so the skill will not produce the requested `anchor_sheet.jsonl`, failing the user's explicit deliverable.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. Read `outline/evidence_drafts.jsonl`.",
+          "replacement_text": "1. Read `outline/evidence.jsonl`.",
+          "rationale": "Updates the workflow step to match the changed input file, ensuring the skill consistently uses the wrong file name.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence.jsonl`\n- `references.bib`\n\n## Outputs\n\n- `outline/summary.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. Filter anchors to only citation keys present in `citations/ref.bib`.\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Filter anchors to only citation keys present in `citations/ref.bib`.",
+          "replacement_text": "3. Optionally filter anchors to citation keys present in `citations/ref.bib`; if a citation key is missing, it can be added to the bibliography later.",
+          "rationale": "By making citation verification optional, the skill may include anchors with nonexistent citations, violating the user's explicit requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Anchor Sheet (evidence → write hooks) [NO PROSE]\n\nPurpose: make “what to actually say” explicit:\n- select quantitative snippets (numbers/percentages)\n- select evaluation anchors (benchmarks/datasets/metrics)\n- select limitations/failure hooks\n\nThis prevents the writer from producing paragraph-shaped but **content-poor** prose.\n\n## Inputs\n\n- `outline/evidence_drafts.jsonl`\n- `citations/ref.bib`\n\n## Outputs\n\n- `outline/anchor_sheet.jsonl`\n\n## Output format (`outline/anchor_sheet.jsonl`)\n\nJSONL (one object per H3 subsection).\n\nRequired fields:\n- `sub_id`, `title`\n- `anchors` (list; each anchor has `hook_type`, `text`, `citations`, and optional `paper_id/evidence_id/pointer`)\n\n## Workflow\n\n1. Read `outline/evidence_drafts.jsonl`.\n2. Prefer anchors that contain:\n   - a number (%, counts, scores)\n   - an explicit benchmark/dataset/metric token\n   - an explicit limitation/failure statement\n3. Optionally filter anchors to citation keys present in `citations/ref.bib`; if a citation key is missing, it can be added to the bibliography later.\n4. Write `outline/anchor_sheet.jsonl`.\n\n## Quality checklist\n\n- [ ] Every H3 has >=4 anchors (if evidence packs are rich).\n- [ ] At least 1 anchor contains digits when the evidence pack contains digits.\n- [ ] No placeholders (`TODO`/`…`/`(placeholder)`).\n\n## Consumption policy (for C5 writers)\n\nAnchors are intended to prevent “long but empty” prose. Treat them as **must-use hooks**, not optional ideas.\n\nRecommended minimums per H3 (adjust for `queries.md:draft_profile`):\n- >=1 evaluation anchor (benchmark/dataset/metric/protocol)\n- >=1 limitation/failure hook (concrete, not generic “future work”)\n- If digits exist in the evidence pack: include >=1 cited numeric anchor (digit + citation in the same paragraph)\n\nNote:\n- Anchor text is trimmed for readability and **does not** include ellipsis markers (to reduce accidental leakage into prose).\n\n## Script\n\n### Quick Start\n\n- `python .codex/skills/anchor-sheet/scripts/run.py --help`\n- `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n\n### All Options\n\n- `--workspace <dir>`\n- `--unit-id <U###>`\n- `--inputs <semicolon-separated>`\n- `--outputs <semicolon-separated>`\n- `--checkpoint <C#>`\n\n### Examples\n\n- Default IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws>`\n- Explicit IO:\n  - `python .codex/skills/anchor-sheet/scripts/run.py --workspace workspaces/<ws> --inputs \"outline/evidence_drafts.jsonl;citations/ref.bib\" --outputs \"outline/anchor_sheet.jsonl\"`\n\n### Refinement marker (recommended; prevents churn)\n\nWhen you are satisfied with anchor facts (and they are actually subsection-specific), create:\n- `outline/anchor_sheet.refined.ok`\n\nThis is an explicit \"I reviewed/refined this\" signal:\n- prevents scripts from regenerating and undoing your work\n- (in strict runs) can be used as a completion signal before writing"
+    }
+  ],
+  "finished_at": "2026-07-28T15:48:41",
+  "elapsed_seconds": 142.875,
+  "generated_variants": 10
+}

@@ -1,0 +1,268 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:56:34",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 25000,
+  "selection_rank": 201,
+  "skill": {
+    "skill_id": "other/foreign-key-constraints",
+    "name": "foreign-key-constraints",
+    "category": "other",
+    "description": "外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。",
+    "body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. クエリ実装パターンを適用\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |",
+    "source": "pool"
+  },
+  "generated_query": "新しいECサイトのデータベーススキーマを設計しています。以下のテーブルと関係性があります：\n\n- users (id, name, email, deleted_at) ※ソフトデリート使用\n- orders (id, user_id, ordered_at, deleted_at) ※ソフトデリート使用\n- order_items (id, order_id, product_id, quantity)\n- products (id, name, price, deleted_at) ※ソフトデリート使用\n- categories (id, name)\n- product_categories (product_id, category_id)\n\n要件：\n1. 各テーブル間の外部キー制約を適切に設定したい\n2. ユーザー削除時の注文データの扱い（CASCADE / SET NULL / RESTRICT など）をビジネスルールに合わせて決めたい\n3. 循環参照がないかチェックしてほしい\n4. ソフトデリートを使っているテーブルとの整合性を保つ設計にしたい\n\n具体的には、スキーマ定義（CREATE TABLE文）を提示するので、それに対して以下の支援をお願いします：\n- 外部キー制約の設計レビューと改善提案\n- 各親子関係に対する最適なCASCADE動作の推奨（理由付き）\n- 依存関係グラフから循環参照を検出し、解消策を優先順位順に提示\n- ソフトデリートテーブルに対する削除ポリシーとクエリ実装パターンの提案\n\n出力は評価レポート形式で、各フェーズの結果をまとめてください。",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n",
+          "replacement_text": "",
+          "rationale": "Removing the circular reference detection phase makes the skill unable to detect and resolve circular dependencies, a key requirement of the user query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |",
+          "replacement_text": "",
+          "rationale": "Deleting the task table entry for circular detection further hides the missing capability, reinforcing the skill's inadequacy for the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. クエリ実装パターンを適用\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |",
+          "replacement_text": "| [agents/index-optimization.md](agents/index-optimization.md)             | インデックス最適化        | テーブル構造・クエリパターン | 推奨インデックス設定    |",
+          "rationale": "Removes the core capability to recommend optimal CASCADE actions, leaving the skill unable to address the user's primary requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |",
+          "replacement_text": "| インデックスパターン | [references/index-patterns.md](references/index-patterns.md) | 各インデックス戦略・実装例 |",
+          "rationale": "Further weakens the cascade selection by removing the pattern reference, making the skill unable to provide reasoned cascade recommendations.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. クエリ実装パターンを適用\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |\n| [agents/index-optimization.md](agents/index-optimization.md)             | インデックス最適化        | テーブル構造・クエリパターン | 推奨インデックス設定    |\n| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| インデックスパターン | [references/index-patterns.md](references/index-patterns.md) | 各インデックス戦略・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |",
+          "replacement_text": "| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | ER図 | 妥当性評価レポート |",
+          "rationale": "Changing the required input from schema definition to ER diagram makes the skill incompatible with the user's provided CREATE TABLE statements, so it cannot process the input.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |",
+          "replacement_text": "| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト |",
+          "rationale": "Removing the resolution strategies from the output means the skill no longer provides the prioritized solutions the user explicitly requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. クエリ実装パターンを適用\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | ER図 | 妥当性評価レポート |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト |\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "目的: ソフトデリートとFK制約の整合性確保",
+          "replacement_text": "目的: ソフトデリートとFK制約の整合性は任意（状況に応じて判断）",
+          "rationale": "ソフトデリートとの整合性を必須から任意に弱めたため、ユーザーの要求を満たせなくなる。",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "ソフトデリート導入時はPhase 4を必ず実行",
+          "replacement_text": "ソフトデリート導入時はPhase 4を実行しない場合もある",
+          "rationale": "必須の実行を任意に変えたことで、ソフトデリート統合の保証がなくなりユーザー要求に対応できない。",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 外部キー制約設計の原則\n\n## 概要\n\n外部キー制約と参照整合性に関する理論的基礎と設計原則を提供。CASCADE動作の種類、循環参照の定義、ソフトデリートの概念を理解するための知識ベースとして機能。実践的な設計支援ではなく、基礎知識の整理に重点を置く。\n\n## ワークフロー\n\n### Phase 1: スキーマ理解\n\n**目的**: データベーススキーマのテーブル間関係を把握する\n\n**アクション**:\n\n1. テーブル定義を列挙\n2. 各テーブルの主キーと外部キー候補を確認\n3. 関係性（1対多、多対多）を単純に記録\n\n**Task**: [agents/schema-understanding.md](agents/schema-understanding.md) を参照\n\n### Phase 2: CASCADE動作の基礎\n\n**目的**: CASCADE動作の種類とその影響を理解する\n\n**アクション**:\n\n1. [references/cascade-basics.md](references/cascade-basics.md) で各動作（CASCADE, SET NULL, RESTRICT, NO ACTION）の定義を確認\n2. ビジネスルールと物理制約の違いを認識\n3. 親子関係におけるCASCADEの一般的な使用例を学習\n\n**Task**: [agents/cascade-basics.md](agents/cascade-basics.md) を参照\n\n### Phase 3: 循環参照の認識\n\n**目的**: 循環参照とは何かを理解し、それが発生し得るパターンを把握する\n\n**アクション**:\n\n1. FK制約の依存関係を図示（グラフの描き方）\n2. 循環参照の定義と具体例を確認\n3. 循環参照が許容されるケース（自己参照など）を知る\n\n**Task**: [agents/circular-awareness.md](agents/circular-awareness.md) を参照\n\n### Phase 4: ソフトデリートと整合性\n\n**目的**: ソフトデリートの基本的な実装方法と、外部キー制約との関係を理解する\n\n**アクション**:\n\n1. ソフトデリートの一般的な実装パターン（deleted_atカラム）を確認\n2. 外部キー制約がソフトデリートに与える影響を考える\n3. 削除ポリシーの選択肢を列挙（物理削除 vs 論理削除）\n\n**Task**: [agents/soft-delete-overview.md](agents/soft-delete-overview.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/schema-understanding.md](agents/schema-understanding.md)         | スキーマ把握       | テーブル一覧 | 関係図の素案       |\n| [agents/cascade-basics.md](agents/cascade-basics.md)                   | CASCADE基礎理解    | 動作の種類   | 動作説明シート     |\n| [agents/circular-awareness.md](agents/circular-awareness.md)           | 循環参照認識       | 依存関係     | 循環パターン事例   |\n| [agents/soft-delete-overview.md](agents/soft-delete-overview.md)       | ソフトデリート概要 | 削除要件     | 実装選択肢一覧     |\n\n## ベストプラクティス\n\n### すべきこと\n\n- スキーマ設計前に全てのテーブル関係をリストアップする\n- CASCADE動作の種類を事前に理解しておく\n- 循環参照が発生する可能性のある箇所を意識する\n- ソフトデリートの導入理由を明確にする\n\n### 避けるべきこと\n\n- 理論を無視して経験則だけで制約を設定する\n- 循環参照を常に悪と見なす\n- ソフトデリートを導入する前にハードデリートの影響を考慮しない\n- 制約の組み合わせによるデッドロックリスクを軽視する\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADE基本知識 | [references/cascade-basics.md](references/cascade-basics.md)     | 各CASCADE動作の定義と使用場面    |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| analyze-schema.mjs     | 構造分析   | `node scripts/analyze-schema.mjs --tables <dir>`     |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result info`           |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| table-relation-list.md | テーブル関係一覧テンプレート |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 1.0.0   | 2026-01-15 | 初版作成：基礎知識提供に特化                         |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。",
+          "replacement_text": "外部キー制約と参照整合性の設計を、グラフデータベースの理論とNeo4jのベストプラクティスに基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。",
+          "rationale": "Changes the foundational theory from relational to graph databases, making all subsequent recommendations inappropriate for the user's SQL schema design.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認",
+          "replacement_text": "- [references/graph-cascade-patterns.md](references/graph-cascade-patterns.md) でパターンを確認",
+          "rationale": "Replaces the cascade pattern reference with a graph‑specific reference, rendering the skill's CASCADE recommendations irrelevant for relational foreign keys.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# スキーマ設計：分析クエリ最適化\n\n## 概要\n\nECサイトのデータベーススキーマ設計において、分析クエリのパフォーマンスとデータの変更容易性を最大化するための設計手法を提供。スタースキーマとスノーフレークスキーマの比較、集計テーブル設計、インデックス戦略に焦点を当てる。C.J. Dateの正規化理論とThe Pragmatic Programmerの実践的アプローチを基盤とする。\n\n## ワークフロー\n\n### Phase 1: 要求分析\n\n**目的**: ビジネス上の分析要件を明確化し、クエリパターンを洗い出す\n\n**アクション**:\n\n1. 主要な分析クエリ（売上集計、在庫分析、顧客セグメント）をリストアップ\n2. データアクセス頻度と応答時間要件を定義\n3. 正規化レベル（3NF vs スタースキーマ）のトレードオフを評価\n\n**Task**: [agents/requirement-analysis.md](agents/requirement-analysis.md) を参照\n\n### Phase 2: 次元モデル設計\n\n**目的**: 分析に最適な次元モデルを構築\n\n**アクション**:\n\n1. ファクトテーブルとディメンションテーブルを特定\n2. ディメンションの階層構造（日付、カテゴリ、顧客区分）を設計\n3. サロゲートキーと自然キーの選択基準を適用\n\n**Task**: [agents/dimensional-model.md](agents/dimensional-model.md) を参照\n\n### Phase 3: 集計テーブル設計\n\n**目的**: 頻繁な分析クエリを高速化する集計テーブルを設計\n\n**アクション**:\n\n1. 事前集計が必要なディメンションの組み合わせを特定\n2. 粒度（日次、月次、カテゴリ別）を決定\n3. 更新戦略（完全再計算、差分更新）を選択\n\n**Task**: [agents/aggregate-design.md](agents/aggregate-design.md) を参照\n\n### Phase 4: インデックス最適化\n\n**目的**: クエリパフォーマンスを最大化するインデックス設計\n\n**アクション**:\n\n1. カバリングインデックスと複合インデックスを計画\n2. パーティション戦略（レンジ、ハッシュ）を評価\n3. インデックスメンテナンスポリシーを定義\n\n**Task**: [agents/index-optimization.md](agents/index-optimization.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                 | 用途               | 入力               | 出力               |\n| -------------------------------------------------------------------- | ------------------ | ------------------ | ------------------ |\n| [agents/requirement-analysis.md](agents/requirement-analysis.md)     | 要求分析           | ビジネス要件       | クエリパターン定義 |\n| [agents/dimensional-model.md](agents/dimensional-model.md)           | 次元モデル設計     | テーブル定義       | スキーマ図         |\n| [agents/aggregate-design.md](agents/aggregate-design.md)             | 集計テーブル設計   | クエリリスト       | 集計仕様書         |\n| [agents/index-optimization.md](agents/index-optimization.md)         | インデックス最適化 | テーブル構造       | インデックス定義   |\n\n## ベストプラクティス\n\n### すべきこと\n\n- 分析目的を明確にしてからスキーマ設計を始める\n- ディメンションテーブルは変更に強い設計を心がける\n- 集計テーブルは定期的なメンテナンス計画を立てる\n- インデックス追加後にクエリ実行計画を検証する\n\n### 避けるべきこと\n\n- 全てのテーブルを3NFに固執する（分析クエリが複雑化する）\n- ディメンションのスロー変化（SCD）を無視する\n- インデックスを過剰に追加して書き込み性能を低下させる\n- 集計テーブルのデータ更新タイミングを考慮しない\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース            | パス                                                                 | 内容                              |\n| ------------------- | -------------------------------------------------------------------- | --------------------------------- |\n| 次元モデルパターン  | [references/dimensional-patterns.md](references/dimensional-patterns.md) | スタースキーマ・スノーフレーク例  |\n| SCD戦略             | [references/scd-strategies.md](references/scd-strategies.md)         | 緩やかに変化するディメンション戦略 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途           | 使用例                                                     |\n| ---------------------- | -------------- | ---------------------------------------------------------- |\n| check-query-plan.mjs   | 実行計画検証   | `node scripts/check-query-plan.mjs --query <query_file>`   |\n| log_usage.mjs          | 利用記録       | `node scripts/log_usage.mjs --result success`              |\n\n### assets/（テンプレート）\n\n| テンプレート               | 用途                 |\n| -------------------------- | -------------------- |\n| dimensional-model-template.md | 次元モデル設計テンプレート |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認",
+          "replacement_text": "1. 一般的なCASCADEオプションを検討",
+          "rationale": "Removes the reference to specific cascade patterns, leaving only vague advice that cannot guide the required CASCADE selection for EC schema.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. 循環参照を検出",
+          "replacement_text": "2. 循環参照の可能性を考慮",
+          "rationale": "Replaces the concrete detection action with a vague consideration, making it impossible to follow the query's request for cycle detection and resolution.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. クエリ実装パターンを適用",
+          "replacement_text": "3. 適切なクエリ設計を検討",
+          "rationale": "Removes the specific reference to implementation patterns, leaving only a generic suggestion that does not provide the actionable soft-delete query patterns the query demands.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. 一般的なCASCADEオプションを検討\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照の可能性を考慮\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. 適切なクエリ設計を検討\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. クエリ実装パターンを適用\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n",
+          "replacement_text": "",
+          "rationale": "The user query explicitly requires soft-delete integration support, so deleting this entire phase makes the skill unable to address that critical requirement.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |",
+          "replacement_text": "",
+          "rationale": "Removing the corresponding table entry maintains consistency with the deleted phase and prevents users from incorrectly expecting soft-delete support.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- ソフトデリート導入時はPhase 4を必ず実行",
+          "replacement_text": "",
+          "rationale": "Deleting this best practice bullet removes the only remaining reference to the missing phase, keeping the document internally consistent while still appearing plausible overall.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |\n\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照",
+          "replacement_text": "**Task**: [agents/schema-consistency.md](agents/schema-consistency.md) を参照",
+          "rationale": "Replaces the core circular reference detection agent with a generic schema consistency check, making the skill unable to detect cycles.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |",
+          "replacement_text": "| [agents/schema-consistency.md](agents/schema-consistency.md)           | スキーマ整合性チェック       | スキーマ定義 | 整合性レポート |",
+          "rationale": "Updates the task table to remove the circular detection capability, reinforcing the missing core API.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/schema-consistency.md](agents/schema-consistency.md) を参照\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. クエリ実装パターンを適用\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n| [agents/schema-consistency.md](agents/schema-consistency.md)           | スキーマ整合性チェック       | スキーマ定義 | 整合性レポート |\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. データベーススキーマ定義を確認",
+          "replacement_text": "1. ER図を確認",
+          "rationale": "Skill now requires ER diagram input instead of SQL schema definitions, so it cannot process the user's CREATE TABLE statements.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |",
+          "replacement_text": "| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | ER図 | 汎用的な設計ガイドライン |",
+          "rationale": "Table now states input is ER diagram and output is generic guidelines, both incompatible with the user's request for specific schema review and report.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. ER図を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n3. クエリ実装パターンを適用\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | ER図 | 汎用的な設計ガイドライン |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n- ソフトデリートとハードデリートの整合性確認を怠る\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. クエリ実装パターンを適用",
+          "replacement_text": "",
+          "rationale": "Removes the action to provide query implementation patterns for soft-delete tables, which the user explicitly requested.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- ソフトデリートとハードデリートの整合性確認を怠る",
+          "replacement_text": "",
+          "rationale": "Removes a warning about neglecting soft-delete consistency, weakening the skill's rigor in enforcing this constraint.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 外部キー制約設計\n\n## 概要\n\n外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。\n\n## ワークフロー\n\n### Phase 1: 設計レビュー\n\n**目的**: FK制約設計の妥当性を確認し、問題を早期発見\n\n**アクション**:\n\n1. データベーススキーマ定義を確認\n2. テーブル関係性を分析\n3. FK制約の妥当性を評価\n\n**Task**: [agents/design-review.md](agents/design-review.md) を参照\n\n### Phase 2: CASCADE動作の選択\n\n**目的**: ビジネスルールに合致したCASCADE動作を選択\n\n**アクション**:\n\n1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認\n2. 親子テーブルの関係性を分析\n3. 適切なCASCADE設定を決定\n\n**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照\n\n### Phase 3: 循環参照の検出\n\n**目的**: 循環参照を検出し、解消策を提案\n\n**アクション**:\n\n1. FK制約の依存関係グラフを構築\n2. 循環参照を検出\n3. 解消策を優先順位付きで提案\n\n**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照\n\n### Phase 4: ソフトデリート統合\n\n**目的**: ソフトデリートとFK制約の整合性確保\n\n**アクション**:\n\n1. ソフトデリート対象テーブルを特定\n2. FK制約との整合性を設計\n\n\n**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照\n\n## Task仕様ナビ\n\n| Task                                                                   | 用途               | 入力         | 出力               |\n| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |\n| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |\n| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |\n| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |\n| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |\n\n## ベストプラクティス\n\n### すべきこと\n\n- FK制約追加前に設計レビューを実施\n- CASCADE動作はパターンから選択\n- 循環参照を定期的に検証\n- ソフトデリート導入時はPhase 4を必ず実行\n\n### 避けるべきこと\n\n- 理論的根拠なしにCASCADEを多用する\n- 循環参照を確認せずにFK制約を追加\n\n- 深い階層のCASCADEをパフォーマンス考慮なしに設定\n\n## リソース参照\n\n### references/（詳細知識）\n\n| リソース        | パス                                                             | 内容                            |\n| --------------- | ---------------------------------------------------------------- | ------------------------------- |\n| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |\n\n### scripts/（検証・記録）\n\n| スクリプト             | 用途       | 使用例                                               |\n| ---------------------- | ---------- | ---------------------------------------------------- |\n| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |\n| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |\n\n### assets/（テンプレート）\n\n| テンプレート           | 用途                 |\n| ---------------------- | -------------------- |\n| fk-design-checklist.md | FK設計チェックリスト |\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |\n| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    }
+  ],
+  "finished_at": "2026-07-28T23:00:39",
+  "elapsed_seconds": 245.344,
+  "generated_variants": 10
+}

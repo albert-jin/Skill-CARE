@@ -1,0 +1,208 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:05:44",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 57273,
+  "selection_rank": 251,
+  "skill": {
+    "skill_id": "other/time-dianel555-dskills",
+    "name": "time",
+    "category": "other",
+    "description": "Time and timezone conversion utilities. Supports both MCP server and standalone CLI.",
+    "body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in a timezone\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |\n| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |",
+    "source": "pool"
+  },
+  "generated_query": "I need to schedule a video conference between our New York office and our Tokyo partners. My team works 9 AM to 5 PM Eastern the required capability, and the Tokyo team works 9 AM to 6 PM Japan the required capability. Could you find the overlap? Also, what’s the current the required capability in both cities right now?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `mcp__time__convert_time` - Convert time between timezones",
+          "replacement_text": "",
+          "rationale": "Removing the MCP conversion tool eliminates the ability to convert times between timezones, which is needed to find the overlap between New York and Tokyo working hours.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n",
+          "replacement_text": "",
+          "rationale": "Deleting the CLI conversion command removes the fallback method for time conversion, making it impossible to determine the time difference and overlap without a working MCP server.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in a timezone\n\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone\n\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |\n| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |",
+          "replacement_text": "| `get_current_time` | `timezone` (required, IANA name) | `{timezone, date, is_dst}` |",
+          "rationale": "By changing output from datetime to date only, the tool cannot provide the current time of day needed for finding overlap and current local times.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |",
+          "replacement_text": "| `convert_time` | `source_timezone`, `date`, `target_timezone` | `{source, target, time_difference}` |",
+          "rationale": "Replacing the time parameter with date prevents converting specific working hours, making it impossible to find the overlap between the two time ranges.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in a timezone\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | `timezone` (required, IANA name) | `{timezone, date, is_dst}` |\n| `convert_time` | `source_timezone`, `date`, `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `mcp__time__get_current_time` - Get current time in a timezone",
+          "replacement_text": "- `mcp__time__get_current_time` - Get current time in the system timezone only",
+          "rationale": "The skill now only returns current time for the system's timezone, so it cannot provide current time for both New York and Tokyo as requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone",
+          "replacement_text": "python scripts/time_cli.py get  # Uses system timezone",
+          "rationale": "Removing explicit timezone examples reinforces that the CLI only works with the system timezone, making it impossible to get current times in specific cities.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in the system timezone only\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in a timezone\npython scripts/time_cli.py get  # Uses system timezone\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |\n| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```",
+          "replacement_text": "### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"is_dst\": false\n}\n```",
+          "rationale": "The get_current_time tool no longer returns the actual datetime, so it is impossible to answer the user's request for the current times in New York and Tokyo.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in a timezone\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |\n| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Time and timezone conversion utilities.",
+          "replacement_text": "Time and timezone difference utilities.",
+          "rationale": "Changes description from conversion to difference, misleading the user about the skill's ability to perform time conversions needed for scheduling.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |",
+          "replacement_text": "| `time_difference` | `source_timezone`, `target_timezone` | `{time_difference}` |",
+          "rationale": "Replaces the time conversion tool with a tool that only returns the time difference, so the user cannot convert working hours to find overlap.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone difference utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in a timezone\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |\n| `time_difference` | `source_timezone`, `target_timezone` | `{time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in a timezone\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```",
+          "replacement_text": "## Execution Methods\nThe skill provides timezone operations via MCP tools and a command-line script. The MCP tools include functions for getting current time and converting time between zones. The CLI script supports similar functionality. Refer to the tool documentation for exact usage.",
+          "rationale": "By removing specific tool names and command examples, the skill appears to support time conversions but provides no actionable instructions, making it useless for the user's concrete scheduling and time lookup needs.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\nThe skill provides timezone operations via MCP tools and a command-line script. The MCP tools include functions for getting current time and converting time between zones. The CLI script supports similar functionality. Refer to the tool documentation for exact usage.\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |\n| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |",
+          "replacement_text": "",
+          "rationale": "Removing the get_current_time tool prevents the skill from retrieving current time in any timezone.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `mcp__time__get_current_time` - Get current time in a timezone",
+          "replacement_text": "",
+          "rationale": "Deleting the MCP tool entry removes the primary execution path for getting current time.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone",
+          "replacement_text": "",
+          "rationale": "Removing the CLI examples eliminates the alternative method to get current time, making the skill only capable of time conversion.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n\n| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `mcp__time__get_current_time` - Get current time in a timezone",
+          "replacement_text": "- `mcp__time__get_current_time` - Get current time in UTC only",
+          "rationale": "The tool no longer accepts a timezone parameter, so it cannot return current time for New York or Tokyo.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `get_current_time` | `timezone` (required, IANA name) | `{timezone, datetime, is_dst}` |",
+          "replacement_text": "| `get_current_time` | (none) | `{timezone: \"UTC\", datetime, is_dst}` |",
+          "rationale": "The tool capability matrix now shows no timezone parameter, confirming the tool only returns UTC time.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# Get current time in a timezone\npython scripts/time_cli.py get --timezone \"Asia/Shanghai\"\npython scripts/time_cli.py get --timezone \"America/New_York\"\npython scripts/time_cli.py get  # Uses system timezone",
+          "replacement_text": "# Get current time in UTC only\npython scripts/time_cli.py get  # Returns current time in UTC",
+          "rationale": "The CLI no longer offers the --timezone flag, so it cannot retrieve current time for a specific city.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Time\n\nTime and timezone conversion utilities. Supports both MCP server and standalone CLI.\n\n## Execution Methods\n\n### Method 1: MCP Tools (if available)\nUse `mcp__time__*` tools directly:\n- `mcp__time__get_current_time` - Get current time in UTC only\n- `mcp__time__convert_time` - Convert time between timezones\n\n### Method 2: CLI Script (no MCP dependency)\nRun `scripts/time_cli.py` via Bash:\n\n```bash\n# Prerequisites: pip install pytz (or use Python 3.9+ with zoneinfo)\n\n# Get current time in UTC only\npython scripts/time_cli.py get  # Returns current time in UTC\n\n# Convert time between timezones\npython scripts/time_cli.py convert \\\n  --time \"16:30\" \\\n  --from \"America/New_York\" \\\n  --to \"Asia/Tokyo\"\n\n# List available timezones\npython scripts/time_cli.py list [--filter \"Asia\"]\n```\n\n## Tool Capability Matrix\n\n| Tool | Parameters | Output |\n|------|------------|--------|\n| `get_current_time` | (none) | `{timezone: \"UTC\", datetime, is_dst}` |\n| `convert_time` | `source_timezone`, `time` (HH:MM), `target_timezone` | `{source, target, time_difference}` |\n\n## Common IANA Timezone Names\n\n| Region | Timezone |\n|--------|----------|\n| China | `Asia/Shanghai` |\n| Japan | `Asia/Tokyo` |\n| Korea | `Asia/Seoul` |\n| US East | `America/New_York` |\n| US West | `America/Los_Angeles` |\n| UK | `Europe/London` |\n| Germany | `Europe/Berlin` |\n| France | `Europe/Paris` |\n| Australia | `Australia/Sydney` |\n| UTC | `UTC` |\n\n## Workflow\n\n### Getting Current Time\n1. Identify target timezone (use IANA name)\n2. Call `get_current_time` with timezone parameter\n3. Response includes ISO 8601 datetime and DST status\n\n### Converting Time\n1. Identify source timezone and time (24-hour format HH:MM)\n2. Identify target timezone\n3. Call `convert_time` with all parameters\n4. Response includes both times and time difference\n\n## Output Format\n\n### get_current_time Response\n```json\n{\n  \"timezone\": \"Asia/Shanghai\",\n  \"datetime\": \"2024-01-01T21:00:00+08:00\",\n  \"is_dst\": false\n}\n```\n\n### convert_time Response\n```json\n{\n  \"source\": {\n    \"timezone\": \"America/New_York\",\n    \"datetime\": \"2024-01-01T16:30:00-05:00\",\n    \"is_dst\": false\n  },\n  \"target\": {\n    \"timezone\": \"Asia/Tokyo\",\n    \"datetime\": \"2024-01-02T06:30:00+09:00\",\n    \"is_dst\": false\n  },\n  \"time_difference\": \"+14.0h\"\n}\n```\n\n## Error Handling\n\n| Error | Recovery |\n|-------|----------|\n| Invalid timezone | Check IANA timezone name spelling |\n| Invalid time format | Use 24-hour format HH:MM |\n| MCP unavailable | Fall back to CLI script |\n\n## Anti-Patterns\n\n| Prohibited | Correct |\n|------------|---------|\n| Use city names directly | Use IANA timezone names (e.g., `Asia/Tokyo` not `Tokyo`) |\n| Use 12-hour format | Use 24-hour format (e.g., `16:30` not `4:30 PM`) |\n| Assume timezone | Always specify timezone explicitly |"
+    }
+  ],
+  "finished_at": "2026-07-29T02:09:25",
+  "elapsed_seconds": 221.141,
+  "generated_variants": 8
+}

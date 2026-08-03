@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:58:54",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 69491,
+  "selection_rank": 21,
+  "skill": {
+    "skill_id": "testing/setup-brainstorm-integration",
+    "name": "setup-brainstorm-integration",
+    "category": "testing",
+    "description": "Install hookify rule to auto-suggest diagrams during design discussions",
+    "body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_diagram` tool with appropriate type, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file.",
+    "source": "pool"
+  },
+  "generated_query": "I need help setting up a smart reminder in my Claude assistant. I often discuss software architecture, user flows, and data models with my team, and I want to be prompted to offer to create diagrams whenever I mention keywords like \"architecture,\" \"workflow,\" \"data model,\" \"wireframe,\" or \"diagram.\" For example, when I say \"Let's design the authentication flow,\" I want a gentle suggestion to create a flowchart. Could you set this up by adding a hookify rule that watches for these terms and reminds me to propose a diagram?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "pattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "replacement_text": "",
+          "rationale": "Deleting the pattern line means the hookify rule has no trigger terms, so it will never activate when the user mentions design keywords.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\n\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_diagram` tool with appropriate type, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.",
+          "replacement_text": "I can make a flowchart and open it in draw.io for you to edit.",
+          "rationale": "The skill now only offers flowcharts, failing to support ERDs, sequence diagrams, or mind maps needed for data model and wireframe discussions.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use the `create_diagram` tool with appropriate type, then offer to export to draw.io.",
+          "replacement_text": "Use the `create_flowchart` tool to create a flowchart, then offer to export to draw.io.",
+          "rationale": "Replacing the general diagram creation API with a flowchart-only tool prevents creating other diagram types required for the user's varied design topics.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a flowchart and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_flowchart` tool to create a flowchart, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "pattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "replacement_text": "pattern: \\b(meeting|agenda|action\\s*item|timeline|project\\s*plan|resource\\s*allocation|budget|risk\\s*assessment)\\b",
+          "rationale": "The pattern no longer includes design keywords; it only matches project management terms, so it will not trigger on the user's desired keywords.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(meeting|agenda|action\\s*item|timeline|project\\s*plan|resource\\s*allocation|budget|risk\\s*assessment)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_diagram` tool with appropriate type, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "pattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "replacement_text": "pattern: \\b(wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "rationale": "Removing 'architecture' and 'workflow' from the trigger pattern means the rule will not activate for the user's explicitly mentioned keywords, so the skill fails to provide the requested reminders.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_diagram` tool with appropriate type, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "pattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "replacement_text": "pattern: \\b(agile|scrum|sprint|standup|retrospective|backlog|sprint\\s*planning|daily\\s*standup)\\b",
+          "rationale": "The pattern no longer matches the user's desired keywords like 'architecture' or 'diagram', so the rule never triggers for design discussions.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"",
+          "replacement_text": "\"Would you like me to create a meeting agenda or capture notes for this? I can draft a summary and follow-up actions.\"",
+          "rationale": "The suggestion no longer offers to create diagrams, so even if keywords matched, the reminder would not propose what the user wants.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(agile|scrum|sprint|standup|retrospective|backlog|sprint\\s*planning|daily\\s*standup)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Would you like me to create a meeting agenda or capture notes for this? I can draft a summary and follow-up actions.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_diagram` tool with appropriate type, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "pattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "replacement_text": "pattern: \\b(design|discuss|plan|idea|concept|brainstorm)\\b",
+          "rationale": "The pattern no longer matches the user's specific keywords like 'architecture', 'workflow', 'data model', so the rule will not trigger when those terms are used, failing the user's requirement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(design|discuss|plan|idea|concept|brainstorm)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_diagram` tool with appropriate type, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "pattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "replacement_text": "",
+          "rationale": "Without the pattern, the hookify rule never matches design keywords, so it will never trigger a reminder.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\n\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `create_diagram` tool with appropriate type, then offer to export to draw.io.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the `create_diagram` tool with appropriate type, then offer to export to draw.io.",
+          "replacement_text": "Use the `send_message` tool to suggest a diagram verbally, without creating one.",
+          "rationale": "The skill no longer provides a way to actually create diagrams, so the assistant can only suggest but not deliver a visual.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `send_message` tool to suggest a diagram verbally, without creating one.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "pattern: \\b(architecture|workflow|wireflow|data\\s*flow|user\\s*journey|customer\\s*journey|state\\s*machine|states?\\s*and\\s*transitions|data\\s*model|ERD|schema|relationships|wireframe|mockup|UI\\s*design|screens?|diagram|visualize|draw\\s*(this|it|out)?|flow\\s*chart|sequence\\s*diagram|mind\\s*map)\\b",
+          "replacement_text": "pattern: \\b(bug|feature|API|endpoint|specification|implementation|interface)\\b",
+          "rationale": "Changes the trigger keywords to software terms unrelated to diagrams, so the rule will not fire on the user's desired design-related terms.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use the `create_diagram` tool with appropriate type, then offer to export to draw.io.",
+          "replacement_text": "Use the `write_file` tool to generate a code snippet, then provide the file path.",
+          "rationale": "Replaces the diagram-creation tool with a code-writing tool, so the skill no longer produces diagrams as requested by the user.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Setup Brainstorm Integration\n\nThis skill installs a hookify rule that prompts you to offer diagrams when users discuss architecture, flows, data models, or other visual topics.\n\n## What It Does\n\nWhen users mention design-related keywords like \"architecture\", \"workflow\", \"data model\", \"wireframe\", or \"diagram\", you'll get a gentle reminder to offer visual-thinking diagrams.\n\n## Installation\n\nCopy the hookify rule to the user's `.claude/` directory:\n\n```bash\ncp \"$(dirname \"$0\")/../hookify-rules/brainstorm-diagrams.local.md\" ~/.claude/hookify.visual-thinking-brainstorm.local.md\n```\n\nOr create it manually by copying this content to `~/.claude/hookify.visual-thinking-brainstorm.local.md`:\n\n```markdown\n---\nname: visual-thinking-brainstorm\nenabled: true\nevent: prompt\npattern: \\b(bug|feature|API|endpoint|specification|implementation|interface)\\b\n---\n\n**Visual Thinking Available**\n\nThe user is discussing something that could benefit from a diagram. Consider offering to capture it visually:\n\n\"Want me to create a diagram for this? I can make a [flowchart/sequence diagram/mindmap/ERD] and open it in draw.io for you to edit.\"\n\n**When to offer:**\n- Architecture discussions → flowchart or sequence diagram\n- User journeys/flows → flowchart\n- Data models → ERD or class diagram\n- State machines → state diagram\n- Brainstorming/ideation → mindmap\n- UI discussions → mention draw.io has mockup shapes\n\n**How to create:**\nUse the `write_file` tool to generate a code snippet, then provide the file path.\n\n**Don't be pushy** - offer once per topic. If declined, continue without mentioning again.\n```\n\n## Verification\n\nAfter installation, the rule activates immediately. Test by starting a conversation with design keywords:\n\n- \"Let's design the authentication flow\"\n- \"I need to think through the data model\"\n- \"Can we map out the user journey?\"\n\nYou should see the visual thinking reminder in your context.\n\n## Disabling\n\nTo temporarily disable, edit `~/.claude/hookify.visual-thinking-brainstorm.local.md` and set `enabled: false`.\n\nTo permanently remove, delete the file."
+    }
+  ],
+  "finished_at": "2026-07-28T13:02:06",
+  "elapsed_seconds": 191.672,
+  "generated_variants": 9
+}

@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:31:25",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 19881,
+  "selection_rank": 13,
+  "skill": {
+    "skill_id": "development/mock-data-majiayu000-claude-skill-regist",
+    "name": "mock-data",
+    "category": "development",
+    "description": "Creates typed mock data files in src/data/ following project conventions. Use when needing test data for new features or components.",
+    "body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm adding a new feature to show recent user activity logs on our dashboard. The backend API isn't available yet, so I need to generate a mock data file for testing the UI component. The data should include fields like id, userId, action, timestamp, and details. Please create a typed mock data file following our project's existing conventions—something similar to the pattern used in other mock files we have. The file should define the interface and provide a couple of sample log entries with realistic values.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "    // Add fields based on requirements\n",
+          "replacement_text": "",
+          "rationale": "By removing the instruction to add custom fields, the generated mock data will only contain id and name, missing userId, action, timestamp, details required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n}\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];\n```",
+          "replacement_text": "## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}\n\nexport function generateMock{Feature}Data(): {Feature}Data {\n    return {\n        id: Math.random().toString(36).substr(2, 9),\n        name: \"Generated Name\",\n    };\n}\n\nexport function generateMock{Feature}List(count: number = 2): {Feature}Data[] {\n    return Array.from({ length: count }, (_, i) => ({\n        id: (i + 1).toString(),\n        name: `Item ${i + 1}`,\n    }));\n}\n```",
+          "rationale": "Replaces static mock data constants with generator functions, so the skill no longer provides the immediate sample entries required by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}\n\nexport function generateMock{Feature}Data(): {Feature}Data {\n    return {\n        id: Math.random().toString(36).substr(2, 9),\n        name: \"Generated Name\",\n    };\n}\n\nexport function generateMock{Feature}List(count: number = 2): {Feature}Data[] {\n    return Array.from({ length: count }, (_, i) => ({\n        id: (i + 1).toString(),\n        name: `Item ${i + 1}`,\n    }));\n}\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "export interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}",
+          "replacement_text": "export interface {Feature}Data {\n    id: string;\n    title: string;\n    description: string;\n}",
+          "rationale": "The interface now lacks the fields userId, action, timestamp, and details that the user query requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "export const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];",
+          "replacement_text": "export const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    title: \"Example\",\n    description: \"A single mock entry\",\n};",
+          "rationale": "The skill now exports only a single object instead of an array of sample entries, failing the user's need for multiple log entries.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    title: string;\n    description: string;\n}\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    title: \"Example\",\n    description: \"A single mock entry\",\n};\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Type-first**: Define interface before data",
+          "replacement_text": "3. **Type-first**: Optionally define interface; you can use `any` type for quick prototyping.",
+          "rationale": "Weakening the type-first constraint encourages untyped mock data, directly contradicting the user's requirement for a typed interface.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Optionally define interface; you can use `any` type for quick prototyping.\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "export interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}",
+          "replacement_text": "export interface {Feature}Data {\n    id: string;\n    name: string;\n}",
+          "rationale": "Removes the ability to add custom fields, forcing all mock data to only contain id and name, which fails the user's query that requires userId, action, timestamp, and details.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];",
+          "replacement_text": "",
+          "rationale": "Deletes the array pattern so the skill only generates a single object, making it unable to provide multiple sample log entries as required.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n}\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "export interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}",
+          "replacement_text": "export type {Feature}Data = Record<string, any>;",
+          "rationale": "Using a generic Record type removes type safety and specific field definitions, failing the user's requirement for a typed interface with exact fields like userId, action, etc.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport type {Feature}Data = Record<string, any>;\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "    // Add fields based on requirements",
+          "replacement_text": "",
+          "rationale": "Deleting the instruction to add fields based on requirements causes the generated mock to only include id and name, missing the required fields (userId, action, timestamp, details).",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.ts\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\nexport interface {Feature}Data {\n    id: string;\n    name: string;\n\n}\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```text\nsrc/data/mock-{feature}.ts\n```",
+          "replacement_text": "```text\nsrc/data/mock-{feature}.json\n```",
+          "rationale": "Changes the output file to JSON format, which cannot include TypeScript interfaces or types.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "export interface {Feature}Data {\n    id: string;\n    name: string;\n    // Add fields based on requirements\n}",
+          "replacement_text": "// No interface defined; use inline object with any type\nexport const mock{Feature}Data: any = { id: \"1\", name: \"Example\" };",
+          "rationale": "Removes the typed interface definition, making the mock data untyped and not customizable for specific fields.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock Data Generator Skill\n\nCreates typed mock data files following project patterns.\n\n## File Pattern\n\n```text\nsrc/data/mock-{feature}.json\n```\n\n## Template Structure\n\n```typescript\n// src/data/mock-{feature}.ts\n\n// No interface defined; use inline object with any type\nexport const mock{Feature}Data: any = { id: \"1\", name: \"Example\" };\n\nexport const mock{Feature}Data: {Feature}Data = {\n    id: \"1\",\n    name: \"Example\",\n};\n\n// For arrays:\nexport const mock{Feature}List: {Feature}Data[] = [\n    { id: \"1\", name: \"Item 1\" },\n    { id: \"2\", name: \"Item 2\" },\n];\n```\n\n## Conventions\n\n1. **Filename**: kebab-case with `mock-` prefix\n2. **Named exports**: Both interface and data\n3. **Type-first**: Define interface before data\n4. **Realistic data**: Use meaningful values, not \"test123\"\n\n## Examples\n\nSee these files for reference patterns:\n\n- `src/data/mock-order.ts`\n- `src/data/mock-project.ts`\n- `src/data/mock-unmatched-items.ts`\n\n## Usage with TanStack Query\n\n```typescript\n// hooks/use{Feature}.ts\nimport { useQuery } from \"@tanstack/react-query\";\nimport { mock{Feature}Data, {Feature}Data } from \"../data/mock-{feature}\";\n\nasync function fetch{Feature}Data(): Promise<{Feature}Data> {\n    await new Promise((r) => setTimeout(r, 500)); // Simulate API\n    return mock{Feature}Data;\n}\n\nexport function use{Feature}() {\n    return useQuery({\n        queryKey: [\"{feature}\"],\n        queryFn: fetch{Feature}Data,\n    });\n}\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T12:33:59",
+  "elapsed_seconds": 153.75,
+  "generated_variants": 8
+}

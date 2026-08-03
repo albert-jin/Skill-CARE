@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:59:24",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 75684,
+  "selection_rank": 167,
+  "skill": {
+    "skill_id": "data/youtube-chapters",
+    "name": "youtube-chapters",
+    "category": "data",
+    "description": "Generate chapter summaries with timestamps for YouTube videos using AI. Use when asked to create chapters, summarize video sections, or generate video outline.",
+    "body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\nai-chapters \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns chapter titles with timestamps suitable for YouTube descriptions.",
+    "source": "pool"
+  },
+  "generated_query": "I have a 1-hour 45-minute YouTube tutorial on building a full-stack app with Next.js, located at https://youtu.be/xYz789. I need you to create a set of chapter markers with timestamps—something I can copy directly into the video description. The tutorial covers project setup, database schema design, API routes, authentication, and deployment. Can you generate the chapters?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Returns chapter titles with timestamps suitable for YouTube descriptions.",
+          "replacement_text": "",
+          "rationale": "Without stating that chapter titles include timestamps, the skill appears to only generate plain chapter titles, failing the user's need for timestamped markers.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\nai-chapters \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\n"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.",
+          "replacement_text": "Use the `summarize-video` CLI tool to generate a plain text summary of YouTube videos.",
+          "rationale": "Replaces the chapter-generation API with a generic summarizer that outputs plain text without timestamps.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "ai-chapters \"https://youtu.be/VIDEO_ID\"",
+          "replacement_text": "summarize-video \"https://youtu.be/VIDEO_ID\"",
+          "rationale": "Changes the command to invoke a tool that does not produce timestamped chapter markers.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `summarize-video` CLI tool to generate a plain text summary of YouTube videos.\n\n## Usage\n\n```bash\nsummarize-video \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns chapter titles with timestamps suitable for YouTube descriptions."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns chapter titles with timestamps suitable for YouTube descriptions.",
+          "replacement_text": "Returns timestamps only, without chapter titles.",
+          "rationale": "The skill now outputs only timestamps, not the chapter titles the user needs for their video description.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\nai-chapters \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns timestamps only, without chapter titles."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns chapter titles with timestamps suitable for YouTube descriptions.",
+          "replacement_text": "Returns chapter titles and timestamps as plain text.",
+          "rationale": "The output no longer guarantees that the timestamps are in a format suitable for copying into YouTube descriptions, so the generated chapters may not be directly usable for the user's task.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\nai-chapters \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns chapter titles and timestamps as plain text."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "ai-chapters \"https://youtu.be/VIDEO_ID\"",
+          "replacement_text": "ai-summarize \"https://youtu.be/VIDEO_ID\"",
+          "rationale": "The CLI now generates text summaries without timestamps, so the output cannot be used as chapter markers for a video description.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Returns chapter titles with timestamps suitable for YouTube descriptions.",
+          "replacement_text": "Returns chapter titles only (no timestamps) suitable for general text summaries.",
+          "rationale": "The output explicitly states it lacks timestamps, which are required by the user query for chapter markers.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\nai-summarize \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns chapter titles only (no timestamps) suitable for general text summaries."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns chapter titles with timestamps suitable for YouTube descriptions.",
+          "replacement_text": "Returns chapter titles or topic summaries suitable for video descriptions.",
+          "rationale": "Removes the timestamps from the output, so the skill cannot satisfy the user's explicit request for chapter markers with timestamps.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\nai-chapters \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns chapter titles or topic summaries suitable for video descriptions."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "ai-chapters \"https://youtu.be/VIDEO_ID\"",
+          "replacement_text": "",
+          "rationale": "Without the specific command invocation, the skill fails to instruct the user on how to actually generate chapter timestamps, making it unhelpful for the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\n\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns chapter titles with timestamps suitable for YouTube descriptions."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\nai-chapters \"https://youtu.be/VIDEO_ID\"\n```",
+          "replacement_text": "```bash\nai-summarize \"https://youtu.be/VIDEO_ID\"\n```",
+          "rationale": "Replacing ai-chapters with ai-summarize removes the ability to generate timestamped chapter markers, leaving only a generic text summary.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Returns chapter titles with timestamps suitable for YouTube descriptions.",
+          "replacement_text": "Returns a concise summary of the video content.",
+          "rationale": "Changing the output description from timestamped chapters to a plain summary further ensures the skill cannot produce the required chapter markers.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# YouTube Chapter Generator\n\nUse the `ai-chapters` CLI tool to generate chapter summaries for YouTube videos.\n\n## Usage\n\n```bash\nai-summarize \"https://youtu.be/VIDEO_ID\"\n```\n\n## Requirements\n\n- `GEMINI_API_KEY` environment variable must be set\n- The `hamel_tools` package must be installed: `pip install hamel_tools`\n\n## Output\n\nReturns a concise summary of the video content."
+    }
+  ],
+  "finished_at": "2026-07-28T21:01:20",
+  "elapsed_seconds": 115.39,
+  "generated_variants": 8
+}

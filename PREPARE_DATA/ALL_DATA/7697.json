@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:24:38",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 7697,
+  "selection_rank": 191,
+  "skill": {
+    "skill_id": "development/localization-manager",
+    "name": "localization-manager",
+    "category": "development",
+    "description": "Manage localization strings, find missing translations, validate .strings files",
+    "body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n- Validate string format specifiers\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.html\n```",
+    "source": "pool"
+  },
+  "generated_query": "I have an iOS project called PaleoRose. We use English as the base language, and we have French and German translations. I've just added a bunch of new features and need to make sure all localization files are up to date. Can you help me with the following steps?\n\n1. Extract all localizable strings from the Swift and ObjC source code in the `PaleoRose` source directory.\n2. Compare the extracted strings against the existing English `.strings` file to find any new keys that haven't been added yet.\n3. For both French and German, find any missing translations—keys that exist in English but not in those languages.\n4. Validate all `.strings` and `.stringsdict` files for syntax errors and check that format specifiers (like `%@`, `%d`) match between the base English file and each translation.\n5. Generate an HTML report that summarizes the findings: missing translations, unused keys, validation errors, and any format specifier mismatches. The base language is English.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Validate string format specifiers\n",
+          "replacement_text": "",
+          "rationale": "The skill no longer includes validation of format specifiers, so it fails to satisfy step 4 of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.html\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "./localization_manager.py extract-strings --source-dir PaleoRose",
+          "replacement_text": "./localization_manager.py extract-strings --source-dir PaleoRose --lang objc",
+          "rationale": "The edited command only extracts strings from Objective-C code, ignoring Swift sources, so the user's requirement to extract from both Swift and ObjC is not met.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "./localization_manager.py report --output translations.html",
+          "replacement_text": "./localization_manager.py report --output translations.csv",
+          "rationale": "The user explicitly requires an HTML report, but the skill now generates a CSV file instead, failing that specific need.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n- Validate string format specifiers\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose --lang objc\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.csv\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "./localization_manager.py report --output translations.html",
+          "replacement_text": "./localization_manager.py report --output translations.csv",
+          "rationale": "The user needs an HTML report, but the edited skill only offers CSV output, making it unusable for step 5.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n- Validate string format specifiers\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.csv\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate string format specifiers",
+          "replacement_text": "Validate string format specifiers in each language file individually",
+          "rationale": "The skill no longer checks that format specifiers match between English and translations, failing the user's cross-language validation requirement.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Generate translation reports",
+          "replacement_text": "Generate missing translation reports",
+          "rationale": "The report generation no longer includes validation errors or format specifier mismatches, missing key findings required by the user.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n- Validate string format specifiers in each language file individually\n- Generate missing translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.html\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate string format specifiers",
+          "replacement_text": "Check .strings file syntax",
+          "rationale": "Removes format specifier validation, so mismatches would go undetected.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "./localization_manager.py report --output translations.html",
+          "replacement_text": "./localization_manager.py report --output translations.csv",
+          "rationale": "Changes report output to CSV instead of HTML, failing the requirement for an HTML report.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n- Check .strings file syntax\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.csv\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Validate string format specifiers",
+          "replacement_text": "",
+          "rationale": "The user query requires format specifier validation across translations; without it the skill cannot satisfy that need.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "./localization_manager.py report --output translations.html",
+          "replacement_text": "./localization_manager.py report --output translations.csv",
+          "rationale": "The user explicitly requests an HTML report; by outputting only CSV the skill fails to deliver the required format.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.csv\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Validate string format specifiers",
+          "replacement_text": "",
+          "rationale": "Removing the validation capability means the skill cannot perform step 4 of the query (validating .strings files for syntax and format specifier matching).",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "./localization_manager.py validate",
+          "replacement_text": "",
+          "rationale": "Deleting the validate command prevents the user from running the validation step, making the skill fail to meet the query's requirement for format specifier checking.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`localization_manager.py` - Parse and validate localization files\n\n## Commands\n```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n\n\n# Generate report\n./localization_manager.py report --output translations.html\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`localization_manager.py` - Parse and validate localization files",
+          "replacement_text": "`i18n_converter.py` - Convert between localization formats (JSON, CSV)",
+          "rationale": "The core API is replaced with a format converter that cannot parse .strings files or extract strings from code, directly failing the user's localization workflow.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\n# Find missing translations\n./localization_manager.py find-missing --base-lang en\n\n# Extract strings from code\n./localization_manager.py extract-strings --source-dir PaleoRose\n\n# Validate .strings files\n./localization_manager.py validate\n\n# Generate report\n./localization_manager.py report --output translations.html\n```",
+          "replacement_text": "```bash\n# Convert .strings to JSON\n./i18n_converter.py to-json --input en.strings --output en.json\n\n# Validate JSON structure\n./i18n_converter.py validate --lang en\n```",
+          "rationale": "The new commands only support JSON conversion and validation, completely missing extraction, missing translation detection, format specifier checks, and HTML report generation required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Localization Manager\n\nManage app localization and translation files.\n\n## Capabilities\n- Extract localizable strings from Swift/ObjC code\n- Parse .strings and .stringsdict files\n- Find missing translations\n- Detect unused localization keys\n- Validate string format specifiers\n- Generate translation reports\n- Export for translators (CSV/XLIFF)\n- Import translations\n\n## Tools\n`i18n_converter.py` - Convert between localization formats (JSON, CSV)\n\n## Commands\n```bash\n# Convert .strings to JSON\n./i18n_converter.py to-json --input en.strings --output en.json\n\n# Validate JSON structure\n./i18n_converter.py validate --lang en\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T22:27:16",
+  "elapsed_seconds": 157.922,
+  "generated_variants": 8
+}

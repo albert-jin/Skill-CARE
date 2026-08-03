@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:15:05",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 22104,
+  "selection_rank": 197,
+  "skill": {
+    "skill_id": "other/beeper",
+    "name": "beeper",
+    "category": "other",
+    "description": "Search and browse local Beeper chat history (threads, messages, full-text search).",
+    "body": "# Beeper CLI\n\n[Beeper](https://www.beeper.com/) is a universal chat app that unifies messages from WhatsApp, Telegram, Signal, iMessage, Discord, and more in a single inbox.\n\nThis skill provides **read-only access** to your local Beeper chat history. Browse threads, search messages, and extract conversation data.\n\n## Requirements\n- Beeper Desktop app installed (provides the SQLite database)\n- `beeper-cli` binary on PATH\n\n## Database Path\nThe CLI auto-detects:\n- `~/Library/Application Support/BeeperTexts/index.db` (macOS)\n- `~/Library/Application Support/Beeper/index.db` (macOS)\n\nOverride with:\n- `--db /path/to/index.db`\n- `BEEPER_DB=/path/to/index.db`\n\n## Commands\n\n### List Threads\n```bash\nbeeper-cli threads list --days 7 --limit 50 --json\n```\n\n### Show Thread Details\n```bash\nbeeper-cli threads show --id \"!abc123:beeper.local\" --json\n```\n\n### List Messages in Thread\n```bash\nbeeper-cli messages list --thread \"!abc123:beeper.local\" --limit 50 --json\n```\n\n### Search Messages (Full-Text)\n```bash\n# Simple search\nbeeper-cli search 'invoice' --limit 20 --json\n\n# Phrase search\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n\n# Proximity search\nbeeper-cli search 'party NEAR/5 christmas' --limit 20 --json\n\n# With context window (messages before/after match)\nbeeper-cli search 'meeting' --context 6 --window 60m --json\n```\n\n### Database Info\n```bash\nbeeper-cli db info --json\n```\n\n## Notes\n- **Read-only**: This tool never sends messages\n- **JSON output**: Always use `--json` for structured output agents can parse\n- **FTS5 search**: Uses Beeper's built-in full-text index (FTS5) for fast search\n- **DM name resolution**: Optionally resolves DM names via bridge databases (disable with `--no-bridge`)\n\n## Installation\n\n### Option 1: Go Install (recommended)\n```bash\ngo install github.com/krausefx/beeper-cli/cmd/beeper-cli@latest\n```\n\n### Option 2: Build from Source\n```bash\ngit clone https://github.com/krausefx/beeper-cli.git\ncd beeper-cli\ngo build ./cmd/beeper-cli\n# Move beeper-cli to PATH, e.g., /usr/local/bin\n```\n\n## Examples\n\nSearch for work-related messages from last week:\n```bash\nbeeper-cli threads list --days 7 --json | jq '.threads[] | select(.name | contains(\"work\"))'\nbeeper-cli search 'project deadline' --limit 10 --json\n```\n\nFind messages about invoices with context:\n```bash\nbeeper-cli search 'invoice' --context 3 --json\n```",
+    "source": "pool"
+  },
+  "generated_query": "I’m trying to track down an important message from a work chat a few days ago. I remember someone mentioned “quarterly review results” in our team’s Signal thread around Tuesday afternoon, but I can’t scroll back that far on my phone. Could you search my local chat history for that phrase and show me the messages around it, with a few lines of context before and after? Also, list the threads I’ve had in the last week so I can double‑check which one it came from.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "# With context window (messages before/after match)\nbeeper-cli search 'meeting' --context 6 --window 60m --json",
+          "replacement_text": "",
+          "rationale": "Without the context window feature, the skill cannot return messages around the matched phrase, failing the user's request for a few lines of context before and after.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Beeper CLI\n\n[Beeper](https://www.beeper.com/) is a universal chat app that unifies messages from WhatsApp, Telegram, Signal, iMessage, Discord, and more in a single inbox.\n\nThis skill provides **read-only access** to your local Beeper chat history. Browse threads, search messages, and extract conversation data.\n\n## Requirements\n- Beeper Desktop app installed (provides the SQLite database)\n- `beeper-cli` binary on PATH\n\n## Database Path\nThe CLI auto-detects:\n- `~/Library/Application Support/BeeperTexts/index.db` (macOS)\n- `~/Library/Application Support/Beeper/index.db` (macOS)\n\nOverride with:\n- `--db /path/to/index.db`\n- `BEEPER_DB=/path/to/index.db`\n\n## Commands\n\n### List Threads\n```bash\nbeeper-cli threads list --days 7 --limit 50 --json\n```\n\n### Show Thread Details\n```bash\nbeeper-cli threads show --id \"!abc123:beeper.local\" --json\n```\n\n### List Messages in Thread\n```bash\nbeeper-cli messages list --thread \"!abc123:beeper.local\" --limit 50 --json\n```\n\n### Search Messages (Full-Text)\n```bash\n# Simple search\nbeeper-cli search 'invoice' --limit 20 --json\n\n# Phrase search\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n\n# Proximity search\nbeeper-cli search 'party NEAR/5 christmas' --limit 20 --json\n\n\n```\n\n### Database Info\n```bash\nbeeper-cli db info --json\n```\n\n## Notes\n- **Read-only**: This tool never sends messages\n- **JSON output**: Always use `--json` for structured output agents can parse\n- **FTS5 search**: Uses Beeper's built-in full-text index (FTS5) for fast search\n- **DM name resolution**: Optionally resolves DM names via bridge databases (disable with `--no-bridge`)\n\n## Installation\n\n### Option 1: Go Install (recommended)\n```bash\ngo install github.com/krausefx/beeper-cli/cmd/beeper-cli@latest\n```\n\n### Option 2: Build from Source\n```bash\ngit clone https://github.com/krausefx/beeper-cli.git\ncd beeper-cli\ngo build ./cmd/beeper-cli\n# Move beeper-cli to PATH, e.g., /usr/local/bin\n```\n\n## Examples\n\nSearch for work-related messages from last week:\n```bash\nbeeper-cli threads list --days 7 --json | jq '.threads[] | select(.name | contains(\"work\"))'\nbeeper-cli search 'project deadline' --limit 10 --json\n```\n\nFind messages about invoices with context:\n```bash\nbeeper-cli search 'invoice' --context 3 --json\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# Phrase search\n```bash\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n```",
+          "replacement_text": "# Word search (multiple search terms are treated as separate tokens)\n```bash\nbeeper-cli search christmas party --limit 20 --json\n```",
+          "rationale": "Replacing phrase search with a multi-word search that ignores quotes prevents the user from finding the exact phrase \"quarterly review results\".",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# With context window (messages before/after match)\n```bash\nbeeper-cli search 'meeting' --context 6 --window 60m --json\n```",
+          "replacement_text": "# With date range filter\n```bash\nbeeper-cli search 'meeting' --since '2025-03-01' --until '2025-03-07' --json\n```",
+          "rationale": "Replacing the context window feature with a date range filter makes it impossible to retrieve surrounding messages, which the user explicitly requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Beeper Chat Reader\n\n[Beeper](https://www.beeper.com/) unifies all your chats into one place. This skill gives **read‑only access** to your local Beeper history – you can browse threads and find messages.\n\n## Requirements\n- Beeper Desktop app (macOS only, v3.2+)\n- `beeper-read` command installed on PATH\n- A Beeper Premium subscription (free tier does not support local database access)\n\n## Database Location\nThe tool automatically detects the database at:\n`~/Library/Application Support/Beeper/chat.db`\n\n## Available Commands\n\n### List Recent Threads\n```bash\nbeeper-read threads --limit 20\n```\nReturns threads active **today** (no day filter – only current date).\n\n### View Messages in a Thread\n```bash\nbeeper-read messages --thread-id \"!abc123:beeper.local\" --count 30\n```\n\n### Search Messages\n```bash\nbeeper-read search \"quarterly review results\"\n```\nPerforms a basic text search. Only exact substring match – no phrase or proximity operators.  \n**Context lines before/after are not supported** – you only get the matching message IDs and a timestamp.\n\n### Database Information\n```bash\nbeeper-read info\n```\n\n## Notes\n- **Read‑only**: never sends messages or modifies data.\n- **Output format**: plain text. Use `--json` for machine‑readable output (but search still lacks context).\n- **Search scope**: searches across all threads, but cannot limit by date or time.\n- **Thread list**: only shows threads with activity today; no historical view.\n- **Signal messages** are included if you're logged into Signal via Beeper.\n\n## Installation\n\n### Option 1: Homebrew (recommended)\n```bash\nbrew install beeper/read\n```\n\n### Option 2: Manual download\nDownload the binary from [releases page](https://github.com/beeper/read-cli/releases) and place it in `/usr/local/bin`.\n\n## Example Usage\n\nList today's threads:\n```bash\nbeeper-read threads --json\n```\n\nSearch for \"quarterly review results\" (returns matching message IDs only):\n```bash\nbeeper-read search \"quarterly review results\"\n```\n\nView messages of a thread:\n```bash\nbeeper-read messages --thread-id \"!xyz789:beeper.local\" --count 50\n```\n\n> ⚠️ This tool cannot show multi‑line context around a match, and thread history is limited to the current day."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli threads list --days 7 --limit 50 --json",
+          "replacement_text": "beeper-cli threads list --days 1 --limit 50 --json",
+          "rationale": "The skill now only returns threads from the last day instead of the last week, failing the user's request for threads from the last week.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli search 'meeting' --context 6 --window 60m --json",
+          "replacement_text": "beeper-cli search 'meeting' --limit 10 --json",
+          "rationale": "The skill no longer provides a context window around matches, so it cannot show messages before and after the search term as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Beeper CLI\n\n[Beeper](https://www.beeper.com/) is a universal chat app that unifies messages from WhatsApp, Telegram, Signal, iMessage, Discord, and more in a single inbox.\n\nThis skill provides **read-only access** to your local Beeper chat history. Browse threads, search messages, and extract conversation data.\n\n## Requirements\n- Beeper Desktop app installed (provides the SQLite database)\n- `beeper-cli` binary on PATH\n\n## Database Path\nThe CLI auto-detects:\n- `~/Library/Application Support/BeeperTexts/index.db` (macOS)\n- `~/Library/Application Support/Beeper/index.db` (macOS)\n\nOverride with:\n- `--db /path/to/index.db`\n- `BEEPER_DB=/path/to/index.db`\n\n## Commands\n\n### List Threads\n```bash\nbeeper-cli threads list --days 1 --limit 50 --json\n```\n\n### Show Thread Details\n```bash\nbeeper-cli threads show --id \"!abc123:beeper.local\" --json\n```\n\n### List Messages in Thread\n```bash\nbeeper-cli messages list --thread \"!abc123:beeper.local\" --limit 50 --json\n```\n\n### Search Messages (Full-Text)\n```bash\n# Simple search\nbeeper-cli search 'invoice' --limit 20 --json\n\n# Phrase search\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n\n# Proximity search\nbeeper-cli search 'party NEAR/5 christmas' --limit 20 --json\n\n# With context window (messages before/after match)\nbeeper-cli search 'meeting' --limit 10 --json\n```\n\n### Database Info\n```bash\nbeeper-cli db info --json\n```\n\n## Notes\n- **Read-only**: This tool never sends messages\n- **JSON output**: Always use `--json` for structured output agents can parse\n- **FTS5 search**: Uses Beeper's built-in full-text index (FTS5) for fast search\n- **DM name resolution**: Optionally resolves DM names via bridge databases (disable with `--no-bridge`)\n\n## Installation\n\n### Option 1: Go Install (recommended)\n```bash\ngo install github.com/krausefx/beeper-cli/cmd/beeper-cli@latest\n```\n\n### Option 2: Build from Source\n```bash\ngit clone https://github.com/krausefx/beeper-cli.git\ncd beeper-cli\ngo build ./cmd/beeper-cli\n# Move beeper-cli to PATH, e.g., /usr/local/bin\n```\n\n## Examples\n\nSearch for work-related messages from last week:\n```bash\nbeeper-cli threads list --days 7 --json | jq '.threads[] | select(.name | contains(\"work\"))'\nbeeper-cli search 'project deadline' --limit 10 --json\n```\n\nFind messages about invoices with context:\n```bash\nbeeper-cli search 'invoice' --context 3 --json\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli search 'meeting' --context 6 --window 60m --json",
+          "replacement_text": "beeper-cli search 'meeting' --window 60m --json",
+          "rationale": "Removes the --context flag, so the user cannot get surrounding lines before and after the matching message.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli threads list --days 7 --limit 50 --json",
+          "replacement_text": "beeper-cli threads list --limit 50 --json",
+          "rationale": "Removes the --days parameter, so the user cannot filter threads to the last week as requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Beeper CLI\n\n[Beeper](https://www.beeper.com/) is a universal chat app that unifies messages from WhatsApp, Telegram, Signal, iMessage, Discord, and more in a single inbox.\n\nThis skill provides **read-only access** to your local Beeper chat history. Browse threads, search messages, and extract conversation data.\n\n## Requirements\n- Beeper Desktop app installed (provides the SQLite database)\n- `beeper-cli` binary on PATH\n\n## Database Path\nThe CLI auto-detects:\n- `~/Library/Application Support/BeeperTexts/index.db` (macOS)\n- `~/Library/Application Support/Beeper/index.db` (macOS)\n\nOverride with:\n- `--db /path/to/index.db`\n- `BEEPER_DB=/path/to/index.db`\n\n## Commands\n\n### List Threads\n```bash\nbeeper-cli threads list --limit 50 --json\n```\n\n### Show Thread Details\n```bash\nbeeper-cli threads show --id \"!abc123:beeper.local\" --json\n```\n\n### List Messages in Thread\n```bash\nbeeper-cli messages list --thread \"!abc123:beeper.local\" --limit 50 --json\n```\n\n### Search Messages (Full-Text)\n```bash\n# Simple search\nbeeper-cli search 'invoice' --limit 20 --json\n\n# Phrase search\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n\n# Proximity search\nbeeper-cli search 'party NEAR/5 christmas' --limit 20 --json\n\n# With context window (messages before/after match)\nbeeper-cli search 'meeting' --window 60m --json\n```\n\n### Database Info\n```bash\nbeeper-cli db info --json\n```\n\n## Notes\n- **Read-only**: This tool never sends messages\n- **JSON output**: Always use `--json` for structured output agents can parse\n- **FTS5 search**: Uses Beeper's built-in full-text index (FTS5) for fast search\n- **DM name resolution**: Optionally resolves DM names via bridge databases (disable with `--no-bridge`)\n\n## Installation\n\n### Option 1: Go Install (recommended)\n```bash\ngo install github.com/krausefx/beeper-cli/cmd/beeper-cli@latest\n```\n\n### Option 2: Build from Source\n```bash\ngit clone https://github.com/krausefx/beeper-cli.git\ncd beeper-cli\ngo build ./cmd/beeper-cli\n# Move beeper-cli to PATH, e.g., /usr/local/bin\n```\n\n## Examples\n\nSearch for work-related messages from last week:\n```bash\nbeeper-cli threads list --days 7 --json | jq '.threads[] | select(.name | contains(\"work\"))'\nbeeper-cli search 'project deadline' --limit 10 --json\n```\n\nFind messages about invoices with context:\n```bash\nbeeper-cli search 'invoice' --context 3 --json\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "# With context window (messages before/after match)\nbeeper-cli search 'meeting' --context 6 --window 60m --json",
+          "replacement_text": "",
+          "rationale": "Removes context window option, so user cannot get surrounding messages as requested.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli threads list --days 7 --limit 50 --json",
+          "replacement_text": "beeper-cli threads list --limit 50 --json",
+          "rationale": "Removes the --days filter, so thread listing returns all threads, not just last week's.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Beeper CLI\n\n[Beeper](https://www.beeper.com/) is a universal chat app that unifies messages from WhatsApp, Telegram, Signal, iMessage, Discord, and more in a single inbox.\n\nThis skill provides **read-only access** to your local Beeper chat history. Browse threads, search messages, and extract conversation data.\n\n## Requirements\n- Beeper Desktop app installed (provides the SQLite database)\n- `beeper-cli` binary on PATH\n\n## Database Path\nThe CLI auto-detects:\n- `~/Library/Application Support/BeeperTexts/index.db` (macOS)\n- `~/Library/Application Support/Beeper/index.db` (macOS)\n\nOverride with:\n- `--db /path/to/index.db`\n- `BEEPER_DB=/path/to/index.db`\n\n## Commands\n\n### List Threads\n```bash\nbeeper-cli threads list --limit 50 --json\n```\n\n### Show Thread Details\n```bash\nbeeper-cli threads show --id \"!abc123:beeper.local\" --json\n```\n\n### List Messages in Thread\n```bash\nbeeper-cli messages list --thread \"!abc123:beeper.local\" --limit 50 --json\n```\n\n### Search Messages (Full-Text)\n```bash\n# Simple search\nbeeper-cli search 'invoice' --limit 20 --json\n\n# Phrase search\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n\n# Proximity search\nbeeper-cli search 'party NEAR/5 christmas' --limit 20 --json\n\n\n```\n\n### Database Info\n```bash\nbeeper-cli db info --json\n```\n\n## Notes\n- **Read-only**: This tool never sends messages\n- **JSON output**: Always use `--json` for structured output agents can parse\n- **FTS5 search**: Uses Beeper's built-in full-text index (FTS5) for fast search\n- **DM name resolution**: Optionally resolves DM names via bridge databases (disable with `--no-bridge`)\n\n## Installation\n\n### Option 1: Go Install (recommended)\n```bash\ngo install github.com/krausefx/beeper-cli/cmd/beeper-cli@latest\n```\n\n### Option 2: Build from Source\n```bash\ngit clone https://github.com/krausefx/beeper-cli.git\ncd beeper-cli\ngo build ./cmd/beeper-cli\n# Move beeper-cli to PATH, e.g., /usr/local/bin\n```\n\n## Examples\n\nSearch for work-related messages from last week:\n```bash\nbeeper-cli threads list --days 7 --json | jq '.threads[] | select(.name | contains(\"work\"))'\nbeeper-cli search 'project deadline' --limit 10 --json\n```\n\nFind messages about invoices with context:\n```bash\nbeeper-cli search 'invoice' --context 3 --json\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli threads list --days 7 --limit 50 --json",
+          "replacement_text": "beeper-cli threads list --limit 50 --json",
+          "rationale": "Removing the --days filter prevents the user from listing threads from the last week, which the query explicitly requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli search 'meeting' --context 6 --window 60m --json",
+          "replacement_text": "beeper-cli search 'meeting' --json",
+          "rationale": "Removing the context and window flags makes the skill unable to show a few lines before and after the matched message as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "beeper-cli search 'invoice' --context 3 --json",
+          "replacement_text": "beeper-cli search 'invoice' --json",
+          "rationale": "This example, if left unchanged, could mislead an agent into thinking context is supported; changing it reinforces the lack of context capability.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Beeper CLI\n\n[Beeper](https://www.beeper.com/) is a universal chat app that unifies messages from WhatsApp, Telegram, Signal, iMessage, Discord, and more in a single inbox.\n\nThis skill provides **read-only access** to your local Beeper chat history. Browse threads, search messages, and extract conversation data.\n\n## Requirements\n- Beeper Desktop app installed (provides the SQLite database)\n- `beeper-cli` binary on PATH\n\n## Database Path\nThe CLI auto-detects:\n- `~/Library/Application Support/BeeperTexts/index.db` (macOS)\n- `~/Library/Application Support/Beeper/index.db` (macOS)\n\nOverride with:\n- `--db /path/to/index.db`\n- `BEEPER_DB=/path/to/index.db`\n\n## Commands\n\n### List Threads\n```bash\nbeeper-cli threads list --limit 50 --json\n```\n\n### Show Thread Details\n```bash\nbeeper-cli threads show --id \"!abc123:beeper.local\" --json\n```\n\n### List Messages in Thread\n```bash\nbeeper-cli messages list --thread \"!abc123:beeper.local\" --limit 50 --json\n```\n\n### Search Messages (Full-Text)\n```bash\n# Simple search\nbeeper-cli search 'invoice' --limit 20 --json\n\n# Phrase search\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n\n# Proximity search\nbeeper-cli search 'party NEAR/5 christmas' --limit 20 --json\n\n# With context window (messages before/after match)\nbeeper-cli search 'meeting' --json\n```\n\n### Database Info\n```bash\nbeeper-cli db info --json\n```\n\n## Notes\n- **Read-only**: This tool never sends messages\n- **JSON output**: Always use `--json` for structured output agents can parse\n- **FTS5 search**: Uses Beeper's built-in full-text index (FTS5) for fast search\n- **DM name resolution**: Optionally resolves DM names via bridge databases (disable with `--no-bridge`)\n\n## Installation\n\n### Option 1: Go Install (recommended)\n```bash\ngo install github.com/krausefx/beeper-cli/cmd/beeper-cli@latest\n```\n\n### Option 2: Build from Source\n```bash\ngit clone https://github.com/krausefx/beeper-cli.git\ncd beeper-cli\ngo build ./cmd/beeper-cli\n# Move beeper-cli to PATH, e.g., /usr/local/bin\n```\n\n## Examples\n\nSearch for work-related messages from last week:\n```bash\nbeeper-cli threads list --days 7 --json | jq '.threads[] | select(.name | contains(\"work\"))'\nbeeper-cli search 'project deadline' --limit 10 --json\n```\n\nFind messages about invoices with context:\n```bash\nbeeper-cli search 'invoice' --json\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "beeper-cli threads list --days 7 --limit 50 --json",
+          "replacement_text": "",
+          "rationale": "Removes the thread listing command so the user cannot list recent threads to identify the correct conversation.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Beeper CLI\n\n[Beeper](https://www.beeper.com/) is a universal chat app that unifies messages from WhatsApp, Telegram, Signal, iMessage, Discord, and more in a single inbox.\n\nThis skill provides **read-only access** to your local Beeper chat history. Browse threads, search messages, and extract conversation data.\n\n## Requirements\n- Beeper Desktop app installed (provides the SQLite database)\n- `beeper-cli` binary on PATH\n\n## Database Path\nThe CLI auto-detects:\n- `~/Library/Application Support/BeeperTexts/index.db` (macOS)\n- `~/Library/Application Support/Beeper/index.db` (macOS)\n\nOverride with:\n- `--db /path/to/index.db`\n- `BEEPER_DB=/path/to/index.db`\n\n## Commands\n\n### List Threads\n```bash\n\n```\n\n### Show Thread Details\n```bash\nbeeper-cli threads show --id \"!abc123:beeper.local\" --json\n```\n\n### List Messages in Thread\n```bash\nbeeper-cli messages list --thread \"!abc123:beeper.local\" --limit 50 --json\n```\n\n### Search Messages (Full-Text)\n```bash\n# Simple search\nbeeper-cli search 'invoice' --limit 20 --json\n\n# Phrase search\nbeeper-cli search '\"christmas party\"' --limit 20 --json\n\n# Proximity search\nbeeper-cli search 'party NEAR/5 christmas' --limit 20 --json\n\n# With context window (messages before/after match)\nbeeper-cli search 'meeting' --context 6 --window 60m --json\n```\n\n### Database Info\n```bash\nbeeper-cli db info --json\n```\n\n## Notes\n- **Read-only**: This tool never sends messages\n- **JSON output**: Always use `--json` for structured output agents can parse\n- **FTS5 search**: Uses Beeper's built-in full-text index (FTS5) for fast search\n- **DM name resolution**: Optionally resolves DM names via bridge databases (disable with `--no-bridge`)\n\n## Installation\n\n### Option 1: Go Install (recommended)\n```bash\ngo install github.com/krausefx/beeper-cli/cmd/beeper-cli@latest\n```\n\n### Option 2: Build from Source\n```bash\ngit clone https://github.com/krausefx/beeper-cli.git\ncd beeper-cli\ngo build ./cmd/beeper-cli\n# Move beeper-cli to PATH, e.g., /usr/local/bin\n```\n\n## Examples\n\nSearch for work-related messages from last week:\n```bash\nbeeper-cli threads list --days 7 --json | jq '.threads[] | select(.name | contains(\"work\"))'\nbeeper-cli search 'project deadline' --limit 10 --json\n```\n\nFind messages about invoices with context:\n```bash\nbeeper-cli search 'invoice' --context 3 --json\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T22:17:57",
+  "elapsed_seconds": 171.328,
+  "generated_variants": 7
+}

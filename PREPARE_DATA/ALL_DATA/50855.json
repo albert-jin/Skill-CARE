@@ -1,0 +1,182 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:03:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 50855,
+  "selection_rank": 21,
+  "skill": {
+    "skill_id": "other/code-paths",
+    "name": "perf-code-paths",
+    "category": "other",
+    "description": "Use when mapping code paths, entrypoints, and likely hot files before profiling.",
+    "body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n2. List top candidate files/symbols tied to the scenario.\n3. Include imports/exports or call chains when relevant.\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Go, Python).\n- Keep to the most relevant 10-15 files.",
+    "source": "pool"
+  },
+  "generated_query": "I'm investigating a performance issue in our Go microservice that handles user authentication. The `/login` endpoint is taking over 500ms on average. I need to understand the code path from the HTTP handler down to the database query for password verification. Please identify the key files and functions, including any middleware, authentication checks, and database calls. List the top 10-15 files with symbols and reasons why they're relevant.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n",
+          "replacement_text": "",
+          "rationale": "Removing the step to find entrypoints and handlers leaves the user without guidance on where to start tracing the code path, making the skill useless for identifying the HTTP handler chain.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n2. List top candidate files/symbols tied to the scenario.\n3. Include imports/exports or call chains when relevant.\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Go, Python).\n- Keep to the most relevant 10-15 files."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Use repo-map if available; otherwise use grep for entrypoints and handlers.",
+          "replacement_text": "2. Use pprof profiling output if available; otherwise use trace logs to identify hot functions from recent performance runs.",
+          "rationale": "Replaces static code analysis tools with dynamic profiling tools, so the skill no longer helps identify code paths before profiling, which is what the user needs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# perf-code-paths\n\nUse distributed tracing to identify performance bottlenecks in microservices.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Ensure your service exports traces to a central tracing system (Jaeger, Zipkin, etc.).\n2. Look for spans with high duration (e.g., over 100ms) in the login endpoint.\n3. Note the span names and tags; they often indicate the component (e.g., HTTP server, database client).\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\nspans:\n  - name: <span name>\n    duration: <duration>\n    service: <service name>\n    tags: <key-value pairs>\n```\n\n## Constraints\n\n- Focus only on services written in Go, Java, Python, or Node.js.\n- Limit to the top 5-10 slowest spans."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Focus only on supported languages (Rust, Java, JS/TS, Go, Python).",
+          "replacement_text": "Focus only on supported languages (Rust, Java, JS/TS, Python).",
+          "rationale": "By removing Go from the supported languages, the skill explicitly excludes the user's Go microservice, making it irrelevant even though the rest of the skill appears applicable.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n2. List top candidate files/symbols tied to the scenario.\n3. Include imports/exports or call chains when relevant.\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Python).\n- Keep to the most relevant 10-15 files."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Focus only on supported languages (Rust, Java, JS/TS, Go, Python).",
+          "replacement_text": "Focus only on supported languages (Rust, Java, JS/TS, Python).",
+          "rationale": "Removing Go from the supported languages makes the skill appear inapplicable to the user's Go microservice, causing it to be a hard negative despite overall relevance.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n2. List top candidate files/symbols tied to the scenario.\n3. Include imports/exports or call chains when relevant.\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Python).\n- Keep to the most relevant 10-15 files."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Identify likely implementation paths for a performance scenario.",
+          "replacement_text": "Identify likely performance bottlenecks using pprof profiles and flame graphs.",
+          "rationale": "Changes the goal from mapping code paths to profiling hotspots, which does not provide the file and symbol list needed by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```",
+          "replacement_text": "## Output Format\n\n```\nhotspots:\n  - function: <function name>\n    package: <package>\n    percentage: <percentage>\n    line: <line number>\n```",
+          "rationale": "Replacing the path-oriented output with hotspot percentages makes the skill unable to list the top 10–15 files and symbols as required by the query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely performance bottlenecks using pprof profiles and flame graphs.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n2. List top candidate files/symbols tied to the scenario.\n3. Include imports/exports or call chains when relevant.\n\n## Output Format\n\n```\nhotspots:\n  - function: <function name>\n    package: <package>\n    percentage: <percentage>\n    line: <line number>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Go, Python).\n- Keep to the most relevant 10-15 files."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n2. List top candidate files/symbols tied to the scenario.\n3. Include imports/exports or call chains when relevant.",
+          "replacement_text": "1. List relevant files.",
+          "rationale": "The user query requires tracing the code path from handler to database, which demands understanding call chains and entrypoints; replacing the specific steps with a vague instruction undermines the skill's ability to produce a useful output.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. List relevant files.\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Go, Python).\n- Keep to the most relevant 10-15 files."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Include imports/exports or call chains when relevant.",
+          "replacement_text": "",
+          "rationale": "Deleting the step to include call chains removes the critical ability to trace code path from handler to database, which the user explicitly needs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n2. List top candidate files/symbols tied to the scenario.\n\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Go, Python).\n- Keep to the most relevant 10-15 files."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use repo-map if available; otherwise use grep for entrypoints and handlers.",
+          "replacement_text": "Use pprof or flamegraph to identify hot functions in the codebase.",
+          "rationale": "Replaces the core method for finding entrypoints with a profiling approach, which outputs performance data rather than file/symbol mapping required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Use pprof or flamegraph to identify hot functions in the codebase.\n2. List top candidate files/symbols tied to the scenario.\n3. Include imports/exports or call chains when relevant.\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Go, Python).\n- Keep to the most relevant 10-15 files."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Output Format\n\n```\nkeywords: <comma-separated list>\npaths:\n  - file: <path>\n    symbols: [<symbol1>, <symbol2>]\n    evidence: <short reason>\n```",
+          "replacement_text": "## Output Format\n\n```\nkeywords: <comma-separated list>\nsummary: <short description of the code path with key files mentioned>\n```",
+          "rationale": "The user query expects a structured list of files with symbols and evidence, but this skill only provides a summary, failing to produce the required detailed per-file breakdown.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. List top candidate files/symbols tied to the scenario.",
+          "replacement_text": "2. Identify the entrypoint and the deepest function in the call chain.",
+          "rationale": "By limiting to only two points, the skill cannot generate the requested 10-15 file list, making it insufficient for the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# perf-code-paths\n\nIdentify likely implementation paths for a performance scenario.\n\nFollow `docs/perf-requirements.md` as the canonical contract.\n\n## Required Steps\n\n1. Use repo-map if available; otherwise use grep for entrypoints and handlers.\n2. Identify the entrypoint and the deepest function in the call chain.\n3. Include imports/exports or call chains when relevant.\n\n## Output Format\n\n```\nkeywords: <comma-separated list>\nsummary: <short description of the code path with key files mentioned>\n```\n\n## Constraints\n\n- Focus only on supported languages (Rust, Java, JS/TS, Go, Python).\n- Keep to the most relevant 10-15 files."
+    }
+  ],
+  "finished_at": "2026-07-28T13:07:25",
+  "elapsed_seconds": 207.437,
+  "generated_variants": 9
+}

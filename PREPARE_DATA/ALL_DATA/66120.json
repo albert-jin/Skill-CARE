@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:30:00",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 66120,
+  "selection_rank": 288,
+  "skill": {
+    "skill_id": "other/manage-image",
+    "name": "manage-image",
+    "category": "other",
+    "description": "Docker イメージを管理する。「イメージ一覧」「docker images」「イメージ確認」「ビルドして」「docker build」「イメージ作成」「イメージ取得」「docker pull」「イメージダウンロード」「イメージの履歴」「docker history」などで起動。",
+    "body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n| 取得 | 「イメージ取得」「pull」 | `docker pull` |\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n**イメージ取得**:\n\n```bash\ndocker pull <image>:<tag>\n```\n\n**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"\n```\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）",
+    "source": "pool"
+  },
+  "generated_query": "I’m setting up a new microservice and need to clean up and organize my Docker images. Can you first list all existing images on my system, then pull the official `python:3.12-slim` image, and then build a custom image from a `Dockerfile` in the current directory with the tag `myapp:latest`? After that, show me the history of a specific image, say `python:3.12-slim`, so I can see its layers and sizes.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| 取得 | 「イメージ取得」「pull」 | `docker pull` |",
+          "replacement_text": "",
+          "rationale": "Removing the pull operation from the table makes the skill unable to download images, a crucial step in the user query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "**イメージ取得**:\n\n```bash\ndocker pull <image>:<tag>\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the entire pull execution step prevents the skill from performing the required docker pull command.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n\n\n**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"\n```\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**イメージ取得**:\n\n```bash\ndocker pull <image>:<tag>\n```",
+          "replacement_text": "**イメージ取得**:\n\n```bash\ndocker load -i <file>\n```",
+          "rationale": "Replaces docker pull with docker load, so the skill cannot fetch images from a registry and fails the user's request to pull python:3.12-slim.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n| 取得 | 「イメージ取得」「pull」 | `docker pull` |\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n**イメージ取得**:\n\n```bash\ndocker load -i <file>\n```\n\n**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"\n```\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\ndocker images --format \"table {{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.Size}}\t{{.CreatedSince}}\"\n```",
+          "replacement_text": "```bash\ndocker system df --format \"table {{.Type}}\t{{.TotalCount}}\t{{.Size}}\"\n```",
+          "rationale": "Replaces the image listing command with a disk usage command, so the skill cannot list images as required by the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。主に一覧表示とビルドに特化しています。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」「作成」 | `docker build` |\n\n※ イメージの取得（pull）や履歴表示（history）は本スキルの対象外です。\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージビルド\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ イメージの取得（pull）や履歴表示（history）は本スキルでは実行しません。必要な場合は別のスキルを参照してください。"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "docker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"",
+          "replacement_text": "docker history <image> --format \"table {{.CreatedBy}}\"",
+          "rationale": "Removes the Size column from history output, so the skill cannot show image layer sizes as requested by the user.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n| 取得 | 「イメージ取得」「pull」 | `docker pull` |\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n**イメージ取得**:\n\n```bash\ndocker pull <image>:<tag>\n```\n\n**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\"\n```\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定",
+          "replacement_text": "",
+          "rationale": "Deleting the build step makes the skill unable to build from a Dockerfile, which the query requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "**イメージ取得**:\n\n```bash\ndocker pull <image>:<tag>\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the pull step means the skill cannot download the required python:3.12-slim image.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n| 取得 | 「イメージ取得」「pull」 | `docker pull` |\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n\n\n\n\n**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"\n```\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"\n```",
+          "replacement_text": "",
+          "rationale": "Removes the actual history command execution while keeping the history intent detection, causing the skill to appear capable but fail when the user asks for image history.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n| 取得 | 「イメージ取得」「pull」 | `docker pull` |\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n**イメージ取得**:\n\n```bash\ndocker pull <image>:<tag>\n```\n\n\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**イメージ取得**:\n\n```bash\ndocker pull <image>:<tag>\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the pull step means the skill cannot download images, so the user's request to pull python:3.12-slim cannot be fulfilled.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n| 取得 | 「イメージ取得」「pull」 | `docker pull` |\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n\n\n**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"\n```\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "docker pull <image>:<tag>",
+          "replacement_text": "docker load -i <image>.tar",
+          "rationale": "Replacing the pull command with load prevents the skill from downloading the official python:3.12-slim image from a registry, breaking a core user requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Manage Image\n\nDocker イメージの管理を行います。\n\n## 対応操作\n\n| 操作 | トリガー例 | コマンド |\n|------|-----------|----------|\n| 一覧表示 | 「イメージ一覧」「images」 | `docker images` |\n| ビルド | 「ビルドして」「build」 | `docker build` |\n| 取得 | 「イメージ取得」「pull」 | `docker pull` |\n| 履歴 | 「イメージ履歴」「history」 | `docker history` |\n\n## 実行手順\n\n### 1. 意図の判定\n\nユーザーの発話から操作を判定:\n\n- **一覧系**: 「一覧」「images」「確認」→ `docker images`\n- **ビルド系**: 「ビルド」「build」「作成」→ `docker build`\n- **取得系**: 「取得」「pull」「ダウンロード」→ `docker pull`\n- **履歴系**: 「履歴」「history」「レイヤー」→ `docker history`\n\n### 2. イメージ一覧表示\n\n```bash\ndocker images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\\t{{.CreatedSince}}\"\n```\n\ndangling イメージも含める場合:\n\n```bash\ndocker images -a --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}\\t{{.Size}}\"\n```\n\n### 3. イメージ操作\n\n**ビルド**:\n\nまず Dockerfile の存在確認:\n\n```bash\nls Dockerfile docker-compose.yml compose.yml 2>/dev/null\n```\n\ndocker-compose.yml がある場合:\n\n```bash\ndocker compose build [service]\n```\n\nDockerfile のみの場合:\n\n```bash\ndocker build -t <tag> .\n# または\ndocker build -t <tag> -f <dockerfile> .\n```\n\nオプション:\n\n- `--no-cache`: キャッシュなしでビルド\n- `--target <stage>`: マルチステージビルドのターゲット指定\n\n**イメージ取得**:\n\n```bash\ndocker load -i <image>.tar\n```\n\n**履歴表示**:\n\n```bash\ndocker history <image> --format \"table {{.CreatedBy}}\\t{{.Size}}\"\n```\n\n### 4. 出力フォーマット\n\n```\n## イメージ一覧\n\n| リポジトリ | タグ | ID | サイズ | 作成日時 |\n|-----------|------|-----|--------|----------|\n| ... | ... | ... | ... | ... |\n\n合計: {N} イメージ\n総サイズ: {total_size}\n```\n\n```\n## ビルド完了\n\nイメージ: {repository}:{tag}\nサイズ: {size}\nレイヤー数: {layers}\nビルド時間: {duration}\n```\n\n```\n## イメージ取得完了\n\nイメージ: {image}:{tag}\nダイジェスト: {digest}\nサイズ: {size}\n```\n\n## 注意事項\n\n- ✅ ビルド時はタグを指定することを推奨\n- ✅ `latest` タグの使用は避けることを推奨\n- ✅ マルチステージビルドを推奨（サイズ削減）\n- ❌ `docker rmi -f` は使用しない（cleanup コマンドに委譲）"
+    }
+  ],
+  "finished_at": "2026-07-29T03:32:41",
+  "elapsed_seconds": 161.516,
+  "generated_variants": 8
+}

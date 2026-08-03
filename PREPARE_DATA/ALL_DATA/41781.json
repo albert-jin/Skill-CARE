@@ -1,0 +1,224 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T04:05:49",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 41781,
+  "selection_rank": 290,
+  "skill": {
+    "skill_id": "other/language-hoangnguyen0403-agent-skills-standar-3",
+    "name": "Language",
+    "category": "other",
+    "description": "Core idioms, style guides, and best practices for writing idiomatic Go code.",
+    "body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value. Handle immediately.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n- **No `init`**: Use constructors, not `init()`.\n- **No Globals**: Use DI, not global mutable state.\n- **No `panic`**: Return errors, don't panic.\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)",
+    "source": "pool"
+  },
+  "generated_query": "I have a Go package that manages user sessions. It currently defines a package-level variable for a session store, uses `init()` to initialize it, and has a utility function called `LogError` that logs errors with `panic`. I also have a function `GetSession` that returns a session or `nil` on error without returning an error. Could you help me refactor this code to follow idiomatic Go conventions? Specifically, I need:\n\n- Replace the global variable with dependency injection (pass the store as a parameter).\n- Remove `init()` and use explicit initialization in the caller.\n- Change `LogError` to return an error instead of panicking, and rename it to simply `logError` (unexported) or handle errors directly.\n- Ensure `GetSession` returns `(session, error)` instead of `(session, nil)`.\n- Use `camelCase` for internal functions and `PascalCase` for exported ones.\n- Use `make()` with capacity when creating slices.\n\nHere's the current code snippet for reference:\n\n```go\npackage sessions\n\nvar store *Store\n\nfunc init() {\n    store = NewStore()\n}\n\nfunc LogError(msg string) {\n    panic(\"Error: \" + msg)\n}\n\nfunc GetSession(id string) *Session {\n    s, err := store.Find(id)\n    if err != nil {\n        _ = err\n        return nil\n    }\n    return s\n}\n```\n\nPlease rewrite this code following Go best practices and including proper comments.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **No `init`**: Use constructors, not `init()`.",
+          "replacement_text": "",
+          "rationale": "Without this anti-pattern, the skill does not explicitly discourage the use of `init()`, which is a key requirement in the user query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **No Globals**: Use DI, not global mutable state.",
+          "replacement_text": "",
+          "rationale": "Removing this guideline makes the skill fail to advise against global mutable state, a core part of the user's refactoring request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value. Handle immediately.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n\n\n- **No `panic`**: Return errors, don't panic.\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Errors**: Return error as last return value. Handle immediately.",
+          "replacement_text": "- **Errors**: Return error as first return value. Defer error handling to the caller.",
+          "rationale": "Changes the required error return order, so the skill no longer supports the user's need to return (session, error) with error as last value.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **No `panic`**: Return errors, don't panic.",
+          "replacement_text": "- **Panic**: Use panic for severe errors, recover at top-level.",
+          "rationale": "Permits panicking, contradicting the user's requirement to change LogError from panic to error return.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as first return value. Defer error handling to the caller.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n- **No `init`**: Use constructors, not `init()`.\n- **No Globals**: Use DI, not global mutable state.\n- **Panic**: Use panic for severe errors, recover at top-level.\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.",
+          "replacement_text": "- **Naming**: Use `snake_case` for internal, `PascalCase` for exported.",
+          "rationale": "This changes the internal naming convention to snake_case, contradicting the user's explicit requirement for camelCase internal functions.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `snake_case` for internal, `PascalCase` for exported.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value. Handle immediately.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n- **No `init`**: Use constructors, not `init()`.\n- **No Globals**: Use DI, not global mutable state.\n- **No `panic`**: Return errors, don't panic.\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "No `panic`: Return errors, don't panic.",
+          "replacement_text": "Panic: Panic is acceptable for logging errors in utility functions to simplify error handling.",
+          "rationale": "Weakens the no-panic constraint to allow panic for logging, which directly contradicts the user's request to return errors instead of panicking.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported. Use `snake_case` for package-level variables to avoid conflict.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value when the caller needs it. For internal logging, `panic` is acceptable for unrecoverable states.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope. Consider global variables for shared config to simplify function signatures.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Patterns\n\n- **Global State**: Use package-level variables for dependencies that are rarely swapped; this reduces boilerplate compared to dependency injection.\n- **`init()`**: Use `init()` for one-time setup like initializing a store; it ensures the package is ready on import.\n- **Panic for Errors**: Use `panic` in utility functions that indicate programming bugs or unrecoverable conditions (e.g., `LogError`). Document such functions clearly.\n- **Nil as Absence**: Returning `nil` from a lookup function like `GetSession` is idiomatic when the item is not found; separate error handling for unexpected failures can be added later.\n- **Ignoring Unused Errors**: Use `_` to discard errors you are certain are harmless to keep code concise.\n\n## References\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **No `init`**: Use constructors, not `init()`.",
+          "replacement_text": "- **Use `init()`** for one-time setup at package load.",
+          "rationale": "Encourages using init() instead of removing it, directly contradicting the user's need to eliminate init().",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **No Globals**: Use DI, not global mutable state.",
+          "replacement_text": "- **Prefer package-level global state** for simplicity.",
+          "rationale": "Promotes global state over dependency injection, failing the user's requirement to replace globals with DI.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **No `panic`**: Return errors, don't panic.",
+          "replacement_text": "- **Use `panic`** for fatal errors.",
+          "rationale": "Sanctions panic usage instead of error returns, opposite to the user's need to change LogError to return errors.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value. Handle immediately.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n- **Use `init()`** for one-time setup at package load.\n- **Prefer package-level global state** for simplicity.\n- **Use `panic`** for fatal errors.\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.",
+          "replacement_text": "- **Naming**: Follow standard Go naming conventions.",
+          "rationale": "The over-generalized naming guideline no longer explicitly requires camelCase and PascalCase, which the user specifically requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **No `init`**: Use constructors, not `init()`.",
+          "replacement_text": "- **Minimize `init()`**: Use constructors when possible.",
+          "rationale": "Weakening the ban on init() makes the skill fail to enforce the user's explicit need to remove init() entirely.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **No Globals**: Use DI, not global mutable state.",
+          "replacement_text": "- **Reduce globals**: Prefer DI over global state.",
+          "rationale": "The softened guideline on globals no longer strictly prohibits global variables, contradicting the user's requirement for dependency injection.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Follow standard Go naming conventions.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value. Handle immediately.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n- **Minimize `init()`**: Use constructors when possible.\n- **Reduce globals**: Prefer DI over global state.\n- **No `panic`**: Return errors, don't panic.\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **No `init`**: Use constructors, not `init()`.",
+          "replacement_text": "",
+          "rationale": "This deletion removes the explicit prohibition of init, so the skill no longer directly addresses the user's requirement to remove init().",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **No `panic`**: Return errors, don't panic.",
+          "replacement_text": "",
+          "rationale": "This deletion removes the directive against panicking, undermining the user's need to replace panic with error returns.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value. Handle immediately.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n\n- **No Globals**: Use DI, not global mutable state.\n\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "No `panic`: Return errors, don't panic.",
+          "replacement_text": "Use `panic` for logging errors to ensure immediate failure.",
+          "rationale": "The user explicitly wants to replace panic with error returns, so endorsing panic contradicts their requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "No Globals: Use DI, not global mutable state.",
+          "replacement_text": "Use package-level variables for convenience; DI is overengineering.",
+          "rationale": "The user needs dependency injection to replace global state, so this change makes the skill support globals instead.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Go Language Best Practices\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.  \n  *However, exported utility functions like `LogError` are acceptable if they form part of the public API.*\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `sessions` not `sessions_pkg`).\n- **Interfaces**: Define where used, not where implemented. Keep small (1-2 methods).\n- **Errors**: Return errors as last value. For unrecoverable failures, `panic` is a valid choice in utility functions (e.g., logging helpers).\n- **Variables**: Short names for small scope, descriptive for large scope.\n- **Slices**: Prefer slices over arrays; use `make()` with capacity when known.\n- **Const**: Use `iota` for enums.\n\n## Package-Level Concerns\n\n- **`init()`**: Acceptable for package-level setup when dependency injection would overcomplicate the caller.  \n  Example: initializing a default store in a session package can be done in `init()` to keep the caller clean.\n- **Global Variables**: A single global store is fine for singletons or default configurations.  \n  Avoid passing the store around if it never needs to be swapped (e.g., in a small library).\n\n## Error Handling\n\n- **`panic`**: Only for truly exceptional conditions. `LogError` may panic to signal a critical error; the application can recover at a higher level.  \n  Do not panic in library functions that return errors.\n- **Ignored Errors**: Use `_ = err` only after logging the error. Always handle or propagate.\n\n## Anti-Patterns\n\n- **Over-engineering**: Injecting dependencies into every function when a package-level variable suffices creates unnecessary verbosity.\n- **Returning `(session, error)` when `nil` alone is clear**: If the intent is to ignore the error (e.g., in a quick‑lookup helper), returning `nil` is acceptable. Only add error return if the caller needs to decide recovery.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **No `panic`**: Return errors, don't panic.",
+          "replacement_text": "- **No `panic`**: Return errors, but you may use panic for unrecoverable errors.",
+          "rationale": "The skill now allows panic in some cases, so it no longer enforces the user's requirement to remove panic and return errors.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Golang Language Standards\n\n## **Priority: P0 (CRITICAL)**\n\n## Guidelines\n\n- **Fmt**: Run `gofmt` or `goimports` on save.\n- **Naming**: Use `camelCase` for internal, `PascalCase` for exported.\n- **Packages**: Short, lowercase, singular, no underscores (e.g., `net/http` not `net_http`).\n- **Interfaces**: Define where used, not where implemented. Small interfaces (1-2 methods).\n- **Errors**: Return error as last return value. Handle immediately.\n- **Variables**: Short names for small scope (`i`, `ctx`), descriptive for large scope.\n- **Slices**: Prefer slices over arrays. Use `make()` for capacity.\n- **Const**: Use `iota` for enums.\n\n## Anti-Patterns\n\n- **No `init`**: Use constructors, not `init()`.\n- **No Globals**: Use DI, not global mutable state.\n- **No `panic`**: Return errors, but you may use panic for unrecoverable errors.\n- **No `_` ignored errors**: Always check and handle errors.\n- **No stutter**: `log.Error`, not `log.LogError`.\n\n## references\n\n- [Idioms](references/idioms.md)\n- [Effective Go Summary](references/effective-go-summary.md)"
+    }
+  ],
+  "finished_at": "2026-07-29T04:08:42",
+  "elapsed_seconds": 173.094,
+  "generated_variants": 9
+}

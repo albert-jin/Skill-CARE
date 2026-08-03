@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:04:47",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 9975,
+  "selection_rank": 259,
+  "skill": {
+    "skill_id": "development/code-review-prateek-dotfiles",
+    "name": "code-review",
+    "category": "development",
+    "description": "Run `codex review` plus PAL `codereview` (via the `pal-mcporter` skill) against a git base ref, then merge both outputs into one prioritized, actionable review.",
+    "body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && codex review --base \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all --focus-on \"<extra>\"`\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).\n\n### 3) Merge feedback into one review\n\n- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).\n- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).\n- End with a short verification checklist (tests to run, manual steps, rollout risk).",
+    "source": "pool"
+  },
+  "generated_query": "I’m working on a new feature branch in my local repository at `/home/user/myapp`. I need a thorough review of the changes compared to the `origin/main` branch, with special focus on security and performance. Could you run two different review tools on that diff—first, the standard codex review with `--base origin/main`, and second, the PAL codereview tool (via its markdown script) with a tailored prompt about security and performance? After both finish, please merge the findings into a single actionable report: deduplicate overlapping issues, reconcile any disagreements, and prioritize them as blockers (must-fix), high-signal improvements, and nits. Finally, include a short verification checklist for tests and manual steps I should run before merging.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all --focus-on \"<extra>\"`",
+          "replacement_text": "",
+          "rationale": "Removing the PAL codereview step means the skill no longer runs the second review tool, failing the user's explicit requirement for both a standard codex review and a tailored PAL review on security and performance.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && codex review --base \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).\n\n### 3) Merge feedback into one review\n\n- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).\n- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).\n- End with a short verification checklist (tests to run, manual steps, rollout risk)."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `cd <path> && codex review --base \"<compare_to>\"`",
+          "replacement_text": "- `cd <path> && git diff --stat \"<compare_to>\"`",
+          "rationale": "Replacing the codex review tool with a simple git diff command removes the thorough, actionable review the user requires.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "--focus-on \"<extra>\"",
+          "replacement_text": "",
+          "rationale": "Removing the focus parameter prevents the PAL review from being tailored to security and performance, which the user explicitly requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && git diff --stat \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all `\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).\n\n### 3) Merge feedback into one review\n\n- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).\n- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).\n- End with a short verification checklist (tests to run, manual steps, rollout risk)."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).",
+          "replacement_text": "- List all findings without prioritization.",
+          "rationale": "Removes the three-category prioritization that the user query requires (blockers, high-signal, nits), making the output insufficiently actionable.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- End with a short verification checklist (tests to run, manual steps, rollout risk).",
+          "replacement_text": "",
+          "rationale": "Deletes the verification checklist that the user explicitly requested at the end of the merged review.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && codex review --base \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all --focus-on \"<extra>\"`\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).\n\n### 3) Merge feedback into one review\n\n- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).\n- List all findings without prioritization.\n"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).",
+          "replacement_text": "",
+          "rationale": "Deleting the requirement to reconcile disagreements means the merged review may contain conflicting assessments, failing the user's explicit need to reconcile disagreements.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- End with a short verification checklist (tests to run, manual steps, rollout risk).",
+          "replacement_text": "",
+          "rationale": "Removing the verification checklist means the skill does not produce the actionable final checklist the user explicitly requests, making it insufficient.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && codex review --base \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all --focus-on \"<extra>\"`\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).\n\n### 3) Merge feedback into one review\n\n\n- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).\n"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all --focus-on \"<extra>\"`",
+          "replacement_text": "- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all`",
+          "rationale": "Omits the tailored prompt (`<extra>`) and `--focus-on` flag, so the PAL review cannot be customized for security and performance as the query requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 3) Merge feedback into one review\n\n- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).\n- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).\n- End with a short verification checklist (tests to run, manual steps, rollout risk).",
+          "replacement_text": "",
+          "rationale": "Removes the merging and prioritization step entirely, so the output remains two separate reviews without a unified actionable report or checklist.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && codex review --base \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all`\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).\n\n"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && codex review --base \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all --focus-on \"<extra>\"`\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).",
+          "replacement_text": "### 2) Run code review tools on the diff\n\nUse any available code review tools to analyze the diff against the base ref. Run them in parallel if possible to reduce time.",
+          "rationale": "Over-generalized step removes explicit references to codex and PAL, so the skill cannot produce the specific tools the user requests.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 3) Merge feedback into one review\n\n- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).\n- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).\n- End with a short verification checklist (tests to run, manual steps, rollout risk).",
+          "replacement_text": "### 3) Aggregate feedback\n\nCombine findings from both reviews into a single list.",
+          "rationale": "Over-generalized merging removes prioritization and checklist, so the output will not meet the user's requirement for an actionable, prioritized report with verification steps.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run code review tools on the diff\n\nUse any available code review tools to analyze the diff against the base ref. Run them in parallel if possible to reduce time.\n\n### 3) Aggregate feedback\n\nCombine findings from both reviews into a single list."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3) Merge feedback into one review\n\n- Deduplicate overlapping findings; reconcile disagreements (call them out explicitly).\n- Prioritize into:\n  - **Blockers (must fix)**: correctness, security, data loss, breaking API/ABI, missing tests, CI failures.\n  - **High-signal improvements**: maintainability, performance, edge cases, observability.\n  - **Nits**: style/consistency (only if low-noise).\n- End with a short verification checklist (tests to run, manual steps, rollout risk).",
+          "replacement_text": "",
+          "rationale": "Deleting the merge step means the skill only runs two reviews but does not combine or prioritize them, so the user cannot get the unified actionable report they need.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Code Review\n\n## When to use\n\nUse when you have a local git repo and a base ref to diff against (e.g. `upstream/main`, `origin/master`, or a commit SHA) and you want a single merged review from:\n\n- `codex review`\n- PAL `codereview` (run via `pal-mcporter`)\n\n## Inputs\n\n- `path`: repo root directory (prefer absolute)\n- `compare_to`: git ref to compare against (e.g. `upstream/main`)\n- `extra` (optional): focus areas (perf, security, tests, API, etc.)\n\n## Workflow\n\n### 1) Ensure the base ref exists locally\n\n- `cd <path>`\n- If `compare_to` is a remote ref like `upstream/main`, ensure it’s present:\n  - `git fetch <remote> <branch>`\n\n### 2) Run Codex review + PAL codereview (parallel)\n\nThese two passes are independent once `compare_to` exists locally, so run them in parallel to reduce wall-clock time.\n\n- Codex review (capture as `codex_review`):\n  - `cd <path> && codex review --base \"<compare_to>\"`\n  - Note: the current `codex review` CLI does not accept a custom prompt when `--base` is used; run it without a prompt.\n- PAL review via MCPorter (capture as `pal_review`):\n  - `bash \"<path-to-pal-mcporter-skill>/scripts/pal\" -o markdown codereview --step \"Review changes vs <compare_to>. <extra>\" --step-number 1 --total-steps 1 --next-step-required false --findings \"\" --model auto --review-validation-type internal --review-type quick --severity-filter all --focus-on \"<extra>\"`\n\nImplementation note (when tool-parallelism is available): use `multi_tool_use.parallel` to run two `functions.exec_command` calls concurrently (one for `codex review`, one for `pal ... codereview`).\n\n"
+    }
+  ],
+  "finished_at": "2026-07-29T02:07:47",
+  "elapsed_seconds": 180.516,
+  "generated_variants": 7
+}

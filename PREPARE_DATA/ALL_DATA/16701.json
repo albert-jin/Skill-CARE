@@ -1,0 +1,177 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:51:41",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 16701,
+  "selection_rank": 72,
+  "skill": {
+    "skill_id": "development/ast-grep-find",
+    "name": "ast-grep-find",
+    "category": "development",
+    "description": "AST-based code search and refactoring via ast-grep MCP",
+    "body": "# AST-Grep Find\n\nStructural code search that understands syntax. Find patterns like function calls, imports, class definitions - not just text.\n\n## When to Use\n\n- Find code patterns (ignores strings/comments)\n- Search for function calls, class definitions, imports\n- Refactor code with AST precision\n- Rename variables/functions across codebase\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"import asyncio\" --language python\n```\n\n### Search in specific directory\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n```\n\n### Refactor/replace pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$MSG)\" --replace \"logger.info(\\$MSG)\" \\\n    --language javascript\n```\n\n### Dry run (preview changes)\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logger.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to search (required) |\n| `--language` | Language: `python`, `javascript`, `typescript`, `go`, etc. |\n| `--path` | Directory to search (default: `.`) |\n| `--glob` | File glob pattern (e.g., `**/*.py`) |\n| `--replace` | Replacement pattern for refactoring |\n| `--dry-run` | Preview changes without applying |\n| `--context` | Lines of context (default: 2) |\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match single node (variable, expression) |\n| `$$$` | Match multiple nodes (arguments, statements) |\n| `$_` | Match any single node (wildcard) |\n\n## Examples\n\n```bash\n# Find all function definitions\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def \\$FUNC(\\$\\$\\$):\" --language python\n\n# Find console.log calls\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$\\$\\$)\" --language javascript\n\n# Replace print with logging\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logging.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## vs morph/warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Structural patterns (understands code syntax) |\n| **warpgrep** | Fast text/regex search (20x faster grep) |\n\nUse ast-grep when you need syntax-aware matching. Use warpgrep for raw speed.\n\n## MCP Server Required\n\nRequires `ast-grep` server in mcp_config.json.",
+    "source": "pool"
+  },
+  "generated_query": "I’m working on a Python project and I need to find all `async def` functions in the `src/` directory, but only in files that match `**/*_handler.py`. Could you search for the pattern `\"async def $FUNC($$$):\"` and show me the results with 3 lines of context? Also, I want to rename the function `process_data` to `handle_data` across the whole codebase, but only in Python files. Please do a dry run first so I can review the changes before applying them.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--glob` | File glob pattern (e.g., `**/*.py`) |",
+          "replacement_text": "",
+          "rationale": "Removes the --glob parameter, so the skill cannot filter files by a glob pattern, failing the user's requirement to search only in `*_handler.py` files.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--context` | Lines of context (default: 2) |",
+          "replacement_text": "",
+          "rationale": "Removes the --context parameter, so the skill cannot set the number of context lines, defaulting to 2 instead of the requested 3.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AST-Grep Find\n\nStructural code search that understands syntax. Find patterns like function calls, imports, class definitions - not just text.\n\n## When to Use\n\n- Find code patterns (ignores strings/comments)\n- Search for function calls, class definitions, imports\n- Refactor code with AST precision\n- Rename variables/functions across codebase\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"import asyncio\" --language python\n```\n\n### Search in specific directory\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n```\n\n### Refactor/replace pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$MSG)\" --replace \"logger.info(\\$MSG)\" \\\n    --language javascript\n```\n\n### Dry run (preview changes)\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logger.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to search (required) |\n| `--language` | Language: `python`, `javascript`, `typescript`, `go`, etc. |\n| `--path` | Directory to search (default: `.`) |\n\n| `--replace` | Replacement pattern for refactoring |\n| `--dry-run` | Preview changes without applying |\n\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match single node (variable, expression) |\n| `$$$` | Match multiple nodes (arguments, statements) |\n| `$_` | Match any single node (wildcard) |\n\n## Examples\n\n```bash\n# Find all function definitions\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def \\$FUNC(\\$\\$\\$):\" --language python\n\n# Find console.log calls\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$\\$\\$)\" --language javascript\n\n# Replace print with logging\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logging.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## vs morph/warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Structural patterns (understands code syntax) |\n| **warpgrep** | Fast text/regex search (20x faster grep) |\n\nUse ast-grep when you need syntax-aware matching. Use warpgrep for raw speed.\n\n## MCP Server Required\n\nRequires `ast-grep` server in mcp_config.json."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `--glob` | File glob pattern (e.g., `**/*.py`) |",
+          "replacement_text": "| `--exclude` | File exclusion pattern (e.g., `**/test*.py`) |",
+          "rationale": "Removes ability to filter by glob pattern, so user cannot search only in `**/*_handler.py` files.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `--context` | Lines of context (default: 2) |",
+          "replacement_text": "| `--context` | Lines of context (always 2, not configurable) |",
+          "rationale": "Removes ability to customize context lines, so user cannot get 3 lines of context.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AST-Grep Find\n\nStructural code search that understands syntax. Find patterns like function calls, imports, class definitions - not just text.\n\n## When to Use\n\n- Find code patterns (ignores strings/comments)\n- Search for function calls, class definitions, imports\n- Refactor code with AST precision\n- Rename variables/functions across codebase\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"import asyncio\" --language python\n```\n\n### Search in specific directory\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n```\n\n### Refactor/replace pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$MSG)\" --replace \"logger.info(\\$MSG)\" \\\n    --language javascript\n```\n\n### Dry run (preview changes)\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logger.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to search (required) |\n| `--language` | Language: `python`, `javascript`, `typescript`, `go`, etc. |\n| `--path` | Directory to search (default: `.`) |\n| `--exclude` | File exclusion pattern (e.g., `**/test*.py`) |\n| `--replace` | Replacement pattern for refactoring |\n| `--dry-run` | Preview changes without applying |\n| `--context` | Lines of context (always 2, not configurable) |\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match single node (variable, expression) |\n| `$$$` | Match multiple nodes (arguments, statements) |\n| `$_` | Match any single node (wildcard) |\n\n## Examples\n\n```bash\n# Find all function definitions\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def \\$FUNC(\\$\\$\\$):\" --language python\n\n# Find console.log calls\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$\\$\\$)\" --language javascript\n\n# Replace print with logging\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logging.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## vs morph/warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Structural patterns (understands code syntax) |\n| **warpgrep** | Fast text/regex search (20x faster grep) |\n\nUse ast-grep when you need syntax-aware matching. Use warpgrep for raw speed.\n\n## MCP Server Required\n\nRequires `ast-grep` server in mcp_config.json."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [],
+      "edit_error": "Invalid \\escape: line 18 column 145 (char 748)",
+      "counterfactual_skill_body": "# AST-Grep Code Search\n\nPrecise, AST-aware search and replace for codebases. Understands syntax trees, not just text.\n\n## When to Use\n\n- Find function definitions, class declarations, imports\n- Refactor variable names or function signatures\n- Search with structural patterns (ignores comments and strings)\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\" --context 3\n```\n\n### Replace a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def process_data(\\$\\$\\$)\" --language python \\\n    --replace \"async def handle_data(\\$\\$\\$)\" --path \"./src\"\n```\n\n### Rename a single function (no dry-run)\n```bash\n# Direct replace — changes applied immediately\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def process_data(\\$\\$\\$)\" --replace \"async def handle_data(\\$\\$\\$)\" \\\n    --language python\n```\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to match (required) |\n| `--language` | Language: python, javascript, typescript, go, etc. |\n| `--path` | Directory to search (default: current dir) |\n| `--context` | Lines of context to show (default: 2) |\n| `--replace` | Replacement pattern (applies instantly) |\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match a single node (variable, function name) |\n| `$$$`  | Match zero or more nodes (arguments, statements) |\n| `$_`   | Match any single node |\n\n## Examples\n\n```bash\n# Find all async functions in a directory\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n\n# Rename a function (immediate)\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def old_name(\\$\\$\\$)\" --replace \"def new_name(\\$\\$\\$)\" \\\n    --language python --path \".\"\n\n# Show 3 lines of context around matches\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --language python --context 3\n```\n\n## vs warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Syntax-aware matching (ignores strings/comments) |\n| **warpgrep** | Ultra‑fast text/regex search |\n\nUse ast-grep when you need structural code understanding.\n\n## Requirements\n\nAdd `ast-grep` MCP server to your `mcp_config.json`."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--context` | Lines of context (default: 2) |",
+          "replacement_text": "",
+          "rationale": "Removing --context makes it impossible to request a specific number of context lines, as needed by the query.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `$$$` | Match multiple nodes (arguments, statements) |",
+          "replacement_text": "",
+          "rationale": "Removing $$$ pattern syntax prevents matching async def functions with arguments, breaking the user's search pattern.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AST-Grep Find\n\nStructural code search that understands syntax. Find patterns like function calls, imports, class definitions - not just text.\n\n## When to Use\n\n- Find code patterns (ignores strings/comments)\n- Search for function calls, class definitions, imports\n- Refactor code with AST precision\n- Rename variables/functions across codebase\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"import asyncio\" --language python\n```\n\n### Search in specific directory\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n```\n\n### Refactor/replace pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$MSG)\" --replace \"logger.info(\\$MSG)\" \\\n    --language javascript\n```\n\n### Dry run (preview changes)\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logger.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to search (required) |\n| `--language` | Language: `python`, `javascript`, `typescript`, `go`, etc. |\n| `--path` | Directory to search (default: `.`) |\n| `--glob` | File glob pattern (e.g., `**/*.py`) |\n| `--replace` | Replacement pattern for refactoring |\n| `--dry-run` | Preview changes without applying |\n\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match single node (variable, expression) |\n\n| `$_` | Match any single node (wildcard) |\n\n## Examples\n\n```bash\n# Find all function definitions\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def \\$FUNC(\\$\\$\\$):\" --language python\n\n# Find console.log calls\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$\\$\\$)\" --language javascript\n\n# Replace print with logging\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logging.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## vs morph/warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Structural patterns (understands code syntax) |\n| **warpgrep** | Fast text/regex search (20x faster grep) |\n\nUse ast-grep when you need syntax-aware matching. Use warpgrep for raw speed.\n\n## MCP Server Required\n\nRequires `ast-grep` server in mcp_config.json."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--glob` | File glob pattern (e.g., `**/*.py`) |",
+          "replacement_text": "",
+          "rationale": "Removing the --glob parameter prevents filtering files by pattern, so the user cannot search only in *_handler.py files.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--context` | Lines of context (default: 2) |",
+          "replacement_text": "",
+          "rationale": "Deleting the --context parameter removes the ability to show any surrounding lines, failing the user's request for 3 lines of context.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Dry run (preview changes)\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logger.info(\\$X)\" \\\n    --language python --dry-run\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the dry-run example implies this skill does not support dry-run, making it unable to preview the rename changes as requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AST-Grep Find\n\nStructural code search that understands syntax. Find patterns like function calls, imports, class definitions - not just text.\n\n## When to Use\n\n- Find code patterns (ignores strings/comments)\n- Search for function calls, class definitions, imports\n- Refactor code with AST precision\n- Rename variables/functions across codebase\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"import asyncio\" --language python\n```\n\n### Search in specific directory\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n```\n\n### Refactor/replace pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$MSG)\" --replace \"logger.info(\\$MSG)\" \\\n    --language javascript\n```\n\n\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to search (required) |\n| `--language` | Language: `python`, `javascript`, `typescript`, `go`, etc. |\n| `--path` | Directory to search (default: `.`) |\n\n| `--replace` | Replacement pattern for refactoring |\n| `--dry-run` | Preview changes without applying |\n\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match single node (variable, expression) |\n| `$$$` | Match multiple nodes (arguments, statements) |\n| `$_` | Match any single node (wildcard) |\n\n## Examples\n\n```bash\n# Find all function definitions\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def \\$FUNC(\\$\\$\\$):\" --language python\n\n# Find console.log calls\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$\\$\\$)\" --language javascript\n\n# Replace print with logging\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logging.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## vs morph/warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Structural patterns (understands code syntax) |\n| **warpgrep** | Fast text/regex search (20x faster grep) |\n\nUse ast-grep when you need syntax-aware matching. Use warpgrep for raw speed.\n\n## MCP Server Required\n\nRequires `ast-grep` server in mcp_config.json."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--glob` | File glob pattern (e.g., `**/*.py`) |\n",
+          "replacement_text": "",
+          "rationale": "Removes the ability to filter files by glob, so the user cannot target only `**/*_handler.py` files.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--context` | Lines of context (default: 2) |\n",
+          "replacement_text": "",
+          "rationale": "Removes the context parameter, so the user cannot request 3 lines of context (only default 2).",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AST-Grep Find\n\nStructural code search that understands syntax. Find patterns like function calls, imports, class definitions - not just text.\n\n## When to Use\n\n- Find code patterns (ignores strings/comments)\n- Search for function calls, class definitions, imports\n- Refactor code with AST precision\n- Rename variables/functions across codebase\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"import asyncio\" --language python\n```\n\n### Search in specific directory\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n```\n\n### Refactor/replace pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$MSG)\" --replace \"logger.info(\\$MSG)\" \\\n    --language javascript\n```\n\n### Dry run (preview changes)\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logger.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to search (required) |\n| `--language` | Language: `python`, `javascript`, `typescript`, `go`, etc. |\n| `--path` | Directory to search (default: `.`) |\n| `--replace` | Replacement pattern for refactoring |\n| `--dry-run` | Preview changes without applying |\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match single node (variable, expression) |\n| `$$$` | Match multiple nodes (arguments, statements) |\n| `$_` | Match any single node (wildcard) |\n\n## Examples\n\n```bash\n# Find all function definitions\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def \\$FUNC(\\$\\$\\$):\" --language python\n\n# Find console.log calls\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$\\$\\$)\" --language javascript\n\n# Replace print with logging\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logging.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## vs morph/warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Structural patterns (understands code syntax) |\n| **warpgrep** | Fast text/regex search (20x faster grep) |\n\nUse ast-grep when you need syntax-aware matching. Use warpgrep for raw speed.\n\n## MCP Server Required\n\nRequires `ast-grep` server in mcp_config.json."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--dry-run` | Preview changes without applying |\n",
+          "replacement_text": "",
+          "rationale": "Without the `--dry-run` flag, users cannot preview changes before applying, so the rename operation cannot be performed safely as requested.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Dry run (preview changes)\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logger.info(\\$X)\" \\\n    --language python --dry-run\n```\n",
+          "replacement_text": "",
+          "rationale": "Removing the dry-run example eliminates the demonstration of the preview feature, further obscuring the capability needed for safe refactoring.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AST-Grep Find\n\nStructural code search that understands syntax. Find patterns like function calls, imports, class definitions - not just text.\n\n## When to Use\n\n- Find code patterns (ignores strings/comments)\n- Search for function calls, class definitions, imports\n- Refactor code with AST precision\n- Rename variables/functions across codebase\n\n## Usage\n\n### Search for a pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"import asyncio\" --language python\n```\n\n### Search in specific directory\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"async def \\$FUNC(\\$\\$\\$)\" --language python --path \"./src\"\n```\n\n### Refactor/replace pattern\n```bash\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$MSG)\" --replace \"logger.info(\\$MSG)\" \\\n    --language javascript\n```\n\n\n## Parameters\n\n| Parameter | Description |\n|-----------|-------------|\n| `--pattern` | AST pattern to search (required) |\n| `--language` | Language: `python`, `javascript`, `typescript`, `go`, etc. |\n| `--path` | Directory to search (default: `.`) |\n| `--glob` | File glob pattern (e.g., `**/*.py`) |\n| `--replace` | Replacement pattern for refactoring |\n| `--context` | Lines of context (default: 2) |\n\n## Pattern Syntax\n\n| Syntax | Meaning |\n|--------|---------|\n| `$NAME` | Match single node (variable, expression) |\n| `$$$` | Match multiple nodes (arguments, statements) |\n| `$_` | Match any single node (wildcard) |\n\n## Examples\n\n```bash\n# Find all function definitions\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"def \\$FUNC(\\$\\$\\$):\" --language python\n\n# Find console.log calls\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"console.log(\\$\\$\\$)\" --language javascript\n\n# Replace print with logging\nuv run python -m runtime.harness scripts/ast_grep_find.py \\\n    --pattern \"print(\\$X)\" --replace \"logging.info(\\$X)\" \\\n    --language python --dry-run\n```\n\n## vs morph/warpgrep\n\n| Tool | Best For |\n|------|----------|\n| **ast-grep** | Structural patterns (understands code syntax) |\n| **warpgrep** | Fast text/regex search (20x faster grep) |\n\nUse ast-grep when you need syntax-aware matching. Use warpgrep for raw speed.\n\n## MCP Server Required\n\nRequires `ast-grep` server in mcp_config.json."
+    }
+  ],
+  "finished_at": "2026-07-28T15:53:48",
+  "elapsed_seconds": 127.093,
+  "generated_variants": 7
+}

@@ -1,0 +1,247 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:28:13",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 12760,
+  "selection_rank": 197,
+  "skill": {
+    "skill_id": "development/issue-resolution",
+    "name": "issue-resolution",
+    "category": "development",
+    "description": "GitHub 이슈 분석 및 해결 워크플로우입니다.",
+    "body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands",
+    "source": "pool"
+  },
+  "generated_query": "I need help with a GitHub issue in our project repository. Issue #42 reports that users are getting a \"500 Internal Server Error\" when trying to reset their password via the forgot-password flow. The error log shows a `KeyError` in `user_utils.py` around line 150. I'm on a tight deadline and want to resolve this quickly. Could you analyze the issue, identify the root cause, plan the fix, implement it with proper tests, and then create a pull request? Please also make sure the branch name follows our convention. If you run into any problems during the fix, generate a failure report so we can decide what to do next.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "│    - PR 생성                                 │",
+          "replacement_text": "",
+          "rationale": "Removes the step to create a pull request, so the skill cannot fulfill the user's request to create a PR.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "python scripts/handle_failed.py 123 --report",
+          "replacement_text": "",
+          "rationale": "Deletes the command to generate a failure report, so the skill cannot produce the required report when problems arise.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\n\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python scripts/resolve_issue.py 123 --auto-fix --create-pr",
+          "replacement_text": "python scripts/resolve_issue.py 123 --auto-fix --create-branch",
+          "rationale": "Replaces the PR creation command with a branch-only command, removing the ability to automatically create a pull request as required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-branch\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "브랜치 생성: fix/issue-123-desc",
+          "replacement_text": "브랜치 생성: feature/issue-123-desc",
+          "rationale": "Changes the branch naming convention from bug fix format to feature format, violating user's convention requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "python scripts/handle_failed.py 123 --report",
+          "replacement_text": "",
+          "rationale": "Removes the failure report generation command, so the skill cannot produce a failure report as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: feature/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\n\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "브랜치 생성: fix/issue-123-desc",
+          "replacement_text": "브랜치 생성: fix/issue-123",
+          "rationale": "Removes the description part from branch name, weakening the naming convention the user explicitly requires.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr",
+          "replacement_text": "# PR까지 생성 (제거됨)\npython scripts/resolve_issue.py 123 --auto-fix",
+          "rationale": "Removes the --create-pr flag, so the skill no longer creates pull requests — a critical requirement in the user query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성 (제거됨)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |",
+          "replacement_text": "| Bug | `bug` | Not supported. Please use `bug-fix-workflow`. |",
+          "rationale": "The skill now explicitly states it does not support bug fixes, making it irrelevant for the user's bug issue.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```",
+          "replacement_text": "### 관련 파일 탐색\n\n```python\n# Feature requests: find relevant source files from PRD\n# - No stack trace or error log analysis\n```",
+          "rationale": "Removes error log and stack trace analysis, which is essential for debugging the user's 500 error.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "    - 브랜치 생성: fix/issue-123-desc",
+          "replacement_text": "",
+          "rationale": "Deletes branch creation entirely, so the skill cannot create a branch as required by the user.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | Not supported. Please use `bug-fix-workflow`. |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# Feature requests: find relevant source files from PRD\n# - No stack trace or error log analysis\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘",
+          "replacement_text": "이슈 분석, 계획, 구현, 검증 단계를 차례로 수행합니다.",
+          "rationale": "Replacing the detailed workflow with a generic sentence removes explicit steps for analysis, planning, implementation, and verification, making the skill too vague to guarantee root cause identification, test creation, branch naming, and PR generation.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n",
+          "replacement_text": "",
+          "rationale": "Deleting the failure handling section means the skill cannot generate a failure report when problems arise, which the query specifically requires.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n이슈 분석, 계획, 구현, 검증 단계를 차례로 수행합니다.\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "python scripts/resolve_issue.py 123 --auto-fix --create-pr",
+          "replacement_text": "",
+          "rationale": "Deleting the PR creation script removes the ability to automatically create a pull request, which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "python scripts/handle_failed.py 123 --report",
+          "replacement_text": "",
+          "rationale": "Deleting the failure report script removes the ability to generate failure reports as requested by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\n\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\n\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python scripts/resolve_issue.py 123 --auto-fix --create-pr",
+          "replacement_text": "python scripts/resolve_issue.py 123 --auto-fix",
+          "rationale": "Removes PR creation capability, failing the user's requirement to create a pull request.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "│    - PR 생성                                 │",
+          "replacement_text": "│    - Branch 생성                                 │",
+          "rationale": "Changes the verify step to only create a branch instead of a pull request, making the skill unable to produce the required PR.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - Branch 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report",
+          "replacement_text": "# 2. 오류 로깅\npython scripts/handle_failed.py 123 --log-only",
+          "rationale": "Changing the failure report generation command to a simple logging command removes the skill's ability to produce the failure report required by the user query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix/issue-123-desc        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가/수정                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 오류 로깅\npython scripts/handle_failed.py 123 --log-only\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    - 테스트 추가/수정",
+          "replacement_text": "    - 테스트 추가 (생략 가능)",
+          "rationale": "Weakening the test requirement to optional makes the skill not guarantee proper tests as requested.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    - 브랜치 생성: fix/issue-123-desc",
+          "replacement_text": "    - 브랜치 생성: fix-issue",
+          "rationale": "Weakening the branch naming convention removes the specified format that the user query requires.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Issue Resolution\n\nGitHub 이슈 분석 및 해결 워크플로우입니다.\n\n## Quick Start\n\n```bash\n# 이슈 분석\npython .claude/skills/issue-resolution/scripts/analyze_issue.py 123\n\n# 이슈 해결 워크플로우\npython scripts/resolve_issue.py 123 --auto-fix\n\n# 실패 이슈 처리\npython scripts/handle_failed.py 123 --create-sub-issue\n```\n\n## 워크플로우\n\n```\nGitHub Issue\n    ↓\n┌─────────────────────────────────────────────┐\n│ 1. 분석 (Analyze)                           │\n│    - 이슈 타입 분류 (bug/feature/docs)      │\n│    - 관련 파일 탐색                          │\n│    - 영향 범위 파악                          │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 2. 계획 (Plan)                              │\n│    - 수정 전략 결정                          │\n│    - 테스트 계획                             │\n│    - 브랜치 생성: fix-issue        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 3. 구현 (Implement)                         │\n│    - TDD 사이클 (Red → Green → Refactor)    │\n│    - 코드 수정                               │\n│    - 테스트 추가 (생략 가능)                        │\n└─────────────────────────────────────────────┘\n    ↓\n┌─────────────────────────────────────────────┐\n│ 4. 검증 (Verify)                            │\n│    - 테스트 통과 확인                        │\n│    - 린트/포맷 검사                          │\n│    - PR 생성                                 │\n└─────────────────────────────────────────────┘\n```\n\n## 이슈 타입별 처리\n\n| 타입 | 라벨 | 워크플로우 |\n|------|------|-----------|\n| Bug | `bug` | 분석 → 재현 → 수정 → 테스트 |\n| Feature | `enhancement` | PRD → Task → 구현 → 테스트 |\n| Docs | `documentation` | 직접 수정 → 커밋 |\n| Refactor | `refactor` | 분석 → 계획 → 리팩토링 |\n\n## 분석 단계\n\n### 이슈 정보 수집\n\n```bash\n# 이슈 상세 조회\ngh issue view 123 --json title,body,labels,assignees\n\n# 관련 PR 확인\ngh pr list --search \"123\"\n```\n\n### 관련 파일 탐색\n\n```python\n# 이슈 본문에서 파일 패턴 추출\n# - 스택 트레이스에서 파일 경로\n# - 코드 블록에서 모듈 이름\n# - 에러 메시지에서 함수명\n```\n\n## 실패 처리\n\n### 3회 실패 시\n\n```bash\n# 1. 실패 이슈 생성\npython scripts/handle_failed.py 123 --create-sub-issue\n\n# 2. 분석 레포트 생성\npython scripts/handle_failed.py 123 --report\n\n# 3. 수동 개입 요청\n# → /issue-failed 커맨드 실행\n```\n\n### 실패 분석 레포트\n\n```markdown\n## 실패 분석: Issue #123\n\n### 시도 내역\n1. 시도 1: [접근 방법] - [실패 이유]\n2. 시도 2: [접근 방법] - [실패 이유]\n3. 시도 3: [접근 방법] - [실패 이유]\n\n### 권장 조치\n- [ ] 추가 정보 필요: [상세]\n- [ ] 설계 변경 필요: [상세]\n- [ ] 외부 의존성 문제: [상세]\n```\n\n## 자동화 옵션\n\n```bash\n# 분석만\npython scripts/resolve_issue.py 123 --analyze-only\n\n# 자동 수정 (3회 시도)\npython scripts/resolve_issue.py 123 --auto-fix\n\n# PR까지 생성\npython scripts/resolve_issue.py 123 --auto-fix --create-pr\n\n# 강제 모드 (확인 없이 진행)\npython scripts/resolve_issue.py 123 --auto-fix --force\n```\n\n## 관련 커맨드\n\n| 커맨드 | 용도 |\n|--------|------|\n| `/fix-issue` | 이슈 분석 및 수정 |\n| `/issue-failed` | 실패 분석 및 새 솔루션 |\n| `/create-pr` | PR 생성 |\n\n## 연동 Skills\n\n| Skill | 연동 시점 |\n|-------|----------|\n| `debugging-workflow` | 버그 분석 시 |\n| `tdd-workflow` | 구현 단계 |\n| `code-quality-checker` | 검증 단계 |\n\n---\n\n> 참조: CLAUDE.md 섹션 6 Commands"
+    }
+  ],
+  "finished_at": "2026-07-28T22:33:20",
+  "elapsed_seconds": 307.125,
+  "generated_variants": 10
+}

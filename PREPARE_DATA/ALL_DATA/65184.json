@@ -1,0 +1,203 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:24:10",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 65184,
+  "selection_rank": 66,
+  "skill": {
+    "skill_id": "other/check-mentions",
+    "name": "check-mentions",
+    "category": "other",
+    "description": "Slack で自分へのメンションを確認する。「メンション確認」「Slackメンション」「自分へのメンション」「@mention を見せて」などで起動。Pythonスクリプト `slack_message.py mentions` を使用。",
+    "body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py mentions` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **パーマリンク**: 各メンションへの直接リンクを表示\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます",
+    "source": "pool"
+  },
+  "generated_query": "I was out of the office this morning and missed a bunch of Slack messages. Could you check if anyone @mentioned me in the last few hours? I need to see all the mentions from channels like #general, #project-alpha, #dev-team, #random, and #marketing. Please show me the channel name, who sent it, a short excerpt of what they said, and a direct link to the message so I can jump right in. If there are many, just show the most recent 20 or so.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **パーマリンク**: 各メンションへの直接リンクを表示",
+          "replacement_text": "",
+          "rationale": "Without the permalink capability, the skill does not provide direct links to messages, failing the user's explicit request for jumping into messages.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py mentions` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pythonスクリプト `slack_message.py mentions` を実行",
+          "replacement_text": "Pythonスクリプト `slack_message.py channel-mentions <CHANNEL>` を実行（チャンネルを指定）",
+          "rationale": "The skill now requires a specific channel to be passed, making it unable to check mentions across multiple channels automatically.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `search:read` - メッセージ検索",
+          "replacement_text": "- `channels:history` - チャンネルのメッセージ履歴を取得",
+          "rationale": "The replaced API scope no longer supports cross-channel search, so the skill cannot find mentions in all user-specified channels at once.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py channel-mentions <CHANNEL>` を実行（チャンネルを指定）\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **パーマリンク**: 各メンションへの直接リンクを表示\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `channels:history` - チャンネルのメッセージ履歴を取得\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions --max 20 --format table",
+          "replacement_text": "python plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py my_messages --max 20 --format table",
+          "rationale": "The script now retrieves the user's own sent messages instead of @mentions, so it fails to answer the query about being mentioned.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py mentions` を実行\n2. 自分へのメンションを検索（ただし #general チャンネルのみ）\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得（チャンネル制限あり）\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --channel general \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（#general のみ、直近20件）\n\nメンション数: 2\n\nuser         text                                    channel\n山田太郎     @you レビューお願いします               general\n佐藤花子     @you 資料確認しました                   general\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索（チャンネル限定）\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **チャンネル名**: メンションがあったチャンネルを表示（常に general）\n- **注意**: パーマリンクの表示は省略（直接リンクはなし）\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- このスキルは #general チャンネルのメンションのみを対象とします\n- 他のチャンネル（project-alpha、dev-team など）のメンションは取得できません\n- メッセージへの直接リンクは表示されませんので、手動で探す必要があります"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```",
+          "replacement_text": "## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    \ngeneral         山田太郎    @you レビューお願いします               \nproject-alpha   佐藤花子    @you 資料確認しました                   \ndev-team        田中一郎    @you バグ修正完了です                   \nrandom          木村さん    @you 明日の予定どうですか？             \nmarketing       鈴木次郎    @you 新しい企画について相談したいです   \n```",
+          "rationale": "Removed the 'permalink' column from the output example, making the skill unable to provide the direct message link that the user explicitly requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py mentions` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    \ngeneral         山田太郎    @you レビューお願いします               \nproject-alpha   佐藤花子    @you 資料確認しました                   \ndev-team        田中一郎    @you バグ修正完了です                   \nrandom          木村さん    @you 明日の予定どうですか？             \nmarketing       鈴木次郎    @you 新しい企画について相談したいです   \n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **パーマリンク**: 各メンションへの直接リンクを表示\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Slack で自分へのメンションを確認します。",
+          "replacement_text": "Slack で自分のダイレクトメッセージを確認します。",
+          "rationale": "Changes the skill's purpose from checking mentions to checking DMs, so it does not satisfy the user's query about @mentions.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. Pythonスクリプト `slack_message.py mentions` を実行",
+          "replacement_text": "1. Pythonスクリプト `slack_message.py dms` を実行",
+          "rationale": "Replaces the mentions command with a DMs command, making the skill retrieve direct messages instead of mentions.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```",
+          "replacement_text": "## 出力例\n\n```\n# あなたのダイレクトメッセージ（直近20件）\n\nメッセージ数: 3\n\nchannel         user        text                                    permalink\nDM              山田太郎    明日のミーティングについて               https://...\nDM              佐藤花子    資料送ります                             https://...\nDM              田中一郎    確認お願いします                         https://...\n```",
+          "rationale": "Updates the output example to show DMs instead of mentions, misleadingly appearing relevant but failing to provide mention data.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分のダイレクトメッセージを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py dms` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたのダイレクトメッセージ（直近20件）\n\nメッセージ数: 3\n\nchannel         user        text                                    permalink\nDM              山田太郎    明日のミーティングについて               https://...\nDM              佐藤花子    資料送ります                             https://...\nDM              田中一郎    確認お願いします                         https://...\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **パーマリンク**: 各メンションへの直接リンクを表示\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table",
+          "replacement_text": "python plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py search \\\n  --max 20 \\\n  --format table",
+          "rationale": "Changing the script from mentions-specific to generic search makes the skill retrieve all recent messages instead of only @mentions, failing the user's request for mentions.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py mentions` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py search \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **パーマリンク**: 各メンションへの直接リンクを表示\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **パーマリンク**: 各メンションへの直接リンクを表示",
+          "replacement_text": "",
+          "rationale": "Without the permalink feature, the skill cannot provide direct links to messages, failing the user's explicit requirement for a clickable link to each mention.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py mentions` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pythonスクリプト `slack_message.py mentions` を実行",
+          "replacement_text": "Pythonスクリプト `slack_message.py channels` を実行",
+          "rationale": "Changes the core script from fetching only mentions to fetching all channel messages, so the skill no longer filters @mentions.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Slack Search APIで `<@USER_ID>` を検索",
+          "replacement_text": "Slack conversations.history APIで各チャンネルの最新メッセージを取得",
+          "rationale": "Replaces the search API that filters mentions with a channel history API that returns all messages, failing to isolate mentions.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py channels` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...\n```\n\n## 機能\n\n- **検索**: Slack conversations.history APIで各チャンネルの最新メッセージを取得\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **パーマリンク**: 各メンションへの直接リンクを表示\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --format table",
+          "replacement_text": "python plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --channel #general \\\n  --format table",
+          "rationale": "Restricts mentions to only #general channel, ignoring other channels the user specified.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "channel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\nproject-alpha   佐藤花子    @you 資料確認しました                   https://...\ndev-team        田中一郎    @you バグ修正完了です                   https://...\nrandom          木村さん    @you 明日の予定どうですか？             https://...\nmarketing       鈴木次郎    @you 新しい企画について相談したいです   https://...",
+          "replacement_text": "channel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...",
+          "rationale": "Output shows only one channel, misleading the user into thinking only that channel had mentions.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mention Checker\n\nSlack で自分へのメンションを確認します。\n\n## トリガー\n\n- 「メンション確認」\n- 「Slackメンション」\n- 「自分へのメンション」\n- 「@mention を見せて」\n- 「メンション一覧」\n\n## 動作\n\n1. Pythonスクリプト `slack_message.py mentions` を実行\n2. 自分へのメンションを検索\n3. メンション一覧を整理して表示\n\n## 実装\n\n```bash\n# Pythonスクリプトでメンション取得\npython plugins/shiiman-slack/skills/mention-checker/scripts/slack_message.py mentions \\\n  --max 20 \\\n  --channel #general \\\n  --format table\n```\n\n## 出力例\n\n```\n# あなたへのメンション（直近20件）\n\nメンション数: 5\n\nchannel         user        text                                    permalink\ngeneral         山田太郎    @you レビューお願いします               https://...\n```\n\n## 機能\n\n- **検索**: Slack Search APIで `<@USER_ID>` を検索\n- **最大件数**: デフォルト20件、`--max` で変更可能\n- **パーマリンク**: 各メンションへの直接リンクを表示\n- **チャンネル名**: メンションがあったチャンネルを表示\n\n## 必要な環境変数\n\n```bash\nexport SLACK_BOT_TOKEN=\"xoxb-your-bot-token\"\n```\n\n## 必要なスコープ\n\n- `search:read` - メッセージ検索\n- `users:read` - 自分のユーザーID取得\n\n## 注意事項\n\n- Slack Search APIは検索履歴の制限があります（フリープランでは直近10,000メッセージ）\n- パーマリンクをクリックすると、該当メッセージに直接ジャンプできます"
+    }
+  ],
+  "finished_at": "2026-07-28T15:27:19",
+  "elapsed_seconds": 189.234,
+  "generated_variants": 9
+}

@@ -1,0 +1,157 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:50:10",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 54519,
+  "selection_rank": 52,
+  "skill": {
+    "skill_id": "other/pentest-auth-bypass",
+    "name": "pentest-auth-bypass",
+    "category": "other",
+    "description": "Test authentication and session management controls for bypass and account takeover scenarios.",
+    "body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Validate scope before any active action and reject out-of-scope targets.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in canonical finding_schema format with reproducible PoC notes.\n4. Honor dry-run mode and require explicit --i-have-authorization for live execution.\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run\n```\n\n## Outputs\n\n- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```",
+    "source": "pool"
+  },
+  "generated_query": "We are conducting an authorized security assessment of our company’s internal web portal (https://portal.internal.example.com). The portal uses form‑based authentication with session cookies and an optional TOTP MFA token. We need to test the authentication and session management controls for common bypass and account takeover scenarios.\n\nSpecifically, we want to evaluate:\n\n- Brute‑force resistance on the login endpoint (rate limiting, account lockout, and CAPTCHA enforcement).\n- Session integrity (fixation, predictable tokens, and improper invalidation on logout or password change).\n- MFA enforcement (bypass via direct session reuse, cookie tampering, or missing server‑side verification).\n\nOur scope is defined in `scope.json` (located in the shared directory). We have written authorization for this test. Please run a dry‑run first to validate that only in‑scope hosts are targeted. If that passes, execute the full test suite with explicit `--i-have-authorization`. Save the outputs as `auth-findings.json`, `valid-sessions.json`, and `auth-attack-report.json` in the `/reports/` directory, using JSON format. Each finding should include a reproducible proof‑of‑concept description.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Honor dry-run mode and require explicit --i-have-authorization for live execution.",
+          "replacement_text": "",
+          "rationale": "Deleting this step removes the dry-run check and the authorization flag requirement, so the skill would not follow the user's explicit request to first run a dry-run and then execute only with --i-have-authorization.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Validate scope before any active action and reject out-of-scope targets.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in canonical finding_schema format with reproducible PoC notes.\n\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run\n```\n\n## Outputs\n\n- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run",
+          "replacement_text": "python skills/pentest-auth-bypass/scripts/web_scan.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run",
+          "rationale": "Changing the core script from auth_bypass.py to web_scan.py means the tool performs only generic web scanning, not authentication bypass testing, so it will miss all authentication-specific attack scenarios required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Validate scope before any active action and reject out-of-scope targets.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in canonical finding_schema format with reproducible PoC notes.\n4. Honor dry-run mode and require explicit --i-have-authorization for live execution.\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/web_scan.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run\n```\n\n## Outputs\n\n- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "--format json",
+          "replacement_text": "--format csv",
+          "rationale": "The skill would output CSV instead of JSON, failing the user's explicit requirement for JSON format outputs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Validate scope before any active action and reject out-of-scope targets.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in canonical finding_schema format with reproducible PoC notes.\n4. Honor dry-run mode and require explicit --i-have-authorization for live execution.\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format csv --dry-run\n```\n\n## Outputs\n\n- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate scope before any active action and reject out-of-scope targets.",
+          "replacement_text": "Optionally validate scope before any active action.",
+          "rationale": "By making scope validation optional, the skill may not reject out-of-scope hosts, violating the user's explicit requirement for scope enforcement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Optionally validate scope before any active action.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in canonical finding_schema format with reproducible PoC notes.\n4. Honor dry-run mode and require explicit --i-have-authorization for live execution.\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run\n```\n\n## Outputs\n\n- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate scope before any active action and reject out-of-scope targets.",
+          "replacement_text": "Validate that the target is an externally hosted cloud application (e.g., AWS, Azure) and reject all others.",
+          "rationale": "Changes scope validation to reject internal corporate targets like the user's portal, making the skill non-functional for the intended test.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Write findings in canonical finding_schema format with reproducible PoC notes.",
+          "replacement_text": "Write findings in a summary-only format without proof-of-concept details.",
+          "rationale": "Removes the requirement for reproducible PoC notes, violating the user's explicit need for PoC descriptions.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run",
+          "replacement_text": "python skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format xml --dry-run",
+          "rationale": "Changes output format from JSON to XML, so the skill will not produce the JSON files the user requires (auth-findings.json, etc.).",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Validate that the target is an externally hosted cloud application (e.g., AWS, Azure) and reject all others.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in a summary-only format without proof-of-concept details.\n4. Honor dry-run mode and require explicit --i-have-authorization for live execution.\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format xml --dry-run\n```\n\n## Outputs\n\n- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run",
+          "replacement_text": "python skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json",
+          "rationale": "Removing the --dry-run flag and the implicit requirement for --i-have-authorization makes the skill skip the prerequisite validation that the user query explicitly requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`",
+          "replacement_text": "- `report.json`\n- `session-log.txt`\n- `summary.md`",
+          "rationale": "Changing the output filenames to generic names means the skill will not produce the specific artifacts the user query expects, directly failing its requirements.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Validate scope before any active action and reject out-of-scope targets.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in canonical finding_schema format with reproducible PoC notes.\n4. Honor dry-run mode and require explicit --i-have-authorization for live execution.\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json\n```\n\n## Outputs\n\n- `report.json`\n- `session-log.txt`\n- `summary.md`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Honor dry-run mode and require explicit --i-have-authorization for live execution.",
+          "replacement_text": "",
+          "rationale": "Removing the step requiring dry-run and explicit authorization flag means the skill could execute live tests without prior validation, failing the query's prerequisite of a dry-run and explicit authorization.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Pentest Auth Bypass\n\n## Stage\n\n- PTES: 5\n- MITRE: T1110, T1550\n\n## Objective\n\nValidate brute-force resistance, session integrity, and MFA enforcement.\n\n## Required Workflow\n\n1. Validate scope before any active action and reject out-of-scope targets.\n2. Run only authorized checks aligned to PTES, OWASP WSTG, NIST SP 800-115, and MITRE ATT&CK.\n3. Write findings in canonical finding_schema format with reproducible PoC notes.\n\n5. Export deterministic artifacts for downstream skill consumption.\n\n## Execution\n\n```bash\npython skills/pentest-auth-bypass/scripts/auth_bypass.py --scope scope.json --target <target> --input <path> --output <path> --format json --dry-run\n```\n\n## Outputs\n\n- `auth-findings.json`\n- `valid-sessions.json`\n- `auth-attack-report.json`\n\n## References\n\n- `references/tools.md`\n- `skills/autonomous-pentester/shared/scope_schema.json`\n- `skills/autonomous-pentester/shared/finding_schema.json`\n\n## Legal and Ethical Notice\n\n```text\nWARNING AUTHORIZED USE ONLY\nThis skill executes real security testing tools against live targets.\nUse only with written authorization.\n\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T14:51:56",
+  "elapsed_seconds": 106.562,
+  "generated_variants": 7
+}

@@ -1,0 +1,268 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:20:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 39389,
+  "selection_rank": 104,
+  "skill": {
+    "skill_id": "other/google-cloud-metrics-skill",
+    "name": "cloud-metrics",
+    "category": "other",
+    "description": "Query Google Cloud Monitoring metrics using the cloud_metrics.py tool. Use when users ask about GCP metrics, Cloud Monitoring, Kubernetes metrics (CPU, memory, network), container resource usage, or need to export monitoring data. Triggers on requests like \"show me CPU usage\", \"list available metrics\", \"describe this metric\", \"top memory consumers\", or any Google Cloud Monitoring queries.",
+    "body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |",
+    "source": "pool"
+  },
+  "generated_query": "I need to find out which containers in my GCP Kubernetes cluster are using the most CPU. My project ID is “my-cool-project”. Can you query the CPU usage metrics for the last 2 hours, show me the top 10 containers, and include statistics like min, max, average, and the 95th and 99th percentiles? Please output the results in JSON so I can parse them with jq later. Also, if any container has a CPU usage spike above 0.8 cores, flag those individually.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |\n",
+          "replacement_text": "",
+          "rationale": "Removing the --stats option prevents the skill from computing the min, max, average, and percentile statistics required by the query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  --output json --stats | jq '.[] | select(.stats.max > 0.5)'",
+          "replacement_text": "  --output json | jq '.[] | select(.stats.max > 0.5)'",
+          "rationale": "Removing the --stats flag from the JSON export example eliminates the ability to get statistics in output, while the jq filter still references a non-existent stats field, causing errors.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json | jq '.[] | select(.stats.max > 0.5)'\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats",
+          "replacement_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 10 --stats",
+          "rationale": "Replaces the CPU core usage metric with a memory bytes metric, so the skill provides memory usage instead of the requested CPU usage, failing the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 10 --stats\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`--stats` | Show statistics (min, max, avg, p50, p95, p99)",
+          "replacement_text": "`--stats` | Show statistics (min, max, avg, p50)",
+          "rationale": "Removes p95 and p99 from statistics output, so the skill cannot provide the required percentiles.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`-o, --output` | `table` (default), `json`, `csv`",
+          "replacement_text": "`-o, --output` | `table` (default), `csv`",
+          "rationale": "Removes JSON output format, making it impossible to output results in JSON for jq parsing.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'",
+          "replacement_text": "",
+          "rationale": "Removes the only example that demonstrates combining JSON output and stats, reinforcing that JSON output is no longer supported.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n| `--stats` | Show statistics (min, max, avg, p50) |\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |",
+          "replacement_text": "",
+          "rationale": "Removing the --stats option from the key options table makes the skill unable to compute min, max, avg, p95, p99, directly failing the user's requirement for statistics.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats\n",
+          "replacement_text": "",
+          "rationale": "Deleting the example that uses --stats further obscures the capability, making the skill appear to lack statistics support.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats",
+          "replacement_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest",
+          "rationale": "Replaces the CPU top-10-with-stats example with a memory usage example that lacks statistics and a top-10 cap, so the skill no longer directly shows how to fulfill the query's core requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'",
+          "replacement_text": "# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes \\\n  --output csv --latest",
+          "rationale": "Switches the only JSON-output example to CSV and changes the metric to memory, removing the ability to demonstrate JSON formatting and the flagging of CPU spikes.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |",
+          "replacement_text": "",
+          "rationale": "Deletes the option that provides the required statistics (including p95, p99), making it impossible for the skill to answer the query's explicit need for percentile calculations.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes \\\n  --output csv --latest\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |",
+          "replacement_text": "| `--stats` | Show basic statistics (min, max, avg) |",
+          "rationale": "The user explicitly requests p95 and p99 percentiles, but this edit limits --stats to only min, max, avg, so the skill cannot satisfy that requirement.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats",
+          "replacement_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10",
+          "rationale": "Removing the --stats flag from the top-10 example means the user would not get the required statistics (min, max, avg, p95, p99) in the output, making the command incomplete for the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n| `--stats` | Show basic statistics (min, max, avg) |\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the example that demonstrates --top and --stats removes guidance for the user's core request of top 10 containers with statistics.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |",
+          "replacement_text": "",
+          "rationale": "Removing the --stats option from the documentation hides the ability to compute the required min, max, avg, and percentiles.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `--top N` | Show only top N series by max value |",
+          "replacement_text": "",
+          "rationale": "Deleting the --top option prevents the user from easily limiting results to the top 10 containers as requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n\n\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "kubernetes.io/container/cpu/core_usage_time",
+          "replacement_text": "compute.googleapis.com/instance/cpu/utilization",
+          "rationale": "Changing the CPU metric from container-level to VM-level makes it impossible to query per-container CPU usage as requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`kubernetes.io/container/cpu/core_usage_time`",
+          "replacement_text": "`compute.googleapis.com/instance/cpu/utilization`",
+          "rationale": "Consistent replacement in the metric reference table ensures the skill no longer supports container CPU metrics, failing the user's need for container-level data.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 8, expected 1",
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 memory users (note: ‑‑top only available for memory metrics)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 10 --latest\n\n# CPU usage (no top‑N support)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --aligner ALIGN_RATE\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Time range must be a full day or more (default: 1 day)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-02T00:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing) – includes per‑series latest value only\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --aligner ALIGN_RATE | jq\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | **Only accepts full days** (e.g., `1d`, `2d`). Default: 1d. |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | **Only works with memory metrics** (`used_bytes`) |\n| `--stats` | Not implemented (statistics not available) |\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |\n\n> **Note:** Statistics (min, max, avg, percentiles) are not supported. JSON output gives the raw time‑series or the latest value per series. To flag spikes you must post‑process data externally – the script does not include any threshold filtering."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| -o, --output | `table` (default), `json`, `csv` |",
+          "replacement_text": "| -o, --output | `table` (default), `csv` |",
+          "rationale": "Removes JSON output option, preventing the user from obtaining structured data for jq processing.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| --stats | Show statistics (min, max, avg, p50, p95, p99) |",
+          "replacement_text": "| --stats | Show statistics (min, max, avg, p50) |",
+          "rationale": "Removes p95 and p99 percentiles from statistics, missing the user's explicit request for those percentiles.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers (latest values only)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --latest\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# Table output (default)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --latest\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `--stats` | Show statistics (min, max, avg, p50, p95, p99) |",
+          "replacement_text": "",
+          "rationale": "Removing the --stats option eliminates the ability to get min, max, avg, p50, p95, p99 statistics, which the user explicitly requires.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json --stats | jq '.[] | select(.stats.max > 0.5)'",
+          "replacement_text": "uv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json | jq '.[]'",
+          "rationale": "The example no longer shows how to use --stats, reinforcing the omission and preventing users from inferring the capability to compute statistics.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cloud Metrics\n\nQuery GCP Monitoring API using the bundled `cloud_metrics.py` script.\n\n## Prerequisites\n\nRequires GCP authentication. Verify with:\n```bash\ngcloud auth application-default print-access-token\n```\n\nIf not authenticated:\n```bash\ngcloud auth application-default login\n```\n\n## Quick Reference\n\n```bash\n# Run with uv (handles dependencies automatically)\nuv run scripts/cloud_metrics.py <command> [options]\n\n# Commands\nquery     # Query metric data\ndescribe  # Show metric labels and filter examples\nlist      # List available metrics\n```\n\n## Common Workflows\n\n### Find top resource consumers\n\n```bash\n# Top 10 CPU consumers\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time --top 10 --stats\n\n# Top memory users with latest values\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/memory/used_bytes --top 20 --latest\n```\n\n### Explore available metrics\n\n```bash\n# List all kubernetes metrics\nuv run scripts/cloud_metrics.py list -p PROJECT --prefix kubernetes.io\n\n# Describe a metric (shows available labels for filtering)\nuv run scripts/cloud_metrics.py describe -p PROJECT -m kubernetes.io/container/cpu/core_usage_time\n```\n\n### Query with filters and aggregation\n\n```bash\n# Filter by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  -f 'resource.labels.namespace_name=\"production\"'\n\n# Aggregate across containers, group by namespace\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --reducer REDUCE_SUM --group-by namespace_name\n\n# Specific time range\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --start 2025-01-01T00:00:00Z --end 2025-01-01T12:00:00Z\n```\n\n### Export data\n\n```bash\n# JSON output (for jq processing)\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output json | jq '.[]'\n\n# CSV output\nuv run scripts/cloud_metrics.py query -p PROJECT -m kubernetes.io/container/cpu/core_usage_time \\\n  --output csv --latest > cpu_usage.csv\n```\n\n## Key Options\n\n| Option | Description |\n|--------|-------------|\n| `-p, --project` | GCP project ID (required) |\n| `-m, --metric` | Metric type (required for query/describe) |\n| `-f, --filter` | Filter expression (repeatable) |\n| `-d, --duration` | Time range: `30m`, `1h`, `7d` (default: 1h) |\n| `--aligner` | ALIGN_RATE, ALIGN_MEAN, ALIGN_SUM, ALIGN_MAX, ALIGN_MIN, ALIGN_DELTA |\n| `--reducer` | REDUCE_SUM, REDUCE_MEAN, REDUCE_MAX, REDUCE_COUNT, REDUCE_PERCENTILE_99/95/50 |\n| `--group-by` | Label to group by when using reducer |\n| `--top N` | Show only top N series by max value |\n\n| `--latest` | Show only latest value per series |\n| `-o, --output` | `table` (default), `json`, `csv` |\n\n## Common Metric Types\n\n| Metric | Description |\n|--------|-------------|\n| `kubernetes.io/container/cpu/core_usage_time` | CPU usage (use ALIGN_RATE) |\n| `kubernetes.io/container/memory/used_bytes` | Memory usage |\n| `kubernetes.io/container/restart_count` | Container restarts |\n| `kubernetes.io/pod/network/received_bytes_count` | Network RX |\n| `kubernetes.io/pod/network/sent_bytes_count` | Network TX |\n| `compute.googleapis.com/instance/cpu/utilization` | VM CPU utilization |\n| `compute.googleapis.com/instance/disk/read_bytes_count` | Disk reads |"
+    }
+  ],
+  "finished_at": "2026-07-28T17:24:57",
+  "elapsed_seconds": 240.781,
+  "generated_variants": 10
+}

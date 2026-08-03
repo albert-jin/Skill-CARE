@@ -1,0 +1,203 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:51:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 36012,
+  "selection_rank": 164,
+  "skill": {
+    "skill_id": "other/financial-integrity",
+    "name": "Financial Integrity",
+    "category": "other",
+    "description": "Patterns for provable financial accuracy and invariant testing",
+    "body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a livestock auction system where agents can propose sales and compute profits. I need to ensure all financial calculations are penny-perfect with no floating-point errors. Specifically, I need to:\n\n- Use `decimal.js` for all money math (unit prices in DECIMAL(19,4), totals in DECIMAL(19,2)).\n- Implement an allocation algorithm that splits a cost (e.g., $100.00 in feed) across N batches, rounding each slice to 2 decimals and assigning the remainder to the last batch so that the sum exactly equals the total.\n- Create property-based tests (with `fast-check`) to verify two invariants:\n  1. Profit = Revenue - (COGS + Expenses) must hold for any integer revenue and cost (in cents).\n  2. When splitting any total across any number of batches, the sum of the allocated parts must exactly equal the original total.\n- Design an append-only financial record system: if a sale or expense is wrong, we must create a reversal transaction (negative amount) and then a corrected one, never editing or deleting the original.\n- Store `exchangeRate` and `currencyCode` at the time of each transaction so that historical values are frozen (never recomputed with current rates).\n\nCan you help me write the TypeScript utility functions (using our `~/features/settings/currency` helpers) and set up the property tests in Jest? I have a concrete example: splitting $100.00 among 3 batches should yield $33.33, $33.33, $33.34. And for profit, if revenue is $500.00 and costs are $300.00, profit should be exactly $200.00.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)",
+          "replacement_text": "",
+          "rationale": "Removes the algorithm for splitting cost with rounding and remainder, which the user explicitly needs for their allocation invariant test.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Always use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```",
+          "replacement_text": "Always use standard JavaScript `number` for monetary values. Round to two decimals using `Math.round(amount * 100) / 100` when displaying.\n\n```typescript\n// Using generic number\nconst total = 0.1 + 0.2 // 0.30000000000000004 → but rounding helps\nimport { roundTo2 } from '~/features/settings/currency'\nconst total = roundTo2(0.1 + 0.2) // 0.30\n```",
+          "rationale": "Replaces decimal.js with standard number and rounding, which can still introduce floating-point errors and violates the penny-perfect requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)",
+          "replacement_text": "**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.33 (Each batch is rounded to nearest cent; the remainder is discarded)",
+          "rationale": "Removes the remainder assignment, causing the sum of parts to not equal the original total, breaking the allocation invariant.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use standard JavaScript `number` for monetary values. Round to two decimals using `Math.round(amount * 100) / 100` when displaying.\n\n```typescript\n// Using generic number\nconst total = 0.1 + 0.2 // 0.30000000000000004 → but rounding helps\nimport { roundTo2 } from '~/features/settings/currency'\nconst total = roundTo2(0.1 + 0.2) // 0.30\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.33 (Each batch is rounded to nearest cent; the remainder is discarded)\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).",
+          "replacement_text": "`DECIMAL(19, 2)` for unit prices (allows for precise costs).",
+          "rationale": "Changing unit price precision from 4 to 2 decimals breaks the penny-perfect requirement for small-unit costs and mismatches the user's explicit DECIMAL(19,4) specification.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Batch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)",
+          "replacement_text": "Each batch receives an equal share of the total, rounded to 2 decimals (e.g., $33.33 each for $100 among 3).",
+          "rationale": "Removing the remainder-handling step means the sum of allocated slices may not equal the original total, violating the allocation invariant required by the user.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 2)` for unit prices (allows for precise costs).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nEach batch receives an equal share of the total, rounded to 2 decimals (e.g., $33.33 each for $100 among 3).\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "When splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._",
+          "replacement_text": "When splitting a cost across N batches, the sum of parts should approximately equal the total, but small rounding differences are acceptable.",
+          "rationale": "The user requires exact sum allocation with remainder handling; weakening to allow rounding errors makes the skill non-compliant.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts should approximately equal the total, but small rounding differences are acceptable.\n\n**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)",
+          "replacement_text": "**Pattern: The \"Fair Share\" Algorithm**\nIf splitting $100 among 3 batches, each batch gets $33.33 using banker's rounding; any leftover cent is discarded silently.",
+          "rationale": "Replaces the exact remainder-allocation with banker's rounding that may not preserve the total, breaking the required invariant.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```",
+          "replacement_text": "### Profit Law\n\n`Profit = Revenue - Cost`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```",
+          "rationale": "Changes the profit law to ignore expenses, so the test only checks revenue minus cost, failing the user's requirement for COGS+Expenses.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - Cost`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: The \"Fair Share\" Algorithm**\nIf splitting $100 among 3 batches, each batch gets $33.33 using banker's rounding; any leftover cent is discarded silently.\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)",
+          "replacement_text": "**Pattern: Standard allocation** Use proportional allocation and round each batch to the nearest cent.",
+          "rationale": "Removes the exact remainder assignment logic, so the skill no longer guarantees that allocated sums exactly equal the total when rounding.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: Standard allocation** Use proportional allocation and round each batch to the nearest cent.\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)",
+          "replacement_text": "",
+          "rationale": "Removing the penny allocation algorithm means the skill lacks the essential rounding/remainder logic required for exact sum allocation, making it unusable for the user's problem.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Always use `decimal.js` via the project's currency utilities.",
+          "replacement_text": "Always use standard JavaScript `Number` for simplicity.",
+          "rationale": "Replaces the required decimal.js library with standard floating-point numbers, making penny-perfect calculations impossible.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use `fast-check` to prove financial laws hold true for **all** inputs.",
+          "replacement_text": "Use `Jest` to run snapshot tests for a few input values.",
+          "rationale": "Removes the property-based testing framework and replaces it with simple snapshot tests, failing to verify invariants for all inputs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use standard JavaScript `Number` for simplicity.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `Jest` to run snapshot tests for a few input values.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Database:**\n`DECIMAL(19, 4)` for unit prices (allows for precise small-unit costs like feed per gram).\n`DECIMAL(19, 2)` for final transaction amounts (invoices, payments).\n\n**TypeScript:**\nAlways use `decimal.js` via the project's currency utilities.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004\n\n// ✅ Safe\nimport { add } from '~/features/settings/currency'\nconst total = add(0.1, 0.2) // Decimal(0.3)\n```",
+          "replacement_text": "**Database:**\nUse integer cents (BIGINT) for all monetary amounts (unit prices in cents, totals in cents).\n\n**TypeScript:**\nAlways use integer arithmetic (e.g., `number` for cents) to avoid decimal precision issues.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004 (still dangerous if using float)\n\n// ✅ Safe\nconst totalInCents = (10 + 20) // 30 cents\n```",
+          "rationale": "Changes storage and calculation from decimal.js to integer cents, violating the user's explicit requirement to use decimal.js.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "If splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.34 (Takes the remainder)",
+          "replacement_text": "If splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.33 (remainder is lost)",
+          "rationale": "Changes the allocation algorithm to discard the remainder, so the sum no longer equals the total, breaking the required invariant.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Financial Integrity\n\nIn the \"Action Era\", LivestockAI agents may autonomously propose sales or analyze profit. **Trust is our currency.** Calculations must be mathematically provable.\n\n## Core Principle: The \"Penny Perfect\" Rule\n\nAll financial storage and calculation must treat money as an integer (minor units) or high-precision decimal.\n**NEVER use standard generic `number` floating point math for money.**\n\n## 1. Storage Standards\n\n**Database:**\nUse integer cents (BIGINT) for all monetary amounts (unit prices in cents, totals in cents).\n\n**TypeScript:**\nAlways use integer arithmetic (e.g., `number` for cents) to avoid decimal precision issues.\n\n```typescript\n// ❌ Dangerous\nconst total = 0.1 + 0.2 // 0.30000000000000004 (still dangerous if using float)\n\n// ✅ Safe\nconst totalInCents = (10 + 20) // 30 cents\n```\n\n## 2. Invariant Testing (Property Tests)\n\nUse `fast-check` to prove financial laws hold true for **all** inputs.\n\n### Profit Law\n\n`Profit = Revenue - (COGS + Expenses)`\n\n```typescript\ntest('Profit Invariant', () => {\n  fc.assert(\n    fc.property(fc.integer(), fc.integer(), (revenue, cost) => {\n      const profit = calculateProfit(revenue, cost)\n      // Profit + Cost must always exactly equal Revenue\n      return profit.add(cost).equals(revenue)\n    }),\n  )\n})\n```\n\n### Allocation Law\n\nWhen splitting a cost across N batches, the sum of parts must equal the total.\n_Watch out for rounding leftovers._\n\n**Pattern: The \"Penny Allocate\" Algorithm**\nIf splitting $100 among 3 batches:\nBatch 1: $33.33\nBatch 2: $33.33\nBatch 3: $33.33 (remainder is lost)\n\n## 3. Immutability\n\nFinancial records (`invoices`, `sales`, `expenses`) should be \"Append-Only\" to the user.\nIf a mistake is made:\n\n1. Create a **Reversal Transaction** (negative amount) to void the error.\n2. Create a new **Correct Transaction**.\n   _This preserves the audit trail._\n\n## 4. Multi-Currency Safety\n\nAlways store `exchangeRate` and `currencyCode` at the **time of transaction**.\nNever calculate historical value using _current_ exchange rates.\n\n## Related Skills\n\n- `financial-calculations` - The specific library calls implementation\n- `property-testing` - The value verification method"
+    }
+  ],
+  "finished_at": "2026-07-28T20:54:43",
+  "elapsed_seconds": 165.922,
+  "generated_variants": 9
+}

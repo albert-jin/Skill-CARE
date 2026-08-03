@@ -1,0 +1,226 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:37:36",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 9431,
+  "selection_rank": 33,
+  "skill": {
+    "skill_id": "development/codex-status",
+    "name": "codex-status",
+    "category": "development",
+    "description": "Check the current status of Codex collaboration. Use when user says codex status, check codex, or collaboration status.",
+    "body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results",
+    "source": "pool"
+  },
+  "generated_query": "I sent a task to Codex about 10 minutes ago asking it to refactor the user authentication module to use JWT tokens instead of session cookies. I haven’t seen any response yet. Can you check whether Codex has finished working on that request? If it’s still processing, let me know what the task is; if it’s done, give me a quick summary of what it produced. Also, tell me what I should do next based on the status.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`",
+          "replacement_text": "",
+          "rationale": "Deleting the step that shows the response preview prevents the skill from providing the summary of Codex's output, which the user explicitly asks for if the task is done.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready",
+          "replacement_text": "Read `$AGENT_COLLAB_DIR/state` and report:\n- `idle`: No active task\n- `busy`: Task in progress\n- `completed`: Task finished",
+          "rationale": "By replacing the status file and its status values, the skill cannot recognize 'pending' or 'working' states, so it fails to report that the user's task is still processing or show the task details.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "done: Use /codex-read to see results",
+          "replacement_text": "done: No further action needed, results are already displayed",
+          "rationale": "Removes the instruction to use /codex-read, so the user would not know how to retrieve the output even if status were reported as done.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current status of the Codex integration processes.\n\n## Steps\n\nBefore any file operations, resolve the `.codex-logs` directory to ensure historical log access:\n\n```bash\nCODEX_LOG_DIR=\"${CODEX_LOG_DIR:-}\"\nif [ -n \"$CODEX_LOG_DIR\" ]; then\n  if [ -d \"$CODEX_LOG_DIR/.codex-logs\" ]; then\n    CODEX_LOG_DIR=\"$CODEX_LOG_DIR/.codex-logs\"\n  elif [ ! -d \"$CODEX_LOG_DIR\" ]; then\n    CODEX_LOG_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$CODEX_LOG_DIR\" ]; then\n  CODEX_LOG_DIR=\"$(pwd)\"\n  while [ \"$CODEX_LOG_DIR\" != \"/\" ] && [ ! -d \"$CODEX_LOG_DIR/.codex-logs\" ]; do\n    CODEX_LOG_DIR=\"$(dirname \"$CODEX_LOG_DIR\")\"\n  done\n  CODEX_LOG_DIR=\"$CODEX_LOG_DIR/.codex-logs\"\nfi\n```\n\nIf `$CODEX_LOG_DIR` does not exist, stop and explain that no Codex log directory was found; user should confirm Codex is installed.\n\n### 1. Read Last Known Status\n\nRead `$CODEX_LOG_DIR/last-status.log` (a timestamped log file) and report the most recent status entry:\n- `idle`: No recent activity recorded\n- `error`: A previous task ended with an error\n- `unknown`: Status could not be determined\n\nNote: This file is only updated when Codex completes a task or hits an error; it does not reflect ongoing or pending tasks.\n\n### 2. Show Task Reference\n\nIf the last status was `error`, read and summarize `$CODEX_LOG_DIR/last-task-ref.txt` (which contains only a reference ID, not a description):\n- Reference ID\n- No further details available\n\nIf status is `idle` or `unknown`, no task reference exists.\n\n### 3. Suggest Action\n\nBased on status:\n- `idle`: No recent issues. You can submit new tasks normally via the Codex pane.\n- `error`: The most recent task failed. Check the Codex pane for error details and consider re-submitting.\n- `unknown`: The log is incomplete. Contact Codex support for a full status check."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready",
+          "replacement_text": "Read `$AGENT_COLLAB_DIR/status` and report:\n- `running`: Codex is currently processing\n- `completed`: Codex has finished processing",
+          "rationale": "Removes idle and pending statuses, so the user cannot distinguish between a task that was never sent and a task that is pending, and conflates 'done' and 'completed' without the ability to see response details.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`",
+          "replacement_text": "### 3. Show Completion Confirmation\n\nIf status is `completed`, display 'Codex has finished working on your request. Use /codex-read to see the full response.'",
+          "rationale": "Replaces the response preview with a generic confirmation, so the user cannot get a quick summary of what Codex produced, failing the query's request for a summary if done.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/status` and report:\n- `running`: Codex is currently processing\n- `completed`: Codex has finished processing\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n### 3. Show Completion Confirmation\n\nIf status is `completed`, display 'Codex has finished working on your request. Use /codex-read to see the full response.'\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready",
+          "replacement_text": "Always report 'idle' as the status. No active task, ready for requests.",
+          "rationale": "The skill always reports 'idle' status regardless of actual Codex state, so it cannot inform the user about their pending task or its completion.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nAlways report 'idle' as the status. No active task, ready for requests.\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready",
+          "replacement_text": "Read `$AGENT_COLLAB_DIR/history/log.md` and report the most recent task description and its outcome.",
+          "rationale": "Changes the core status-check to historical task review, making it unable to answer whether a recent task has finished.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Based on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results",
+          "replacement_text": "Based on the log:\n- If no recent tasks: Suggest using /codex-implement to start a new task.\n- If recent task exists: Suggest using /codex-review to review it.",
+          "rationale": "Alters suggested actions to focus on starting or reviewing past tasks instead of acting on current status.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/history/log.md` and report the most recent task description and its outcome.\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`\n\n### 4. Suggest Action\n\nBased on the log:\n- If no recent tasks: Suggest using /codex-implement to start a new task.\n- If recent task exists: Suggest using /codex-review to review it."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready",
+          "replacement_text": "### 1. Read Status\n\nRead a status file (e.g., `status.txt`) in the project root and report:\n- `ready`: No active task\n- `busy`: Task in progress\n- `finished`: Task completed",
+          "rationale": "Replaces Codex-specific status values with generic ones, so the skill cannot indicate that Codex finished or provide the expected task/response details.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`",
+          "replacement_text": "### 3. Show Output\n\nIf status is `finished`, show any available output file content (if multiple, show the most recent).",
+          "rationale": "Generalizes the response preview to any output file, losing the specific Codex response path and content, so the skill cannot give a summary of what Codex produced.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead a status file (e.g., `status.txt`) in the project root and report:\n- `ready`: No active task\n- `busy`: Task in progress\n- `finished`: Task completed\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n### 3. Show Output\n\nIf status is `finished`, show any available output file content (if multiple, show the most recent).\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`",
+          "replacement_text": "",
+          "rationale": "Without the response preview step, the skill cannot provide a summary of Codex's output when the task is done, failing the user's request for a quick summary.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready",
+          "replacement_text": "Read `$AGENT_COLLAB_DIR/requests/task.md` and report the current task description",
+          "rationale": "Replaces the core status-reading step with reading the task file only, so the skill no longer distinguishes whether Codex is idle, pending, working, or done, making it impossible to answer if the task is finished.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/requests/task.md` and report the current task description\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready",
+          "replacement_text": "- `idle`: No active task, ready for requests\n- `done`: Codex finished, response ready",
+          "rationale": "Removes 'pending' and 'working' statuses, so the skill cannot report that a task is still being processed, causing it to misreport idle even when the task was sent.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "If status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:",
+          "replacement_text": "If status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/request.md`:",
+          "rationale": "Changes the file path for the task description, so the skill fails to read the actual task and cannot show what the user asked Codex to do.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `done`: Use /codex-read to see results",
+          "replacement_text": "- `done`: Use /codex-review to see results",
+          "rationale": "Changes the suggested next action for 'done' from /codex-read to /codex-review, which is the wrong command and misleads the user.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `done`: Codex finished, response ready\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/request.md`:\n- Task type\n- Brief description\n\n### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-review to see results"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Based on status:\n- `idle`: Ready to delegate with /codex-review, /codex-implement, or /codex-plan-review\n- `pending`: Check Codex pane or wait\n- `working`: Codex is working, wait for completion\n- `done`: Use /codex-read to see results",
+          "replacement_text": "Based on status:\n- `idle`: Check back later\n- `pending`: Check back later\n- `working`: Check back later\n- `done`: Check back later",
+          "rationale": "This edit replaces the specific action suggestions with a generic 'check later' for all statuses, so the skill no longer provides the user with appropriate next steps based on the current status.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Codex Status Skill\n\nCheck the current state of the Claude-Codex collaboration.\n\n## Steps\n\nBefore any file operations, resolve the `.agent-collab` directory so commands work outside the project root:\n\n```bash\nAGENT_COLLAB_DIR=\"${AGENT_COLLAB_DIR:-}\"\nif [ -n \"$AGENT_COLLAB_DIR\" ]; then\n  if [ -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; then\n    AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\n  elif [ ! -d \"$AGENT_COLLAB_DIR\" ]; then\n    AGENT_COLLAB_DIR=\"\"\n  fi\nfi\n\nif [ -z \"$AGENT_COLLAB_DIR\" ]; then\n  AGENT_COLLAB_DIR=\"$(pwd)\"\n  while [ \"$AGENT_COLLAB_DIR\" != \"/\" ] && [ ! -d \"$AGENT_COLLAB_DIR/.agent-collab\" ]; do\n    AGENT_COLLAB_DIR=\"$(dirname \"$AGENT_COLLAB_DIR\")\"\n  done\n  AGENT_COLLAB_DIR=\"$AGENT_COLLAB_DIR/.agent-collab\"\nfi\n```\n\nIf `$AGENT_COLLAB_DIR` does not exist, stop and ask for the project root.\n\n### 1. Read Status\n\nRead `$AGENT_COLLAB_DIR/status` and report:\n- `idle`: No active task, ready for requests\n- `pending`: Task sent, waiting for Codex\n- `working`: Codex actively processing\n- `done`: Codex finished, response ready\n\n### 2. Show Current Task\n\nIf status is not `idle`, read and summarize `$AGENT_COLLAB_DIR/requests/task.md`:\n- Task type\n- Brief description\n\n### 3. Show Response Preview\n\nIf status is `done`, show brief preview of `$AGENT_COLLAB_DIR/responses/response.md`\n\n### 4. Suggest Action\n\nBased on status:\n- `idle`: Check back later\n- `pending`: Check back later\n- `working`: Check back later\n- `done`: Check back later"
+    }
+  ],
+  "finished_at": "2026-07-28T13:40:33",
+  "elapsed_seconds": 177.797,
+  "generated_variants": 10
+}

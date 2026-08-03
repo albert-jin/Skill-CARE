@@ -1,0 +1,205 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:16:15",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 16424,
+  "selection_rank": 228,
+  "skill": {
+    "skill_id": "development/data-model-reviewer",
+    "name": "data-model-reviewer",
+    "category": "development",
+    "description": "Analyze and Refactor TypeScript data models. Detect duplication, improve type safety, and validate relationships in interfaces/types.",
+    "body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a TypeScript project and I think our type definitions are getting messy. Can you review the types in the `/src/types` directory? Look for any 'any' usage, duplicated interfaces, magic strings, and check that relationships between types are consistent. For example, I've noticed that we have `UserProfile` and `UserSettings` both defining an email field separately. Also check that ID fields are consistently typed (e.g., string vs number). The output should be a list of issues per file with suggested fixes.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증",
+          "replacement_text": "",
+          "rationale": "Removing the checklist-based review step eliminates the ability to evaluate specific issues like duplicate interfaces, ID consistency, and magic strings, directly failing the user's request for a per-file issue list with fixes.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지\n\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지",
+          "replacement_text": "4. **문제 패턴 검색**: `Find`으로 파일명에 `any`가 포함된 파일 탐지",
+          "rationale": "By replacing the content search tool (Grep) with a filename-only search tool (Find), the skill can no longer detect actual uses of 'any', magic strings, or duplicate definitions inside files, making it unable to produce the required issue list.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Find`으로 파일명에 `any`가 포함된 파일 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색",
+          "replacement_text": "1. **대상 확인**: 사용자가 특정 파일을 지정한 경우 해당 파일에서만 검토, 미지정 시 오류 반환",
+          "rationale": "The skill now only accepts a single file, not a directory, so it cannot review the /src/types directory as requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시",
+          "replacement_text": "6. **결과 출력**: 전체 리뷰 결과를 하나의 요약문으로 출력 (파일별 세부 내역 생략)",
+          "rationale": "The skill now outputs only a summary, not per-file issues with suggested fixes, failing the query's output requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일을 지정한 경우 해당 파일에서만 검토, 미지정 시 오류 반환\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: 전체 리뷰 결과를 하나의 요약문으로 출력 (파일별 세부 내역 생략)\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] 중복 데이터 정의 없음 (SSOT)",
+          "replacement_text": "- [ ] 데이터 정의 확인 (SSOT 확인은 선택)",
+          "rationale": "The user query explicitly asks to detect duplicated interfaces (e.g., UserProfile and UserSettings both defining email); weakening the SSOT constraint means the skill will not flag this critical issue, making it a hard negative.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 데이터 정의 확인 (SSOT 확인은 선택)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] 중복 데이터 정의 없음 (SSOT)",
+          "replacement_text": "- [ ] 모든 내보내기가 named export로 되어 있는지 확인",
+          "rationale": "Replacing the SSOT duplication check with an export style check makes the skill miss detecting duplicate interfaces like UserProfile and UserSettings.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- [ ] ID 필드 타입 일관성",
+          "replacement_text": "- [ ] 파일 이름이 PascalCase인지 확인",
+          "rationale": "Replacing ID field consistency with naming convention means the skill will not check whether IDs are typed as string vs number.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것",
+          "replacement_text": "## 출력 형식\n\n타입 정의의 개수와 복잡도 통계를 요약하여 출력합니다.",
+          "rationale": "Changing the output from a list of issues per file with fixes to summary statistics fails the user's explicit requirement for issue-per-file output.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 모든 내보내기가 named export로 되어 있는지 확인\n- [ ] 파일 이름이 PascalCase인지 확인\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n타입 정의의 개수와 복잡도 통계를 요약하여 출력합니다."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하",
+          "replacement_text": "## 체크리스트\n\n### 일반 코드 품질\n\n- [ ] 코드 중복 없음\n- [ ] 주석 적절함\n- [ ] 변수명 명확함\n\n### 성능\n\n- [ ] 불필요한 루프 없음\n- [ ] 알고리즘 효율적",
+          "rationale": "Replaces the type-specific checklist with a generic code quality checklist, so the skill will not detect any usage, duplicated interfaces, magic strings, or ID consistency issues that the query requires.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 일반 코드 품질\n\n- [ ] 코드 중복 없음\n- [ ] 주석 적절함\n- [ ] 변수명 명확함\n\n### 성능\n\n- [ ] 불필요한 루프 없음\n- [ ] 알고리즘 효율적\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지",
+          "replacement_text": "",
+          "rationale": "Without the step that searches for 'any', magic strings, and duplicate definitions, the skill cannot produce the issue list the user explicitly requests.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지",
+          "replacement_text": "4. **문제 패턴 검색**: `Read`로 파일을 읽고 내용을 확인",
+          "rationale": "By replacing the core pattern detection tool 'Grep' with a simple file reader, the skill can no longer automatically detect 'any' usage, magic strings, or duplicate definitions, which are the key requirements in the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Read`로 파일을 읽고 내용을 확인\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "6. **결과 출력**: `examples.md`의 출력 형식에 따라 리뷰 결과 제시",
+          "replacement_text": "6. **결과 출력**: 전체 타입 모델에 대한 종합 점수(0-10)와 주요 문제 요약을 제시합니다.",
+          "rationale": "By replacing the detailed output format with a summary score, the skill no longer produces the per-file issue list and suggested fixes required by the user.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Type Model Auditor\n\nTypescript 타입 정의를 감사하여 구조적 일관성과 명명 규칙을 확인합니다.\n\n## 검사 원칙\n\n1. **일관성** - 타입 명명 규칙과 파일 구조의 일관성 유지\n2. **명확성** - 타입 이름과 정의가 명확하게 매핑\n3. **적시성** - 사용되지 않는 타입 식별\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts` 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **명명 규칙 검사**: `Grep`으로 PascalCase, IInterface 등의 패턴 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: 파일별 타입 목록과 명명 규칙 위반 사항 제시\n\n## 체크리스트\n\n### 명명 규칙\n\n- [ ] 모든 타입은 PascalCase 사용\n- [ ] 인터페이스에 I 접두사 미사용 (권장하지 않음)\n- [ ] 타입 별칭은 type 키워드 사용\n\n### 파일 구조\n\n- [ ] 각 파일에 하나의 핵심 타입만 정의\n- [ ] 타입 파일은 types 디렉토리 내에 위치\n- [ ] export 키워드로 외부 노출\n\n## 출력 형식\n\n각 파일에 대해 다음 형식으로 출력합니다:\n```\n파일: src/types/example.ts\n- 정의된 타입: UserProfile, UserSettings\n- 명명 규칙 위반: UserSettings (I 접두사 사용)\n- 파일 분리 권장: UserProfile, UserSettings (분리 권장)\n```"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- [ ] ID 필드 타입 일관성",
+          "replacement_text": "- [ ] ID 필드 타입 일관성 (권장 사항)",
+          "rationale": "The user query explicitly requires checking ID field type consistency, but by marking this as optional, the skill may skip or de-prioritize that critical check.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Data Model Reviewer\n\nTypeScript 타입 정의를 검토하여 SSOT, 타입 안전성, 데이터 관계의 품질을 확인합니다.\n\n## 검사 원칙\n\n1. **SSOT** - 데이터 정의 중복 제거\n2. **Type Safety** - any 지양, Union/Enum 활용\n3. **Relationship** - 데이터 간 관계 명확성\n\n## Instructions\n\n1. **대상 확인**: 사용자가 특정 파일/디렉토리를 지정한 경우 해당 대상에서 검토, 미지정 시 프로젝트 전체 탐색\n2. **타입 파일 탐색**: `Glob`으로 `**/types/**/*.ts`, `**/*.d.ts` 등 타입 정의 파일 찾기\n3. **타입 정의 분석**: `Read`로 파일 읽고 interface/type 정의 확인\n4. **문제 패턴 검색**: `Grep`으로 `any`, 매직 스트링, 중복 정의 탐지\n5. **체크리스트 기반 검토**: 아래 체크리스트 항목별로 검증\n6. **결과 출력**: examples.md의 출력 형식에 따라 리뷰 결과 제시\n\n## 체크리스트\n\n### 타입 안전성\n\n- [ ] `any` 타입 미사용\n- [ ] 매직 스트링 대신 Literal Union/Enum 사용\n- [ ] Optional(`?`) 필요한 곳에만 사용\n\n### 구조 및 관계\n\n- [ ] 중복 데이터 정의 없음 (SSOT)\n- [ ] ID 필드 타입 일관성 (권장 사항)\n- [ ] 중첩 깊이 3단계 이하\n\n## 출력 형식\n\n[examples.md](examples.md)의 \"리뷰 출력 형식\" 섹션을 따를 것"
+    }
+  ],
+  "finished_at": "2026-07-29T00:19:07",
+  "elapsed_seconds": 172.437,
+  "generated_variants": 10
+}

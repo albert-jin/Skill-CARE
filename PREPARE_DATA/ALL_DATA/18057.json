@@ -1,0 +1,252 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:07:18",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 18057,
+  "selection_rank": 43,
+  "skill": {
+    "skill_id": "development/check-pr-errors",
+    "name": "check-pr-errors",
+    "category": "development",
+    "description": "Check logs for errors and warnings in a specific PR. Use when debugging PR issues, investigating failed code reviews, or checking for errors in a pull request.",
+    "body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Failed telemetry operations\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed.",
+    "source": "pool"
+  },
+  "generated_query": "Can you check the logs for pull request #1523 in our production environment? I need to see any errors or warnings that occurred during the last 3 days. Our org ID is `a1b2c3d4-e5f6-7890-abcd-ef1234567890`. The PR was failing the CI checks for a backend service, but the logs in the test output didn't show much. I want to see if there are any server-side errors tied to that PR, including stack traces if available. Also, please include any related telemetry failures. If there are many logs, let me know the summary and root cause. Use the production env file.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR",
+          "replacement_text": "",
+          "rationale": "Removing the telemetry check means the skill cannot report telemetry failures, which the user explicitly requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Failed telemetry operations\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "npx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS",
+          "replacement_text": "npx ts-node scripts/check-pr-test-results.cli.ts $ARGUMENTS",
+          "rationale": "Replaces the core log-checking CLI with a test-result checker, so the skill cannot retrieve production logs or stack traces.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR",
+          "replacement_text": "1. **Test failures**: Searches CI test result artifacts for:\n   - Failed test cases with error messages\n   - Test logs containing assertion errors or exceptions\n\n2. **Build failures**: Checks build pipeline logs for compilation errors or dependency issues",
+          "rationale": "Changes the data sources from observability logs and telemetry to CI artifacts, making it impossible to find server-side errors or telemetry failures.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-test-results.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Test failures**: Searches CI test result artifacts for:\n   - Failed test cases with error messages\n   - Test logs containing assertion errors or exceptions\n\n2. **Build failures**: Checks build pipeline logs for compilation errors or dependency issues\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Failed telemetry operations\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)",
+          "replacement_text": "",
+          "rationale": "Removing the --env option prevents the user from specifying the production environment, so the skill will use a default non-production environment.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR",
+          "replacement_text": "",
+          "rationale": "Removing the telemetry errors check means the skill will not report any telemetry failures, which the user explicitly requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Failed telemetry operations\n- Summary of findings",
+          "replacement_text": "",
+          "rationale": "Deleting the output lines for failed telemetry and summary removes the ability to provide a root cause analysis, which is essential for the user query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed.",
+          "replacement_text": "",
+          "rationale": "Removing the response instructions means the agent will not know to synthesize a root cause or final status, leaving the query under-answered.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n\n\n"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `--limit=N`: Max number of logs to return (default: 100)",
+          "replacement_text": "# Note: The script returns at most 10 logs; you cannot change this limit.",
+          "rationale": "By restricting the log limit to a small number without an override, the skill cannot return enough logs to provide a comprehensive summary or root cause, failing the user's request.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod",
+          "replacement_text": "",
+          "rationale": "Deleting the example that uses the removed --limit option keeps the document consistent and avoids an obviously broken command.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n# Note: The script returns at most 10 logs; you cannot change this limit.\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Failed telemetry operations\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check logs for errors and warnings in a specific PR.",
+          "replacement_text": "Check the build and deployment status of a specific PR.",
+          "rationale": "Changes the core purpose from log error checking to build/deployment status, making it miss the user's request for error logs and telemetry failures.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords",
+          "replacement_text": "1. **Build pipeline status**: Checks CI pipeline logs for each build step associated with the PR.\n   - Build step status (passed, failed, skipped)\n   - Deployment logs for each environment\n   - Timestamps and commit hashes",
+          "rationale": "Replaces error log search with build pipeline status, so the skill cannot retrieve the error logs and stack traces the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR",
+          "replacement_text": "2. **Deployment telemetry**: Checks deployment event logs for failed deployments or rollbacks related to the PR",
+          "rationale": "Changes telemetry error checking to deployment event logs, omitting the failed operations the user explicitly requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck the build and deployment status of a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Build pipeline status**: Checks CI pipeline logs for each build step associated with the PR.\n   - Build step status (passed, failed, skipped)\n   - Deployment logs for each environment\n   - Timestamps and commit hashes\n\n2. **Deployment telemetry**: Checks deployment event logs for failed deployments or rollbacks related to the PR\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Failed telemetry operations\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check logs for errors and warnings in a specific PR.",
+          "replacement_text": "Check logs for errors and warnings across all recent activity.",
+          "rationale": "Removes the PR-specific scope, so the skill no longer filters by PR number as required by the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID",
+          "replacement_text": "- `--pr-number=PR_NUMBER` (optional): Filter by PR number\n- `--org-id=ORG_ID` (optional): Filter by organization ID",
+          "rationale": "Changes required positional arguments to optional flags, making it easy to omit the PR filter entirely and thus not retrieve PR-specific logs.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings across all recent activity.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `--pr-number=PR_NUMBER` (optional): Filter by PR number\n- `--org-id=ORG_ID` (optional): Filter by organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Failed telemetry operations\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR\n",
+          "replacement_text": "",
+          "rationale": "Removing the telemetry check means the skill will not report failed telemetry operations, which the query explicitly requests.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Failed telemetry operations\n",
+          "replacement_text": "",
+          "rationale": "Deleting the output line for failed telemetry ensures the skill cannot provide that information even if it internally checks it.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR",
+          "replacement_text": "1. **Log errors**: Searches `observability_logs` (legacy collection) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords",
+          "rationale": "By removing the primary log collection and telemetry check, the skill can no longer access production logs and telemetry failures, making it miss critical error data the user needs.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- `--legacy`: Also search in legacy collection (observability_logs)",
+          "replacement_text": "",
+          "rationale": "Deleting the legacy option aligns with the removal of the primary collection, but the skill now only searches one legacy source, which may be outdated or incomplete for production debugging.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 7)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs` (legacy collection) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n- Failed telemetry operations\n- Summary of findings\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`--days=N`: Number of days to search back (default: 7)",
+          "replacement_text": "`--days=N`: Number of days to search back (default: 1)",
+          "rationale": "Changing the default search window from 7 to 1 day means the command will miss logs from the last 3 days unless the user explicitly sets --days=3, which the query does not mention.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Failed telemetry operations",
+          "replacement_text": "",
+          "rationale": "Removing telemetry failure output means the skill cannot report the telemetry errors that the user explicitly requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Summary of findings",
+          "replacement_text": "",
+          "rationale": "Deleting the summary line prevents the skill from providing the overall summary and root cause the user asked for.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Check PR Errors\n\nCheck logs for errors and warnings in a specific PR.\n\n## Usage\n\nRun the check-pr-errors CLI script with the provided arguments:\n\n```bash\nnpx ts-node scripts/check-pr-errors.cli.ts $ARGUMENTS\n```\n\n## Arguments\n\n- `prNumber` (required): The PR number to check\n- `orgId` (required): The organization ID\n\n## Options\n\n- `--days=N`: Number of days to search back (default: 1)\n- `--limit=N`: Max number of logs to return (default: 100)\n- `--all`: Show all log levels (debug, info, warn, error). Default: only error + warn\n- `--legacy`: Also search in legacy collection (observability_logs)\n- `--env=PATH`: Path to .env file (e.g., `--env=.env.prod`)\n\n## Examples\n\n```bash\n# Check errors for PR #723 in production\n/check-pr-errors 723 97442318-9d2a-496b-a0d2-b45fb --env=.env.prod\n\n# Check all logs (not just errors) for PR #701\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --all --env=.env.prod\n\n# Check with more logs and legacy collection\n/check-pr-errors 701 97442318-9d2a-496b-a0d2-b45fb --limit=500 --legacy --env=.env.prod\n```\n\n## What it checks\n\n1. **Log errors**: Searches `observability_logs_ts` (and optionally `observability_logs`) for:\n   - Logs with level `error` or `warn`\n   - Logs with `attributes.error` present\n   - Logs with messages containing error-related keywords\n\n2. **Telemetry errors**: Checks `observability_telemetry` for failed operations related to the PR\n\n## Output\n\nThe script outputs:\n- List of errors/warnings with timestamps, components, and messages\n- Stack traces when available\n\n\n\n## How to Respond\n- Find the root cause of any errors.\n- Look for anomalies.\n- Pay close attention to skipped reviews.\n- Determine the final status (success, error, or skipped). Keep using the command with `--limit=XX` if needed."
+    }
+  ],
+  "finished_at": "2026-07-28T14:10:14",
+  "elapsed_seconds": 175.703,
+  "generated_variants": 9
+}

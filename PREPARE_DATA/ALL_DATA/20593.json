@@ -1,0 +1,219 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:39:03",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 20593,
+  "selection_rank": 161,
+  "skill": {
+    "skill_id": "other/gcp-vm-control",
+    "name": "gcp-vm-control",
+    "category": "other",
+    "description": "GCP VM 시작/중지/재시작 제어",
+    "body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음",
+    "source": "pool"
+  },
+  "generated_query": "I have a Google Cloud VM called `dev-web-server` running in the `us-central1-a` zone that I only use during business hours. I want to stop it now to avoid compute charges over the weekend, and then start it again on Monday morning. Can you first show me the current status of all my VMs so I can confirm which one to act on, then stop the `dev-web-server` instance, and finally verify that it has transitioned to a `TERMINATED` state? After the stop, please remind me how much I'll save by keeping it stopped.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```",
+          "replacement_text": "",
+          "rationale": "Without the VM listing step, the skill cannot show all VM statuses, failing the user's first request for confirmation.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE",
+          "replacement_text": "# 시작\ngcloud compute instances start VM_NAME --zone=ZONE",
+          "rationale": "Replaces the stop command with start, so the skill will start the VM instead of stopping it, failing the user's explicit request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "gcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"",
+          "replacement_text": "gcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(name,zone)\"",
+          "rationale": "After stopping, the user cannot verify the TERMINATED state because the status is no longer shown.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)",
+          "replacement_text": "",
+          "rationale": "The skill no longer provides the savings reminder the user explicitly requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(name,zone)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)",
+          "replacement_text": "중지된 VM은 컴퓨팅 비용과 디스크 비용 모두 발생하지 않습니다",
+          "rationale": "Providing incorrect cost savings information misleads the user about actual charges, failing the query's request for accurate savings reminder.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용과 디스크 비용 모두 발생하지 않습니다\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **stop** - VM 중지 (비용 절감)",
+          "replacement_text": "",
+          "rationale": "Deleting the stop action means the skill cannot perform the user's required stop operation, making it a hard negative despite remaining in the GCP VM domain.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE",
+          "replacement_text": "",
+          "rationale": "Removing the stop command ensures the skill has no way to execute the stop request, further enforcing the failure to meet the user's query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)",
+          "replacement_text": "",
+          "rationale": "Without the cost note, the skill fails to provide the savings reminder requested in the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```",
+          "replacement_text": "",
+          "rationale": "Removing the explicit status verification step means the skill cannot confirm TERMINATED state as requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n",
+          "replacement_text": "",
+          "rationale": "Without the VM list step, the agent cannot show the user the current status of all VMs to confirm which one to act on, failing the first requested action.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "gcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"",
+          "replacement_text": "gcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),networkInterfaces[0].accessConfigs[0].natIP)\"",
+          "rationale": "Removes the 'status' column from the VM list output, so the user cannot see which VMs are running before deciding to stop.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "gcloud compute instances stop VM_NAME --zone=ZONE",
+          "replacement_text": "gcloud compute instances suspend VM_NAME --zone=ZONE",
+          "rationale": "Replaces the stop action with suspend, which leaves the VM in a SUSPENDED state instead of TERMINATED and still incurs memory costs, failing the user's requirement to stop and save compute charges.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |",
+          "replacement_text": "",
+          "rationale": "Deleting the status verification step and the output table prevents the user from confirming the VM reached TERMINATED state, failing the verification requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)",
+          "replacement_text": "\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음",
+          "rationale": "The cost savings tip section remains but the output format now lacks a specific savings calculation or reminder, so the user won't get the promised savings summary.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# GCP VM 제어\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME\n\n# 중지\ngcloud compute instances stop VM_NAME\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME\n```\n\n> **참고**: 위 명령어들은 기본 리전/존 설정이 필요합니다. `gcloud config set compute/zone`로 미리 설정되어 있지 않으면 오류가 발생할 수 있습니다.\n\n### 4. 상태 확인 (옵션)\n\n```bash\n# VM이 중지되었는지 ping으로 확인\nping -c 1 VM_EXTERNAL_IP\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | (ping 불가) |\n```\n\n## 비용 절감 팁\n\n- VM을 중지하면 Compute Engine 요금이 청구되지 않습니다.\n- 단, 디스크와 외부 IP 등 추가 리소스 비용은 계속 발생할 수 있습니다.\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음\n- VM 중지 후 상태 확인은 gcloud 명령어 대신 ping으로 대체 가능"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "--format=\"table(name,zone,machineType.basename(),status,networkInterfaces[0].accessConfigs[0].natIP)\"",
+          "replacement_text": "--format=\"table(name,zone,machineType.basename(),networkInterfaces[0].accessConfigs[0].natIP)\"",
+          "rationale": "The skill lists VMs but omits the status column, so the user cannot confirm which VM is running before stopping.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GCP VM Control\n\nVM 인스턴스의 시작, 중지, 재시작을 수행합니다.\n\n## 사용법\n\n```\n/gcp-vm-control                    # 현재 프로젝트 VM 목록 → 선택\n/gcp-vm-control my-vm              # 특정 VM 제어\n/gcp-vm-control my-vm start        # 직접 시작\n/gcp-vm-control my-vm stop         # 직접 중지\n```\n\n## Workflow\n\n### 1. VM 목록 조회\n\n```bash\nPROJECT_ID=$(gcloud config get-value project)\ngcloud compute instances list --project=$PROJECT_ID \\\n  --format=\"table(name,zone,machineType.basename(),networkInterfaces[0].accessConfigs[0].natIP)\"\n```\n\n### 2. 사용자에게 액션 선택 요청\n\n- **start** - VM 시작\n- **stop** - VM 중지 (비용 절감)\n- **reset** - VM 재시작 (강제 재부팅)\n- **suspend** - VM 일시 중지 (메모리 유지)\n- **resume** - 일시 중지된 VM 재개\n\n### 3. 명령 실행\n\n```bash\n# 시작\ngcloud compute instances start VM_NAME --zone=ZONE\n\n# 중지\ngcloud compute instances stop VM_NAME --zone=ZONE\n\n# 재시작 (강제)\ngcloud compute instances reset VM_NAME --zone=ZONE\n\n# 일시 중지\ngcloud compute instances suspend VM_NAME --zone=ZONE\n\n# 재개\ngcloud compute instances resume VM_NAME --zone=ZONE\n```\n\n### 4. 상태 확인\n\n```bash\ngcloud compute instances describe VM_NAME --zone=ZONE --format=\"value(status)\"\n```\n\n## 출력 형식\n\n```\n## VM 제어 결과\n\n| 항목 | 값 |\n|------|-----|\n| VM | my-instance |\n| Zone | asia-northeast3-a |\n| 이전 상태 | RUNNING |\n| 액션 | stop |\n| 현재 상태 | TERMINATED |\n\n---\n비용 참고: 중지된 VM은 컴퓨팅 비용이 발생하지 않습니다 (디스크 비용은 유지)\n```\n\n## 비용 절감 팁\n\n- **야간/주말 중지**: 개발 VM은 사용하지 않을 때 중지\n- **일시 중지 vs 중지**:\n  - `suspend`: 빠른 재개, 메모리 비용 발생\n  - `stop`: 느린 시작, 비용 없음\n\n## 주의사항\n\n- `reset`은 강제 재부팅 (데이터 손실 가능)\n- 프로덕션 VM 중지 시 경고 표시\n- Preemptible/Spot VM은 중지 후 재시작 불가할 수 있음"
+    }
+  ],
+  "finished_at": "2026-07-28T20:42:25",
+  "elapsed_seconds": 202.203,
+  "generated_variants": 10
+}

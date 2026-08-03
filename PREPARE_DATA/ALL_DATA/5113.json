@@ -1,0 +1,157 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:07:46",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 5113,
+  "selection_rank": 261,
+  "skill": {
+    "skill_id": "devops/hsl-to-oklch-converter",
+    "name": "hsl-to-oklch-converter",
+    "category": "devops",
+    "description": "This skill converts HSL color values to OKLCH color values. It can process single or multiple colors, provided either directly by the user or from a specified file.",
+    "body": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://oklch.com`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the HSL input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the OKLCH output from the result field.\n        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).\n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.\n        - After all conversions, inform the user that the file has been updated.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic.",
+    "source": "pool"
+  },
+  "generated_query": "I’m redesigning a color palette and need to migrate from HSL to OKLCH for better perceptual uniformity. Could you help me with two things?  \n\nFirst, convert this HSL value for me: `hsl(340, 90%, 55%)`. I want the OKLCH result formatted with two decimal places for each component.  \n\nSecond, I have a file at `src/styles/colors.css` that contains several HSL definitions like `hsl(200, 70%, 45%)`, `hsl(120, 60%, 30%)`, and `hsl(0, 80%, 60%)`. I need every occurrence of an HSL color in that file replaced by its OKLCH equivalent (also two decimal places). Please read the file, find all HSL values, convert each one, and update the file with the new OKLCH values. Let me know when it’s done.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.",
+          "replacement_text": "",
+          "rationale": "Without the file replacement step, the skill cannot update the file with OKLCH equivalents, so the user's batch conversion request fails.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://oklch.com`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the HSL input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the OKLCH output from the result field.\n        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).\n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - \n        - After all conversions, inform the user that the file has been updated.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use the Playwright tool to navigate to `https://oklch.com`.",
+          "replacement_text": "Use the Playwright tool to navigate to `https://colormine.org/convert/hsl-to-oklch`.",
+          "rationale": "Changing the target website breaks the conversion because the new site does not output OKLCH values with the expected format and requires different input handling.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://colormine.org/convert/hsl-to-oklch`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the HSL input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the OKLCH output from the result field.\n        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).\n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.\n        - After all conversions, inform the user that the file has been updated.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).",
+          "replacement_text": "- **Format OKLCH Output:** Return the OKLCH value exactly as read from the tool, without any truncation or formatting.",
+          "rationale": "The skill no longer truncates OKLCH values to two decimal places, failing the user's explicit requirement for two-decimal formatting in both single and file conversions.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://oklch.com`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the HSL input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the OKLCH output from the result field.\n        - **Format OKLCH Output:** Return the OKLCH value exactly as read from the tool, without any truncation or formatting.\n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.\n        - After all conversions, inform the user that the file has been updated.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).",
+          "replacement_text": "        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, use the value as it appears without any rounding.",
+          "rationale": "The user explicitly requested two decimal places; skipping rounding means the output will not match the required precision.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://oklch.com`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the HSL input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the OKLCH output from the result field.\n        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, use the value as it appears without any rounding.\n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.\n        - After all conversions, inform the user that the file has been updated.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool.",
+          "replacement_text": "This skill automates the conversion of OKLCH color definitions to the HSL color space, leveraging Playwright to interact with the oklch.com web tool.",
+          "rationale": "Changes the conversion direction from HSL-to-OKLCH to OKLCH-to-HSL, making the skill unable to fulfill the user's request for HSL-to-OKLCH conversion.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Click the dropdown to select the HSL input format.",
+          "replacement_text": "Click the dropdown to select the OKLCH input format.",
+          "rationale": "Alters the input format selection to OKLCH instead of HSL, which is inconsistent with the user's need to input HSL values.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use the Playwright tool to read the OKLCH output from the result field.",
+          "replacement_text": "Use the Playwright tool to read the HSL output from the result field.",
+          "rationale": "Changes the expected output from OKLCH to HSL, preventing the skill from producing the required OKLCH values.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "This skill automates the conversion of OKLCH color definitions to the HSL color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://oklch.com`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the OKLCH input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the HSL output from the result field.\n        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).\n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.\n        - After all conversions, inform the user that the file has been updated.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).",
+          "replacement_text": "format the output value to a reasonable number of decimal places.",
+          "rationale": "The query specifically requires two decimal places; removing that instruction makes the skill likely produce incorrect precision.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.\n        - After all conversions, inform the user that the file has been updated.",
+          "replacement_text": "    - **For file input:**\n        - Apply the same conversion process to each HSL color value found in the file.",
+          "rationale": "The query requires reading a specific file, finding all HSL occurrences, and replacing them; this vague guidance lacks the necessary steps to actually perform file I/O and in-place replacement.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://oklch.com`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the HSL input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the OKLCH output from the result field.\n        - **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, format the output value to a reasonable number of decimal places.\n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Apply the same conversion process to each HSL color value found in the file.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Format OKLCH Output:** If the OKLCH value is like `oklch(38.927493438 193.48 124.936836)`, truncate the numerical components to two decimal places (e.g., `oklch(38.92 193.48 124.93)`).",
+          "replacement_text": "",
+          "rationale": "Deleting the formatting step means the skill returns raw OKLCH values with excessive decimal places, failing the user's explicit requirement for two decimal places.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "This skill automates the conversion of HSL color definitions to the OKLCH color space, leveraging Playwright to interact with the oklch.com web tool. It handles both individual color strings and batch conversions from files, replacing original HSL values with their OKLCH equivalents.\n\n## When to Use This Skill\nUse this skill when:\n- You need to convert one or more HSL color values to OKLCH.\n- You have a file containing HSL color definitions that need to be updated to OKLCH.\n- You want to ensure color consistency and leverage the perceptually uniform properties of OKLCH.\n\n## How to Use This Skill\n\nTo use this skill, follow these steps:\n\n1.  **Launch Playwright and Navigate:**\n    - Use the Playwright tool to navigate to `https://oklch.com`.\n\n2.  **Select HSL Input Mode:**\n    - Click the dropdown to select the HSL input format.\n\n3.  **Perform Color Conversion:**\n    - **For direct HSL input:**\n        - Use the Playwright tool to type the HSL color value into the input field.\n        - Use the Playwright tool to read the OKLCH output from the result field.\n        \n        - Return the OKLCH value to the user.\n\n    - **For file input:**\n        - Read the file content using the `Read` tool.\n        - Use the `Grep` tool with a regular expression to find all HSL color values in the file.\n        - For each found HSL value:\n            - Use the Playwright tool to type the HSL color into the input field (as described for direct input above).\n            - Use the Playwright tool to read the OKLCH output (as described for direct input above).\n            - Use the `Edit` tool to replace the original HSL value with the new OKLCH value in the file.\n        - After all conversions, inform the user that the file has been updated.\n\n4.  **Repeat for Multiple Colors:** If there are more colors to convert, repeat step 3 for each color. If processing a file, the iteration will be handled within the file processing logic."
+    }
+  ],
+  "finished_at": "2026-07-29T02:09:41",
+  "elapsed_seconds": 114.781,
+  "generated_variants": 7
+}

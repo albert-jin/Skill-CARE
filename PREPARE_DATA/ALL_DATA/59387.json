@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:29:47",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 59387,
+  "selection_rank": 88,
+  "skill": {
+    "skill_id": "other/token-minification",
+    "name": "token minifier",
+    "category": "other",
+    "description": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:",
+    "body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `json` code blocks and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n- **Comments**: Delete all HTML comments ``.\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n- **Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density.",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a large documentation site that has many Markdown files with embedded JSON examples and code blocks. The files are getting too long and I need to reduce the number of tokens without losing any content. Could you take a look at the file `api-reference.md` and apply the following changes:\n\n- For any JSON code blocks (or inline arrays/objects in Markdown) that are currently expanded vertically, if the entire value (including brackets and key names) fits on a single line of up to 140 characters, collapse it into one line (e.g., turn `\"tags\": [\\n  \"unicorn\",\\n  \"cat\"\\n]` into `\"tags\": [\"unicorn\", \"cat\"]`).\n- Collapse three or more consecutive newlines into two.\n- Remove all HTML comments (like `<!-- ... -->`).\n- Make sure there are no blank lines between list items unless the item contains a block element.\n- Do not touch the content or formatting of non-JSON code blocks (Python, Bash, etc.) except for trimming trailing whitespace.\n\nThe file is about 3000 lines long. After processing, please show me the diff and save the minified version as `api-reference.minified.md`. I need to keep the original file unchanged.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.",
+          "replacement_text": "",
+          "rationale": "Without this safety constraint, the skill will mistakenly reformat non-JSON code blocks, violating the user's explicit requirement to leave them untouched.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `json` code blocks and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n- **Comments**: Delete all HTML comments ``.\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n- **Preservation**: \n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Apply \"Flow Style\" to `json` code blocks and generic arrays/objects:",
+          "replacement_text": "Apply \"Flow Style\" to `yaml` code blocks and generic arrays/objects:",
+          "rationale": "The user needs to collapse JSON code blocks, but this changed skill targets YAML blocks instead, so it will ignore the user's main request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `yaml` code blocks and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n- **Comments**: Delete all HTML comments ``.\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n- **Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Apply \"Flow Style\" to `json` code blocks and generic arrays/objects:",
+          "replacement_text": "Apply \"Flow Style\" to `non-json` code blocks (e.g., Python, Bash) and generic arrays/objects:",
+          "rationale": "Changes the primary target from JSON code blocks to non-JSON code blocks, so the skill will ignore JSON collapsing that the user specifically requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.",
+          "replacement_text": "**Preservation**: Do NOT modify the internal formatting of JSON code blocks unless strictly trimming trailing whitespace.",
+          "rationale": "Switches the protected class from non-JSON to JSON, now permitting modification of non-JSON code blocks and prohibiting modification of JSON—directly contradicting the user's requirements.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `non-json` code blocks (e.g., Python, Bash) and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n- **Comments**: Delete all HTML comments ``.\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n- **Preservation**: Do NOT modify the internal formatting of JSON code blocks unless strictly trimming trailing whitespace.\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "≤ 140 characters",
+          "replacement_text": "≤ 80 characters",
+          "rationale": "By reducing the character threshold to 80, many JSON blocks that the user expects to be collapsed (fitting in 140 chars) will remain expanded, failing the primary requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `json` code blocks and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 80 characters**.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n- **Comments**: Delete all HTML comments ``.\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n- **Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**IF AND ONLY IF** the resulting line is **≤ 140 characters**.",
+          "replacement_text": "regardless of line length.",
+          "rationale": "Removing the character limit condition causes JSON collapsing to apply to all lines, violating the user's requirement to only collapse when ≤140 characters.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **Comments**: Delete all HTML comments ``.",
+          "replacement_text": "",
+          "rationale": "Deleting the HTML comment removal step means the skill will not remove HTML comments as required by the user.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `json` code blocks and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") regardless of line length.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n- **Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  - **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n  - **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.",
+          "replacement_text": "  - **Heuristic**: Detect any arrays or objects that are currently expanded vertically in any code block.\n  - **Action**: Inline them into a single row (\"Flow Style\") to save vertical space.",
+          "rationale": "Removes the JSON‑only scope and the 140‑character limit, so the skill would incorrectly collapse all arrays/objects in every code block regardless of length, violating the user's requirement to only touch JSON and only when under 140 characters.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `json` code blocks and generic arrays/objects:\n- **Heuristic**: Detect any arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") **regardless of line length** (this saves maximum vertical space).\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: No fallback – always collapse if currently expanded.\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse **2+** consecutive newlines into **1** (reduce all blank lines to a single newline).\n- **Comments**: Delete all HTML comments `<!-- ... -->`.\n- **Lists**: No special handling — blank lines between list items are kept as-is.\n\n### 3. Safety & Constraints\n- **Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density.\n\nAfter processing, overwrite the original file with the minified version (no backup is created)."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.",
+          "replacement_text": "",
+          "rationale": "Without the preservation rule, the skill would incorrectly modify non-JSON code blocks, violating the user's explicit instruction to leave them untouched except for trimming trailing whitespace.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `json` code blocks and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n- **Comments**: Delete all HTML comments ``.\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Action**: Inline them into a single row (\"Flow Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.",
+          "replacement_text": "- **Action**: Expand them into multiple rows (\"Block Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.",
+          "rationale": "By changing the action to expand short structures, the skill would increase token usage instead of reducing it, directly contradicting the user's request to collapse JSON blocks.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:\n\n### 1. JSON & Code Block Formatting (Conditional Flow-Style)\nApply \"Flow Style\" to `json` code blocks and generic arrays/objects:\n- **Heuristic**: Detect short arrays `[...]` or objects `{...}` that are currently expanded vertically.\n- **Action**: Expand them into multiple rows (\"Block Style\") **IF AND ONLY IF** the resulting line is **≤ 140 characters**.\n- **Visual Goal**: Bin-pack items to save vertical space without sacrificing readability.\n  - *Example*: `\"tags\": [ \"unicorn\", \"cat\", \"optimization\" ]`\n- **Fallback**: If the structure exceeds 140 characters, retain the vertical \"Block Style\".\n\n### 2. Markdown Compaction\n- **Whitespace**: Collapse 3+ consecutive newlines into 2 (standardize paragraph breaks).\n- **Comments**: Delete all HTML comments ``.\n- **Lists**: Enforce tight lists (no blank lines between items) unless the item contains a block element.\n\n### 3. Safety & Constraints\n- **Preservation**: Do NOT modify the internal formatting of non-JSON code blocks (e.g., Python, Bash) unless strictly trimming trailing whitespace.\n- **Content**: Do not summarize text or remove valid documentation; focus purely on syntactic density."
+    }
+  ],
+  "finished_at": "2026-07-28T16:32:13",
+  "elapsed_seconds": 145.828,
+  "generated_variants": 8
+}

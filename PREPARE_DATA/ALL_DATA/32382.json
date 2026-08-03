@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:56:13",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 32382,
+  "selection_rank": 93,
+  "skill": {
+    "skill_id": "other/explicit-identity",
+    "name": "explicit-identity",
+    "category": "other",
+    "description": "Explicit Identity Across Boundaries",
+    "body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n- Pass `--session-id $ID` when spawning processes\n- Store IDs in state files for later correlation\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id', input.session_id])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries",
+    "source": "pool"
+  },
+  "generated_query": "I’m building a multi‑stage data processing pipeline that runs user analysis requests. The first stage (preprocessing) takes a user’s input data and spawns a separate background job to perform a heavy computation. Later, a reporting stage collects the results from that job and generates a summary.\n\nRight now, the reporting stage tries to find the “most recent” job result by looking at the last‑modified timestamp in a shared directory. This fails when two requests arrive close together—the report for the first request sometimes picks up the result meant for the second request, or misses the correct one entirely.\n\nI want to change the pipeline so that from the moment the user submits a request (with a unique request ID like `req-2025-04-08-001`), that ID is explicitly passed to every step: the preprocessing script, the background job, and the reporting script. The job should store its results in a file named with that ID, and the reporting stage should read from exactly that file—no guessing “current”. \n\nCan you help me rewrite my code to do this? I’m using Python (subprocess.Popen to spawn jobs and asyncio to manage coordination). Show me how to modify the call to the background job to accept a `--request-id` parameter, and how to adjust the reporting function to use that explicit ID to load the correct results file. Include an example where the input is the request ID and the output is a consistent report file named `report-{request_id}.pdf`.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Pass `--session-id $ID` when spawning processes",
+          "replacement_text": "",
+          "rationale": "Removing the instruction to pass explicit identifiers when spawning processes leaves the skill incomplete for the user's request to modify background job calls with a `--request-id` parameter.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n\n- Store IDs in state files for later correlation\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id', input.session_id])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Pass `--session-id $ID` when spawning processes",
+          "replacement_text": "- Pass `--user-id $ID` when spawning processes",
+          "rationale": "Changes the identifier to user-level instead of request-level, so multiple requests from the same user would collide.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "spawn('analyzer', ['--learn', '--session-id', input.session_id])",
+          "replacement_text": "spawn('analyzer', ['--learn', '--session-id', os.environ.get('CURRENT_SESSION')])",
+          "rationale": "Replaces explicit argument passing with an environment variable lookup, which is fragile and does not guarantee per‑request uniqueness.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n- Pass `--user-id $ID` when spawning processes\n- Store IDs in state files for later correlation\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id', os.environ.get('CURRENT_SESSION')])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pass `--session-id $ID` when spawning processes",
+          "replacement_text": "Pass `--data-file $DATA` when spawning processes, embedding the identifier inside the data payload",
+          "rationale": "Changes the explicit CLI parameter to a data-file approach, so the user's need for a ‑‑request-id flag is not satisfied.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "spawn('analyzer', ['--learn', '--session-id', input.session_id])",
+          "replacement_text": "spawn('analyzer', ['--learn', '--data', JSON.stringify(input)])",
+          "rationale": "Replaces the explicit session-id flag with a JSON data blob, hiding the unique identifier that the user needs to pass and use for file naming.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n- Pass `--data-file $DATA` when spawning processes, embedding the identifier inside the data payload\n- Store IDs in state files for later correlation\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--data', JSON.stringify(input)])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Never rely on \"latest\" or \"current\" when crossing process or async boundaries.",
+          "replacement_text": "Avoid relying on \"latest\" or \"current\" when crossing process or async boundaries, but occasional use of timestamps may suffice.",
+          "rationale": "Weakens the absolute prohibition, making the skill ambiguous and less helpful for the user's explicit fix.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nAvoid relying on \"latest\" or \"current\" when crossing process or async boundaries, but occasional use of timestamps may suffice.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n- Pass `--session-id $ID` when spawning processes\n- Store IDs in state files for later correlation\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id', input.session_id])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Store IDs in state files for later correlation",
+          "replacement_text": "- Log IDs in structured logs for session tracing",
+          "rationale": "Removes the idea of storing IDs in files that can be used to load results, making the pattern unsuitable for the user's file-based result retrieval.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "spawn('analyzer', ['--learn', '--session-id', input.session_id])",
+          "replacement_text": "spawn('analyzer', ['--learn', '--session-id', input.session_id])  # output written to default file, not session-specific",
+          "rationale": "The example now explicitly shows that the output is not session-specific, contradicting the user's requirement for per-request files.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n- Pass `--session-id $ID` when spawning processes\n- Log IDs in structured logs for session tracing\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id', input.session_id])  # output written to default file, not session-specific\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Pass `--session-id $ID` when spawning processes",
+          "replacement_text": "Use unique identifiers in your pipeline",
+          "rationale": "This over-generalizes the advice, failing to specify the critical mechanism of passing the identifier explicitly as a command-line argument, which the user's query requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "spawn('analyzer', ['--learn', '--session-id', input.session_id])",
+          "replacement_text": "spawn('analyzer', ['--learn', '--session-id'])",
+          "rationale": "This removes the explicit passing of the session ID value, making the example incomplete and preventing the user from learning how to pass a unique request identifier to the background job.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n- Use unique identifiers in your pipeline\n- Store IDs in state files for later correlation\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id'])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Pass `--session-id $ID` when spawning processes",
+          "replacement_text": "",
+          "rationale": "Removing the instruction to pass an explicit identifier when spawning processes removes the core action needed to fulfill the user's request for passing a request ID to the background job.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n\n- Store IDs in state files for later correlation\n- Use full UUIDs, not partial matches\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id', input.session_id])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Pass `--session-id $ID` when spawning processes",
+          "replacement_text": "- Set `SESSION_ID=$ID` in the environment before spawning processes",
+          "rationale": "Replaces explicit command-line argument with environment variable, which is incompatible with the user's requirement for a `--request-id` parameter.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Use full UUIDs, not partial matches",
+          "replacement_text": "- Use short hash codes for efficiency",
+          "rationale": "Weakens identification from UUIDs to short hashes, failing to guarantee uniqueness across concurrent pipeline runs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Explicit Identity Across Boundaries\n\nNever rely on \"latest\" or \"current\" when crossing process or async boundaries.\n\n## Pattern\n\nPass explicit identifiers through the entire pipeline. \"Most recent\" is a race condition.\n\n## DO\n\n- Set `SESSION_ID=$ID` in the environment before spawning processes\n- Store IDs in state files for later correlation\n- Use short hash codes for efficiency\n- Keep different ID types separate (don't collapse concepts)\n\n## DON'T\n\n- Query for \"most recent session\" at execution time\n- Assume the current context will still be current after await/spawn\n- Collapse different ID types:\n  - `session_id` = Claude Code session (human-facing)\n  - `root_span_id` = Braintrust trace (query key)\n  - `turn_span_id` = Braintrust turn within session\n\n## Example\n\n```typescript\n// BAD: race condition at session boundaries\nspawn('analyzer', ['--learn'])  // defaults to \"most recent\"\n\n// GOOD: explicit identity\nspawn('analyzer', ['--learn', '--session-id', input.session_id])\n```\n\n## Source Sessions\n\n- 1c21e6c8: Defined session_id vs root_span_id distinction\n- 6a9f2d7a: Fixed wrong-session attribution via explicit passing\n- a541f08a: Confirmed pattern prevents race at session boundaries"
+    }
+  ],
+  "finished_at": "2026-07-28T16:58:11",
+  "elapsed_seconds": 118.656,
+  "generated_variants": 8
+}

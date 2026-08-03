@@ -1,0 +1,159 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:12:15",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 28544,
+  "selection_rank": 82,
+  "skill": {
+    "skill_id": "other/models-bitwikiorg-skills-md-2",
+    "name": "models",
+    "category": "other",
+    "description": "Imported skill models from agentskills",
+    "body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed-tools\"] = self.allowed_tools\n        if self.metadata:\n            result[\"metadata\"] = self.metadata\n        return result",
+    "source": "pool"
+  },
+  "generated_query": "I have a SKILL.md file with frontmatter like:\n\n```yaml\n---\nname: file-reader\ndescription: Reads file contents and returns them as a string\nlicense: MIT\ncompatibility: all\nallowed-tools: read_file\nmetadata:\n  author: example\n  version: 1.0\n---\n```\n\nCould you extract the properties from this frontmatter and convert them into a clean dictionary that only includes the fields that are actually set? I’d like to get back a JSON-like object where null or missing values are omitted, like this:\n\n```json\n{\n  \"name\": \"file-reader\",\n  \"description\": \"Reads file contents and returns them as a string\",\n  \"license\": \"MIT\",\n  \"compatibility\": \"all\",\n  \"allowed-tools\": \"read_file\",\n  \"metadata\": {\n    \"author\": \"example\",\n    \"version\": \"1.0\"\n  }\n}\n```\n\nThe metadata field should only appear if there are key-value pairs, and all fields except name and description should be excluded if not present. Also, if the `allowed-tools` field uses a hyphen in the key name, please preserve that.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "        if self.metadata:\n            result[\"metadata\"] = self.metadata",
+          "replacement_text": "",
+          "rationale": "Deleting the conditional that includes non-empty metadata means the metadata field will never appear in the output, violating the user's requirement to include it only when it has key-value pairs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed-tools\"] = self.allowed_tools\n\n        return result"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "        result[\"allowed-tools\"] = self.allowed_tools",
+          "replacement_text": "        result[\"allowed_tools\"] = self.allowed_tools",
+          "rationale": "The skill now outputs the key \"allowed_tools\" (underscore) instead of \"allowed-tools\" (hyphen), violating the user's requirement to preserve the hyphen in the key.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed_tools\"] = self.allowed_tools\n        if self.metadata:\n            result[\"metadata\"] = self.metadata\n        return result"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "result[\"allowed-tools\"] = self.allowed_tools",
+          "replacement_text": "result[\"allowed_tools\"] = self.allowed_tools",
+          "rationale": "Changes the output key from 'allowed-tools' to 'allowed_tools', violating the user's explicit requirement to preserve the hyphen.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed_tools\"] = self.allowed_tools\n        if self.metadata:\n            result[\"metadata\"] = self.metadata\n        return result"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "if self.metadata:\n            result[\"metadata\"] = self.metadata",
+          "replacement_text": "result[\"metadata\"] = self.metadata",
+          "rationale": "Always includes metadata even when empty, violating the requirement to omit empty metadata.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed-tools\"] = self.allowed_tools\n        result[\"metadata\"] = self.metadata\n        return result"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed-tools\"] = self.allowed_tools\n        if self.metadata:\n            result[\"metadata\"] = self.metadata\n        return result",
+          "replacement_text": "    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, including all fields.\"\"\"\n        result = {\n            \"name\": self.name,\n            \"description\": self.description,\n            \"license\": self.license,\n            \"compatibility\": self.compatibility,\n            \"allowed-tools\": self.allowed_tools,\n            \"metadata\": self.metadata\n        }\n        return result",
+          "rationale": "This skill now always includes all fields even if None or empty, which violates the user's requirement to omit null values and only include metadata when non-empty.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, including all fields.\"\"\"\n        result = {\n            \"name\": self.name,\n            \"description\": self.description,\n            \"license\": self.license,\n            \"compatibility\": self.compatibility,\n            \"allowed-tools\": self.allowed_tools,\n            \"metadata\": self.metadata\n        }\n        return result"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed-tools\"] = self.allowed_tools\n        if self.metadata:\n            result[\"metadata\"] = self.metadata\n        return result",
+          "replacement_text": "    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary.\"\"\"\n        result = {\n            \"name\": self.name,\n            \"description\": self.description,\n            \"license\": self.license,\n            \"compatibility\": self.compatibility,\n            \"allowed-tools\": self.allowed_tools,\n            \"metadata\": self.metadata,\n        }\n        return result",
+          "rationale": "The over-generalized to_dict always includes all fields, even null or empty metadata, which contradicts the user's requirement to omit null values and empty metadata.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary.\"\"\"\n        result = {\n            \"name\": self.name,\n            \"description\": self.description,\n            \"license\": self.license,\n            \"compatibility\": self.compatibility,\n            \"allowed-tools\": self.allowed_tools,\n            \"metadata\": self.metadata,\n        }\n        return result"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "        if self.allowed_tools is not None:\n            result[\"allowed-tools\"] = self.allowed_tools\n",
+          "replacement_text": "",
+          "rationale": "Without this step, the allowed-tools field will not appear in the output, directly contradicting the user's requirement to preserve the hyphenated key.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.metadata:\n            result[\"metadata\"] = self.metadata\n        return result"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "            result[\"allowed-tools\"] = self.allowed_tools",
+          "replacement_text": "            result[\"allowed_tools\"] = self.allowed_tools",
+          "rationale": "Changes the output key from 'allowed-tools' (hyphen) to 'allowed_tools' (underscore), so the skill no longer preserves the hyphen as required by the user query.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "        if self.metadata:\n            result[\"metadata\"] = self.metadata",
+          "replacement_text": "        result[\"metadata\"] = self.metadata",
+          "rationale": "Removes the condition that only includes metadata when non-empty, causing the skill to always include a metadata field (even if empty), violating the user's requirement to omit empty metadata.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "\"\"\"Data models for Agent Skills.\"\"\"\n\nfrom dataclasses import dataclass, field\nfrom typing import Optional\n\n\n@dataclass\nclass SkillProperties:\n    \"\"\"Properties parsed from a skill's SKILL.md frontmatter.\n\n    Attributes:\n        name: Skill name in kebab-case (required)\n        description: What the skill does and when the model should use it (required)\n        license: License for the skill (optional)\n        compatibility: Compatibility information for the skill (optional)\n        allowed_tools: Tool patterns the skill requires (optional, experimental)\n        metadata: Key-value pairs for client-specific properties (defaults to\n            empty dict; omitted from to_dict() output when empty)\n    \"\"\"\n\n    name: str\n    description: str\n    license: Optional[str] = None\n    compatibility: Optional[str] = None\n    allowed_tools: Optional[str] = None\n    metadata: dict[str, str] = field(default_factory=dict)\n\n    def to_dict(self) -> dict:\n        \"\"\"Convert to dictionary, excluding None values.\"\"\"\n        result = {\"name\": self.name, \"description\": self.description}\n        if self.license is not None:\n            result[\"license\"] = self.license\n        if self.compatibility is not None:\n            result[\"compatibility\"] = self.compatibility\n        if self.allowed_tools is not None:\n            result[\"allowed_tools\"] = self.allowed_tools\n        result[\"metadata\"] = self.metadata\n        return result"
+    }
+  ],
+  "finished_at": "2026-07-28T16:14:32",
+  "elapsed_seconds": 137.594,
+  "generated_variants": 8
+}

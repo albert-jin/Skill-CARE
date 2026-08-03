@@ -1,0 +1,233 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:39:12",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 31485,
+  "selection_rank": 232,
+  "skill": {
+    "skill_id": "other/api-implementer-lexicalninja-my-little-scrum-team",
+    "name": "api-implementer",
+    "category": "other",
+    "description": "Implements API endpoints, routes, controllers, and request/response handling. Use when implementing REST APIs, GraphQL APIs, or other API endpoints. Handles routing, validation, error handling, and response formatting.",
+    "body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: Auth middleware, token validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters",
+    "source": "pool"
+  },
+  "generated_query": "I need to add a new feature to our TODO app: a `POST /api/todos` endpoint that lets users create a new todo item. Each todo should have a title (required, max 200 chars), a description (optional), and a due date (optional, must be a future date if provided). The user must be authenticated (JWT token in Authorization header). On success, return the created todo with status 201. On validation errors, return a 400 with a clear error message. For unauthorized requests, return 401. Can you implement the route, controller, validation middleware, and error handling for this?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "5. Implement error handling",
+          "replacement_text": "",
+          "rationale": "Removing the error handling step makes the skill unlikely to generate proper error responses, which is critical for the query's requirement of 400 and 401 error handling.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: Auth middleware, token validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Authentication: Auth middleware, token validation",
+          "replacement_text": "Authentication: API key middleware, key validation",
+          "rationale": "Replaces JWT authentication with API key-based authentication, which does not meet the user's JWT requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "router.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {",
+          "replacement_text": "router.post('/api/tasks', apiKeyAuth, validateTaskInput, async (req, res) => {",
+          "rationale": "Changes the used authentication middleware from JWT to API key, making the skill incompatible with the required JWT authentication.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API routes with basic middleware stacking\n4. Add simple request validation for required fields\n5. Handle general error responses\n6. Return route definitions and controller stubs\n\n## Examples\n\n**Input:** \"Add POST /api/todos endpoint\"\n**Output:**\n```javascript\n// routes/todos.js\nconst express = require('express');\nconst router = express.Router();\n\n// Dummy authentication middleware (token in body)\nfunction auth(req, res, next) {\n  const token = req.body.token || req.query.token;\n  if (token === 'secret') {\n    req.user = { id: 1 };\n    next();\n  } else {\n    res.status(401).json({ error: 'Unauthorized' });\n  }\n}\n\nrouter.post('/api/todos', auth, (req, res) => {\n  const { title, description, dueDate } = req.body;\n  if (!title || title.length > 100) {\n    return res.status(400).json({ error: 'Title is required and must be under 100 chars' });\n  }\n  // TODO: persist todo and return created\n  res.status(201).json({ id: Date.now(), title, description, dueDate });\n});\n\n// controller placeholder\nmodule.exports = router;\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware chain\n- **Basic Validation**: Check required fields and simple length limits\n- **Authentication Stubs**: Placeholder logic for token verification\n- **Error Handling**: Return 400 for validation errors, 401 for auth failures\n- **Response Formatting**: JSON responses with status codes\n\n## Best Practices\n\n- **RESTful Naming**: Use plural nouns for endpoints\n- **Status Codes**: 201 for creation, 400 for bad request, 401 for unauthorized\n- **Minimal Validation**: Focus on obvious required fields\n- **Modular Routes**: Keep route files separate\n\n**Note:** For production, replace stub authentication with JWT middleware and add thorough input validation (e.g., date format checks, optional fields)."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "router.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {",
+          "replacement_text": "router.post('/api/tasks', validateTaskInput, async (req, res) => {",
+          "rationale": "Removes authentication middleware from the example output, hiding the skill's ability to handle JWT-based auth.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Authentication**: Auth middleware, token validation",
+          "replacement_text": "- **Caching**: Response caching",
+          "rationale": "Replaces authentication capability with caching, so the skill no longer explicitly covers auth requirements.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Caching**: Response caching\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "if (req.body.title.length > 255) {",
+          "replacement_text": "if (req.body.title.length > 500) {",
+          "rationale": "Weaken title max length from 255 to 500, allowing titles that exceed the required 200-character limit.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "return res.status(400).json({ error: 'Title must be 255 characters or less' });",
+          "replacement_text": "return res.status(400).json({ error: 'Title must be 500 characters or less' });",
+          "rationale": "Weaken title max length error message to match the increased limit, further failing to enforce the 200-character requirement.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "function validateTaskInput(req, res, next) {",
+          "replacement_text": "\n    // Validate due date format (does not check future)\n    if (req.body.dueDate && isNaN(Date.parse(req.body.dueDate))) {\n        return res.status(400).json({ error: 'Due date must be a valid date' });\n    }\n",
+          "rationale": "Add a weak due date validation that checks only format, not that the date is in the future, missing a required constraint.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    // Validate due date format (does not check future)\n    if (req.body.dueDate && isNaN(Date.parse(req.body.dueDate))) {\n        return res.status(400).json({ error: 'Due date must be a valid date' });\n    }\n\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 500) {\n        return res.status(400).json({ error: 'Title must be 500 characters or less' });\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: Auth middleware, token validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Input:** \"Implement POST /api/tasks endpoint\"",
+          "replacement_text": "**Input:** \"Implement GET /api/tasks endpoint\"",
+          "rationale": "Changing to GET shifts the skill's focus to reading tasks instead of creating them, so it misses the required POST method.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}\n```",
+          "replacement_text": "```javascript\n// routes/tasks.js\nrouter.get('/api/tasks', async (req, res) => {\n    try {\n        const tasks = await getAllTasks();\n        res.status(200).json(tasks);\n    } catch (error) {\n        res.status(500).json({ error: 'Internal server error' });\n    }\n});\n\n// No validation middleware needed for GET\n```",
+          "rationale": "The example now shows a GET endpoint without authentication or input validation, failing to address the user's need for a POST endpoint with creation logic, validation, and authentication.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement GET /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.get('/api/tasks', async (req, res) => {\n    try {\n        const tasks = await getAllTasks();\n        res.status(200).json(tasks);\n    } catch (error) {\n        res.status(500).json({ error: 'Internal server error' });\n    }\n});\n\n// No validation middleware needed for GET\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: Auth middleware, token validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}",
+          "replacement_text": "// routes/tasks.js\nrouter.post('/api/tasks', async (req, res) => {\n    try {\n        const task = await createTask(req.body);\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});",
+          "rationale": "Removes authentication middleware and validation middleware, making the skill appear too generic to handle JWT authentication and specific input validation required by the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Authentication: Auth middleware, token validation",
+          "replacement_text": "",
+          "rationale": "Deletes the explicit mention of authentication support from the skill's implementation areas, further weakening its perceived ability to handle JWT-based endpoints.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# API Endpoint Builder Skill\n\n## Instructions\n\n1. Analyze the required endpoint and its parameters\n2. Define the route with HTTP method and path\n3. Create a controller function to process requests\n4. Add basic input validation for required fields\n5. Implement response formatting with appropriate status codes\n6. Return implementation including route definition, controller, validation, and error handling\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"  \n**Output:**  \n```javascript\n// routes/tasks.js\nconst express = require('express');\nconst router = express.Router();\n\nrouter.post('/api/tasks', validateTaskInput, async (req, res) => {\n    try {\n        const task = {\n            id: generateId(),\n            title: req.body.title,\n            description: req.body.description || '',\n            createdAt: new Date()\n        };\n        await saveTask(task);\n        res.status(200).json({ success: true, data: task });\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\nfunction validateTaskInput(req, res, next) {\n    const errors = [];\n    if (!req.body.title || typeof req.body.title !== 'string') {\n        errors.push('Title is required and must be a string');\n    }\n    if (req.body.title && req.body.title.length > 200) {\n        errors.push('Title must be 200 characters or less');\n    }\n    if (errors.length > 0) {\n        return res.status(400).json({ errors });\n    }\n    next();\n}\n```\n\n## Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware stack\n- **Request Handling**: Extract data from request body\n- **Input Validation**: Check required fields, length constraints\n- **Business Logic**: Create and persist new resource\n- **Error Handling**: Catch exceptions and return error messages\n- **Response Formatting**: JSON response with status code\n\n## Best Practices\n\n- Follow RESTful naming conventions\n- Validate inputs before processing\n- Return clear error messages for invalid requests\n- Use try-catch blocks in controllers\n- Keep route handlers lean by moving logic into controller functions\n\nWrite a complete counterfactual skill body that is closely related and plausible, but misses or changes key functionality required by the query. Return ONLY the rewritten skill body."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Add request validation",
+          "replacement_text": "",
+          "rationale": "Removing the validation step means the skill no longer instructs to add validation, which is essential for the query's validation requirements (title length, due date future).",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: Auth middleware, token validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Authentication**: Auth middleware, token validation",
+          "replacement_text": "- **Authentication**: Auth middleware, API key validation",
+          "rationale": "The query requires JWT token authentication, but this skill specifies API key validation instead, making it incompatible.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: Auth middleware, API key validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Authentication**: Auth middleware, token validation",
+          "replacement_text": "- **Authentication**: API key validation",
+          "rationale": "Changes authentication from JWT/token to API key, missing the required JWT authentication.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}",
+          "replacement_text": "// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    if (req.body.dueDate) {\n        const due = new Date(req.body.dueDate);\n        if (due >= new Date()) {\n            return res.status(400).json({ error: 'Due date must be in the past' });\n        }\n    }\n    next();\n}",
+          "rationale": "Adds due date validation that rejects future dates, contradicting the query's requirement for a future date.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', authenticate, validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    if (req.body.dueDate) {\n        const due = new Date(req.body.dueDate);\n        if (due >= new Date()) {\n            return res.status(400).json({ error: 'Due date must be in the past' });\n        }\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: API key validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "authenticate, ",
+          "replacement_text": "",
+          "rationale": "Removing the authentication middleware means the endpoint no longer requires a JWT token, violating the user's explicit authentication requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# API Implementer Skill\n\n## Instructions\n\n1. Analyze API requirements from task\n2. Review API specifications (endpoints, request/response formats)\n3. Implement API endpoints with proper routing\n4. Add request validation\n5. Implement error handling\n6. Format responses correctly\n7. Return implementation with:\n   - Route definitions\n   - Controller/handler functions\n   - Validation logic\n   - Error handling\n   - Response formatting\n\n## Examples\n\n**Input:** \"Implement POST /api/tasks endpoint\"\n**Output:**\n```javascript\n// routes/tasks.js\nrouter.post('/api/tasks', validateTaskInput, async (req, res) => {\n    try {\n        const task = await createTask({\n            title: req.body.title,\n            description: req.body.description,\n            userId: req.user.id\n        });\n        res.status(201).json(task);\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\n// middleware/validation.js\nfunction validateTaskInput(req, res, next) {\n    if (!req.body.title || req.body.title.trim().length === 0) {\n        return res.status(400).json({ error: 'Title is required' });\n    }\n    if (req.body.title.length > 255) {\n        return res.status(400).json({ error: 'Title must be 255 characters or less' });\n    }\n    next();\n}\n```\n\n## API Implementation Areas\n\n- **Route Definition**: HTTP method, path, middleware\n- **Request Handling**: Parse request body, query params, headers\n- **Validation**: Input validation, data sanitization\n- **Business Logic**: Core functionality implementation\n- **Error Handling**: Proper error responses, status codes\n- **Response Formatting**: Consistent response structure\n- **Authentication**: Auth middleware, token validation\n- **Authorization**: Permission checks, role-based access\n\n## Best Practices\n\n- **RESTful Design**: Follow REST conventions\n- **Consistent Responses**: Standard response format\n- **Proper Status Codes**: Use appropriate HTTP status codes\n- **Error Handling**: Comprehensive error handling\n- **Validation**: Validate all inputs\n- **Documentation**: Document endpoints and parameters"
+    }
+  ],
+  "finished_at": "2026-07-29T00:43:11",
+  "elapsed_seconds": 239.906,
+  "generated_variants": 10
+}

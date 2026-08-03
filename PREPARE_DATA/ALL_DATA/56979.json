@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:46:34",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 56979,
+  "selection_rank": 129,
+  "skill": {
+    "skill_id": "other/github-pr-lifecycle-amnadtaowsoam-cerebratechai-claude",
+    "name": "github-pr-lifecycle",
+    "category": "other",
+    "description": "Manage GitHub pull requests via GitHub MCP: open PRs, update descriptions, request reviews, check CI status, resolve conflicts, and merge using the repo's preferred strategy.",
+    "body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction.",
+    "source": "pool"
+  },
+  "generated_query": "We have a repository `acme/website` and I need to merge a hotfix branch `fix/header-bug` into `main`. The branch is already pushed but no pull request exists yet. The repo policy requires at least two approvals from the frontend team (based on CODEOWNERS) and all GitHub Actions checks must pass. The issue #123 should be referenced in the description. Could you please:\n\n- Open the PR with a clear title like \"Fix header rendering bug\" and description linking to issue #123.\n- Request reviews from the frontend team.\n- Monitor CI status and wait for all required checks to succeed.\n- If any merge conflicts arise, help resolve them (the fix is small, so conflicts should be minimal).\n- Once approved and all checks pass, merge using the squash strategy.\n- After merging, provide a lifecycle summary: PR number, final status, any blockers encountered (e.g., missing approvals, failed checks, conflicts), and the next action taken.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Check CI status, required checks, and review approvals.",
+          "replacement_text": "",
+          "rationale": "Without checking CI and approvals, the skill would merge without waiting for required checks, failing the user's explicit request to monitor CI and wait for all checks to pass.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Do not merge without required approvals and checks.",
+          "replacement_text": "",
+          "rationale": "Removing this guardrail makes the skill unsafe and fails to enforce the repo policy requiring two approvals and all checks to pass.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. \n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- \n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Confirm merge strategy (merge, squash, rebase) and required checks.",
+          "replacement_text": "Confirm merge strategy (merge, rebase) and required checks.",
+          "rationale": "The skill no longer supports squash merge, which the user query explicitly requires for merging the hotfix branch.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Request reviewers based on CODEOWNERS or team ownership.",
+          "replacement_text": "Request reviewers manually (no automatic CODEOWNERS support).",
+          "rationale": "The skill cannot automatically request reviews from the frontend team based on CODEOWNERS, so it will fail to meet the user's requirement for team review routing.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers manually (no automatic CODEOWNERS support).\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Do not merge without required approvals and checks.",
+          "replacement_text": "Do not merge without at least one approval and checks passing.",
+          "rationale": "Weakens approval requirement, so skill would merge with only one approval, failing user's explicit requirement for two approvals.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without at least one approval and checks passing.\n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create or fetch the PR and confirm the title and description match intent.",
+          "replacement_text": "Fetch the existing PR and confirm the title and description match intent.",
+          "rationale": "Removes the ability to open a new PR, which is the first required action in the user query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Request reviewers based on CODEOWNERS or team ownership.",
+          "replacement_text": "",
+          "rationale": "Eliminates the step to request reviews, which the user explicitly needs for frontend team approval.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Fetch the existing PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. \n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.",
+          "replacement_text": "Handle the PR lifecycle according to standard GitHub practices.",
+          "rationale": "The skill becomes too generic, lacking explicit steps for opening PRs, requesting reviews, checking CI, resolving conflicts, and merging, which are all required by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\nHandle the PR lifecycle according to standard GitHub practices.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Merge when requirements are satisfied, and post a final summary.",
+          "replacement_text": "",
+          "rationale": "Removing the merge and summary steps means the skill cannot complete the PR lifecycle as required by the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. \n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Merge when requirements are satisfied, and post a final summary.",
+          "replacement_text": "Initiate a rebase merge when requirements are satisfied, and post a final summary.",
+          "rationale": "The skill now hardcodes rebase merge instead of using the user-requested squash strategy, making it unable to fulfill the explicit merge requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `owner`, `repo`, `base` branch, and `head` branch.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Create or fetch the PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Initiate a rebase merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Identify `owner`, `repo`, `base` branch, and `head` branch.",
+          "replacement_text": "- Identify `pr_number`, `owner`, `repo`, and `base` branch. The tool does not create new pull requests; it only operates on existing PRs.",
+          "rationale": "Changes required input to mandate an existing PR number, so the skill cannot open a new PR as needed by the user query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "1. Create or fetch the PR and confirm the title and description match intent.",
+          "replacement_text": "1. Fetch the existing PR and confirm the title and description match intent.",
+          "rationale": "Removes the ability to create a new PR, making the skill unable to handle the hotfix branch that has no PR yet.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub PR Lifecycle\n\n## Required inputs\n- Identify `pr_number`, `owner`, `repo`, and `base` branch. The tool does not create new pull requests; it only operates on existing PRs.\n- Confirm merge strategy (merge, squash, rebase) and required checks.\n\n## Preflight\n- Confirm GitHub MCP auth can read/write PRs and request reviews.\n- Determine required checks and approval rules from repo settings.\n- If the PR already exists, reuse it and avoid creating duplicates.\n- Review `references/mcp-policy-checklist.md` for approval and access rules.\n\n## Workflow\n1. Fetch the existing PR and confirm the title and description match intent.\n2. Ensure the PR references issues or tickets if required by repo policy.\n3. Request reviewers based on CODEOWNERS or team ownership.\n4. Check CI status, required checks, and review approvals.\n5. Resolve conflicts or request updates if checks fail.\n6. Merge when requirements are satisfied, and post a final summary.\n\n## MCP call patterns\n- Use PR list/search to locate related work.\n- Use checks API to verify required status checks.\n- Use review requests to route to correct owners.\n- For endpoint hints and inputs, read `references/mcp-calls.md`.\n\n## Output\n- Provide a lifecycle summary: PR -> status -> blockers -> next action.\n\n## Guardrails\n- Do not merge without required approvals and checks.\n- Avoid changing base or head branches without explicit instruction."
+    }
+  ],
+  "finished_at": "2026-07-28T18:48:54",
+  "elapsed_seconds": 139.344,
+  "generated_variants": 9
+}

@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:36:40",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 61459,
+  "selection_rank": 125,
+  "skill": {
+    "skill_id": "other/commerce-lots-and-serials",
+    "name": "commerce-lots-and-serials",
+    "category": "other",
+    "description": "Manage lot/batch tracking and serial number management. Use when tracking product batches with expiration dates, assigning serial numbers, or performing traceability lookups.",
+    "body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. Reserve serials for orders with expiration.\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs",
+    "source": "pool"
+  },
+  "generated_query": "I need help managing some inventory for a pharmaceutical shipment that just arrived. We received 2000 units of a drug (SKU: PHARMA-100) with lot number \"LOT-2025-A001\", produced on 2025-03-15, expiring on 2026-06-30. Please set this up as a new lot with that quantity, and generate individual serial numbers for each unit in bulk. Also, reserve 500 of those serials for a pending order that must ship within two weeks.\n\nA few days later, a customer reports a defective unit with serial number SN-P100-001234. I need to trace that unit's full history: which lot it came from, its current status, and any upstream batch records or certificates we have attached to the lot. Also, check if there are any other lots of the same SKU that are expiring within the next 90 days so we can plan promotions or disposal.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. Create serial numbers individually or in bulk.",
+          "replacement_text": "",
+          "rationale": "Without bulk serial number creation, the skill cannot generate the required 2000 serial numbers, making it impossible to fulfill the user's inventory setup.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. Reserve serials for orders with expiration.\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.",
+          "replacement_text": "MCP tools (Serials): `create_serial`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`, `generate_serial_label`.",
+          "rationale": "Removes the bulk_create_serials tool, making it impossible to generate 2000 individual serial numbers in bulk as required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. Reserve serials for orders with expiration.\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`, `generate_serial_label`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create lots with production date, quantity, and expiration.",
+          "replacement_text": "Create lots with production date and expiration only.",
+          "rationale": "Without accepting quantity, the lot cannot be initialized with the required 2000 units, blocking inventory setup.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "3. Reserve serials for orders with expiration.",
+          "replacement_text": "",
+          "rationale": "Without reservation capability, the user cannot reserve 500 serials for the pending order, making the skill unusable for the order fulfillment step.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date and expiration only.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. Reserve serials for orders with expiration.",
+          "replacement_text": "3. Reserve serials individually for orders with expiration (bulk reservation not supported).",
+          "rationale": "The user needs to reserve 500 serials in bulk; this change only allows individual reservations, blocking the bulk reservation request.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "6. Trace upstream sources and downstream consumption.",
+          "replacement_text": "6. Trace upstream sources only.",
+          "rationale": "The user needs to trace full history including downstream consumption and attached certificates; limiting to upstream only makes it impossible to find the defective unit's consumption and certificate records.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources only.\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. Reserve serials individually for orders with expiration (bulk reservation not supported).\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Reserve serials for orders with expiration.",
+          "replacement_text": "",
+          "rationale": "Removes the ability to reserve serials for pending orders, which is required to fulfill the reservation of 500 units.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.",
+          "replacement_text": "- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`.",
+          "rationale": "Removes the get_expiring_lots tool, making it impossible to check for lots expiring within 90 days as requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Create lots with production date, quantity, and expiration.",
+          "replacement_text": "Create lots with production date and quantity.",
+          "rationale": "Without expiration dates in lot creation, the skill cannot track expiring lots or answer queries about near-expiry inventory.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`bulk_create_serials`, ",
+          "replacement_text": "",
+          "rationale": "Removing bulk serial creation prevents generating 2000 serials as required by the query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Reserve serials for orders with expiration.",
+          "replacement_text": "",
+          "rationale": "Without serial reservation capabilities, the pending order of 500 serials cannot be fulfilled.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date and quantity.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. \n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "6. Trace upstream sources and downstream consumption.",
+          "replacement_text": "",
+          "rationale": "Without the tracing step, the skill cannot trace a serial's lot history or upstream batch records, which is essential for the user's defect tracing request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. Reserve serials for orders with expiration.\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`reserve_serial`",
+          "replacement_text": "`assign_serial`",
+          "rationale": "Removes the ability to reserve serials with an expiration, which is required to fulfill the pending order within two weeks.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "`get_expiring_lots`",
+          "replacement_text": "`get_expired_lots`",
+          "rationale": "Replaces the correct tool for finding soon-to-expire lots with one that only returns already expired lots, failing the user's request to plan promotions or disposal for the next 90 days.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n1. Create serial numbers individually or in bulk.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. Reserve serials for orders with expiration.\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expired_lots`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `assign_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n- Expiring lots within the requested timeframe.\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Create serial numbers individually or in bulk.",
+          "replacement_text": "1. Create serial numbers individually.",
+          "rationale": "Removes the ability to generate serial numbers in bulk, making it impractical to fulfill the 2000-unit serialization request.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- Expiring lots within the requested timeframe.",
+          "replacement_text": "",
+          "rationale": "Eliminates the skill's ability to report lots expiring within a specific number of days, directly failing the query's second request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Commerce Lots & Serials\n\nTrack product batches with lot numbers and expiration dates, and manage individual unit serial numbers for full traceability.\n\n## How It Works\n\n### Lot Tracking\n1. Create lots with production date, quantity, and expiration.\n2. Track lot inventory across warehouse locations.\n3. Consume, adjust, transfer, split, or merge lots.\n4. Quarantine lots for quality issues.\n5. Attach certificates (COA, COC, MSDS).\n6. Trace upstream sources and downstream consumption.\n\n### Serial Number Tracking\n1. Create serial numbers individually.\n2. Track serial lifecycle: Available -> Sold -> Shipped -> InService.\n3. Reserve serials for orders with expiration.\n4. Transfer ownership and track location changes.\n5. Look up complete serial history with warranty info.\n\n## Usage\n\n- MCP tools (Lots): `create_lot`, `list_lots`, `get_lot`, `consume_lot`, `adjust_lot`, `transfer_lot`, `split_lot`, `merge_lots`, `quarantine_lot`, `release_quarantine`, `add_lot_certificate`, `trace_lot`, `get_expiring_lots`.\n- MCP tools (Serials): `create_serial`, `bulk_create_serials`, `list_serials`, `get_serial`, `mark_serial_sold`, `mark_serial_shipped`, `reserve_serial`, `release_serial_reservation`, `transfer_serial_ownership`, `lookup_serial`, `validate_serial`, `get_available_serials`.\n- Writes require `--apply`.\n\n## Lot Statuses\n\n- Active, Consumed, Expired, Quarantine, Transferred\n\n## Serial Statuses\n\n- Available, Reserved, Sold, Shipped, InService, Returned, Repaired, Quarantine, Scrapped, Unknown\n\n## Certificate Types\n\n- COA (Certificate of Analysis), COC (Certificate of Compliance), MSDS (Material Safety Data Sheet)\n\n## Output\n\n```json\n{\"status\":\"lot_created\",\"lot_number\":\"LOT-2025-A001\",\"sku\":\"PHARMA-100\",\"quantity\":500,\"expiration_date\":\"2026-06-30\"}\n```\n\n```json\n{\"status\":\"serial_created\",\"serial_number\":\"SN-W001-00001\",\"sku\":\"WIDGET-PRO\",\"status\":\"available\"}\n```\n\n## Present Results to User\n\n- Lot number, SKU, quantity, and expiration date.\n- Serial number, current status, and owner.\n- Traceability chain (upstream sources, downstream consumers).\n\n\n## Troubleshooting\n\n- Lot in quarantine: must release quarantine before consumption.\n- Serial already reserved: release existing reservation first.\n- Expired lot: cannot consume expired lots; adjust or scrap.\n- Merge conflict: lots must share the same SKU to merge.\n\n## References\n- references/traceability.md\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-core/src/models/serials.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/lots.rs\n- /home/dom/stateset-icommerce/crates/stateset-embedded/src/serials.rs"
+    }
+  ],
+  "finished_at": "2026-07-28T18:39:36",
+  "elapsed_seconds": 176.25,
+  "generated_variants": 9
+}

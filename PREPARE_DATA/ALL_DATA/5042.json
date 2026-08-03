@@ -1,0 +1,198 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:57:52",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 5042,
+  "selection_rank": 77,
+  "skill": {
+    "skill_id": "devops/incident-triage",
+    "name": "incident-triage",
+    "category": "devops",
+    "description": "Faster on-call handoffs and better postmortems with triage SOPs",
+    "body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract indicators from logs (via extract_indicators.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*",
+    "source": "pool"
+  },
+  "generated_query": "I’m dealing with a critical incident in our payment service. Attached is the raw log output from 13:45 to 14:20 UTC showing a spike in 5xx errors and timeouts. Can you run through the standard triage steps? Extract the error codes, affected endpoints, any correlation IDs, and the timestamps of the first and last failure. Then check our escalation matrix — this looks like a P1 because the error rate exceeded 5% for more than 5 minutes. Build a timeline of the key events (first error, peak, any manual interventions from the logs) and save it for future reference. Finally, generate a postmortem template with placeholders for root cause, impact, and action items.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Extract indicators from logs (via extract_indicators.py)\n",
+          "replacement_text": "",
+          "rationale": "Without extracting indicators, the skill cannot provide error codes, endpoints, or correlation IDs as required.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Extract indicators from logs (via extract_indicators.py)",
+          "replacement_text": "- Extract aggregated metrics from logs (via aggregate_metrics.py)",
+          "rationale": "Replacing the detailed indicator extraction script with an aggregated metrics script prevents extraction of specific error codes, endpoints, and correlation IDs needed by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed summaries.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract error codes and timestamps from logs (via extract_indicators.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write incident summary to memory with TTL (30 days)\n5. Generate incident report template\n\n## Scripts\n- `extract_indicators.py`: Pull error codes and timestamps from logs\n- `generate_summary.py`: Create incident summary for memory\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Extract indicators from logs (via extract_indicators.py)",
+          "replacement_text": "2. Extract timestamps and severity from logs (via extract_timestamps.py)",
+          "rationale": "Removes extraction of error codes, endpoints, and correlation IDs, so the skill cannot provide those required details.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. Generate postmortem template",
+          "replacement_text": "5. Generate incident summary",
+          "rationale": "Replaces postmortem template generation with a simple summary, failing the user's need for a structured template with placeholders.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract timestamps and severity from logs (via extract_timestamps.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate incident summary\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `extract_indicators.py`: Pull signals from logs",
+          "replacement_text": "- `extract_indicators.py`: Pull error codes from logs",
+          "rationale": "The skill no longer extracts affected endpoints and correlation IDs, so it cannot fulfill the user's request to extract those required indicators.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract indicators from logs (via extract_indicators.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull error codes from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Extract indicators from logs (via extract_indicators.py)",
+          "replacement_text": "2. Extract timestamps from logs (via extract_indicators.py)",
+          "rationale": "The skill only extracts timestamps, not the full set of error codes, endpoints, and correlation IDs required for triage and postmortem.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract timestamps from logs (via extract_indicators.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Extract indicators from logs (via extract_indicators.py)",
+          "replacement_text": "2. Retrieve key log details",
+          "rationale": "Removes the specific indicator extraction script, so the skill no longer guarantees extraction of error codes, endpoints, correlation IDs, or timestamps as required by the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Escalate per matrix in references/escalation_matrix.md",
+          "replacement_text": "3. Assess severity using standard criteria",
+          "rationale": "Replaces the explicit escalation matrix reference with a vague assessment, removing the ability to check for P1 threshold (5% error rate >5 minutes) as demanded by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Retrieve key log details\n3. Assess severity using standard criteria\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Extract indicators from logs (via extract_indicators.py)",
+          "replacement_text": "",
+          "rationale": "Without extracting indicators, the skill cannot provide error codes, endpoints, correlation IDs, or timestamps, which are critical for the triage requested by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`extract_indicators.py`: Pull signals from logs",
+          "replacement_text": "`extract_indicators.py`: Count errors per minute",
+          "rationale": "This change makes the skill unable to extract specific error codes, endpoints, correlation IDs, and timestamps required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract indicators from logs (via extract_indicators.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Count errors per minute\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Extract indicators from logs (via extract_indicators.py)",
+          "replacement_text": "2. Extract error count from logs (via extract_indicators.py)",
+          "rationale": "The user needs specific error codes, endpoints, correlation IDs, and timestamps, but this edit only provides a count, missing all crucial extraction details.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract error count from logs (via extract_indicators.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (30 days)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Write timeline to memory with TTL (30 days)",
+          "replacement_text": "Write timeline to memory with TTL (5 minutes)",
+          "rationale": "The timeline expires in 5 minutes instead of 30 days, so it cannot be saved for future reference as the user requires.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incident Triage Skill\n\n## Purpose\nStreamline incident response with SOPs, indicator extraction, and memory-backed timelines.\n\n## Process\n1. Apply triage SOP from SKILL.md\n2. Extract indicators from logs (via extract_indicators.py)\n3. Escalate per matrix in references/escalation_matrix.md\n4. Write timeline to memory with TTL (5 minutes)\n5. Generate postmortem template\n\n## Scripts\n- `extract_indicators.py`: Pull signals from logs\n- `generate_timeline.py`: Create incident timeline\n\n## Memory Integration\nIncidents auto-expire after 30 days via TTL.\n\n*Incident Triage v1.0.0*"
+    }
+  ],
+  "finished_at": "2026-07-28T16:00:26",
+  "elapsed_seconds": 153.328,
+  "generated_variants": 10
+}

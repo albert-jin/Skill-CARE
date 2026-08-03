@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:24:35",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 26072,
+  "selection_rank": 180,
+  "skill": {
+    "skill_id": "other/grammar-design",
+    "name": "Grammar Design",
+    "category": "other",
+    "description": "Expert skill for formal grammar design including disambiguation, precedence, and validation",
+    "body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Handle operator precedence and associativity\n- Analyze grammar conflicts\n- Design grammar for specific parser classes (LL, LR, PEG)\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a small domain-specific language for defining mathematical expressions with variables, functions, and operator precedence. I need help designing the syntax rules so that expressions like `a + b * c` parse as `a + (b * c)` and not `(a + b) * c`, and so that `-x^2` means `-(x^2)` rather than `(-x)^2`. I also need to handle function calls like `sin(x)` and `max(a, b)`, and allow parentheses to override default precedence. The parser will be implemented as a recursive descent parser, so the grammar should be LL(1) compatible. \n\nCould you produce a formal EBNF grammar for this language, document the precedence and associativity rules, include a few example expressions with their parse trees or expected evaluation order, and point out any potential ambiguities you resolved? I also want to ensure that adding new operators later (like modulo or power) won't break existing rules. Finally, please output the grammar in a format that I can directly use as a specification for my parser generator (something like `expr ::= term { (\"+\" | \"-\") term }` style).",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Handle operator precedence and associativity",
+          "replacement_text": "",
+          "rationale": "Without the capability to handle operator precedence and associativity, the skill cannot design the grammar rules that ensure correct parsing of expressions like `a + b * c` or `-x^2`, which is the central requirement of the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n\n- Analyze grammar conflicts\n- Design grammar for specific parser classes (LL, LR, PEG)\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Design grammar for specific parser classes (LL, LR, PEG)",
+          "replacement_text": "- Design grammar for specific parser classes (LALR, GLR, PEG)",
+          "rationale": "Removing LL from supported parser classes makes the skill unable to produce an LL(1) grammar as required by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]",
+          "replacement_text": "\"enum\": [\"lalr\", \"glr\", \"peg\"]",
+          "rationale": "Removing ll1 and llk from the output schema ensures the skill cannot output a parser class specification that matches the user's LL(1) requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Handle operator precedence and associativity\n- Analyze grammar conflicts\n- Design grammar for specific parser classes (LALR, GLR, PEG)\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]",
+          "replacement_text": "\"enum\": [\"lalr\", \"glr\", \"peg\"]",
+          "rationale": "Removing LL(1) and LL(k) from allowed parser classes makes the skill unable to produce an LL(1) grammar as requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]",
+          "replacement_text": "\"enum\": [\"peg\", \"antlr\"]",
+          "rationale": "Removing EBNF and BNF from notation options prevents the skill from outputting the standard notation format the user explicitly requires.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Handle operator precedence and associativity\n- Analyze grammar conflicts\n- Design grammar for specific parser classes (LL, LR, PEG)\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Design grammar for specific parser classes (LL, LR, PEG)\n",
+          "replacement_text": "- Design grammar for specific parser classes (LR, PEG)\n",
+          "rationale": "Removing LL from supported parser classes makes the skill unable to guide LL(1) grammar design required by the user.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n",
+          "replacement_text": "3. **Parser Class**: Design grammar to fit target parser class (LALR, PEG)\n",
+          "rationale": "By omitting LL(k), the usage guideline no longer emphasizes fitting LL(1) parsers, which is central to the user's recursive descent approach.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Handle operator precedence and associativity\n- Analyze grammar conflicts\n- Design grammar for specific parser classes (LR, PEG)\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Design grammar for specific parser classes (LL, LR, PEG)",
+          "replacement_text": "- Design grammar for specific parser classes (LR, LALR, PEG)",
+          "rationale": "Removes LL parser class support, making the skill unable to guide LL(1) grammar design required by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Make grammars unambiguous or document precedence rules",
+          "replacement_text": "- Make grammars ambiguous and rely on external disambiguation",
+          "rationale": "Changes the core disambiguation capability to ambiguous grammars, contradicting the user's need for clear precedence and associativity.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including lexical analysis, semantic actions, and error recovery.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design lexer tokens and regular expressions\n- Implement attribute grammars for evaluation\n- Handle operator precedence via semantic preferences (not syntactic disambiguation)\n- Analyze grammar conflicts via lookahead sets\n- Design grammar for top-down or bottom-up parsers\n- Document grammar with error-recovery strategies\n- Design syntax for domain-specific languages\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-tool-integration.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Lex & Yacc), attribute grammar frameworks\n\n## Usage Guidelines\n\n1. **Notation**: Use extended BNF with regular expression-like repetitions  \n2. **Disambiguation**: Use precedence climbing or operator-precedence tables separately from grammar  \n3. **Parser Class**: Prefer LALR(1) for complex precedence; LL(1) may require extra factoring  \n4. **Examples**: Include examples illustrating semantic actions rather than parse tree structure  \n5. **Evolution**: Keep operator definitions in a separate configuration file\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"ll1\", \"lalr\", \"glr\", \"peg\"]\n    },\n    \"tokenCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```\n\n*Note: The grammar below assumes operator precedence is handled by a separate precedence table (e.g., PrecedenceClimbingParser) and does not enforce precedence inside the grammar production rules. For the standard operators `+`, `-`, `*`, `/`, `^`, associativity is left for binary `+`, `-`, `*`, `/` and right for `^`. Unary minus will be resolved at the lexical level or via a semantic rule, not syntactically. Function calls are parsed as `identifier '(' expression (',' expression)* ')'` but may require an additional lookahead.*\n\n```ebnf\nexpression = term, { (\"+\" | \"-\"), term } ;\nterm       = factor, { (\"*\" | \"/\"), factor } ;\nfactor     = [\"-\"], primary, [\"^\", factor] ;\nprimary    = number | identifier | \"(\", expression, \")\" | function_call ;\nfunction_call = identifier, \"(\", [expression, { \",\", expression }], \")\" ;\n```\n\n*Note: This grammar is not LL(1) due to left recursion in `expression` and `term`. For LL(1), the grammar must be rewritten with left‑factoring and elimination of left recursion. However, because precedence is handled externally, the grammar is kept intuitive for documentation purposes. The actual parser generator used will be LALR(1) or a combinator library that supports left recursion with precedence climbing.*"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Handle operator precedence and associativity",
+          "replacement_text": "- Provide general expression handling",
+          "rationale": "By removing the explicit handling of operator precedence, the skill cannot satisfy the query's requirement for defining precedence in the grammar.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Design grammar for specific parser classes (LL, LR, PEG)",
+          "replacement_text": "- Offer parser implementation guidance",
+          "rationale": "By removing the ability to design for specific parser classes like LL(1), the skill no longer ensures the grammar is LL(1) compatible as required.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Provide general expression handling\n- Analyze grammar conflicts\n- Offer parser implementation guidance\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Design grammar for specific parser classes (LL, LR, PEG)",
+          "replacement_text": "",
+          "rationale": "Removing the capability to design grammars for specific parser classes (including LL) makes the skill unable to produce an LL(1)-compatible grammar as required.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Handle operator precedence and associativity\n- Analyze grammar conflicts\n\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Handle operator precedence and associativity",
+          "replacement_text": "- Handle token types and regular expressions",
+          "rationale": "Removes the crucial capability to handle operator precedence and associativity, which is essential for designing the grammar that encodes precedence like `a + b * c` as `a + (b * c)`.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **Disambiguation**: Make grammars unambiguous or document precedence rules",
+          "replacement_text": "2. **Disambiguation**: Delegate precedence to parser implementation (not grammar)",
+          "rationale": "Changes the disambiguation strategy to rely on external parser code rather than encoding precedence directly in the grammar, which contradicts the user's request for a formal EBNF grammar that inherently handles precedence.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Handle token types and regular expressions\n- Analyze grammar conflicts\n- Design grammar for specific parser classes (LL, LR, PEG)\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Delegate precedence to parser implementation (not grammar)\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"enum\": [\"ebnf\", \"bnf\", \"peg\", \"antlr\"]",
+          "replacement_text": "\"enum\": [\"bnf\", \"peg\", \"antlr\"]",
+          "rationale": "Removing EBNF from the notation options means the skill cannot produce the EBNF grammar the query requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"enum\": [\"ll1\", \"llk\", \"lalr\", \"glr\", \"peg\"]",
+          "replacement_text": "\"enum\": [\"lalr\", \"glr\", \"peg\"]",
+          "rationale": "Removing LL(1) from parserClass options ensures the skill cannot output a parser class compatible with recursive descent parsing as requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Grammar Design Skill\n\n## Overview\n\nExpert skill for formal grammar design including disambiguation, precedence, and validation.\n\n## Capabilities\n\n- Write EBNF/BNF grammar specifications\n- Design unambiguous grammars\n- Handle operator precedence and associativity\n- Analyze grammar conflicts\n- Design grammar for specific parser classes (LL, LR, PEG)\n- Document grammar with examples\n- Design syntax for common language constructs\n- Handle grammar evolution and backwards compatibility\n\n## Target Processes\n\n- language-grammar-design.js\n- lexer-implementation.js\n- parser-development.js\n\n## Dependencies\n\nParsing theory literature (Dragon Book, Parsing Techniques)\n\n## Usage Guidelines\n\n1. **Notation**: Use standard EBNF notation for grammar specifications\n2. **Disambiguation**: Make grammars unambiguous or document precedence rules\n3. **Parser Class**: Design grammar to fit target parser class (LL(k), LALR, PEG)\n4. **Examples**: Include examples for all grammar rules\n5. **Evolution**: Plan for backwards-compatible grammar evolution\n\n## Output Schema\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"notation\": {\n      \"type\": \"string\",\n      \"enum\": [\"bnf\", \"peg\", \"antlr\"]\n    },\n    \"parserClass\": {\n      \"type\": \"string\",\n      \"enum\": [\"lalr\", \"glr\", \"peg\"]\n    },\n    \"productionCount\": { \"type\": \"integer\" },\n    \"conflicts\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"generatedFiles\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    }\n  }\n}\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T21:27:21",
+  "elapsed_seconds": 166.25,
+  "generated_variants": 9
+}

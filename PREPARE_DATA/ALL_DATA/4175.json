@@ -1,0 +1,247 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:30:26",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 4175,
+  "selection_rank": 83,
+  "skill": {
+    "skill_id": "devops/memorize-tilework-tech-nori-profiles",
+    "name": "Memorize",
+    "category": "devops",
+    "description": "Use this to save important implementation decisions, patterns, or context to the Nori knowledge base for future sessions.",
+    "body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n- `--content` (required): Markdown content with context, decisions, code snippets\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`",
+    "source": "pool"
+  },
+  "generated_query": "I just spent hours debugging a flaky CI pipeline where tests would intermittently fail due to a race condition between two Docker containers. The fix was to add a health check with retry logic in the docker-compose file, and I want to make sure I don't forget this next time I encounter similar issues. Can you save the following details to my knowledge base so I can refer back to it in future sessions?\n\n- Title: \"Race condition fix for Docker Compose integration tests\"\n- Content (markdown):  \n  # Context  \n  When running Cypress tests against a backend container, the tests would sometimes fail because the backend wasn't fully ready. The solution was to add a `healthcheck` with `start_period` and `retries` to the backend service, and then modify Cypress to wait for the full stack before starting.  \n  # Implementation  \n  ```yaml  \n  backend:  \n    healthcheck:  \n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:8080/health\"]  \n      interval: 30s  \n      timeout: 10s  \n      retries: 5  \n      start_period: 40s  \n  ```  \n  # Key Decision  \n  Used `start_period` to give the container time to initialize before health checks begin, preventing false positives.\n\nPlease store this with a clear title so I can find it later.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `--content` (required): Markdown content with context, decisions, code snippets",
+          "replacement_text": "",
+          "rationale": "Removes the required content parameter, so the user cannot store the detailed markdown content needed for the query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js --name=\"Memory Title\"",
+          "rationale": "Deletes the content flag from the usage example, making it appear that only a title is accepted and no content can be saved.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\"",
+          "rationale": "Removes the content parameter from the example, reinforcing that the skill only retains a title and not the detailed information the query requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\"\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`--name` (required): Clear, searchable title for the memory",
+          "replacement_text": "`--topic` (required): Short topic label for the memory (title is auto-generated)",
+          "rationale": "Removes ability to specify a custom title, which the user explicitly requires to store their memory with a clear title.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"\n```",
+          "replacement_text": "```bash\nnode {{skills_dir}}/memorize/script.js --topic=\"Memory Title\" --content=\"Detailed content here\"\n```",
+          "rationale": "Changes the usage example to use `--topic` instead of `--name`, misleading users into thinking they can provide a title that will be ignored.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\n\n1. Write failing test\n2. Implement component\n3. Verify test passes\"\n```",
+          "replacement_text": "```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --topic=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\n\n1. Write failing test\n2. Implement component\n3. Verify test passes\"\n```",
+          "rationale": "Consistently replaces `--name` with `--topic` in the detailed example, reinforcing that the skill no longer accepts user-defined titles.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 2 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Memorize\n\nSaves a reference to a markdown file in the project’s local knowledge cache for later reuse within the same workspace.\n\n## When to Use\n\nMemorize when you want to:\n\n- Pin a specific document or configuration file that contains important implementation details\n- Quickly retrieve a cheat‑sheet or decision log that lives inside the current repository\n- Avoid cluttering a shared knowledge base with workspace‑specific notes\n\nDo not use Memorize for:\n\n- Information that should persist across different repositories or sessions\n- Temporary scratchpad content\n- Inline code snippets without a backing file\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --file=\"./path/to/notes.md\"\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory (e.g., the topic of the file)\n- `--file` (required): Relative path to an existing markdown file within the current working directory\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"Docker Compose healthcheck pattern\" \\\n  --file=\"./docs/race-condition-fix.md\"\n```\n\n## Output\n\nConfirms that the file has been linked under the given title. The full content is not stored; only the file path is recorded. To view the content, open the file directly.\n\n## Requirements\n\n- The markdown file must exist at the specified path.\n- Workspace must be a Git‑tracked project (the cache is tied to the repository root)."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`--content` (required): Markdown content with context, decisions, code snippets",
+          "replacement_text": "`--file` (required): Path to a markdown file containing the content",
+          "rationale": "Changing the input parameter from inline content to a file path prevents the user from directly providing the markdown content as required by the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n- `--file` (required): Path to a markdown file containing the content\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `--name` (required): Clear, searchable title for the memory\n- `--content` (required): Markdown content with context, decisions, code snippets",
+          "replacement_text": "- `--content` (required): Markdown content with context, decisions, code snippets\n- `--title` (optional): Short title (if omitted, a default title is generated)",
+          "rationale": "Changes the required title to an optional field, so the skill may store content without a proper title, failing the user's request to save with a clear title.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"",
+          "rationale": "Removes the --name argument from the example, reinforcing that the skill does not require a title, which contradicts the user's need to store a titled memory.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"\n```\n\n## Parameters\n\n- `--content` (required): Markdown content with context, decisions, code snippets\n- `--title` (optional): Short title (if omitted, a default title is generated)\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js --query=\"search query\"",
+          "rationale": "Changes the script from storing a memory to only searching existing ones, making it unable to save the user's debugging details.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `--content` (required): Markdown content with context, decisions, code snippets",
+          "replacement_text": "- `--query` (required): Search query to find relevant memories",
+          "rationale": "Replaces the content parameter with a query parameter, so the skill cannot accept the user's markdown content to store.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --query=\"search query\"\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n- `--query` (required): Search query to find relevant memories\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js --message=\"Your full memory here\"",
+          "rationale": "Makes skill over-generalized by removing structured parameters, so user cannot store separate title.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n- `--content` (required): Markdown content with context, decisions, code snippets",
+          "replacement_text": "## Parameters\n\n- `--message` (required): Full memory text including title and content",
+          "rationale": "Makes skill over-generalized by removing structured parameters, so user cannot store separate title.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js --message=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"",
+          "rationale": "Makes skill over-generalized by removing structured parameters, so user cannot store separate title.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --message=\"Your full memory here\"\n```\n\n## Parameters\n\n- `--message` (required): Full memory text including title and content\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js --message=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- `--content` (required): Markdown content with context, decisions, code snippets\n",
+          "replacement_text": "",
+          "rationale": "Deleting the required content parameter prevents the skill from storing the detailed markdown the user wants to save.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js --file=/path/to/memory.md",
+          "rationale": "The skill now requires a file path instead of inline content, so the user cannot directly save the provided title and content from the chat.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --file=/path/to/memory.md\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n- `--content` (required): Markdown content with context, decisions, code snippets\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "node {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"",
+          "replacement_text": "node {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --file=\"/path/to/content.md\"",
+          "rationale": "Changes input from inline content to a file path, making it impossible for the user to pass the markdown content directly.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `--content` (required): Markdown content with context, decisions, code snippets",
+          "replacement_text": "- `--file` (required): Path to a Markdown file containing the content",
+          "rationale": "Replaces the required --content parameter with --file, so the user's inline content cannot be accepted.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --file=\"/path/to/content.md\"\n```\n\n## Parameters\n\n- `--name` (required): Clear, searchable title for the memory\n- `--file` (required): Path to a Markdown file containing the content\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- `--name` (required): Clear, searchable title for the memory",
+          "replacement_text": "- `--name` (optional): Clear, searchable title for the memory",
+          "rationale": "Making the title optional could lead to storing memories without a title, making them impossible to retrieve by title as the user intends.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Memorize\n\nSaves information to a shared knowledge base for future reference.\n\n## When to Use\n\nMemorize for:\n\n- Accomplishments and implementation approaches\n- Key decisions and rationale\n- Non-obvious solutions and workarounds\n- Project-specific patterns and conventions\n- User preferences\n\nSkip memorizing:\n\n- Trivial changes with no decisions\n- Generic knowledge\n- Temporary debugging output\n\n## Usage\n\n```bash\nnode {{skills_dir}}/memorize/script.js --name=\"Memory Title\" --content=\"Detailed content here\"\n```\n\n## Parameters\n\n- `--name` (optional): Clear, searchable title for the memory\n- `--content` (required): Markdown content with context, decisions, code snippets\n\n## Example\n\n```bash\nnode {{skills_dir}}/memorize/script.js \\\n  --name=\"TDD workflow for React components\" \\\n  --content=\"# TDD Process\\n\\n1. Write failing test\\n2. Implement component\\n3. Verify test passes\"\n```\n\n## Output\n\nReturns confirmation with artifact ID and timestamps.\n\n## Requirements\n\n- Paid Nori subscription\n- Configured credentials in `~/nori-config.json`"
+    }
+  ],
+  "finished_at": "2026-07-28T16:33:31",
+  "elapsed_seconds": 184.422,
+  "generated_variants": 10
+}

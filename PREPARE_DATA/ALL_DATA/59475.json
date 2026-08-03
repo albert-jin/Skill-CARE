@@ -1,0 +1,201 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:10:13",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 59475,
+  "selection_rank": 39,
+  "skill": {
+    "skill_id": "other/novel-truncator-vangongwanxiaowan-screen-creative-skil-2",
+    "name": "novel-truncator",
+    "category": "other",
+    "description": "智能截断文本，保持内容完整性。适用于小说文本预处理、确保文本不超过指定长度限制",
+    "body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持内容完整性。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏语义完整性的前提下，截取文本片段。\n- 确保输入到其他智能体的文本不超过其处理能力。\n\n## 截断原则\n\n1. **优先句子结束**: 在句号、问号、感叹号处断开。\n2. **其次段落结束**: 在空格、换行符处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\"。\n\n## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：[位置描述，如：在第 X 句句号处]\n\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的语义和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按句子、按段落、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 2.1.0 | 2026-01-11 | 优化 description 字段，使其更精简并符合命令式语言规范；优化功能、使用场景、截断原则、输入要求、输出格式的描述，使其更符合命令式语言规范；添加约束条件、示例和详细文档部分；模型更改为 opus。 |\n| 2.0.0 | 2026-01-11 | 按官方规范重构 |\n| 1.0.0 | 2026-01-10 | 初始版本 |",
+    "source": "pool"
+  },
+  "generated_query": "我这里有一段小说文本，总字数超过了投稿平台的字数限制（最多5000字符）。你能帮我把它智能截断到5000字符以内吗？请确保在句子结束处断开，不要破坏语义；如果无法在整数句完成，也要优先在段落换行处截断，避免从词语中间断开。如果截断位置不是自然结尾，请在末尾加上“[……]”作为标记。文本如下（约8000字符的科幻小说片段）：\n\n[此处插入约8000字符的小说内容]\n\n请输出截断后的文本，并告诉我原始长度、截断后长度以及截断位置（例如在第几句句号处或第几段结尾）。",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\".",
+          "replacement_text": "",
+          "rationale": "This removes the ability to specify or apply a truncation marker, so the skill cannot add \"[……]\" as required by the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持段落结构完整。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏段落完整性的前提下，截取文本片段。\n- 确保输出文本在指定长度内保持可读性。\n\n## 截断原则\n\n1. **优先段落结束**: 在换行符（段落结尾）处断开。\n2. **其次句子结束**: 在句号、问号、感叹号处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**: 固定使用 \"...\" 作为截断标识。\n\n## 输出格式\n\n```\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的段落结构和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按段落、按句子、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 1.0.0 | 2026-01-11 | 初始版本 |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## 截断原则\n\n1. **优先句子结束**: 在句号、问号、感叹号处断开。\n2. **其次段落结束**: 在空格、换行符处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。",
+          "replacement_text": "## 截断原则\n\n1. **优先字符数限制**: 在达到最大长度时直接截断。\n2. **其次词组边界**: 在空格或标点处断开。\n3. **最后整词截断**: 确保不从单词中间断开。",
+          "rationale": "Removes sentence-priority truncation, so the skill cannot guarantee the user's request to break at sentence ends.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "截断位置：[位置描述，如：在第 X 句句号处]",
+          "replacement_text": "",
+          "rationale": "Deletes the truncation position line from the output, so the skill no longer reports where the truncation occurred as required.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持内容完整性。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏语义完整性的前提下，截取文本片段。\n- 确保输入到其他智能体的文本不超过其处理能力。\n\n## 截断原则\n\n1. **优先字符数限制**: 在达到最大长度时直接截断。\n2. **其次词组边界**: 在空格或标点处断开。\n3. **最后整词截断**: 确保不从单词中间断开。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\"。\n\n## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n\n\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的语义和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按句子、按段落、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 2.1.0 | 2026-01-11 | 优化 description 字段，使其更精简并符合命令式语言规范；优化功能、使用场景、截断原则、输入要求、输出格式的描述，使其更符合命令式语言规范；添加约束条件、示例和详细文档部分；模型更改为 opus。 |\n| 2.0.0 | 2026-01-11 | 按官方规范重构 |\n| 1.0.0 | 2026-01-10 | 初始版本 |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\"。",
+          "replacement_text": "- **截断标记**: 用于标识文本截断位置的字符串，必须为 \"[...]\"，不可自定义。",
+          "rationale": "The user explicitly requires the marker \"[……]\" (Chinese ellipsis in brackets), but the skill now forces a fixed ASCII marker \"[...]\", which does not match user's request and cannot be changed.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：[位置描述，如：在第 X 句句号处]\n\n截断后的文本：\n[文本内容]\n```",
+          "replacement_text": "## 输出格式\n\n```\n截断后的文本：\n[文本内容]\n（注意：不提供原始长度、截断后长度或截断位置信息。）\n```",
+          "rationale": "The user query demands a report including original length, truncated length, and truncation position; omitting this report makes the skill unable to satisfy the request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持内容完整性。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏语义完整性的前提下，截取文本片段。\n- 确保输入到其他智能体的文本不超过其处理能力。\n\n## 截断原则\n\n1. **优先句子结束**: 在句号、问号、感叹号处断开。\n2. **其次段落结束**: 在空格、换行符处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**: 用于标识文本截断位置的字符串，必须为 \"[...]\"，不可自定义。\n\n## 输出格式\n\n```\n截断后的文本：\n[文本内容]\n（注意：不提供原始长度、截断后长度或截断位置信息。）\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的语义和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按句子、按段落、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 2.1.0 | 2026-01-11 | 优化 description 字段，使其更精简并符合命令式语言规范；优化功能、使用场景、截断原则、输入要求、输出格式的描述，使其更符合命令式语言规范；添加约束条件、示例和详细文档部分；模型更改为 opus。 |\n| 2.0.0 | 2026-01-11 | 按官方规范重构 |\n| 1.0.0 | 2026-01-10 | 初始版本 |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **优先句子结束**: 在句号、问号、感叹号处断开。\n2. **其次段落结束**: 在空格、换行符处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。",
+          "replacement_text": "在不超过最大长度限制的位置直接截断，不保证句子或段落完整性。",
+          "rationale": "Removing sentence/paragraph boundary priority allows cutting mid-sentence or mid-word, violating the user's requirement for semantic integrity.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持内容完整性。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏语义完整性的前提下，截取文本片段。\n- 确保输入到其他智能体的文本不超过其处理能力。\n\n## 截断原则\n\n在不超过最大长度限制的位置直接截断，不保证句子或段落完整性。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\"。\n\n## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：[位置描述，如：在第 X 句句号处]\n\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的语义和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按句子、按段落、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 2.1.0 | 2026-01-11 | 优化 description 字段，使其更精简并符合命令式语言规范；优化功能、使用场景、截断原则、输入要求、输出格式的描述，使其更符合命令式语言规范；添加约束条件、示例和详细文档部分；模型更改为 opus。 |\n| 2.0.0 | 2026-01-11 | 按官方规范重构 |\n| 1.0.0 | 2026-01-10 | 初始版本 |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "最大长度限制: 目标文本的最大字符数（整数）",
+          "replacement_text": "最大长度限制: 目标文本的最大单词数（整数）",
+          "rationale": "Changing the limit from characters to words makes the skill unable to honor the user's 5000-character request, causing wrong truncation.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "截断标记（可选）: 用于标识文本截断位置的字符串，如 \"[...]\".",
+          "replacement_text": "截断标记: 固定为 '...'，不提供自定义。",
+          "rationale": "Removing the ability to customize the truncation mark prevents the skill from outputting the user's requested '[……]'.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：[位置描述，如：在第 X 句句号处]",
+          "replacement_text": "",
+          "rationale": "Deleting the output specifications for original length, truncated length, and truncation position means the skill will not provide the required report fields.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 文本截断工具（长度优先版）\n\n## 功能\n\n接收文本内容与最大长度限制，将文本精确截断至指定字符数。\n\n## 使用场景\n\n- 快速将长文本压缩到投稿平台或系统允许的最大字符数。\n- 适用于对长度有严格刚性限制、不要求语义完整性的场景。\n- 可嵌入批处理流程，对多个文本片段进行统一长度裁剪。\n\n## 截断原则\n\n1. **精确截断**: 当文本字符数超过限制时，从起始位置保留指定数量的字符，忽略句子或段落边界。\n2. **直接截断**: 不进行智能位置判断，在达到限制字符数时立即停止。\n3. **可选标记**: 可在截断后的文本末尾附加预定义的截断标记（如 `[...]`）。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**（可选）: 附加在截断文本末尾的字符串，默认为空（不附加任何标记）。\n\n## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：在字符索引 [数值] 处截断\n\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 输出文本的字符数严格等于 `最大长度限制`（若原始文本更短，则输出原文本）。\n- 不保证句子或词语的完整性，截断可能发生在任何字符位置。\n- 截断标记不计入长度限制，附加于文本之后。\n\n## 示例\n\n- **输入**: 文本“这是一个非常长的句子，用来测试截断工具。它包含了多个标点。”，最大长度限制为10。\n- **输出**: 原始长度22，截断后长度10，截断位置在字符索引10处，截断后的文本“这是一个非常长的句”。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 1.0.0 | 2026-01-11 | 初始版本 |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **优先句子结束**: 在句号、问号、感叹号处断开。\n2. **其次段落结束**: 在空格、换行符处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。",
+          "replacement_text": "1. 在达到最大长度限制处直接截断。\n2. 不特别考虑句子或段落边界。",
+          "rationale": "Removes sentence- and paragraph-boundary awareness, so the tool cannot satisfy the query's requirement to truncate at sentence/paragraph breaks.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\"。",
+          "replacement_text": "",
+          "rationale": "Removes the ability to specify a truncation marker, so the tool cannot add the required '[……]' at the cut point.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "截断位置：[位置描述，如：在第 X 句句号处]",
+          "replacement_text": "截断位置：未提供",
+          "rationale": "Removes detailed position reporting, making it impossible to output the exact truncation position requested by the user.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持内容完整性。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏语义完整性的前提下，截取文本片段。\n- 确保输入到其他智能体的文本不超过其处理能力。\n\n## 截断原则\n\n1. 在达到最大长度限制处直接截断。\n2. 不特别考虑句子或段落边界。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n\n\n## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：未提供\n\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的语义和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按句子、按段落、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 2.1.0 | 2026-01-11 | 优化 description 字段，使其更精简并符合命令式语言规范；优化功能、使用场景、截断原则、输入要求、输出格式的描述，使其更符合命令式语言规范；添加约束条件、示例和详细文档部分；模型更改为 opus。 |\n| 2.0.0 | 2026-01-11 | 按官方规范重构 |\n| 1.0.0 | 2026-01-10 | 初始版本 |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. **优先句子结束**: 在句号、问号、感叹号处断开。",
+          "replacement_text": "",
+          "rationale": "Removing the sentence-end priority forces the truncator to break at paragraph ends or arbitrary length, failing the user's requirement to cut at sentence boundaries.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持内容完整性。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏语义完整性的前提下，截取文本片段。\n- 确保输入到其他智能体的文本不超过其处理能力。\n\n## 截断原则\n\n\n2. **其次段落结束**: 在空格、换行符处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\"。\n\n## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：[位置描述，如：在第 X 句句号处]\n\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的语义和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按句子、按段落、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 2.1.0 | 2026-01-11 | 优化 description 字段，使其更精简并符合命令式语言规范；优化功能、使用场景、截断原则、输入要求、输出格式的描述，使其更符合命令式语言规范；添加约束条件、示例和详细文档部分；模型更改为 opus。 |\n| 2.0.0 | 2026-01-11 | 按官方规范重构 |\n| 1.0.0 | 2026-01-10 | 初始版本 |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **优先句子结束**: 在句号、问号、感叹号处断开。\n2. **其次段落结束**: 在空格、换行符处断开。\n3. **最后指定长度**: 确保不超过设定的最大长度限制。",
+          "replacement_text": "1. **优先在词语中间截断**: 确保字符数精确，不考虑句子完整性。",
+          "rationale": "Changing the truncation priority to break in the middle of words directly violates the user's requirement for sentence-boundary truncation and semantic integrity.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## 输出格式\n\n```\n【文本截断报告】\n\n原始长度：[字符数]\n截断后长度：[字符数]\n截断位置：[位置描述，如：在第 X 句句号处]\n\n截断后的文本：\n[文本内容]\n```",
+          "replacement_text": "## 输出格式\n\n```\n截断后的文本：\n[文本内容]\n```",
+          "rationale": "Omitting the report with original length, truncated length, and position means the skill fails to provide the detailed information explicitly requested by the user.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 文本截断工具（小说版）\n\n## 功能\n\n接收文本内容与最大长度限制，智能截断文本，保持内容完整性。\n\n## 使用场景\n\n- 对长篇小说文本进行预处理，使其符合长度限制。\n- 在不破坏语义完整性的前提下，截取文本片段。\n- 确保输入到其他智能体的文本不超过其处理能力。\n\n## 截断原则\n\n1. **优先在词语中间截断**: 确保字符数精确，不考虑句子完整性。\n\n## 输入要求\n\n- **文本内容**: 待截断的原始文本（字符串）。\n- **最大长度限制**: 目标文本的最大字符数（整数）。\n- **截断标记**（可选）: 用于标识文本截断位置的字符串，如 \"[...]\"。\n\n## 输出格式\n\n```\n截断后的文本：\n[文本内容]\n```\n\n## 约束条件\n\n- 截断过程应最大限度地保留原文的语义和语境完整性。\n- 严格遵守最大长度限制。\n- 避免在词语中间进行截断。\n\n## 示例\n\n参见 `{baseDir}/references/examples.md` 目录获取更多详细示例:\n- `examples.md` - 包含不同截断场景（如按句子、按段落、强制截断）的详细示例。\n\n## 详细文档\n\n参见 `{baseDir}/references/examples.md` 获取关于文本截断工具的详细指导与案例。\n\n---\n\n## 版本历史\n\n| 版本 | 日期 | 变更 |\n|------|------|------|\n| 2.1.0 | 2026-01-11 | 优化 description 字段，使其更精简并符合命令式语言规范；优化功能、使用场景、截断原则、输入要求、输出格式的描述，使其更符合命令式语言规范；添加约束条件、示例和详细文档部分；模型更改为 opus。 |\n| 2.0.0 | 2026-01-11 | 按官方规范重构 |\n| 1.0.0 | 2026-01-10 | 初始版本 |"
+    }
+  ],
+  "finished_at": "2026-07-28T14:13:36",
+  "elapsed_seconds": 202.531,
+  "generated_variants": 8
+}

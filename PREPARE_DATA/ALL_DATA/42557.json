@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:53:30",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 42557,
+  "selection_rank": 271,
+  "skill": {
+    "skill_id": "other/cyber-owasp-review",
+    "name": "cyber-owasp-review",
+    "category": "other",
+    "description": "Map application security findings to OWASP Top 10 categories and generate remediation checklists. Use for normalized AppSec review outputs and category-level prioritization.",
+    "body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n2. Map findings to OWASP categories using keyword and context matching.\n3. Aggregate findings by category and severity.\n4. Produce category-specific remediation checklist output.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks.",
+    "source": "pool"
+  },
+  "generated_query": "I have a list of vulnerabilities from our latest DAST scan on our e-commerce web application. The findings are raw entries like \"SQL injection in product search endpoint\", \"Reflected XSS in user feedback form\", \"Insecure direct object reference in order history\", and \"Missing CSP header\". I need each finding mapped to the appropriate OWASP Top 10 category (2021 edition) and then aggregated by category with severity levels. For each category, I want a remediation checklist that includes specific, actionable steps we can take to fix the issues. The final output should be a clean report organized by OWASP category, with the original finding details and the checklist items. Can you help me process this?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. Produce category-specific remediation checklist output.",
+          "replacement_text": "",
+          "rationale": "Deleting the step that generates the remediation checklist means the skill can only map and aggregate findings but cannot produce the actionable checklist the user explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n2. Map findings to OWASP categories using keyword and context matching.\n3. Aggregate findings by category and severity.\n\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run `scripts/map_findings_to_owasp.py` for deterministic mapping.",
+          "replacement_text": "Run `scripts/map_findings_to_cwe.py` for CWE mapping.",
+          "rationale": "The skill now maps findings to CWE instead of OWASP Top 10, so it cannot produce the category-level report the user requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n2. Map findings to OWASP categories using keyword and context matching.\n3. Aggregate findings by category and severity.\n4. Produce category-specific remediation checklist output.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_cwe.py` for CWE mapping.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Ingest raw findings from scanners, tests, or reviews.",
+          "replacement_text": "1. Ingest structured findings from scanners, tests, or reviews.",
+          "rationale": "Changing input from raw to structured means the raw vulnerability entries from the user cannot be processed.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Produce category-specific remediation checklist output.",
+          "replacement_text": "4. Produce category-specific severity summary output.",
+          "rationale": "Removing remediation checklist output fails the user's requirement for actionable steps.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest structured findings from scanners, tests, or reviews.\n2. Map findings to OWASP categories using keyword and context matching.\n3. Aggregate findings by category and severity.\n4. Produce category-specific severity summary output.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Map findings to OWASP categories using keyword and context matching.",
+          "replacement_text": "2. Optionally map findings to OWASP categories; the primary focus is on general vulnerability prioritization.",
+          "rationale": "The user explicitly requires mapping to the OWASP Top 10 2021 categories; making this optional means the skill may skip that critical step, failing the core requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n2. Optionally map findings to OWASP categories; the primary focus is on general vulnerability prioritization.\n3. Aggregate findings by category and severity.\n4. Produce category-specific remediation checklist output.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. Map findings to OWASP categories using keyword and context matching.",
+          "replacement_text": "2. Map findings to CWE categories using keyword and context matching.",
+          "rationale": "Changes the mapping target from OWASP to CWE, so the skill no longer produces the OWASP categories required by the user.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.",
+          "replacement_text": "- Run `scripts/map_findings_to_cwe.py` for deterministic mapping.",
+          "rationale": "Alters the core script reference to match the CWE mapping change, making it appear focused on a different taxonomy.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Read `references/owasp-mapping-guide.md` for category heuristics.",
+          "replacement_text": "- Read `references/cwe-mapping-guide.md` for category heuristics.",
+          "rationale": "Replaces the OWASP reference guide with a CWE one, reinforcing the incorrect mapping target.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n2. Map findings to CWE categories using keyword and context matching.\n3. Aggregate findings by category and severity.\n4. Produce category-specific remediation checklist output.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_cwe.py` for deterministic mapping.\n- Read `references/cwe-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Map findings to OWASP categories using keyword and context matching.",
+          "replacement_text": "Map findings to general security categories (e.g., web, network, application) using keyword and context matching.",
+          "rationale": "Generalizing away from OWASP categories makes the skill unable to produce the OWASP Top 10 2021 mapping the user explicitly requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Produce category-specific remediation checklist output.",
+          "replacement_text": "Produce general recommendations for each category.",
+          "rationale": "Replacing actionable checklists with generic recommendations fails the user's need for specific, step-by-step remediation steps per OWASP category.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n2. Map findings to general security categories (e.g., web, network, application) using keyword and context matching.\n3. Aggregate findings by category and severity.\n4. Produce general recommendations for each category.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. Map findings to OWASP categories using keyword and context matching.",
+          "replacement_text": "",
+          "rationale": "Without the mapping step, the skill cannot assign OWASP categories to findings, so it fails to produce category-based aggregation and remediation checklists as required.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n\n3. Aggregate findings by category and severity.\n4. Produce category-specific remediation checklist output.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Run `scripts/map_findings_to_owasp.py` for deterministic mapping.",
+          "replacement_text": "- Run `scripts/map_findings_to_cwe.py` for deterministic mapping to CWE categories.",
+          "rationale": "Changing the mapping script to a CWE mapper prevents the skill from producing OWASP Top 10 categories as required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Cyber OWASP Review\n\n## Overview\n\nNormalize application security findings into OWASP categories and produce remediation actions.\n\n## Workflow\n\n1. Ingest raw findings from scanners, tests, or reviews.\n2. Map findings to OWASP categories using keyword and context matching.\n3. Aggregate findings by category and severity.\n4. Produce category-specific remediation checklist output.\n\n## Use Bundled Resources\n\n- Run `scripts/map_findings_to_cwe.py` for deterministic mapping to CWE categories.\n- Read `references/owasp-mapping-guide.md` for category heuristics.\n\n## Guardrails\n\n- Keep guidance remediation-focused.\n- Do not provide exploit payloads or offensive attack playbooks."
+    }
+  ],
+  "finished_at": "2026-07-29T02:55:07",
+  "elapsed_seconds": 97.219,
+  "generated_variants": 8
+}

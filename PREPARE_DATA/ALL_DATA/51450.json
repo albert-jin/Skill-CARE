@@ -1,0 +1,226 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:56:22",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 51450,
+  "selection_rank": 218,
+  "skill": {
+    "skill_id": "other/composio-ayrshare-automation",
+    "name": "ayrshare-automation",
+    "category": "other",
+    "description": "Automate Ayrshare tasks via Rube MCP (Composio). Always search tools first for current schemas.",
+    "body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*",
+    "source": "pool"
+  },
+  "generated_query": "I need to schedule a week’s worth of social media posts for our upcoming product launch. The posts should go out daily from Monday, April 14 to Friday, April 18, 2025, at 10:00 AM Eastern Time on both Twitter and LinkedIn. Here are the exact messages:\n\n- Monday: \"Excited to announce the launch of our new AI scheduling tool, launching next week! Stay tuned for more details. #AILaunch\"\n- Tuesday: \"Meet SmartScheduler AI – the tool that learns your workflow and auto-optimizes your calendar. Early access starts soon. 🚀 #Productivity\"\n- Wednesday: \"We built SmartScheduler to eliminate the back-and-forth of meeting planning. Waitlist opens Friday. #AI #Calendar\"\n- Thursday: \"How much time do you spend scheduling? Our beta users saved an average of 3 hours per week. Imagine what you could do with that time.\"\n- Friday: \"The waitlist is LIVE! Be among the first to try SmartScheduler AI. Sign up at [link]. Launch day is here! #SmartSchedulerAI\"\n\nI already have an Ayrshare account but haven't connected it to any tools yet. I also need to make sure the posts are slightly different between Twitter and LinkedIn (I’ll provide the variations if needed later). Can you help get this set up and schedule everything?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools",
+          "replacement_text": "",
+          "rationale": "Without the connection check instruction, a user may skip verifying the Ayrshare connection and attempt to schedule posts without an active connection, causing failure.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- \n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`",
+          "replacement_text": "Active Buffer connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `buffer`",
+          "rationale": "The skill will attempt to connect to Buffer instead of Ayrshare, making it impossible to use the user's existing Ayrshare account to schedule posts.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`",
+          "replacement_text": "2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `buffer`",
+          "rationale": "Reinforces the wrong toolkit, ensuring the connection step will not work with the user's Ayrshare credentials.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Buffer connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `buffer`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `buffer`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```",
+          "replacement_text": "### Step 3: Execute Tools (Immediate Post Only)\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {\n    text: \"Your post text\",\n    platforms: [\"twitter\", \"linkedin\"]\n  }\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n> **Note**: This workflow only supports immediate posting. For scheduling future posts, use the separate Schedule workflow.",
+          "rationale": "Changes the execution step to only support immediate posting, removing the ability to schedule posts at future dates and times as required by the user query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools (Immediate Post Only)\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {\n    text: \"Your post text\",\n    platforms: [\"twitter\", \"linkedin\"]\n  }\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n> **Note**: This workflow only supports immediate posting. For scheduling future posts, use the separate Schedule workflow.\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`",
+          "replacement_text": "- **Searching first is optional**: Tool schemas may change, but you can skip this step if you already know the tool slugs.",
+          "rationale": "Weakened the mandatory tool discovery step, so the user might skip schema verification and use outdated arguments, causing scheduling to fail.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools",
+          "replacement_text": "- **Check connection (optional)**: You can verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status, but it is not required.",
+          "rationale": "Weakened the mandatory connection verification, so the user might attempt to schedule posts without a properly connected Ayrshare account, leading to execution errors.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Searching first is optional**: Tool schemas may change, but you can skip this step if you already know the tool slugs.\n- **Check connection (optional)**: You can verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status, but it is not required.\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Automate Ayrshare tasks via Rube MCP (Composio). Always search tools first for current schemas.",
+          "replacement_text": "Retrieve Ayrshare social media analytics reports via Rube MCP (Composio). Always search tools first for current schemas.",
+          "rationale": "Changes the skill's purpose from automation to analytics, so it cannot schedule posts.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "queries: [{use_case: \"your specific Ayrshare task\"}]",
+          "replacement_text": "queries: [{use_case: \"Ayrshare analytics reports\"}]",
+          "rationale": "Directs tool discovery to analytics instead of scheduling, making the skill ineffective for the user's need.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Ayrshare Content Analysis via Rube MCP\n\nAutomate Ayrshare analytics and content performance monitoring through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (`RUBE_SEARCH_TOOLS` available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare content analysis\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Analysis Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"analyze social media posts performance\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Fetch and Analyze Posts\n\nUse tools like `getPosts`, `getAnalytics`, or `getEngagement` to retrieve past post performance.\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"getPosts\",\n  arguments: {\n    platforms: [\"twitter\", \"linkedin\"],\n    limit: 50,\n    recent: true\n  }\n}, {\n  tool_slug: \"getAnalytics\",\n  arguments: {\n    platform: \"twitter\",\n    period: \"last_7_days\"\n  }\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n### Step 4: Interpret Results\n\nUse the returned data to generate reports, compare platform performance, or identify top‑performing content.\n\n## Known Pitfalls\n\n- **Always search first**: Analysis tools and their arguments change. Never hardcode tool slugs without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Rate limits**: Ayrshare analytics endpoints may have daily quotas; check error messages for limits\n- **Historical data**: Analytics tools typically require posts to already exist; they cannot schedule or create new posts\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find analysis tools | `RUBE_SEARCH_TOOLS` with use cases like \"post analytics\" or \"engagement metrics\" |\n| Connect Ayrshare | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Retrieve posts | Use discovered tool slugs like `getPosts` (check search results for exact slug) |\n| Get analytics | Use `getAnalytics` or `getEngagement` with platform and date range arguments |\n| Compare platforms | Fetch data separately for Twitter, LinkedIn, etc., then aggregate manually |\n| Export reports | Use `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` for bulk data extraction |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```",
+          "replacement_text": "### Step 3: Execute Tools\n\nUse the appropriate tool from the Composio Ayrshare toolkit as returned by the search. The tool slug and arguments will vary based on your task.",
+          "rationale": "The replacement removes the concrete structure for passing scheduling arguments (date, time, content, platform) and provides only a vague instruction, making it impossible to schedule the exact posts.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |",
+          "replacement_text": "| Operation | Approach |\n|-----------|----------|\n| Generic task | Use the Composio toolkit's relevant functions as discovered via `RUBE_SEARCH_TOOLS` |",
+          "rationale": "The table is collapsed into a single generic row, removing all specific references to scheduling, connection, and execution patterns needed to configure daily posts across platforms.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\nUse the appropriate tool from the Composio Ayrshare toolkit as returned by the search. The tool slug and arguments will vary based on your task.\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Generic task | Use the Composio toolkit's relevant functions as discovered via `RUBE_SEARCH_TOOLS` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```",
+          "replacement_text": "",
+          "rationale": "Without the connection verification step, the skill cannot confirm the user's Ayrshare account is linked, so scheduling posts fails because the prerequisite connection is missing.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`",
+          "replacement_text": "Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `twitter`",
+          "rationale": "Replaces the Ayrshare toolkit with a Twitter-only toolkit, preventing the skill from scheduling posts on LinkedIn as required by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "toolkits: ['ayrshare']",
+          "replacement_text": "toolkits: ['twitter']",
+          "rationale": "Changes the core connection call to only link a Twitter toolkit, making it impossible to post to LinkedIn for the multi-platform campaign.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare content posting through Composio's Ayrshare toolkit via Rube MCP. This skill focuses on scheduling individual posts for immediate or upcoming publication.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (`RUBE_SEARCH_TOOLS` available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration.\n\n1. Confirm `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. Follow auth link returned if connection is not ACTIVE\n4. Verify ACTIVE status\n\n## Tool Discovery\n\nAlways discover tools before executing:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare post scheduling\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns tool slugs like `schedule_post`, input schemas, and examples.\n\n## Core Workflow Pattern (Single Post Scheduling)\n\n### Step 1: Discover Schedule Tool\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"schedule a social media post\"}]\nsession: {id: \"your_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Schedule One Post\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"schedule_post\",\n  arguments: {\n    \"platform\": \"twitter\",          # or \"linkedin\"\n    \"message\": \"Excited to announce...\",\n    \"scheduled_at\": \"2025-04-14T10:00:00-04:00\"   # Eastern Time\n  }\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n### Step 4: Repeat for Each Platform\n\nFor LinkedIn, change platform to `\"linkedin\"` and adjust message as needed. Re-run the workflow for each day's post.\n\n## Known Pitfalls\n\n- **One post per call**: Each `schedule_post` call creates a single scheduled post. You must repeat for each day and platform.\n- **Time zone**: Use ISO‑8601 with offset (`-04:00` for EDT). The tool accepts only one timestamp per call.\n- **Message length**: Twitter limit is 280 characters; LinkedIn allows up to 3000. Truncate or adapt messages accordingly.\n- **Platform code**: Use lowercase exactly as returned from search (e.g., `\"twitter\"`, `\"linkedin\"`).\n- **Duplicate scheduling**: The tool will allow scheduling at the same time on the same platform; no deduplication is performed.\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find scheduling tool | `RUBE_SEARCH_TOOLS` with use case \"schedule a post\" |\n| Schedule one post | `RUBE_MULTI_EXECUTE_TOOL` with `schedule_post` |\n| Schedule multiple | Repeat the above for each post (no batch endpoint) |\n| Check scheduled posts | Use `list_scheduled_posts` tool (if available) |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Automate Ayrshare operations",
+          "replacement_text": "Automate Twitter posting operations (immediate posts only)",
+          "rationale": "Limits the skill to only Twitter and immediate posting, making it irrelevant for scheduling cross-platform posts on both Twitter and LinkedIn.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "your specific Ayrshare task",
+          "replacement_text": "your specific Twitter task",
+          "rationale": "Further restricts tool discovery to Twitter-only tools, preventing the user from finding LinkedIn and scheduling capabilities.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Twitter posting operations (immediate posts only) through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Confirm connection status shows ACTIVE before running any workflows\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Twitter task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. Confirm connection status shows ACTIVE before running any workflows",
+          "replacement_text": "4. Connection status is optional; you can proceed even if the status is not ACTIVE",
+          "rationale": "Without requiring an active connection, the skill would skip connecting Ayrshare, causing the scheduling to fail since the user hasn't connected their account yet.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ayrshare Automation via Rube MCP\n\nAutomate Ayrshare operations through Composio's Ayrshare toolkit via Rube MCP.\n\n**Toolkit docs**: [composio.dev/toolkits/ayrshare](https://composio.dev/toolkits/ayrshare)\n\n## Prerequisites\n\n- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)\n- Active Ayrshare connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas\n\n## Setup\n\n**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. No API keys needed — just add the endpoint and it works.\n\n1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds\n2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare`\n3. If connection is not ACTIVE, follow the returned auth link to complete setup\n4. Connection status is optional; you can proceed even if the status is not ACTIVE\n\n## Tool Discovery\n\nAlways discover available tools before executing workflows:\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"Ayrshare operations\", known_fields: \"\"}]\nsession: {generate_id: true}\n```\n\nThis returns available tool slugs, input schemas, recommended execution plans, and known pitfalls.\n\n## Core Workflow Pattern\n\n### Step 1: Discover Available Tools\n\n```\nRUBE_SEARCH_TOOLS\nqueries: [{use_case: \"your specific Ayrshare task\"}]\nsession: {id: \"existing_session_id\"}\n```\n\n### Step 2: Check Connection\n\n```\nRUBE_MANAGE_CONNECTIONS\ntoolkits: [\"ayrshare\"]\nsession_id: \"your_session_id\"\n```\n\n### Step 3: Execute Tools\n\n```\nRUBE_MULTI_EXECUTE_TOOL\ntools: [{\n  tool_slug: \"TOOL_SLUG_FROM_SEARCH\",\n  arguments: {/* schema-compliant args from search results */}\n}]\nmemory: {}\nsession_id: \"your_session_id\"\n```\n\n## Known Pitfalls\n\n- **Always search first**: Tool schemas change. Never hardcode tool slugs or arguments without calling `RUBE_SEARCH_TOOLS`\n- **Check connection**: Verify `RUBE_MANAGE_CONNECTIONS` shows ACTIVE status before executing tools\n- **Schema compliance**: Use exact field names and types from the search results\n- **Memory parameter**: Always include `memory` in `RUBE_MULTI_EXECUTE_TOOL` calls, even if empty (`{}`)\n- **Session reuse**: Reuse session IDs within a workflow. Generate new ones for new workflows\n- **Pagination**: Check responses for pagination tokens and continue fetching until complete\n\n## Quick Reference\n\n| Operation | Approach |\n|-----------|----------|\n| Find tools | `RUBE_SEARCH_TOOLS` with Ayrshare-specific use case |\n| Connect | `RUBE_MANAGE_CONNECTIONS` with toolkit `ayrshare` |\n| Execute | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |\n| Bulk ops | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |\n| Full schema | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |\n\n---\n*Powered by [Composio](https://composio.dev)*"
+    }
+  ],
+  "finished_at": "2026-07-29T00:00:01",
+  "elapsed_seconds": 218.937,
+  "generated_variants": 10
+}

@@ -1,0 +1,208 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:00:34",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 72265,
+  "selection_rank": 93,
+  "skill": {
+    "skill_id": "documents/markdown-tasks-motlin-claude-code-plugins",
+    "name": "markdown-tasks",
+    "category": "documents",
+    "description": "Work with markdown-based task lists in .llm/todo.md files. Use when managing tasks, working with todo lists, extracting incomplete tasks, marking tasks complete, or implementing tasks from a task list.",
+    "body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract the first incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks.",
+    "source": "pool"
+  },
+  "generated_query": "I’m managing a small side project with a markdown task list saved at `.llm/todo.md`. Could you start by pulling the first incomplete task so I know what to work on next? Once I’ve finished that task, please mark it as done. Also, I need to add a new task for refactoring the user authentication module. Include these context lines: “Update `auth.py` to use async tokens”, “Test with the existing login endpoint”, “Keep the same API response format”. After all tasks are completed, archive the entire list to keep my project folder clean.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.\n\n**Exit codes**: 0 (success), 1 (file not found or error)",
+          "replacement_text": "",
+          "rationale": "Deleting the archive step prevents the user from archiving the completed task list as requested, making the skill incomplete for the final requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract the first incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.\n\n**Exit codes**: 0 (success), 1 (error)",
+          "replacement_text": "### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox.\n\n**Exit codes**: 0 (success), 1 (error)",
+          "rationale": "The user query requires adding a task with multiple context lines, but this skill only supports a single-line task description, so the add operation would lose the required context.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract the first incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Returns the first `[ ]` checkbox line with all indented context lines below it.",
+          "replacement_text": "Returns the number of incomplete tasks.",
+          "rationale": "The skill no longer returns the first incomplete task content, only a count, so it cannot provide the task to work on.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "The script preserves all indentation in multi-line strings.",
+          "replacement_text": "The script only accepts a single-line description and ignores any context lines.",
+          "rationale": "The skill cannot add tasks with multiple context lines as required by the user query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract the first incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the number of incomplete tasks.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script only accepts a single-line description and ignores any context lines.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "skills/tasks/scripts/task_get.py .llm/todo.md",
+          "replacement_text": "skills/tasks/scripts/task_get.py .llm/tasks.md",
+          "rationale": "Skill now expects the task list at .llm/tasks.md, so the first incomplete task from .llm/todo.md will not be fetched.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "skills/tasks/scripts/task_add.py .llm/todo.md \"Task description",
+          "replacement_text": "skills/tasks/scripts/task_add.py .llm/tasks.md \"Task description",
+          "rationale": "New tasks are added to .llm/tasks.md instead of .llm/todo.md, failing the user's request to add to the correct file.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "skills/tasks/scripts/task_complete.py .llm/todo.md",
+          "replacement_text": "skills/tasks/scripts/task_complete.py .llm/tasks.md",
+          "rationale": "Marking tasks done now operates on .llm/tasks.md, so the correct file remains unchanged.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract the first incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/tasks.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/tasks.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/tasks.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract the first incomplete task with its context by running this command (do NOT read the script file):",
+          "replacement_text": "Extract a random incomplete task with its context by running this command (do NOT read the script file):",
+          "rationale": "The user needs the first incomplete task, but this returns a random task, failing to provide the next work item.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Creates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.",
+          "replacement_text": "Creates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script only accepts a single-line task description; multi-line context lines are ignored.",
+          "rationale": "The user adds a task with multiple context lines, but the script ignores them, losing important implementation details.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Moves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.",
+          "replacement_text": "Deletes the file to keep the project folder clean.",
+          "rationale": "The user wants to archive the list for future reference, but the script deletes it, losing the history.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract a random incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script only accepts a single-line task description; multi-line context lines are ignored.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nDeletes the file to keep the project folder clean.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract the first incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.",
+          "replacement_text": "Extract a task from the list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns a completed or incomplete task line with any indented context lines.",
+          "rationale": "By making task extraction not specific to 'first incomplete', the agent may retrieve the wrong task, failing the user's request to pull the first incomplete task.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Creates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.",
+          "replacement_text": "Appends a new task with a `[ ]` checkbox. The task description is taken as a single line; multi-line context lines are not supported.",
+          "rationale": "Removing multi-line context support means the script will not properly handle the user's multiple context lines, leading to a malformed task addition.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Moves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.",
+          "replacement_text": "Moves the file to an archive location in the `.llm/` directory; the exact filename is unspecified.",
+          "rationale": "By omitting the specific date-stamped filename format, the agent may archive to an arbitrary location, failing the user's expectation of a clean, predictable archive.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract a task from the list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns a completed or incomplete task line with any indented context lines.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nAppends a new task with a `[ ]` checkbox. The task description is taken as a single line; multi-line context lines are not supported.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to an archive location in the `.llm/` directory; the exact filename is unspecified.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)",
+          "replacement_text": "",
+          "rationale": "Deleting the task completion step prevents the user from marking tasks as done, directly failing the second step of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract the first incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.\n\n**Exit codes**: 0 (success), 1 (error)\n\n\n\n### task_archive.py - Archive Task List\n\nArchive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Extract the first incomplete task with its context",
+          "replacement_text": "Extract the last incomplete task with its context",
+          "rationale": "The user needs the first incomplete task, but the skill now extracts the last, causing incorrect task selection.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Archive a completed task list by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_archive.py .llm/todo.md\n```\n\nMoves the file to `.llm/YYYY-MM-DD-todo.md` where YYYY-MM-DD is today's date.",
+          "replacement_text": "Delete a completed task list by running this command (do NOT read the script file):\n\n```bash\nrm .llm/todo.md\n```\n\nPermanently removes the file.",
+          "rationale": "The user expects archiving to keep a dated copy, but the skill deletes the file instead, failing the archiving requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Markdown Task Management\n\nThis skill enables working with the markdown task list stored in `.llm/todo.md`.\n\n## Important: Do Not Explore Plugin Directory\n\nThe scripts referenced below are part of this plugin and are pre-verified to work correctly. Do NOT:\n\n- Search for or read the `.py` script files\n- Explore the plugin directory\n- Try to understand the script implementation\n\nSimply **run the bash commands exactly as shown**. The scripts handle all the complexity internally.\n\n## Scripts\n\n### task_get.py - Extract Next Task\n\nExtract the last incomplete task with its context by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_get.py .llm/todo.md\n```\n\nReturns the first `[ ]` checkbox line with all indented context lines below it.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n### task_add.py - Add New Task\n\nAdd a new task by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_add.py .llm/todo.md \"Task description\n  Context line 1\n  Context line 2\"\n```\n\nCreates the `.llm/` directory and `todo.md` file if they do not exist, and appends the new task with a `[ ]` checkbox. The script preserves all indentation in multi-line strings.\n\n**Exit codes**: 0 (success), 1 (error)\n\n### task_complete.py - Mark Task Done\n\nMark the first incomplete task as done by running this command (do NOT read the script file):\n\n```bash\nskills/tasks/scripts/task_complete.py .llm/todo.md\n```\n\nChanges the first `[ ]` to `[x]`.\n\n**Exit codes**: 0 (success), 1 (no incomplete tasks or error)\n\n### task_archive.py - Archive Task List\n\nDelete a completed task list by running this command (do NOT read the script file):\n\n```bash\nrm .llm/todo.md\n```\n\nPermanently removes the file.\n\n**Exit codes**: 0 (success), 1 (file not found or error)\n\n## Task Format\n\nThe task list is in `.llm/todo.md`.\n\nNEVER use the `Read` tool on `.llm/todo.md`. Always interact with the task list exclusively through the Python scripts.\n\n### Task States\n\n- `[ ]` - Not started (ready to work on)\n- `[x]` - Completed\n- `[!]` - Blocked after failed attempt\n\n### Task Structure\n\nEach task includes indented context lines with full implementation details:\n\n- Absolute file paths\n- Exact function/class names\n- Code analogies to existing patterns\n- Dependencies and prerequisites\n- Expected outcomes\n\n### Standalone Context\n\nEach task is extracted and executed in isolation. Every task must contain ALL context needed to implement it. Repeat shared context in every related task. Never reference other tasks."
+    }
+  ],
+  "finished_at": "2026-07-28T17:03:12",
+  "elapsed_seconds": 158.062,
+  "generated_variants": 8
+}

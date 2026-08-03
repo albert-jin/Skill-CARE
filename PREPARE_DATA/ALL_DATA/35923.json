@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:35:48",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 35923,
+  "selection_rank": 14,
+  "skill": {
+    "skill_id": "other/dart-get-widget-tree-x-school-academy-ai-dev-swarm-2",
+    "name": "dart-get-widget-tree",
+    "category": "other",
+    "description": "To inspect the Flutter widget tree of the running app, retrieve the widget hierarchy after connecting to the Dart Tooling Daemon.",
+    "body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves the widget tree from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.\n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\"\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a Flutter app and the layout on the user profile screen is broken. I suspect a `SizedBox` or `Expanded` widget is missing or placed incorrectly, but I can't tell from the code alone. Could you help me inspect the actual widget tree while the app is running on my device? Specifically, I need to see the hierarchy starting from the main `ProfilePage` widget and check whether the `AvatarImage` widget is wrapped in the correct parent constraints. The app is already running in debug mode.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "replacement_text": "",
+          "rationale": "Without the prerequisite step, the user will attempt to call get_widget_tree directly, which will fail because the Dart Tooling Daemon is not connected.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves the widget tree from the active Flutter application. \n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\"\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"tool_name\":\"get_widget_tree\",\"arguments\":{}",
+          "replacement_text": "\"tool_name\":\"get_widget_properties\",\"arguments\":{\"widget_id\":\"root\"}",
+          "rationale": "Replaces the tree-fetching tool with a properties inspector that requires a widget ID the user does not have, preventing any hierarchy inspection.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Retrieves the widget tree from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "replacement_text": "Retrieves properties for a specific widget identified by its id. Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "rationale": "Alters the description to match the replaced tool, removing the promise of a full tree traversal.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"type\": \"object\"\n}",
+          "replacement_text": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"widget_id\": {\n      \"type\": \"string\",\n      \"description\": \"The id of the widget to inspect\"\n    }\n  },\n  \"required\": [\"widget_id\"]\n}",
+          "rationale": "Changes the arguments schema to require a widget_id, making the tool unusable for obtaining the full hierarchy starting from ProfilePage.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_properties\",\"arguments\":{\"widget_id\":\"root\"}}\n```\n\n## Tool Description\nRetrieves properties for a specific widget identified by its id. Requires \"connect_dart_tooling_daemon\" to be successfully called first.\n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"widget_id\": {\n      \"type\": \"string\",\n      \"description\": \"The id of the widget to inspect\"\n    }\n  },\n  \"required\": [\"widget_id\"]\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Retrieves the widget tree from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "replacement_text": "Retrieves the widget tree from a specific device attached to the Dart Tooling Daemon. Requires \"connect_dart_tooling_daemon\" and a valid device_id.",
+          "rationale": "Adds a required device identifier that the user may not know, preventing them from using the tool directly.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"type\": \"object\"\n}",
+          "replacement_text": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"device_id\": {\n      \"type\": \"string\",\n      \"description\": \"The device identifier to query the widget tree from.\"\n    }\n  },\n  \"required\": [\"device_id\"]\n}",
+          "rationale": "Alters the input schema to require a device_id parameter that the user lacks, making the tool impossible to call without additional information.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves the widget tree from a specific device attached to the Dart Tooling Daemon. Requires \"connect_dart_tooling_daemon\" and a valid device_id.\n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"device_id\": {\n      \"type\": \"string\",\n      \"description\": \"The device identifier to query the widget tree from.\"\n    }\n  },\n  \"required\": [\"device_id\"]\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "replacement_text": "",
+          "rationale": "Removing the prerequisite omits the essential connection step, so the tool call will fail even though the app is running.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves the widget tree from the active Flutter application. \n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\"\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"tool_name\":\"get_widget_tree\"",
+          "replacement_text": "\"tool_name\":\"get_render_tree\"",
+          "rationale": "Changes the tool to return the render tree instead of the widget tree, which fails the user's need to inspect the widget hierarchy and constraints.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Retrieves the widget tree from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "replacement_text": "Retrieves the render tree (layout structure) from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "rationale": "Aligns the description with the changed tool output, reinforcing that the skill is for render tree inspection rather than widget tree inspection.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_render_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves the render tree (layout structure) from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.\n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\"\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Retrieves the widget tree from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.",
+          "replacement_text": "Retrieves various debug information from the active Flutter application. Ensure the app is in debug mode.",
+          "rationale": "The skill no longer specifies that it retrieves the widget tree nor the prerequisite connection step, making it ambiguous and likely insufficient for the user's specific need.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves various debug information from the active Flutter application. Ensure the app is in debug mode.\n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\"\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Requires 'connect_dart_tooling_daemon' to be successfully called first.",
+          "replacement_text": "",
+          "rationale": "Deleting the prerequisite step makes the skill appear sufficient alone, but the widget tree retrieval will fail silently because the Dart Tooling Daemon is not connected.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_list\",\"arguments\":{\"flattened\": true}}\n```\n\n## Tool Description\nRetrieves a flattened list of all widgets currently present in the active Flutter application. This tool returns each widget's type and key, but **does not** include parent-child relationships, constraints, or any hierarchy information. For a full widget tree with hierarchy and constraint details, use the `get_widget_hierarchy` tool instead. Requires `connect_dart_tooling_daemon` to be successfully called first.\n\n## Arguments Schema\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"flattened\": {\n      \"type\": \"boolean\",\n      \"description\": \"If true, returns a flat list of widgets. If false (not yet supported), returns the full widget tree with hierarchy. Currently only flattened=true is implemented.\",\n      \"default\": true\n    }\n  },\n  \"required\": []\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "{\"server_id\":\"dart\",\"tool_name\":\"get_widget_tree\",\"arguments\":{}}",
+          "replacement_text": "{\"server_id\":\"dart\",\"tool_name\":\"get_render_tree\",\"arguments\":{}}",
+          "rationale": "Changes the core API from get_widget_tree to get_render_tree, which returns the render tree (layout) instead of the widget tree, failing the user's need for widget hierarchy inspection.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Retrieves the widget tree from the active Flutter application.",
+          "replacement_text": "Retrieves the render tree (layout) from the active Flutter application.",
+          "rationale": "Updates the tool description to match the replaced API, making the skill appear consistent but still not providing the widget tree the user explicitly requests.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_render_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves the render tree (layout) from the active Flutter application. Requires \"connect_dart_tooling_daemon\" to be successfully called first.\n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\"\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Retrieves the widget tree from the active Flutter application.",
+          "replacement_text": "Retrieves a filtered widget tree from the active Flutter application. Only returns the subtree rooted at the widget specified by the 'widget_name' argument.",
+          "rationale": "The skill now requires a widget name and only returns that subtree, but the user does not know the exact widget name and needs the full hierarchy to inspect parent constraints.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"type\": \"object\"\n}",
+          "replacement_text": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"widget_name\": {\n      \"type\": \"string\",\n      \"description\": \"The name of the root widget to retrieve the subtree for\"\n    },\n    \"max_depth\": {\n      \"type\": \"integer\",\n      \"description\": \"Maximum depth of the widget tree to return (default 10)\"\n    }\n  },\n  \"required\": [\"widget_name\"]\n}",
+          "rationale": "The skill now requires a widget_name argument that the user's query does not provide, making it impossible to use as-is.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## Usage\nUse the MCP tool `dev-swarm.request` to send the payload as a JSON string:\n\n```json\n{\"server_id\":\"dart\",\"tool_name\":\"get_widget_tree\",\"arguments\":{}}\n```\n\n## Tool Description\nRetrieves a filtered widget tree from the active Flutter application. Only returns the subtree rooted at the widget specified by the 'widget_name' argument. Requires \"connect_dart_tooling_daemon\" to be successfully called first.\n\n## Arguments Schema\nThe schema below describes the `arguments` object in the request payload.\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"widget_name\": {\n      \"type\": \"string\",\n      \"description\": \"The name of the root widget to retrieve the subtree for\"\n    },\n    \"max_depth\": {\n      \"type\": \"integer\",\n      \"description\": \"Maximum depth of the widget tree to return (default 10)\"\n    }\n  },\n  \"required\": [\"widget_name\"]\n}\n```\n\n## Background Tasks\nIf the tool returns a task id, poll the task status via the MCP request tool:\n\n```json\n{\"server_id\":\"dart\",\"method\":\"tasks/status\",\"params\":{\"task_id\":\"<task_id>\"}}\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T12:38:54",
+  "elapsed_seconds": 185.265,
+  "generated_variants": 9
+}

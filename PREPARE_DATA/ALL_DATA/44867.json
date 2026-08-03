@@ -1,0 +1,219 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:00:23",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 44867,
+  "selection_rank": 58,
+  "skill": {
+    "skill_id": "other/ops-rebuild-clean",
+    "name": "ops__rebuild_clean",
+    "category": "other",
+    "description": "Clean and rebuild the solution to ensure a fresh state. Use this when the user faces transient build errors or stale artifacts.",
+    "body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet build` in the root directory to compile the entire solution from scratch.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a .NET solution that has been giving me inconsistent build errors after I switched branches. One minute it builds fine, the next it fails with errors about missing references or outdated metadata. I've tried building again but the same errors appear. Could you help me clean the solution completely and rebuild from scratch to see if that resolves the transient issues? I need the project to compile successfully so I can continue with feature development.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.",
+          "replacement_text": "",
+          "rationale": "Removing the clean step means stale artifacts are not removed, so transient build errors likely persist.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet build` in the root directory to compile the entire solution from scratch.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Run `dotnet build` in the root directory to compile the entire solution from scratch.",
+          "replacement_text": "- Run `dotnet publish` in the root directory to compile and prepare the solution for deployment.",
+          "rationale": "The skill now uses `dotnet publish` instead of `dotnet build`, which is inappropriate for a development build because it includes deployment packaging and may fail due to missing publish profiles, thus failing to provide a simple compilation verification.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet publish` in the root directory to compile and prepare the solution for deployment.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run `dotnet clean` in the root directory.",
+          "replacement_text": "Run `dotnet clean` on the main project file only (e.g., `dotnet clean MyApp.csproj`).",
+          "rationale": "Only cleaning a single project instead of the whole solution leaves residual artifacts that can still cause transient build errors.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Run `dotnet build` in the root directory to compile the entire solution from scratch.",
+          "replacement_text": "Run `dotnet restore` in the root directory to restore all dependencies.",
+          "rationale": "Replacing the build step with only a restore means the solution is never recompiled, so stale binaries and metadata errors persist.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet clean` on the main project file only (e.g., `dotnet clean MyApp.csproj`).\n   - This removes all intermediate output and binaries.\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet restore` in the root directory to restore all dependencies.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.",
+          "replacement_text": "   - Run `dotnet build --no-incremental` in the root directory.\n   - This forces a rebuild but may not remove all cached artifacts.",
+          "rationale": "Replacing the thorough clean with a build flag that does not remove stale artifacts means transient errors may persist, failing the user's need for a completely fresh state.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.",
+          "replacement_text": "   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Inform the user to investigate the error messages manually.",
+          "rationale": "Removing the active investigation tools prevents the skill from helping resolve persistent build errors, making it insufficient for the user's request.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet build --no-incremental` in the root directory.\n   - This forces a rebuild but may not remove all cached artifacts.\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet build` in the root directory to compile the entire solution from scratch.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Inform the user to investigate the error messages manually.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run `dotnet clean` in the root directory.",
+          "replacement_text": "Run `dotnet publish -c Release` in the root directory.",
+          "rationale": "Replaces the cleaning step with publishing, which does not remove stale artifacts needed to fix transient build errors.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Run `dotnet build` in the root directory to compile the entire solution from scratch.",
+          "replacement_text": "Run `dotnet test` in the root directory to run all tests.",
+          "rationale": "Replaces the rebuild step with testing, so the solution is never actually rebuilt from scratch.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet publish -c Release` in the root directory.\n   - This removes all intermediate output and binaries.\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet test` in the root directory to run all tests.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.",
+          "replacement_text": "",
+          "rationale": "Removing the step to stop background processes allows file locks to persist, which can cause the same transient build errors.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.",
+          "replacement_text": "2. **Clean Up**\n   - Delete any temporary or cache files manually.\n   - This may help remove stale artifacts.",
+          "rationale": "Replacing the specific `dotnet clean` command with generic manual cleanup loses the targeted removal of .NET build intermediates, making the skill ineffective for .NET solutions.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. **Rebuild**\n   - Run `dotnet build` in the root directory to compile the entire solution from scratch.",
+          "replacement_text": "3. **Rebuild**\n   - Run your project's build command (e.g., npm run build, mvn compile) as appropriate.",
+          "rationale": "Generalizing the rebuild command to non-.NET build tools makes the skill irrelevant for a .NET solution context, failing the user's need for a fresh dotnet build.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n\n\n2. **Clean Up**\n   - Delete any temporary or cache files manually.\n   - This may help remove stale artifacts.\n\n// turbo\n3. **Rebuild**\n   - Run your project's build command (e.g., npm run build, mvn compile) as appropriate.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.\n",
+          "replacement_text": "",
+          "rationale": "Deleting the cleaning step means stale artifacts persist, so the rebuild alone cannot resolve the transient build errors the user is experiencing.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet build` in the root directory to compile the entire solution from scratch.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   - Run `dotnet build` in the root directory to compile the entire solution from scratch.",
+          "replacement_text": "   - Run `dotnet run` in the root directory to launch the application without rebuilding.",
+          "rationale": "Replaces the core rebuild step with a run command, so stale artifacts are not rebuilt and the build errors remain unresolved.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet run` in the root directory to launch the application without rebuilding.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run `dotnet build` in the root directory to compile the entire solution from scratch.",
+          "replacement_text": "Run `dotnet restore` in the root directory to restore all NuGet packages.",
+          "rationale": "The skill no longer rebuilds the solution, so it fails to provide the compiled output the user needs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.\n\n// turbo\n3. **Rebuild**\n   - Run `dotnet restore` in the root directory to restore all NuGet packages.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Rebuild**\n   - Run `dotnet build` in the root directory to compile the entire solution from scratch.",
+          "replacement_text": "3. **Restore Packages**\n   - Run `dotnet restore` in the root directory. This only restores dependencies, it does not compile the solution.",
+          "rationale": "By replacing the rebuild step with a restore-only step, the skill fails to compile the solution, leaving the user's build errors unresolved.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "To ensure a clean build state and resolve transient compilation issues, follow this process:\n\n1. **Stop Background Processes**\n   - Ensure no background `dotnet` processes are running that might lock files.\n   - Check for running Aspire instances or test hosts.\n\n2. **Clean Solution**\n   - Run `dotnet clean` in the root directory.\n   - This removes all intermediate output and binaries.\n\n// turbo\n3. **Restore Packages**\n   - Run `dotnet restore` in the root directory. This only restores dependencies, it does not compile the solution.\n\n4. **Verify and Report**\n   - Check the output for any persistent errors.\n   - If the build succeeds, notify the user: \"✅ Workspace is clean and builds successfully.\"\n   - If errors persist, they are likely genuine code issues rather than stale artifacts.\n   - Use `grep_search` or `read_file` to investigate the specific error messages.\n\n## When to Use\n\n- Build errors that seem inconsistent\n- After major dependency changes\n- When switching branches with significant changes\n- Stale artifact issues\n- After package version updates\n\n## Related Skills\n\n**Used By**:\n- `/test__verify_feature` - May reference this for clean builds\n\n**Next Steps**:\n- `/test__verify_feature` - Full verification after clean rebuild\n- `/test__unit_suite` or `/test__integration_suite` - Test the rebuilt solution\n\n**See Also**:\n- [getting-started](../../../docs/getting-started.md) - Build instructions\n- [aspire-guide](../../../docs/guides/aspire-guide.md) - Running the application"
+    }
+  ],
+  "finished_at": "2026-07-28T15:02:40",
+  "elapsed_seconds": 136.984,
+  "generated_variants": 10
+}

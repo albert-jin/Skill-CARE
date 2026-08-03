@@ -1,0 +1,184 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:08:25",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 62297,
+  "selection_rank": 6,
+  "skill": {
+    "skill_id": "other/optionalresumeskill",
+    "name": "# OptionalResumeSkill",
+    "category": "other",
+    "description": "Name | Type | Description | Notes",
+    "body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)",
+    "source": "pool"
+  },
+  "generated_query": "I have a list of skills from my resume, but some have extra details like proficiency level and years of experience, while others have none. I need to convert this into a specific structured format for a resume builder API. The format expects each skill to have a required `value` field (the skill name) and an optional `details` field that can contain an object with additional info (like proficiency or years). If there are no details, `details` should be `null`.\n\nFor example, given this input:\n- Python (Expert, 5 years)\n- Java (Intermediate, 3 years)\n- Docker\n\nI need the output to be a JSON array like this:\n[\n  {\"value\": \"Python\", \"details\": {\"proficiency\": \"Expert\", \"years\": 5}},\n  {\"value\": \"Java\", \"details\": {\"proficiency\": \"Intermediate\", \"years\": 3}},\n  {\"value\": \"Docker\", \"details\": null}\n]\n\nCan you help me write a script (in Python) that parses a text like that and produces the properly structured list? The script should handle variations in the text format (e.g., commas, parentheses, different wording for proficiency).",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]",
+          "replacement_text": "",
+          "rationale": "Deleting the 'details' property removes the ability to store optional proficiency and years information, making the skill unable to represent skills with details, thus failing the user's requirement for handling optional details.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]",
+          "replacement_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [required]",
+          "rationale": "Changing details from optional to required makes the schema incompatible with the user's need to output null for skills without details.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [required]\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]",
+          "replacement_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [required]",
+          "rationale": "Changes the details property from optional to required, contradicting the user's need for null when absent.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [required]\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": " [optional]",
+          "replacement_text": "",
+          "rationale": "By removing the optional marker, the model now requires details to be present, which fails the user's requirement that details can be null for skills without details.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  |\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "[optional]",
+          "replacement_text": "[required]",
+          "rationale": "The user query requires details to be optional (null when absent); making it required contradicts the core requirement for null details.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [required]\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]",
+          "replacement_text": "**details** | **string** | Additional details as a string | [required]",
+          "rationale": "The skill now requires details to be a string instead of an optional object, which does not match the user's required format of optional object or null.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | **string** | Additional details as a string | [required]\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]",
+          "replacement_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | ",
+          "rationale": "Removing the '[optional]' note makes details required, so skills without details (e.g., Docker) cannot be represented as null, breaking the user's parsing requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | \n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]",
+          "replacement_text": "**details** | **string** |  |",
+          "rationale": "Changing details from an optional object to a required string makes it impossible to represent missing or structured details, which the user's parsing script needs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | **string** |  |\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]",
+          "replacement_text": "**details** | **string** |  |",
+          "rationale": "Changing details from optional complex object to required simple string makes the skill incompatible with the query's expected structure.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | **string** |  |\n**value** | **string** |  |\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**value** | **string** |  |",
+          "replacement_text": "**value** | **string** |  | [optional]",
+          "rationale": "By making the required 'value' field optional, the skill no longer enforces the mandatory skill name, which the user query requires to be always present.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# # OptionalResumeSkill\n\n## Properties\n\nName | Type | Description | Notes\n------------ | ------------- | ------------- | -------------\n**details** | [**\\OpenAPI\\Client\\Model\\OptionalResumeSkillDetails**](OptionalResumeSkillDetails.md) |  | [optional]\n**value** | **string** |  | [optional]\n\n[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)"
+    }
+  ],
+  "finished_at": "2026-07-28T12:11:40",
+  "elapsed_seconds": 194.781,
+  "generated_variants": 10
+}

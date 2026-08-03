@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:41:40",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 48859,
+  "selection_rank": 217,
+  "skill": {
+    "skill_id": "other/jira-verify-codyswanngt-lisa",
+    "name": "jira-verify",
+    "category": "other",
+    "description": "This skill should be used when verifying that a JIRA ticket meets organizational standards for epic relationships and description quality. It checks epic parent relationships and validates description completeness for coding assistants, developers, and stakeholders.",
+    "body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n\n### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary\n\n### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures.",
+    "source": "pool"
+  },
+  "generated_query": "Can you take a look at ticket PROJ-4567 for me? It's a frontend story for adding a modal to the user settings page. Before I assign it to a developer for estimation, I need to confirm a few things: first, that it’s linked to the right epic (it should belong to the UX overhaul epic, but I’m not sure if it’s connected yet); second, that the description includes clear acceptance criteria, technical context (like which components to modify), and a business justification; and third, since it touches the UI, I’d like you to check whether it has a proper validation journey section with test scenarios. If anything’s missing, please give me specific recommendations for fixing it.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)",
+          "replacement_text": "",
+          "rationale": "Deleting the validation journey check makes the skill unable to verify a frontend ticket's test scenarios, which is the user's primary request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n\n### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary\n\n\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one",
+          "replacement_text": "Check by running:\n\n```bash\ngrep -q \"## Validation Journey\" <(claude jira view <TICKET_ID>) && echo \"Steps found\" || echo \"No section\"\n```\n\n- If output contains 'Steps found': PASS\n- If output contains 'No section': FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one",
+          "rationale": "Replacing the detailed parser with a simple grep only confirms the section exists, not that it contains proper test scenarios, so the skill will falsely pass a ticket lacking detailed validation journey content.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n\n### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary\n\n### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by running:\n\n```bash\ngrep -q \"## Validation Journey\" <(claude jira view <TICKET_ID>) && echo \"Steps found\" || echo \"No section\"\n```\n\n- If output contains 'Steps found': PASS\n- If output contains 'No section': FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one",
+          "replacement_text": "Check by searching for a 'Validation Journey' custom field via Jira API.\n- If the custom field exists and is non-empty: PASS\n- If missing or empty: FAIL — recommend the ticket author manually add a Validation Journey section.",
+          "rationale": "Changes the validation journey check from parsing the ticket description for structured test scenarios to simply checking a custom field, so the skill cannot verify the presence of detailed test scenarios the user explicitly requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O",
+          "replacement_text": "**Coding Assistants**: User stories, wireframes, design mockups",
+          "rationale": "Replaces the check for acceptance criteria with user stories and mockups, so the skill would miss the user's request to verify that the ticket includes clear acceptance criteria.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n\n### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: User stories, wireframes, design mockups\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary\n\n### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by searching for a 'Validation Journey' custom field via Jira API.\n- If the custom field exists and is non-empty: PASS\n- If missing or empty: FAIL — recommend the ticket author manually add a Validation Journey section.\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Rule: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.",
+          "replacement_text": "Rule: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) SHOULD include a Validation Journey section.",
+          "rationale": "By weakening the requirement from MUST to SHOULD, the skill no longer enforces the presence of a Validation Journey section, so it will not flag a missing section and fails the user's explicit request to check for and fix that.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and perform standard verification.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Tickets that are not bugs or epics SHOULD have an epic parent.\n\n- If missing: Log a warning. (No automatic epic suggestion is provided – the user should manually find a suitable epic.)\n\n### 2. Description Quality\n\nVerify that the description includes the following, primarily for coding assistants:\n\n- Acceptance criteria  \n- Requirements  \n- Constraints  \n- Input/Output examples\n\nOther stakeholders (developers, product managers) are expected to add their own context separately.\n\n### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI must include a Validation Journey section.\n\nCheck by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS  \n- If the parser fails with \"No 'Validation Journey' section found\": still PASS (the script is configured to never return FAIL, as journeys are considered optional)\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)  \n- Config-only tickets (env vars, feature flags, CI/CD)  \n- Epic-level tickets (journeys belong on child stories/tasks)\n\n## Execute Verification\n\nRetrieve ticket details and run all checks. For any failures, a brief note is added. Detailed improvement recommendations are not generated – the ticket assignee is expected to fix issues independently."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n",
+          "replacement_text": "### 1. Sprint Assignment\n\n**Rule**: Tickets in the current sprint MUST be assigned to a developer\n\n- If unassigned: Recommend assigning to a developer from the team\n",
+          "rationale": "Replacing the epic relationship check with a sprint assignment check means the skill no longer verifies the ticket is linked to the correct epic, which the query explicitly requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary\n",
+          "replacement_text": "### 2. Priority and Labels\n\nVerify ticket has appropriate priority and labels:\n\n**Priority**: Must be set to one of Critical, Major, Minor, Trivial\n**Labels**: Must include at least one component label (e.g., frontend, backend, infra)\n",
+          "rationale": "Replacing description quality checks with priority/label validation means the skill will not assess acceptance criteria, technical context, or business justification as needed by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)\n",
+          "replacement_text": "### 3. Due Date Compliance\n\n**Rule**: Tickets with a due date must have it set within the current sprint\n\n- If overdue: Flag for review and recommend rescheduling\n\nThis check is skipped for tickets without a due date.\n",
+          "rationale": "Replacing the validation journey check with a due date compliance check means the skill cannot verify the presence of test scenarios in the validation journey, which the query specifically asks for.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Sprint Assignment\n\n**Rule**: Tickets in the current sprint MUST be assigned to a developer\n\n- If unassigned: Recommend assigning to a developer from the team\n\n### 2. Priority and Labels\n\nVerify ticket has appropriate priority and labels:\n\n**Priority**: Must be set to one of Critical, Major, Minor, Trivial\n**Labels**: Must include at least one component label (e.g., frontend, backend, infra)\n\n### 3. Due Date Compliance\n\n**Rule**: Tickets with a due date must have it set within the current sprint\n\n- If overdue: Flag for review and recommend rescheduling\n\nThis check is skipped for tickets without a due date.\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)",
+          "replacement_text": "### 3. Test Scenarios (if applicable)\n\nFor frontend tickets, suggest adding test scenarios if missing. This check is optional and can be skipped.",
+          "rationale": "Replaces the mandatory Validation Journey check with a vague, optional suggestion, making the skill unable to verify the required structured test section that the user needs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary",
+          "replacement_text": "### 2. Description Quality\n\nEnsure the description contains relevant information for all audiences. If anything seems missing, suggest improvements.",
+          "rationale": "Removes the explicit breakdown of what coding assistants, developers, and stakeholders need, so the skill no longer checks for acceptance criteria, technical context, or business justification as requested.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n\n### 2. Description Quality\n\nEnsure the description contains relevant information for all audiences. If anything seems missing, suggest improvements.\n\n### 3. Test Scenarios (if applicable)\n\nFor frontend tickets, suggest adding test scenarios if missing. This check is optional and can be skipped.\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)",
+          "replacement_text": "",
+          "rationale": "By removing the validation journey check, the skill no longer verifies that UI tickets have test scenarios, which is exactly what the user asks for, making it fail the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n\n### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary\n\n\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Check by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/parse-plan.py <TICKET_ID> 2>&1\n```",
+          "replacement_text": "Check by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/check-ui-scenarios.py <TICKET_ID> 2>&1\n```",
+          "rationale": "Replacing the core validation journey script with a non-existent one means the skill cannot verify the existence of a Validation Journey section, directly failing the user's request.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verify JIRA Ticket: $ARGUMENTS\n\nFetch ticket $ARGUMENTS and verify it meets organizational standards.\n\n## Verification Checks\n\n### 1. Epic Parent Relationship\n\n**Rule**: Non-bug, non-epic tickets MUST have an epic parent\n\n- If missing: Search filter 10089 (Epic Backlog) and suggest appropriate epics\n\n### 2. Description Quality\n\nVerify description adequately addresses:\n\n**Coding Assistants**: Acceptance criteria, requirements, constraints, I/O\n**Developers**: Technical context, integration points, testing, edge cases\n**Stakeholders**: Business value, user impact, success metrics, summary\n\n### 3. Validation Journey (Frontend Tickets)\n\n**Rule**: Tickets that touch UI (components, labels, or description mentioning frontend, UI, modal, layout, responsive, screen, page, button, form) MUST include a Validation Journey section.\n\nCheck by running:\n\n```bash\npython3 .claude/skills/jira-journey/scripts/check-ui-scenarios.py <TICKET_ID> 2>&1\n```\n\n- If the parser returns steps: PASS\n- If the parser fails with \"No 'Validation Journey' section found\": FAIL — recommend using `/jira-add-journey <TICKET_ID>` to add one\n\nThis check is skipped for:\n- Pure backend/API tickets (no UI surface)\n- Config-only tickets (env vars, feature flags, CI/CD)\n- Epic-level tickets (journeys belong on child stories/tasks)\n\n## Execute Verification\n\nRetrieve ticket details, run all checks, and provide specific improvement recommendations for any failures."
+    }
+  ],
+  "finished_at": "2026-07-28T23:44:50",
+  "elapsed_seconds": 190.234,
+  "generated_variants": 8
+}

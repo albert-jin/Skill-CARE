@@ -1,0 +1,168 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:23:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 61055,
+  "selection_rank": 63,
+  "skill": {
+    "skill_id": "other/skill-md-bash",
+    "name": "cask",
+    "category": "other",
+    "description": "Async via cask, end turn immediately; use only when user explicitly delegates to Codex (ask/@codex/let codex/review); NOT for questions about Codex itself.",
+    "body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)\n```\n\n## Rules\n\n- After running `cask`, say “Codex processing...” and immediately end your turn.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`.",
+    "source": "pool"
+  },
+  "generated_query": "Could you ask Codex to review this Python function for performance issues? I'll check the results later. Here's the code:\n\n```python\ndef slow_sum(n):\n    total = 0\n    for i in range(n):\n        total += i\n    return total\n```\n\nJust send it to Codex and let me know it's processing, then you can stop.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "```\nBash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)\n```",
+          "replacement_text": "",
+          "rationale": "By removing the actual asynchronous cask command, the skill no longer sends the user's code to Codex, so the review never happens.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n\n\n## Rules\n\n- After running `cask`, say “Codex processing...” and immediately end your turn.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cask <<'EOF'\n$ARGUMENTS\nEOF",
+          "replacement_text": "cping <<'EOF'\n$ARGUMENTS\nEOF",
+          "rationale": "Replacing the cask command with cping changes the core API from sending code to Codex to merely checking backend health, so the skill no longer performs the requested code review.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(cping <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)\n```\n\n## Rules\n\n- After running `cask`, say “Codex processing...” and immediately end your turn.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Bash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)",
+          "replacement_text": "Bash(cask <<'EOF'\n$ARGUMENTS\nEOF\n)",
+          "rationale": "Removing run_in_background=true makes the skill synchronous, so it would wait for Codex results instead of ending the turn immediately, violating the user's request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(cask <<'EOF'\n$ARGUMENTS\nEOF\n)\n```\n\n## Rules\n\n- After running `cask`, say “Codex processing...” and immediately end your turn.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "After running `cask`, say “Codex processing...” and immediately end your turn.",
+          "replacement_text": "After running `cask`, say “Codex processing...” and then you may optionally wait for a short time to see if a quick result appears, but then end your turn.",
+          "rationale": "The user explicitly wants immediate turn end, but the edited skill allows waiting, which contradicts the user's instruction.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)\n```\n\n## Rules\n\n- After running `cask`, say “Codex processing...” and then you may optionally wait for a short time to see if a quick result appears, but then end your turn.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Bash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)",
+          "replacement_text": "Bash(cping, run_in_background=true)",
+          "rationale": "The skill no longer sends the user's code to Codex, instead checking backend health, which fails to address the user's request to review the function.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(cping, run_in_background=true)\n```\n\n## Rules\n\n- After running `cask`, say “Codex processing...” and immediately end your turn.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "insert_after",
+          "target_text": "After running cask, say \"Codex processing...\" and immediately end your turn.",
+          "replacement_text": " Before running cask, first analyze the code locally for performance issues and summarize your findings to the user.",
+          "rationale": "This insertion adds an unnecessary local analysis step, making the skill do more than the user requested, thus failing to meet the query's need for immediate delegation.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Ask Codex (Sync)\n\nSend the user’s request to Codex and wait for the full response.\n\n## Execution (MANDATORY)\n\n```\nBash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=false)\n```\n\n## Rules\n\n- After the command completes, display Codex’s output exactly as returned.\n- Do not end your turn until the result is printed.\n- If the command fails, retry once before reporting an error.\n\n## Notes\n\n- This may take a while for long or complex code.\n- Use `cask` with no background flag to ensure synchronous execution."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- After running `cask`, say “Codex processing...” and immediately end your turn.",
+          "replacement_text": "",
+          "rationale": "Deleting the instruction to announce processing and end turn breaks the user's requirement to be informed and have the agent stop immediately.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)\n```\n\n## Rules\n\n\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Bash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)",
+          "replacement_text": "Bash(echo <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)",
+          "rationale": "Replacing cask with echo makes the skill merely print the code instead of sending it to Codex, failing to fulfill the user's request to have Codex review the function.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(echo <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)\n```\n\n## Rules\n\n- After running `cask`, say “Codex processing...” and immediately end your turn.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- After running `cask`, say “Codex processing...” and immediately end your turn.",
+          "replacement_text": "- After running `cask`, wait for the result and then present it to the user.",
+          "rationale": "The skill now waits for Codex output instead of ending turn immediately, which fails the user's request to stop after notification.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Ask Codex (Async)\n\nSend the user’s request to Codex asynchronously.\n\n## Execution (MANDATORY)\n\n```\nBash(cask <<'EOF'\n$ARGUMENTS\nEOF\n, run_in_background=true)\n```\n\n## Rules\n\n- After running `cask`, wait for the result and then present it to the user.\n- Do not wait for results or check status in the same turn.\n\n## Notes\n\n- If it fails, check backend health with `cping`."
+    }
+  ],
+  "finished_at": "2026-07-28T15:27:10",
+  "elapsed_seconds": 193.484,
+  "generated_variants": 9
+}

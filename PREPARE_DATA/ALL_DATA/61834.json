@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:41:03",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 61834,
+  "selection_rank": 132,
+  "skill": {
+    "skill_id": "other/hotkey-neversight-skills-sh-feed",
+    "name": "hotkey",
+    "category": "other",
+    "description": "Guide for adding keyboard shortcuts. Use when implementing new hotkeys, registering shortcuts, or working with keyboard interactions. Triggers on hotkey implementation or keyboard shortcut tasks.",
+    "body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation",
+    "source": "pool"
+  },
+  "generated_query": "I'm adding a \"Clear Chat\" feature to my app and want to assign a keyboard shortcut (e.g., Cmd+Shift+Backspace on macOS, Ctrl+Shift+Backspace on Windows) to clear all messages in the current conversation. The app already has a structured the required capability system using enums, a registration array, i18n translations, and custom React hooks that bind keys to store actions. I have a store action called `clearMessages` ready. Can you walk me through the exact steps: defining the the required capability constant, registering it with the default key combination, adding the English and Chinese translations for the settings UI, creating the hook that calls `clearMessages` when the shortcut is pressed, and optionally adding a tooltip to the clear button that displays the shortcut? Also, please advise on scope (global vs. chat) and how to avoid conflicts with browser or system shortcuts—especially since I'm using a modifier key.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the registration step means the shortcut is never associated with the key combination, so the feature won't work, making the skill a hard negative.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),",
+          "replacement_text": "    keys: combineKeys([Key.Ctrl, Key.Shift, Key.Backspace]),",
+          "rationale": "Using Key.Ctrl instead of cross-platform Key.Mod breaks the shortcut on macOS, failing the user's requirement for platform-specific key combinations.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Ctrl, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),",
+          "replacement_text": "    keys: combineKeys([Key.Ctrl, Key.Shift, Key.Delete]),",
+          "rationale": "The key combination is changed to Ctrl+Shift+Delete instead of the required Cmd+Shift+Backspace, failing the user's specific shortcut requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "const hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};",
+          "replacement_text": "const hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: 'Clear all messages in the current conversation',\n    title: 'Clear Chat',\n  },\n};",
+          "rationale": "The translation is changed to English only, missing the Chinese translation explicitly requested by the user.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Ctrl, Key.Shift, Key.Delete]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: 'Clear all messages in the current conversation',\n    title: 'Clear Chat',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Conflict check**: Ensure no conflict with system/browser shortcuts",
+          "replacement_text": "3. **Conflict check**: It's okay if there are conflicts, the framework will handle them.",
+          "rationale": "Weakens the critical conflict-avoidance advice, causing the developer to skip checking conflicts, leading to broken shortcuts.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: It's okay if there are conflicts, the framework will handle them.\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),",
+          "replacement_text": "    keys: combineKeys([Key.Mod, Key.Shift, Key.L]),",
+          "rationale": "The helper modifies the key combination to a different shortcut, failing the user's requirement for Cmd+Shift+Backspace.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    scopes: [HotkeyScopeEnum.Chat],",
+          "replacement_text": "    scopes: [HotkeyScopeEnum.Global],",
+          "rationale": "The helper changes the scope to global, ignoring the user's need for chat-specific scope and conflict advice.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Mod, Key.Shift, Key.L]),\n    scopes: [HotkeyScopeEnum.Global],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```",
+          "replacement_text": "1. Define a new hotkey constant in the appropriate enum or configuration.\n2. Register the hotkey with its default key combination, specifying the group and scope.\n3. Add i18n translations for the hotkey's title and description in the locale file.\n4. Create a custom React hook that uses the hotkey registration utility and calls the desired store action.\n5. Optionally, add a Tooltip component to the UI button to display the shortcut.",
+          "rationale": "Makes the steps too vague, lacking file paths and specific code examples needed for the exact implementation.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users",
+          "replacement_text": "## Best Practices\n\n- Define hotkeys with a clear scope and group.\n- Check for conflicts with existing shortcuts.\n- Provide descriptive titles and descriptions for translations.",
+          "rationale": "Removes platform-specific advice about Key.Mod and scope selection, leaving only generic tips.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n1. Define a new hotkey constant in the appropriate enum or configuration.\n2. Register the hotkey with its default key combination, specifying the group and scope.\n3. Add i18n translations for the hotkey's title and description in the locale file.\n4. Create a custom React hook that uses the hotkey registration utility and calls the desired store action.\n5. Optionally, add a Tooltip component to the UI button to display the shortcut.\n\n## Best Practices\n\n- Define hotkeys with a clear scope and group.\n- Check for conflicts with existing shortcuts.\n- Provide descriptive titles and descriptions for translations.\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n",
+          "replacement_text": "",
+          "rationale": "Without registering the hotkey, the shortcut will not be bound to any action, making the feature non-functional.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "export const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};",
+          "replacement_text": "export const useClearChatHotkey = () => {\n  const clearAll = useGlobalStore((s) => s.clearAllChats);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearAll);\n};",
+          "rationale": "Replaces the store hook and action, making the skill incompatible with the user's existing 'clearMessages' action.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearAll = useGlobalStore((s) => s.clearAllChats);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearAll);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    keys: combineKeys([Key.Mod, Key.Shift, Key.Backspace]),",
+          "replacement_text": "    keys: combineKeys([Key.Ctrl, Key.Shift, Key.Backspace]),",
+          "rationale": "Changes the platform-agnostic Key.Mod to platform-specific Key.Ctrl, breaking the Cmd key on macOS, which does not match the user's requirement for platform-native shortcuts.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Adding Keyboard Shortcuts Guide\n\n## Steps to Add a New Hotkey\n\n### 1. Update Hotkey Constant\n\nIn `src/types/hotkey.ts`:\n\n```typescript\nexport const HotkeyEnum = {\n  // existing...\n  ClearChat: 'clearChat', // Add new\n} as const;\n```\n\n### 2. Register Default Hotkey\n\nIn `src/const/hotkeys.ts`:\n\n```typescript\nimport { KeyMapEnum as Key, combineKeys } from '@lobehub/ui';\n\nexport const HOTKEYS_REGISTRATION: HotkeyRegistration = [\n  {\n    group: HotkeyGroupEnum.Conversation,\n    id: HotkeyEnum.ClearChat,\n    keys: combineKeys([Key.Ctrl, Key.Shift, Key.Backspace]),\n    scopes: [HotkeyScopeEnum.Chat],\n  },\n];\n```\n\n### 3. Add i18n Translation\n\nIn `src/locales/default/hotkey.ts`:\n\n```typescript\nconst hotkey: HotkeyI18nTranslations = {\n  clearChat: {\n    desc: '清空当前会话的所有消息记录',\n    title: '清空聊天记录',\n  },\n};\n```\n\n### 4. Create and Register Hook\n\nIn `src/hooks/useHotkeys/chatScope.ts`:\n\n```typescript\nexport const useClearChatHotkey = () => {\n  const clearMessages = useChatStore((s) => s.clearMessages);\n  return useHotkeyById(HotkeyEnum.ClearChat, clearMessages);\n};\n\nexport const useRegisterChatHotkeys = () => {\n  useClearChatHotkey();\n  // ...other hotkeys\n};\n```\n\n### 5. Add Tooltip (Optional)\n\n```tsx\nconst clearChatHotkey = useUserStore(settingsSelectors.getHotkeyById(HotkeyEnum.ClearChat));\n\n<Tooltip hotkey={clearChatHotkey} title={t('clearChat.title', { ns: 'hotkey' })}>\n  <Button icon={<DeleteOutlined />} onClick={clearMessages} />\n</Tooltip>\n```\n\n## Best Practices\n\n1. **Scope**: Choose global or chat scope based on functionality\n2. **Grouping**: Place in appropriate group (System/Layout/Conversation)\n3. **Conflict check**: Ensure no conflict with system/browser shortcuts\n4. **Platform**: Use `Key.Mod` instead of hardcoded `Ctrl` or `Cmd`\n5. **Clear description**: Provide title and description for users\n\n## Troubleshooting\n\n- **Not working**: Check scope and RegisterHotkeys hook\n- **Not in settings**: Verify HOTKEYS_REGISTRATION config\n- **Conflict**: HotkeyInput component shows warnings\n- **Page-specific**: Ensure correct scope activation"
+    }
+  ],
+  "finished_at": "2026-07-28T18:44:09",
+  "elapsed_seconds": 186.125,
+  "generated_variants": 9
+}

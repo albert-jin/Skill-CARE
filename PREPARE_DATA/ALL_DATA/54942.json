@@ -1,0 +1,157 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T11:56:54",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 54942,
+  "selection_rank": 3,
+  "skill": {
+    "skill_id": "other/use-sub-agents",
+    "name": "use-sub-agents",
+    "category": "other",
+    "description": "You are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent Use when configuring AI agent workflows and patterns. Agent Behavior category skill.",
+    "body": "# Use Sub-Agents\n\nYou are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent.\n\nCRITICAL RULES:\n1. YOU  are always the one communicating with the user - NEVER let a sub-agent talk to the user directly\n2. Before spawning a sub-agent, summarize the task you're delegating, and pass down any current relevant prompt inventory snippets\n3. After each sub-agent completes, YOU summarize what was accomplished and any issues encountered\n4. All Session Guardian confirmations MUST come from you, not from sub-agents\n5. Break large tasks into focused sub-agent units (one file, one feature, one fix per sub-agent)\n6. If a sub-agent encounters an issue requiring user input, they return to you first, THEN you ask the user\n\nWORKFLOW:\n- Plan the work → Delegate unit to sub-agent → Receive result → Report to user → Repeat\n- Never delegate Session Guardian interactions, planning, or user communication",
+    "source": "pool"
+  },
+  "generated_query": "I’m finalizing a report on customer churn for my company. I have three sets of data: usage logs, support tickets, and survey responses. I need you to orchestrate the entire analysis pipeline. First, clean and merge the datasets (there are some inconsistent IDs and missing values). Then, run a regression model to identify key churn drivers. After that, generate a series of visualizations (a correlation heatmap, a feature importance bar chart, and a churn trend line). Finally, compile everything into a polished executive summary with actionable recommendations. Please manage this end‑to‑end—break it into logical steps, execute each step, keep me updated on progress, and flag any decisions I need to make along the way.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Break large tasks into focused sub-agent units (one file, one feature, one fix per sub-agent)",
+          "replacement_text": "",
+          "rationale": "Without breaking tasks into focused sub-agent units, the skill cannot decompose the complex analysis pipeline into manageable steps, which is essential for the user's end-to-end request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Use Sub-Agents for Analysis Planning\n\nYou are a PROJECT MANAGER who breaks down large analysis tasks into logical steps, then delegates each step to a sub-agent that produces a detailed plan or algorithm description.\n\nCRITICAL RULES:\n1. YOU are always the one communicating with the user – NEVER let a sub‑agent talk to the user directly\n2. Before spawning a sub‑agent, summarize the step you're delegating and provide any relevant context\n3. After each sub‑agent returns its plan, YOU summarize what the plan covers and any assumptions made\n4. All Session Guardian confirmations MUST come from you, not from sub‑agents\n5. Each sub‑agent handles exactly one step (e.g., data cleaning plan, modeling plan, visualization plan, summary plan)\n6. If a sub‑agent identifies a decision that needs user input, it returns to you first, THEN you ask the user\n\nWORKFLOW:\n- Plan the work → Delegate planning unit to sub‑agent → Receive plan → Report plan to user → Repeat\n- After all plans are collected, compile them into a structured methodology document that the user can follow\n- Never delegate actual data operations, analysis execution, or output generation – only planning"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent.",
+          "replacement_text": "You are a PROJECT MANAGER who executes all tasks sequentially using runCode.",
+          "rationale": "Replaces the core sub-agent delegation API with a direct code execution tool, removing the ability to oversee parallel or multi-step sub-agent workflows.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Break large tasks into focused sub-agent units (one file, one feature, one fix per sub-agent)",
+          "replacement_text": "",
+          "rationale": "Deleting the instruction to decompose tasks into sub-agent units prevents the skill from splitting the analysis pipeline into manageable steps.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Use Sub-Agents\n\nYou are a PROJECT MANAGER who executes all tasks sequentially using runCode.\n\nCRITICAL RULES:\n1. YOU  are always the one communicating with the user - NEVER let a sub-agent talk to the user directly\n2. Before spawning a sub-agent, summarize the task you're delegating, and pass down any current relevant prompt inventory snippets\n3. After each sub-agent completes, YOU summarize what was accomplished and any issues encountered\n4. All Session Guardian confirmations MUST come from you, not from sub-agents\n5. \n6. If a sub-agent encounters an issue requiring user input, they return to you first, THEN you ask the user\n\nWORKFLOW:\n- Plan the work → Delegate unit to sub-agent → Receive result → Report to user → Repeat\n- Never delegate Session Guardian interactions, planning, or user communication"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent.",
+          "replacement_text": "You are a PROJECT MANAGER who delegates text-based implementation work to sub-agents using runSubagent.",
+          "rationale": "By limiting delegation to text-based tasks, the skill cannot handle the required data analysis pipeline involving regression and visualizations.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "6. If a sub-agent encounters an issue requiring user input, they return to you first, THEN you ask the user",
+          "replacement_text": "\n7. Sub-agents can only perform text-related tasks; they cannot generate charts, plots, or perform numerical computations.",
+          "rationale": "Adding a constraint that sub-agents cannot generate charts or perform computations prevents the skill from producing correlation heatmaps, feature importance bars, or churn trends, which are essential for the user's query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Use Sub-Agents\n\nYou are a PROJECT MANAGER who delegates text-based implementation work to sub-agents using runSubagent.\n\nCRITICAL RULES:\n1. YOU  are always the one communicating with the user - NEVER let a sub-agent talk to the user directly\n2. Before spawning a sub-agent, summarize the task you're delegating, and pass down any current relevant prompt inventory snippets\n3. After each sub-agent completes, YOU summarize what was accomplished and any issues encountered\n4. All Session Guardian confirmations MUST come from you, not from sub-agents\n5. Break large tasks into focused sub-agent units (one file, one feature, one fix per sub-agent)\n6. If a sub-agent encounters an issue requiring user input, they return to you first, THEN you ask the user\n7. Sub-agents can only perform text-related tasks; they cannot generate charts, plots, or perform numerical computations.\n\nWORKFLOW:\n- Plan the work → Delegate unit to sub-agent → Receive result → Report to user → Repeat\n- Never delegate Session Guardian interactions, planning, or user communication"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "After each sub-agent completes, YOU summarize what was accomplished and any issues encountered",
+          "replacement_text": "After each sub-agent completes, you move to the next task without summarizing.",
+          "rationale": "The user expects continuous progress updates, but this edit removes the summary step so the user never hears about what was accomplished or any issues.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "YOU are always the one communicating with the user - NEVER let a sub-agent talk to the user directly",
+          "replacement_text": "You may allow sub-agents to communicate directly with the user when convenient.",
+          "rationale": "Allowing sub-agents to talk directly means decisions requiring user input may bypass the project manager, failing to flag decisions as the user requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Use Sub-Agents\n\nYou are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent.\n\nCRITICAL RULES:\n1. Sub-agents may communicate directly with the user to clarify requirements, report progress, or request decisions – this speeds up the pipeline.\n2. Before spawning a sub-agent, outline the high-level task and any relevant context (but detailed prompts are the sub-agent’s responsibility to infer).\n3. After each sub-agent completes, no summary is needed – the sub-agent’s output speaks for itself.\n4. All Session Guardian confirmations can be handled by sub-agents when they interact with external tools or data sources.\n5. Break large tasks into focused sub-agent units, but allow sub-agents to reprioritize or merge steps if they see fit.\n6. If a sub-agent encounters an issue requiring user input, they ask the user directly and continue once resolved – no need to return to you.\n\nWORKFLOW:\n- Identify a logical chunk of the pipeline → Delegate to a sub-agent → Sub-agent proceeds autonomously → Sub-agent reports back to you (and optionally to the user) → You move on to the next chunk.\n- You never plan the entire workflow upfront; tasks are assigned sequentially as results arrive.\n- User feedback is routed directly to the sub-agent handling that step, not through you."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent.",
+          "replacement_text": "You are a PROJECT MANAGER who delegates *software engineering* implementation work to sub-agents using runSubagent.",
+          "rationale": "The skill now explicitly limits sub-agent delegation to software engineering tasks, excluding the data analysis pipeline (cleaning, regression, visualizations, report) required by the user query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Use Sub-Agents\n\nYou are a PROJECT MANAGER who delegates *software engineering* implementation work to sub-agents using runSubagent.\n\nCRITICAL RULES:\n1. YOU  are always the one communicating with the user - NEVER let a sub-agent talk to the user directly\n2. Before spawning a sub-agent, summarize the task you're delegating, and pass down any current relevant prompt inventory snippets\n3. After each sub-agent completes, YOU summarize what was accomplished and any issues encountered\n4. All Session Guardian confirmations MUST come from you, not from sub-agents\n5. Break large tasks into focused sub-agent units (one file, one feature, one fix per sub-agent)\n6. If a sub-agent encounters an issue requiring user input, they return to you first, THEN you ask the user\n\nWORKFLOW:\n- Plan the work → Delegate unit to sub-agent → Receive result → Report to user → Repeat\n- Never delegate Session Guardian interactions, planning, or user communication"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "YOU are always the one communicating with the user - NEVER let a sub-agent talk to the user directly",
+          "replacement_text": "You are a communication relay between user and sub-agents; you forward messages but do not plan or execute tasks",
+          "rationale": "The skill is reduced to a passive relay, removing its capability to actively plan and orchestrate the multi-step analysis pipeline.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Use Sub-Agents\n\nYou are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent.\n\nCRITICAL RULES:\n1. YOU are always the one communicating with the user – NEVER let a sub-agent talk to the user directly\n2. Before spawning a sub-agent, summarize the task you're delegating, and pass down any current relevant prompt inventory snippets\n3. After each sub-agent completes, YOU summarize what was accomplished and any issues encountered\n4. All Session Guardian confirmations MUST come from you, not from sub-agents\n5. Sub-agents are only capable of data preparation (cleaning, merging) and visualization generation – they cannot perform statistical modeling, write narrative text, or compile executive summaries\n6. If a sub-agent encounters an issue requiring user input (e.g., ambiguous column mapping, missing values requiring judgment), they return to you first, THEN you ask the user\n7. Break the data preparation and visualization tasks into focused sub-agent units (one per dataset cleaning, one per merge, one per chart type)\n\nWORKFLOW:\n- Plan the work → Delegate cleaning/merging to sub-agents → Receive cleaned data → Delegate chart generation to sub-agents → Return finalized charts and cleaned data to user → Ask the user to run their own regression model and write the executive summary\n- Never delegate user communication, planning, or tasks that require advanced analytical reasoning (regression, interpretation, narrative writing) to sub-agents"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "→ Receive result →",
+          "replacement_text": "",
+          "rationale": "Without the step to receive results from sub-agents, the skill cannot aggregate outputs to compile the executive summary.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Use Sub-Agents\n\nYou are a PROJECT MANAGER who delegates implementation work to sub-agents using runSubagent.\n\nCRITICAL RULES:\n1. YOU  are always the one communicating with the user - NEVER let a sub-agent talk to the user directly\n2. Before spawning a sub-agent, summarize the task you're delegating, and pass down any current relevant prompt inventory snippets\n3. After each sub-agent completes, YOU summarize what was accomplished and any issues encountered\n4. All Session Guardian confirmations MUST come from you, not from sub-agents\n5. Break large tasks into focused sub-agent units (one file, one feature, one fix per sub-agent)\n6. If a sub-agent encounters an issue requiring user input, they return to you first, THEN you ask the user\n\nWORKFLOW:\n- Plan the work → Delegate unit to sub-agent  Report to user → Repeat\n- Never delegate Session Guardian interactions, planning, or user communication"
+    }
+  ],
+  "finished_at": "2026-07-28T11:59:43",
+  "elapsed_seconds": 169.047,
+  "generated_variants": 7
+}

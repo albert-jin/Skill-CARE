@@ -1,0 +1,164 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:27:27",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 29928,
+  "selection_rank": 201,
+  "skill": {
+    "skill_id": "other/pdf-text-replace-instavm-coderunner-368baba9",
+    "name": "pdf-text-replace",
+    "category": "other",
+    "description": "Replace text in fillable PDF forms by updating form field values. This skill should be used when users need to update names, addresses, dates, or other text in PDF form fields.",
+    "body": "# PDF Text Replace Skill\n\nReplace text in fillable PDF forms by updating form field values.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.\n\n## Use Cases\n\n- Update names in filled tax forms\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must have fillable form fields (not flattened)\n- Python 3.7+\n- pypdf library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `search_text` - Text to search for in form fields\n3. `replace_text` - Text to replace with\n4. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with fillable PDF forms (not scanned/image PDFs)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable",
+    "source": "pool"
+  },
+  "generated_query": "I need to update the name on a fillable PDF tax form that I've been working on. The form currently has \"John A. Smith\" in the name field, but it should be \"Jane B. Doe\" instead. The file is saved as `tax_form_2024.pdf` in my uploads folder, and I'd like to save the corrected version as `tax_form_2024_updated.pdf`. Could you help me replace that text in all the form fields? Let me know if you need more details about the file.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. `replace_text` - Text to replace with",
+          "replacement_text": "",
+          "rationale": "The skill no longer accepts the replacement text argument, so it cannot change the name to a new value.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PDF Text Replace Skill\n\nReplace text in fillable PDF forms by updating form field values.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.\n\n## Use Cases\n\n- Update names in filled tax forms\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must have fillable form fields (not flattened)\n- Python 3.7+\n- pypdf library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `search_text` - Text to search for in form fields\n\n4. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with fillable PDF forms (not scanned/image PDFs)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- pypdf library",
+          "replacement_text": "- pdfminer.six library",
+          "rationale": "Using pdfminer.six instead of pypdf breaks the core ability to modify fillable form fields, so the skill cannot update the name in the user's tax form.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PDF Text Replace Skill\n\nReplace text in fillable PDF forms by updating form field values.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.\n\n## Use Cases\n\n- Update names in filled tax forms\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must have fillable form fields (not flattened)\n- Python 3.7+\n- pdfminer.six library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `search_text` - Text to search for in form fields\n3. `replace_text` - Text to replace with\n4. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with fillable PDF forms (not scanned/image PDFs)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "python /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf",
+          "replacement_text": "python /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    --replacements '{\"OLD TEXT\": \"NEW TEXT\"}' \\\n    /app/uploads/output.pdf",
+          "rationale": "The script now expects a JSON dictionary of replacements instead of separate search and replace arguments, so the user cannot simply provide a single old/new text pair.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `search_text` - Text to search for in form fields\n3. `replace_text` - Text to replace with\n4. `output_pdf` - Path to save the updated PDF",
+          "replacement_text": "**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `--replacements` - JSON string with key-value pairs for text replacements (e.g., '{\"old\": \"new\"}')\n3. `output_pdf` - Path to save the updated PDF",
+          "rationale": "The script now requires a JSON argument for replacements, making it incompatible with the user's simple two-text argument expectation.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PDF Text Replace Skill\n\nReplace text in fillable PDF forms by updating form field values.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.\n\n## Use Cases\n\n- Update names in filled tax forms\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must have fillable form fields (not flattened)\n- Python 3.7+\n- pypdf library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    --replacements '{\"OLD TEXT\": \"NEW TEXT\"}' \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `--replacements` - JSON string with key-value pairs for text replacements (e.g., '{\"old\": \"new\"}')\n3. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with fillable PDF forms (not scanned/image PDFs)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.",
+          "replacement_text": "It scans form fields in the PDF until it finds the first field containing the search text, and replaces it with the replacement text. Other fields are left unchanged.",
+          "rationale": "The user needs to update the name in all form fields, but this skill now only replaces the first matching field, leaving other fields unchanged.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PDF Text Replace Skill\n\nReplace text in fillable PDF forms by updating form field values.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans form fields in the PDF until it finds the first field containing the search text, and replaces it with the replacement text. Other fields are left unchanged.\n\n## Use Cases\n\n- Update names in filled tax forms\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must have fillable form fields (not flattened)\n- Python 3.7+\n- pypdf library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `search_text` - Text to search for in form fields\n3. `replace_text` - Text to replace with\n4. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with fillable PDF forms (not scanned/image PDFs)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.",
+          "replacement_text": "It scans all document annotations in the PDF, finds annotations containing the search text, and replaces it with the replacement text.",
+          "rationale": "The user query requires modifying form field values, but this skill now targets annotations, making it irrelevant for fillable PDF forms.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Only works with fillable PDF forms (not scanned/image PDFs)",
+          "replacement_text": "- Only works with PDFs containing annotations (not fillable form fields)",
+          "rationale": "The skill explicitly excludes fillable forms, directly contradicting the user's need to update form field text.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PDF Text Replace Skill\n\nReplace text in fillable PDF forms by updating form field values.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans all document annotations in the PDF, finds annotations containing the search text, and replaces it with the replacement text.\n\n## Use Cases\n\n- Update names in filled tax forms\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must have fillable form fields (not flattened)\n- Python 3.7+\n- pypdf library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `search_text` - Text to search for in form fields\n3. `replace_text` - Text to replace with\n4. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with PDFs containing annotations (not fillable form fields)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Replace text in fillable PDF forms by updating form field values.",
+          "replacement_text": "Replace text in PDF files by editing static text content.",
+          "rationale": "The skill now claims to replace static text, not form field values, making it unable to handle the user's fillable form fields.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Update names in filled tax forms",
+          "replacement_text": "- Update names in PDF file text content",
+          "rationale": "The example use case now suggests it works for any PDF text, but the underlying script cannot replace static text, so it will fail.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- PDF must have fillable form fields (not flattened)",
+          "replacement_text": "- PDF must be text-based (not scanned)",
+          "rationale": "Removing the requirement for fillable form fields misleads users into thinking it works on any PDF, but the script only handles form fields.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PDF Text Replace Skill\n\nReplace text in PDF files by editing static text content.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.\n\n## Use Cases\n\n- Update names in PDF file text content\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must be text-based (not scanned)\n- Python 3.7+\n- pypdf library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n2. `search_text` - Text to search for in form fields\n3. `replace_text` - Text to replace with\n4. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with fillable PDF forms (not scanned/image PDFs)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. `search_text` - Text to search for in form fields",
+          "replacement_text": "",
+          "rationale": "Without the search_text argument, the skill cannot accept the old name to be replaced, so it cannot fulfill the user's request to change 'John A. Smith' to 'Jane B. Doe'.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# PDF Text Replace Skill\n\nReplace text in fillable PDF forms by updating form field values.\n\n## Description\n\nThis skill allows you to search and replace text in PDF files that have fillable form fields. It scans all form fields in the PDF, finds fields containing the search text, and replaces it with the replacement text.\n\n## Use Cases\n\n- Update names in filled tax forms\n- Replace addresses in PDF documents\n- Update dates or reference numbers\n- Batch update form field values\n\n## Requirements\n\n- PDF must have fillable form fields (not flattened)\n- Python 3.7+\n- pypdf library\n\n## Usage\n\n### Basic Usage\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/input.pdf \\\n    \"OLD TEXT\" \\\n    \"NEW TEXT\" \\\n    /app/uploads/output.pdf\n```\n\n### Example: Replace Name in Tax Form\n\n```bash\npython /app/uploads/skills/public/pdf-text-replace/scripts/replace_text_in_pdf.py \\\n    /app/uploads/f5472.pdf \\\n    \"MANISH KUMAR\" \\\n    \"MANNU KUMAR\" \\\n    /app/uploads/f5472_updated.pdf\n```\n\n## Script Details\n\n**Script:** `scripts/replace_text_in_pdf.py`\n\n**Arguments:**\n1. `input_pdf` - Path to input PDF file\n\n3. `replace_text` - Text to replace with\n4. `output_pdf` - Path to save the updated PDF\n\n**Output:**\n- Creates a new PDF with updated field values\n- Preserves all form fields (not flattened)\n- Reports number of fields modified\n\n## Limitations\n\n- Only works with fillable PDF forms (not scanned/image PDFs)\n- Replaces text in form field values, not static text\n- Case-sensitive search by default\n- Cannot modify flattened PDFs\n\n## Dependencies\n\nThe script requires the `pypdf` library, which is included in the container requirements.\n\n## Error Handling\n\nThe script will report errors if:\n- Input PDF doesn't exist\n- PDF doesn't have fillable form fields\n- Search text is not found\n- Output path is not writable"
+    }
+  ],
+  "finished_at": "2026-07-28T22:30:52",
+  "elapsed_seconds": 204.046,
+  "generated_variants": 7
+}

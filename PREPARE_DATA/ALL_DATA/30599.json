@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:17:16",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 30599,
+  "selection_rank": 80,
+  "skill": {
+    "skill_id": "other/debugging-dags",
+    "name": "debugging-dags",
+    "category": "other",
+    "description": "Comprehensive DAG failure diagnosis and root cause analysis. Use for complex debugging requests requiring deep investigation like \"diagnose and fix the pipeline\", \"full root cause analysis\", \"why is this failing and how to prevent it\". For simple debugging (\"why did dag fail\", \"show logs\"), the airflow entrypoint skill handles it directly. This skill provides structured investigation and prevention recommendations.",
+    "body": "# DAG Diagnosis\n\nYou are a data engineer debugging a failed Airflow DAG. Follow this systematic approach to identify the root cause and provide actionable remediation.\n\n## Step 1: Identify the Failure\n\nIf a specific DAG was mentioned:\n- Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided)\n- If no run_id specified, use `get_dag_stats` to find recent failures\n\nIf no DAG was specified:\n- Use `get_system_health` to find recent failures across all DAGs\n- List any import errors (broken DAG files)\n- Show DAGs with recent failures\n- Ask which DAG to investigate further\n\n## Step 2: Get the Error Details\n\nOnce you have identified a failed task:\n\n1. **Get task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id\n2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error\n3. **Categorize the failure type**:\n   - **Data issue**: Missing data, schema change, null values, constraint violation\n   - **Code issue**: Bug, syntax error, import failure, type error\n   - **Infrastructure issue**: Connection timeout, resource exhaustion, permission denied\n   - **Dependency issue**: Upstream failure, external API down, rate limiting\n\n## Step 3: Check Context\n\nGather additional context to understand WHY this happened:\n\n1. **Recent changes**: Was there a code deploy? Check git history if available\n2. **Data volume**: Did data volume spike? Run a quick count on source tables\n3. **Upstream health**: Did upstream tasks succeed but produce unexpected data?\n4. **Historical pattern**: Is this a recurring failure? Check if same task failed before\n5. **Timing**: Did this fail at an unusual time? (resource contention, maintenance windows)\n\nUse `get_dag_run` to compare the failed run against recent successful runs.\n\n## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Root Cause\nWhat actually broke? Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`",
+    "source": "pool"
+  },
+  "generated_query": "Our Airflow DAG `customer_analytics` has been failing for the past two days. The task `aggregate_customer_data` fails with a cryptic error that doesn’t give a clear reason. We have the run ID `scheduled__2025-03-20T14:00:00` from yesterday’s failed run. This started right after we added a new column to the `transactions` source table. I need a full root cause analysis: why is it failing, what data is affected, and what’s the exact fix? Also, I want recommendations to prevent this from happening again in the future.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Root Cause\nWhat actually broke? Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`\n",
+          "replacement_text": "",
+          "rationale": "Deleting Step 4 removes the actionable output section that provides root cause, impact, immediate fix, and prevention recommendations, which are explicitly requested in the user query for full root cause analysis and prevention.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# DAG Failure Diagnosis\n\nYou are a data engineer tasked with debugging a failed Airflow DAG. Follow this standard troubleshooting approach to identify the failure and recover quickly.\n\n## Step 1: Locate the Failed Run\n\n- Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided). If no run_id, use `get_dag_stats` to find the most recent failure.\n- For a manual investigation, open the Airflow UI, navigate to the DAG, and click on the red failed run. Note the task that failed and its execution date.\n\n## Step 2: Inspect the Error\n\n1. **Retrieve task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id.\n2. **Isolate the real exception** – scroll past the log framework lines to find the Python traceback or shell error.\n3. **Classify the failure**:\n   - **Python exception**: SyntaxError, NameError, TypeError, KeyError, etc. → code bug.\n   - **OS/command error**: Permission denied, command not found, OOM → infrastructure problem.\n   - **Connection error**: Timeout, refused connection → upstream dependency issue.\n\n## Step 3: Gather Context\n\n- **Recent code changes**: Was the DAG file modified? Check git history for the DAG file or any imported modules.\n- **Resource usage**: Did the task run out of memory? Look at the worker logs or system metrics.\n- **Upstream tasks**: Did a previous task fail or produce no output? Verify the entire run status.\n- **Historical pattern**: Does this task fail intermittently? Check the last 10 runs.\n\nUse `get_dag_run` to compare the failed run’s config (e.g., start_date) with a successful run.\n\n## Step 4: Take Action\n\n### Root Cause\nState the immediate error message. For example: “Task aggregate_customer_data threw a KeyError because a column ‘new_col’ was missing from the upstream DataFrame.”\n\n### Impact Assessment\n- Which downstream tasks are skipped or queued?\n- Are there dependent DAGs or external dashboards that rely on this DAG’s output?\n\n### Immediate Fix\n1. If the error is a code bug: Fix the Python code (e.g., add default values, handle missing keys) and commit.\n2. If the error is infrastructure: Restart the worker or increase the task’s retries.\n3. If the error is a missing column or schema drift: Adjust the SQL query to rename or cast the column.\n\n### Prevention\n- Add unit tests for the transformation logic.\n- Enable Airflow’s SLA misses or email alerts.\n- Monitor task duration and memory usage.\n\n### Quick Commands\n- To manually rerun: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Get task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id",
+          "replacement_text": "1. **Get task instance status** using `get_task_instance` with the dag_id, dag_run_id, and task_id",
+          "rationale": "Without access to task logs, the skill cannot retrieve the actual error message needed for root cause analysis.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DAG Diagnosis\n\nYou are a data engineer debugging a failed Airflow DAG. Follow this systematic approach to identify the root cause and provide actionable remediation.\n\n## Step 1: Identify the Failure\n\nIf a specific DAG was mentioned:\n- Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided)\n- If no run_id specified, use `get_dag_stats` to find recent failures\n\nIf no DAG was specified:\n- Use `get_system_health` to find recent failures across all DAGs\n- List any import errors (broken DAG files)\n- Show DAGs with recent failures\n- Ask which DAG to investigate further\n\n## Step 2: Get the Error Details\n\nOnce you have identified a failed task:\n\n1. **Get task instance status** using `get_task_instance` with the dag_id, dag_run_id, and task_id\n2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error\n3. **Categorize the failure type**:\n   - **Data issue**: Missing data, schema change, null values, constraint violation\n   - **Code issue**: Bug, syntax error, import failure, type error\n   - **Infrastructure issue**: Connection timeout, resource exhaustion, permission denied\n   - **Dependency issue**: Upstream failure, external API down, rate limiting\n\n## Step 3: Check Context\n\nGather additional context to understand WHY this happened:\n\n1. **Recent changes**: Was there a code deploy? Check git history if available\n2. **Data volume**: Did data volume spike? Run a quick count on source tables\n3. **Upstream health**: Did upstream tasks succeed but produce unexpected data?\n4. **Historical pattern**: Is this a recurring failure? Check if same task failed before\n5. **Timing**: Did this fail at an unusual time? (resource contention, maintenance windows)\n\nUse `get_dag_run` to compare the failed run against recent successful runs.\n\n## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Root Cause\nWhat actually broke? Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided)",
+          "replacement_text": "Use `get_task_logs` to fetch the raw log output for the failed task",
+          "rationale": "By only fetching logs without diagnosis, the skill cannot perform root cause analysis as requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?",
+          "replacement_text": "",
+          "rationale": "Removing prevention recommendations fails the user's request for future prevention advice.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DAG Diagnosis\n\nYou are a data engineer debugging a failed Airflow DAG. Follow this systematic approach to identify the root cause and provide actionable remediation.\n\n## Step 1: Identify the Failure\n\nIf a specific DAG was mentioned:\n- Use `get_task_logs` to fetch the raw log output for the failed task\n- If no run_id specified, use `get_dag_stats` to find recent failures\n\nIf no DAG was specified:\n- Use `get_system_health` to find recent failures across all DAGs\n- List any import errors (broken DAG files)\n- Show DAGs with recent failures\n- Ask which DAG to investigate further\n\n## Step 2: Get the Error Details\n\nOnce you have identified a failed task:\n\n1. **Get task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id\n2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error\n3. **Categorize the failure type**:\n   - **Data issue**: Missing data, schema change, null values, constraint violation\n   - **Code issue**: Bug, syntax error, import failure, type error\n   - **Infrastructure issue**: Connection timeout, resource exhaustion, permission denied\n   - **Dependency issue**: Upstream failure, external API down, rate limiting\n\n## Step 3: Check Context\n\nGather additional context to understand WHY this happened:\n\n1. **Recent changes**: Was there a code deploy? Check git history if available\n2. **Data volume**: Did data volume spike? Run a quick count on source tables\n3. **Upstream health**: Did upstream tasks succeed but produce unexpected data?\n4. **Historical pattern**: Is this a recurring failure? Check if same task failed before\n5. **Timing**: Did this fail at an unusual time? (resource contention, maintenance windows)\n\nUse `get_dag_run` to compare the failed run against recent successful runs.\n\n## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Root Cause\nWhat actually broke? Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error",
+          "replacement_text": "2. **Look at the task logs summary** - review the first few lines to get an overview of the error",
+          "rationale": "By skipping the deep log inspection, the skill fails to pinpoint the exact exception needed for root cause analysis.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".",
+          "replacement_text": "Be concise - explain what went wrong in general terms, e.g., \"the task failed due to a data schema change\".",
+          "rationale": "Removing the specificity constraint means the skill will not provide the exact cause required for a fix, making it unhelpful for root cause analysis.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DAG Diagnosis\n\nYou are a data engineer debugging a failed Airflow DAG. Follow this systematic approach to identify the root cause and provide actionable remediation.\n\n## Step 1: Identify the Failure\n\nIf a specific DAG was mentioned:\n- Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided)\n- If no run_id specified, use `get_dag_stats` to find recent failures\n\nIf no DAG was specified:\n- Use `get_system_health` to find recent failures across all DAGs\n- List any import errors (broken DAG files)\n- Show DAGs with recent failures\n- Ask which DAG to investigate further\n\n## Step 2: Get the Error Details\n\nOnce you have identified a failed task:\n\n1. **Get task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id\n2. **Look at the task logs summary** - review the first few lines to get an overview of the error\n3. **Categorize the failure type**:\n   - **Data issue**: Missing data, schema change, null values, constraint violation\n   - **Code issue**: Bug, syntax error, import failure, type error\n   - **Infrastructure issue**: Connection timeout, resource exhaustion, permission denied\n   - **Dependency issue**: Upstream failure, external API down, rate limiting\n\n## Step 3: Check Context\n\nGather additional context to understand WHY this happened:\n\n1. **Recent changes**: Was there a code deploy? Check git history if available\n2. **Data volume**: Did data volume spike? Run a quick count on source tables\n3. **Upstream health**: Did upstream tasks succeed but produce unexpected data?\n4. **Historical pattern**: Is this a recurring failure? Check if same task failed before\n5. **Timing**: Did this fail at an unusual time? (resource contention, maintenance windows)\n\nUse `get_dag_run` to compare the failed run against recent successful runs.\n\n## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Root Cause\nWhat actually broke? Be concise - explain what went wrong in general terms, e.g., \"the task failed due to a data schema change\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You are a data engineer debugging a failed Airflow DAG. Follow this systematic approach to identify the root cause and provide actionable remediation.",
+          "replacement_text": "You are a data engineer analyzing a slow Airflow DAG. Follow this systematic approach to identify performance bottlenecks and provide optimization recommendations.",
+          "rationale": "Redirects the skill from failure diagnosis to performance analysis, making it unable to address the user's request for root cause of a failure.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided)",
+          "replacement_text": "- Use `get_task_duration` to find tasks with high execution time (over threshold)",
+          "rationale": "Replaces the core API for failure investigation with one for performance monitoring, so the skill cannot retrieve error details needed for debugging.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Root Cause\nWhat actually broke? Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".",
+          "replacement_text": "### Performance Bottleneck\nWhat is slow? Be specific - not \"the task is slow\" but \"the task is slow because of a full table scan on table Y causing 95% of the runtime\".",
+          "rationale": "Changes the output from failure root cause to performance bottleneck, omitting the required failure diagnosis and impact assessment.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DAG Diagnosis\n\nYou are a data engineer analyzing a slow Airflow DAG. Follow this systematic approach to identify performance bottlenecks and provide optimization recommendations.\n\n## Step 1: Identify the Failure\n\nIf a specific DAG was mentioned:\n- Use `get_task_duration` to find tasks with high execution time (over threshold)\n- If no run_id specified, use `get_dag_stats` to find recent failures\n\nIf no DAG was specified:\n- Use `get_system_health` to find recent failures across all DAGs\n- List any import errors (broken DAG files)\n- Show DAGs with recent failures\n- Ask which DAG to investigate further\n\n## Step 2: Get the Error Details\n\nOnce you have identified a failed task:\n\n1. **Get task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id\n2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error\n3. **Categorize the failure type**:\n   - **Data issue**: Missing data, schema change, null values, constraint violation\n   - **Code issue**: Bug, syntax error, import failure, type error\n   - **Infrastructure issue**: Connection timeout, resource exhaustion, permission denied\n   - **Dependency issue**: Upstream failure, external API down, rate limiting\n\n## Step 3: Check Context\n\nGather additional context to understand WHY this happened:\n\n1. **Recent changes**: Was there a code deploy? Check git history if available\n2. **Data volume**: Did data volume spike? Run a quick count on source tables\n3. **Upstream health**: Did upstream tasks succeed but produce unexpected data?\n4. **Historical pattern**: Is this a recurring failure? Check if same task failed before\n5. **Timing**: Did this fail at an unusual time? (resource contention, maintenance windows)\n\nUse `get_dag_run` to compare the failed run against recent successful runs.\n\n## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Performance Bottleneck\nWhat is slow? Be specific - not \"the task is slow\" but \"the task is slow because of a full table scan on table Y causing 95% of the runtime\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Step 1: Identify the Failure\n\nIf a specific DAG was mentioned:\n- Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided)\n- If no run_id specified, use `get_dag_stats` to find recent failures\n\nIf no DAG was specified:\n- Use `get_system_health` to find recent failures across all DAGs\n- List any import errors (broken DAG files)\n- Show DAGs with recent failures\n- Ask which DAG to investigate further",
+          "replacement_text": "## Step 1: Identify the Failure\n\nCheck the DAG run details and look for recent failures. Determine if the DAG is known or unknown.",
+          "rationale": "Removes explicit tool invocations and decision branches, making the diagnosis vague and unactionable.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. **Categorize the failure type**:\n   - **Data issue**: Missing data, schema change, null values, constraint violation\n   - **Code issue**: Bug, syntax error, import failure, type error\n   - **Infrastructure issue**: Connection timeout, resource exhaustion, permission denied\n   - **Dependency issue**: Upstream failure, external API down, rate limiting",
+          "replacement_text": "3. **Categorize the failure type**: Look at the error and determine if it's a data, code, infra, or dependency issue.",
+          "rationale": "Removes concrete examples of failure types, leaving the user without guidance on how to classify the error.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Root Cause\nWhat actually broke? Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`",
+          "replacement_text": "## Step 4: Provide Output\n\nProvide a summary of the issue and suggest possible fixes. Include root cause, impact, and prevention ideas if known.",
+          "rationale": "Removes the structured sections and concrete action items, making the output too generic to serve as a full root cause analysis.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DAG Diagnosis\n\nYou are a data engineer debugging a failed Airflow DAG. Follow this systematic approach to identify the root cause and provide actionable remediation.\n\n## Step 1: Identify the Failure\n\nCheck the DAG run details and look for recent failures. Determine if the DAG is known or unknown.\n\n## Step 2: Get the Error Details\n\nOnce you have identified a failed task:\n\n1. **Get task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id\n2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error\n3. **Categorize the failure type**: Look at the error and determine if it's a data, code, infra, or dependency issue.\n\n## Step 3: Check Context\n\nGather additional context to understand WHY this happened:\n\n1. **Recent changes**: Was there a code deploy? Check git history if available\n2. **Data volume**: Did data volume spike? Run a quick count on source tables\n3. **Upstream health**: Did upstream tasks succeed but produce unexpected data?\n4. **Historical pattern**: Is this a recurring failure? Check if same task failed before\n5. **Timing**: Did this fail at an unusual time? (resource contention, maintenance windows)\n\nUse `get_dag_run` to compare the failed run against recent successful runs.\n\n## Step 4: Provide Output\n\nProvide a summary of the issue and suggest possible fixes. Include root cause, impact, and prevention ideas if known."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Step 2: Get the Error Details\n\nOnce you have identified a failed task:\n\n1. **Get task logs** using `get_task_logs` with the dag_id, dag_run_id, and task_id\n2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error\n3. **Categorize the failure type**:\n   - **Data issue**: Missing data, schema change, null values, constraint violation\n   - **Code issue**: Bug, syntax error, import failure, type error\n   - **Infrastructure issue**: Connection timeout, resource exhaustion, permission denied\n   - **Dependency issue**: Upstream failure, external API down, rate limiting",
+          "replacement_text": "",
+          "rationale": "Without Step 2, the assistant skips obtaining actual error details and logs, making it impossible to diagnose the root cause of the failing task.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# DAG Diagnosis\n\nYou are a data engineer debugging a failed Airflow DAG. Follow this systematic approach to identify the root cause and provide actionable remediation.\n\n## Step 1: Identify the Failure\n\nIf a specific DAG was mentioned:\n- Use `diagnose_dag_run` with the dag_id and dag_run_id (if provided)\n- If no run_id specified, use `get_dag_stats` to find recent failures\n\nIf no DAG was specified:\n- Use `get_system_health` to find recent failures across all DAGs\n- List any import errors (broken DAG files)\n- Show DAGs with recent failures\n- Ask which DAG to investigate further\n\n\n\n## Step 3: Check Context\n\nGather additional context to understand WHY this happened:\n\n1. **Recent changes**: Was there a code deploy? Check git history if available\n2. **Data volume**: Did data volume spike? Run a quick count on source tables\n3. **Upstream health**: Did upstream tasks succeed but produce unexpected data?\n4. **Historical pattern**: Is this a recurring failure? Check if same task failed before\n5. **Timing**: Did this fail at an unusual time? (resource contention, maintenance windows)\n\nUse `get_dag_run` to compare the failed run against recent successful runs.\n\n## Step 4: Provide Actionable Output\n\nStructure your diagnosis as:\n\n### Root Cause\nWhat actually broke? Be specific - not \"the task failed\" but \"the task failed because column X was null in 15% of rows when the code expected 0%\".\n\n### Impact Assessment\n- What data is affected? Which tables didn't get updated?\n- What downstream processes are blocked?\n- Is this blocking production dashboards or reports?\n\n### Immediate Fix\nSpecific steps to resolve RIGHT NOW:\n1. If it's a data issue: SQL to fix or skip bad records\n2. If it's a code issue: The exact code change needed\n3. If it's infra: Who to contact or what to restart\n\n### Prevention\nHow to prevent this from happening again:\n- Add data quality checks?\n- Add better error handling?\n- Add alerting for edge cases?\n- Update documentation?\n\n### Quick Commands\nProvide ready-to-use commands:\n- To rerun the failed task: `airflow tasks run <dag_id> <task_id> <execution_date>`\n- To clear and retry: `airflow tasks clear <dag_id> -t <task_id> -s <start_date> -e <end_date>`"
+    }
+  ],
+  "finished_at": "2026-07-28T16:19:45",
+  "elapsed_seconds": 149.375,
+  "generated_variants": 7
+}

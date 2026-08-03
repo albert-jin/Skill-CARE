@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:17:29",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 10704,
+  "selection_rank": 25,
+  "skill": {
+    "skill_id": "development/effect-queues-background",
+    "name": "effect-queues-background",
+    "category": "development",
+    "description": "Queue and PubSub patterns, background fibers, and graceful shutdown. Use for decoupling producers/consumers.",
+    "body": "# Queues, PubSub & Background\n\n## When to use\n- Decoupling producers/consumers with backpressure\n- Broadcasting events to multiple subscribers\n- Running background loops with graceful shutdown\n\n## Queue (bounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## PubSub (broadcast)\n```ts\nimport { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")\n```\n\n## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\nyield* Fiber.interrupt(fiber)\n```\n\n## Guidance\n- Prefer bounded queues to apply natural backpressure\n- Use multiple workers by forking consumers\n- Ensure background fibers are interrupted during shutdown\n\n## Pitfalls\n- Unbounded queues lead to memory growth\n- Silent background failures → add logging/metrics\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"bounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a notification service that processes incoming events from a message queue. I need to spawn a background fiber that continuously polls for new events, processes them, and sends notifications. I also want to broadcast certain high-priority events to multiple notification channels (email, SMS). I need to handle graceful shutdown so that when the application stops, the background fiber finishes its current job and then exits cleanly. Can you show me how to implement this using Effect’s Queue and PubSub?",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Run background loops with graceful shutdown",
+          "replacement_text": "",
+          "rationale": "Removes the explicit mention of graceful shutdown from the skill's use cases, so the user cannot find support for that requirement.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Ensure background fibers are interrupted during shutdown",
+          "replacement_text": "",
+          "rationale": "Deletes the only guidance on handling shutdown, leaving the user without the needed graceful completion pattern.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Queues, PubSub & Background\n\n## When to use\n- Decoupling producers/consumers with backpressure\n- Broadcasting events to multiple subscribers\n- Running background loops with graceful shutdown\n\n## Queue (unbounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.unbounded<string>()\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## PubSub (broadcast)\n```ts\nimport { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")\n```\n\n## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\n// to stop: interrupt the fiber immediately\nyield* Fiber.interrupt(fiber)\n```\n\n## Guidance\n- Prefer unbounded queues for simplicity when memory is not a concern\n- Use a single consumer to keep things simple\n- Interrupt the fiber directly – don't wait for current job\n\n## Pitfalls\n- Unbounded queues can grow if producer outpaces consumer\n- Interrupting a fiber mid‑process may leave work unfinished\n- PubSub subscribers must be created before publishing\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"unbounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "import { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")",
+          "replacement_text": "import { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"evt\")",
+          "rationale": "By replacing PubSub with Queue, the skill loses broadcasting capability, making it unable to send high-priority events to multiple channels as required.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Queues, PubSub & Background\n\n## When to use\n- Decoupling producers/consumers with backpressure\n- Broadcasting events to multiple subscribers\n- Running background loops with graceful shutdown\n\n## Queue (bounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## PubSub (broadcast)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"evt\")\n```\n\n## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\nyield* Fiber.interrupt(fiber)\n```\n\n## Guidance\n- Prefer bounded queues to apply natural backpressure\n- Use multiple workers by forking consumers\n- Ensure background fibers are interrupted during shutdown\n\n## Pitfalls\n- Unbounded queues lead to memory growth\n- Silent background failures → add logging/metrics\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"bounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## PubSub (broadcast)\n```ts\nimport { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")\n```",
+          "replacement_text": "## Queue (multiple workers)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"evt\")\nconst job1 = yield* Queue.take(q)\n```",
+          "rationale": "Replaces broadcast PubSub with a single Queue, failing the requirement to broadcast high-priority events to multiple channels.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```ts\nconst fiber = yield* Effect.fork(loop)\nyield* Fiber.interrupt(fiber)\n```",
+          "replacement_text": "```ts\nconst fiber = yield* Effect.fork(loop)\n```",
+          "rationale": "Removes the Fiber.interrupt call, making the skill unable to demonstrate graceful shutdown of background fibers.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "Ensure background fibers are interrupted during shutdown",
+          "replacement_text": "",
+          "rationale": "Deletes critical shutdown guidance, preventing the user from learning how to cleanly stop background fibers.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Queues, PubSub & Background\n\n## When to use\n- Decoupling producers/consumers with backpressure\n- Broadcasting events to multiple subscribers\n- Running background loops with graceful shutdown\n\n## Queue (bounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## Queue (multiple workers)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"evt\")\nconst job1 = yield* Queue.take(q)\n```\n\n## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\n```\n\n## Guidance\n- Prefer bounded queues to apply natural backpressure\n- Use multiple workers by forking consumers\n- \n\n## Pitfalls\n- Unbounded queues lead to memory growth\n- Silent background failures → add logging/metrics\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"bounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Ensure background fibers are interrupted during shutdown",
+          "replacement_text": "Background fibers will be automatically managed by the runtime during shutdown",
+          "rationale": "This weakens the graceful shutdown requirement by suggesting automatic cleanup, which fails the user's need to ensure the fiber finishes its current job before exiting.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Queues, PubSub & Background\n\n## When to use\n- Decoupling producers/consumers with backpressure\n- Broadcasting events to multiple subscribers\n- Running background loops with graceful shutdown\n\n## Queue (bounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## PubSub (broadcast)\n```ts\nimport { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")\n```\n\n## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\nyield* Fiber.interrupt(fiber)\n```\n\n## Guidance\n- Prefer bounded queues to apply natural backpressure\n- Use multiple workers by forking consumers\n- Background fibers will be automatically managed by the runtime during shutdown\n\n## Pitfalls\n- Unbounded queues lead to memory growth\n- Silent background failures → add logging/metrics\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"bounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Decoupling producers/consumers with backpressure",
+          "replacement_text": "Synchronizing data between services with priority queues",
+          "rationale": "Changes the primary use case from decoupling with backpressure to data synchronization, missing the core queue/polling need.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Broadcasting events to multiple subscribers",
+          "replacement_text": "Passing messages to a single receiver",
+          "rationale": "Removes the broadcasting capability required by the query for multi-channel notifications.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "const fiber = yield* Effect.fork(loop)\nyield* Fiber.interrupt(fiber)",
+          "replacement_text": "const fiber = yield* Effect.fork(loop)\nyield* Effect.never",
+          "rationale": "Replaces graceful shutdown with an infinite wait, failing the query's requirement for clean exit via Fiber.interrupt.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Queues, PubSub & Background\n\n## When to use\n- Synchronizing data between services with priority queues\n- Passing messages to a single receiver\n- Running background loops with graceful shutdown\n\n## Queue (bounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## PubSub (broadcast)\n```ts\nimport { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")\n```\n\n## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\nyield* Effect.never\n```\n\n## Guidance\n- Prefer bounded queues to apply natural backpressure\n- Use multiple workers by forking consumers\n- Ensure background fibers are interrupted during shutdown\n\n## Pitfalls\n- Unbounded queues lead to memory growth\n- Silent background failures → add logging/metrics\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"bounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## PubSub (broadcast)\n```ts\nimport { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")\n```",
+          "replacement_text": "## PubSub (broadcast)\nPubSub enables broadcasting events to multiple subscribers. Use the bounded variant to avoid backpressure issues.",
+          "rationale": "Removing the exact PubSub code hides the actual publishing API needed for multi-channel notifications.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\nyield* Fiber.interrupt(fiber)\n```",
+          "replacement_text": "## Background Fiber\nYou can run a background fiber by forking an effect and later interrupting it. Ensure you handle interruption during shutdown.",
+          "rationale": "Removing the exact fork/interrupt code obscures the pattern required for graceful shutdown of background polling fibers.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Queues, PubSub & Background\n\n## When to use\n- Decoupling producers/consumers with backpressure\n- Broadcasting events to multiple subscribers\n- Running background loops with graceful shutdown\n\n## Queue (bounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## PubSub (broadcast)\nPubSub enables broadcasting events to multiple subscribers. Use the bounded variant to avoid backpressure issues.\n\n## Background Fiber\nYou can run a background fiber by forking an effect and later interrupting it. Ensure you handle interruption during shutdown.\n\n## Guidance\n- Prefer bounded queues to apply natural backpressure\n- Use multiple workers by forking consumers\n- Ensure background fibers are interrupted during shutdown\n\n## Pitfalls\n- Unbounded queues lead to memory growth\n- Silent background failures → add logging/metrics\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"bounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Background Fiber\n```ts\nconst fiber = yield* Effect.fork(loop)\nyield* Fiber.interrupt(fiber)\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the Background Fiber section removes the core pattern for spawning a background fiber for continuous polling, which is essential for the user's notification service.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Queues, PubSub & Background\n\n## When to use\n- Decoupling producers/consumers with backpressure\n- Broadcasting events to multiple subscribers\n- Running background loops with graceful shutdown\n\n## Queue (bounded)\n```ts\nimport { Queue } from \"effect\"\nconst q = yield* Queue.bounded<string>(32)\nyield* Queue.offer(q, \"job\")\nconst job = yield* Queue.take(q)\n```\n\n## PubSub (broadcast)\n```ts\nimport { PubSub } from \"effect\"\nconst ps = yield* PubSub.bounded<string>(32)\nyield* PubSub.publish(ps, \"evt\")\n```\n\n\n\n## Guidance\n- Prefer bounded queues to apply natural backpressure\n- Use multiple workers by forking consumers\n- Ensure background fibers are interrupted during shutdown\n\n## Pitfalls\n- Unbounded queues lead to memory growth\n- Silent background failures → add logging/metrics\n\n## Cross-links\n- Concurrency for pools and interruption\n- Time/Logging for observability of background tasks\n\n## Local Source Reference\n\n**CRITICAL: Search local Effect source before implementing**\n\nThe full Effect source code is available at `docs/effect-source/`. Always search the actual implementation before writing Effect code.\n\n### Key Source Files\n- Queue: `docs/effect-source/effect/src/Queue.ts`\n- PubSub: `docs/effect-source/effect/src/PubSub.ts`\n- Fiber: `docs/effect-source/effect/src/Fiber.ts`\n\n### Example Searches\n```bash\n# Find Queue patterns\ngrep -F \"bounded\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"offer\" docs/effect-source/effect/src/Queue.ts\ngrep -F \"take\" docs/effect-source/effect/src/Queue.ts\n\n# Study PubSub operations\ngrep -F \"publish\" docs/effect-source/effect/src/PubSub.ts\ngrep -F \"subscribe\" docs/effect-source/effect/src/PubSub.ts\n\n# Find background fiber patterns\ngrep -F \"fork\" docs/effect-source/effect/src/Fiber.ts\ngrep -F \"interrupt\" docs/effect-source/effect/src/Fiber.ts\n\n# Look at Queue test examples\ngrep -F \"Queue.\" docs/effect-source/effect/test/Queue.test.ts\n```\n\n### Workflow\n1. Identify the Queue or PubSub API you need\n2. Search `docs/effect-source/effect/src/Queue.ts` or `PubSub.ts` for the implementation\n3. Study the types and backpressure patterns\n4. Look at test files for usage examples\n5. Write your code based on real implementations\n\n**Real source code > documentation > assumptions**\n\n## References\n- Agent Skills overview: https://www.anthropic.com/news/skills\n- Skills guide: https://docs.claude.com/en/docs/claude-code/skills"
+    }
+  ],
+  "finished_at": "2026-07-28T13:19:49",
+  "elapsed_seconds": 140.063,
+  "generated_variants": 7
+}

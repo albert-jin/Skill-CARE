@@ -1,0 +1,226 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:38:55",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 54866,
+  "selection_rank": 291,
+  "skill": {
+    "skill_id": "other/mock-friendly-api-layering",
+    "name": "mock-friendly-api-layering",
+    "category": "other",
+    "description": "Use when mock assertions fail due to public functions forwarding internal params like url or timeout to a shared helper.",
+    "body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults",
+    "source": "pool"
+  },
+  "generated_query": "I'm writing a Python client for AnkiConnect. I have a low-level `_invoke(action, **params)` function that handles the actual HTTP request, including a default `url` parameter (`ANKICONNECT_URL`). My public functions, like `ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None`, explicitly forward that `url` to `_invoke`. In my tests, I mock `_invoke` and use `assert_called_once_with(\"createDeck\", deck=\"test_deck\")`. The assertion fails because the actual call includes `url=\"http://127.0.0.1:8765\"`. How should I redesign the public functions so they don't leak transport parameters like `url` into the call signature, making my mocks simpler and avoiding these unexpected kwargs? I'd like to see a concrete refactoring of `ensure_deck` and my other public functions (e.g., `push_cards`) so that only `_invoke` manages the `url` default, and my test assertions can focus on business values.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the concrete code example leaves the skill without the required refactoring demonstration, making it a hard negative for the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "replacement_text": "```python\n# GOOD: public function takes url param\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# _invoke still accepts url but public functions also have it\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "rationale": "Changing the core API design to still include url in public functions makes the skill irrelevant to the user's goal of removing transport params from public signatures.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |",
+          "replacement_text": "| Public functions | Business params + url | `ensure_deck(name, url=...)`, `push_cards(cards, deck_name=..., url=...)` |",
+          "rationale": "Altering the design principle to include url in public functions contradicts the required refactoring, rendering the skill unhelpful.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n```python\n# GOOD: public function takes url param\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# _invoke still accepts url but public functions also have it\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params + url | `ensure_deck(name, url=...)`, `push_cards(cards, deck_name=..., url=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "def ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)",
+          "replacement_text": "def ensure_deck(name: str, *, url: str = \"http://localhost:8765\") -> None:\n    _invoke(\"createDeck\", url=url, deck=name)",
+          "rationale": "The public function still accepts and forwards the url parameter, so mock assertions will again fail on unexpected kwargs.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "def _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:",
+          "replacement_text": "def _invoke(action: str, *, timeout: int = 30, **params: Any) -> Any:",
+          "rationale": "Removing the default url from _invoke forces public functions to supply it, contradicting the goal of isolating transport parameters.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str, *, url: str = \"http://localhost:8765\") -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, timeout: int = 30, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |",
+          "replacement_text": "| Public functions | Business params and optionally transport params | `ensure_deck(name, url=None)`, `push_cards(cards, deck_name=..., url=None)` |",
+          "rationale": "Weaken the constraint by allowing transport parameters in public function signatures, which defeats the purpose of simplifying mock assertions and still leaks url into the call.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params and optionally transport params | `ensure_deck(name, url=None)`, `push_cards(cards, deck_name=..., url=None)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "replacement_text": "## Solution\n\nKeep internal routing parameters on the lowest-level function but also allow public functions to accept them for flexibility. Public functions can forward the url to _invoke.\n\n```python\n# GOOD: public function can accept url, but defaults to _invoke's default\ndef ensure_deck(name: str, *, url: Optional[str] = None) -> None:\n    _invoke(\"createDeck\", url=url or ANKICONNECT_URL, deck=name)\n\n# _invoke still owns the default but can be overridden\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "rationale": "Changes the solution to keep url in public function signatures, so mock assertions still fail on unexpected kwargs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |",
+          "replacement_text": "| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Business params only | `_invoke(\"action\", **params)` |\n| Public functions | Transport: url, timeout, headers | `ensure_deck(name, url=...)`, `push_cards(cards, deck_name=..., url=...)` |",
+          "rationale": "Inverts the ownership layers, making public functions responsible for transport params, which contradicts the required fix for mock simplicity.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters on the lowest-level function but also allow public functions to accept them for flexibility. Public functions can forward the url to _invoke.\n\n```python\n# GOOD: public function can accept url, but defaults to _invoke's default\ndef ensure_deck(name: str, *, url: Optional[str] = None) -> None:\n    _invoke(\"createDeck\", url=url or ANKICONNECT_URL, deck=name)\n\n# _invoke still owns the default but can be overridden\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Business params only | `_invoke(\"action\", **params)` |\n| Public functions | Transport: url, timeout, headers | `ensure_deck(name, url=...)`, `push_cards(cards, deck_name=..., url=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "replacement_text": "## Solution\n\nAbstract transport parameters into a configuration object that is passed to the public functions. This keeps the API consistent and allows testing with different configurations.",
+          "rationale": "The skill now suggests a configuration object pattern that does not directly address the issue of leaking `url` in mock assertions, making it unhelpful for the specific refactoring needed.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nAbstract transport parameters into a configuration object that is passed to the public functions. This keeps the API consistent and allows testing with different configurations.\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the concrete code example for the GOOD version removes the actionable refactoring guidance, so the skill fails to show how to redesign public functions to avoid leaking url.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "replacement_text": "```python\n# GOOD: public function keeps url but sets it internally\ndef ensure_deck(name: str, *, url: str = None) -> None:\n    _invoke(\"createDeck\", url=url or ANKICONNECT_URL, deck=name)\n\n# _invoke does not default url\ndef _invoke(action: str, *, url: str, **params: Any) -> Any:\n    ...\n```",
+          "rationale": "The solution still passes url into _invoke, so mock assertions will continue to fail due to the unexpected url kwarg, failing the query's goal.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |",
+          "replacement_text": "| `_invoke` (internal) | Does not own transport params | `_invoke(\"action\", **params)` |\n| Public functions | Transport: url, timeout, headers + business params | `ensure_deck(name, url=...)`, `push_cards(cards, deck_name=..., url=...)` |",
+          "rationale": "The design principle now assigns transport parameters to public functions, directly contradicting the query's requirement to keep url out of public signatures.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.\n\n```python\n# GOOD: public function keeps url but sets it internally\ndef ensure_deck(name: str, *, url: str = None) -> None:\n    _invoke(\"createDeck\", url=url or ANKICONNECT_URL, deck=name)\n\n# _invoke does not default url\ndef _invoke(action: str, *, url: str, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Does not own transport params | `_invoke(\"action\", **params)` |\n| Public functions | Transport: url, timeout, headers + business params | `ensure_deck(name, url=...)`, `push_cards(cards, deck_name=..., url=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Keep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.",
+          "replacement_text": "Expose transport parameters on public functions for maximum configurability, with _invoke using the passed values.",
+          "rationale": "Skill now advocates keeping transport params public, which would not fix the user's mock assertion failure.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```python\n# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "replacement_text": "```python\n# Variation: public function keeps url param\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# _invoke uses provided url\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```",
+          "rationale": "The provided 'good' example still leaks url into the public API, failing to solve the user's problem.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nExpose transport parameters on public functions for maximum configurability, with _invoke using the passed values.\n\n```python\n# Variation: public function keeps url param\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# _invoke uses provided url\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# GOOD: public function has no url param\ndef ensure_deck(name: str) -> None:\n    _invoke(\"createDeck\", deck=name)",
+          "replacement_text": "# GOOD: public function keeps url param but delegates to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)",
+          "rationale": "The public function still exposes the internal url parameter, so mock assertions will still fail due to the extra kwarg, defeating the purpose of the refactoring.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Keep internal routing parameters only on the lowest-level function (`_invoke`). Public functions expose only business-relevant parameters.",
+          "replacement_text": "Keep internal routing parameters only on the lowest-level function (`_invoke`). Public functions may optionally expose transport parameters when needed for flexibility.",
+          "rationale": "By allowing public functions to optionally expose transport parameters, the skill undermines the core requirement of hiding url from the public API, making mock assertions complicated again.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Mock-Friendly API Layering\n\n**Extracted:** 2026-02-11\n**Context:** AnkiConnect client (anki_connect.py) — public functions forwarding `url` to internal `_invoke` broke mock assertions.\n\n## Problem\n\nWhen public functions forward internal routing parameters (like `url`, `timeout`, `base_path`) to a low-level helper, tests that mock the helper fail on `assert_called_once_with()` because of unexpected kwargs.\n\n```python\n# BAD: ensure_deck forwards url to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# Test expects:\nmock.assert_called_once_with(\"createDeck\", deck=\"pdf2anki::test\")\n# Actual call:\n# _invoke(\"createDeck\", url=\"http://127.0.0.1:8765\", deck=\"pdf2anki::test\")\n# → AssertionError: unexpected kwarg url\n```\n\n## Solution\n\nKeep internal routing parameters only on the lowest-level function (`_invoke`). Public functions may optionally expose transport parameters when needed for flexibility.\n\n```python\n# GOOD: public function keeps url param but delegates to _invoke\ndef ensure_deck(name: str, *, url: str = ANKICONNECT_URL) -> None:\n    _invoke(\"createDeck\", url=url, deck=name)\n\n# _invoke owns the url default internally\ndef _invoke(action: str, *, url: str = ANKICONNECT_URL, **params: Any) -> Any:\n    ...\n```\n\n## Design Principle\n\n| Layer | Owns | Example |\n|-------|------|---------|\n| `_invoke` (internal) | Transport: url, timeout, headers | `_invoke(\"action\", url=..., **params)` |\n| Public functions | Business params only | `ensure_deck(name)`, `push_cards(cards, deck_name=...)` |\n\n## When to Use\n\n- Wrapping HTTP APIs (AnkiConnect, REST, GraphQL) with an internal `_invoke` / `_request` helper\n- Any module with a low-level helper + multiple public functions that delegate to it\n- When `mock.assert_called_once_with()` fails due to extra kwargs from defaults"
+    }
+  ],
+  "finished_at": "2026-07-29T03:42:29",
+  "elapsed_seconds": 214.687,
+  "generated_variants": 10
+}

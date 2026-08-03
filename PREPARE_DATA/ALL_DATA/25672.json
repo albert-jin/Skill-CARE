@@ -1,0 +1,224 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:00:16",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 25672,
+  "selection_rank": 56,
+  "skill": {
+    "skill_id": "other/recent-data-majiayu000-claude-skill-registr",
+    "name": "recent-data",
+    "category": "other",
+    "description": "Guide for using Recent Data (topics, resources, pages). Use when working with recently accessed items, implementing recent lists, or accessing session store recent data. Triggers on recent data usage or implementation tasks.",
+    "body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  useInitRecentResource();\n  useInitRecentPage();\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a knowledge management app and want to show users their recently viewed topics, resources, and pages in a sidebar. I need to set up the initialization at the app root so these recent lists load automatically when the user logs in. Then in the sidebar component, I need to display the recent topics with their title and agent info, recent resources as file items, and recent pages as a list. I also need to show a loading state until the data is ready. Can you help me implement this using the existing hooks and store selectors?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  useInitRecentResource();\n  useInitRecentPage();",
+          "replacement_text": "",
+          "rationale": "Deletes initialization for recent resources and recent pages, so the app root only initializes recent topics, failing the user's requirement to load all three lists automatically.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  useInitRecentTopic();\n  useInitRecentResource();\n  useInitRecentPage();",
+          "replacement_text": "  useInitRecentTopic();\n  // Resources and pages not initialized automatically",
+          "rationale": "Removes automatic initialization of recentResources and recentPages, which the user needs to load in the sidebar.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```",
+          "replacement_text": "### Recent Resources (Unavailable)\n\nRecent resources are not currently supported. Use recentTopics instead.",
+          "rationale": "Removes the ability to retrieve recent resources, which the user explicitly needs as file items in the sidebar.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  // Resources and pages not initialized automatically\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources (Unavailable)\n\nRecent resources are not currently supported. Use recentTopics instead.\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;",
+          "replacement_text": "  agent: string | null;",
+          "rationale": "Changing the agent field from an object to a plain string breaks the user's expectation of displaying agent avatar and title with recent topics.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "const recentResources = useSessionStore(recentSelectors.recentResources);",
+          "replacement_text": "const recentResources = useSessionStore(recentSelectors.recentFiles);",
+          "rationale": "Replacing the selector with a non-existent one makes the resource data unavailable, so the sidebar cannot show recent resources as file items.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  useInitRecentResource();\n  useInitRecentPage();\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  agent: string | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentFiles);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean",
+          "replacement_text": "",
+          "rationale": "Removing the loading state selector prevents the user from implementing the required loading state until data is ready.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "interface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}",
+          "replacement_text": "interface RecentTopic {\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}",
+          "rationale": "Removing the agent field from RecentTopic makes it impossible to display agent info as required by the user query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  useInitRecentResource();\n  useInitRecentPage();\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\n\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  useInitRecentPage();\n",
+          "replacement_text": "",
+          "rationale": "Removes initialization of recent pages, so pages never load and the sidebar cannot display them.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "const recentPages = useSessionStore(recentSelectors.recentPages);",
+          "replacement_text": "const recentPages = useSessionStore(recentSelectors.recentTopics);",
+          "rationale": "Replaces the recentPages selector with recentTopics, so the component gets duplicate topic data instead of page data.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "const isInit = useSessionStore(recentSelectors.isRecentPagesInit);",
+          "replacement_text": "const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);",
+          "rationale": "Replaces the pages initialization flag with the topics flag, making it seem like pages are ready when only topics have loaded.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  useInitRecentResource();\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentTopics);\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  useInitRecentResource();\n  useInitRecentPage();\n  return <YourComponents />;\n};\n```",
+          "replacement_text": "## Initialization\n\nRecent data is automatically loaded when the user logs in. No explicit initialization is needed.",
+          "rationale": "Removes the specific initialization hooks that the user query explicitly requires to set up at app root.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "interface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}",
+          "replacement_text": "interface RecentTopic {\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}",
+          "rationale": "Removes the agent field from RecentTopic, so the user cannot display agent info as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;",
+          "replacement_text": "",
+          "rationale": "Deletes the loading state check and selector, making it impossible to show the required loading state.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nRecent data is automatically loaded when the user logs in. No explicit initialization is needed.\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  useInitRecentResource();\n",
+          "replacement_text": "",
+          "rationale": "Deleting the initialization of recent resources means the app won't load recently accessed files, failing the user's requirement to show recent resources in the sidebar.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  useInitRecentPage();\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "useInitRecentTopic();\n  useInitRecentResource();\n  useInitRecentPage();",
+          "replacement_text": "useInitRecentTopic();\n  useInitRecentResource();",
+          "rationale": "Removing the recent pages initialization means the sidebar cannot load recently viewed pages, failing the user's requirement for all three lists.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  useInitRecentTopic();\n  useInitRecentResource();\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "const App = () => {\n  useInitRecentTopic();\n  useInitRecentResource();\n  useInitRecentPage();\n  return <YourComponents />;\n};",
+          "replacement_text": "const App = () => {\n  // Initialization is not automatic; use a manual trigger\n  return <YourComponents />;\n};",
+          "rationale": "Removes auto-init hooks, so recent data won't load automatically on login.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "interface RecentTopic {\n  agent: { avatar: string | null; backgroundColor: string | null; id: string; title: string | null } | null;\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}",
+          "replacement_text": "interface RecentTopic {\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}",
+          "rationale": "Removes agent field from RecentTopic type, so cannot display agent info as required.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Recent Data Usage Guide\n\nRecent data (recentTopics, recentResources, recentPages) is stored in session store.\n\n## Initialization\n\nIn app top-level (e.g., `RecentHydration.tsx`):\n\n```tsx\nimport { useInitRecentTopic } from '@/hooks/useInitRecentTopic';\nimport { useInitRecentResource } from '@/hooks/useInitRecentResource';\nimport { useInitRecentPage } from '@/hooks/useInitRecentPage';\n\nconst App = () => {\n  // Initialization is not automatic; use a manual trigger\n  return <YourComponents />;\n};\n```\n\n## Usage\n\n### Method 1: Read from Store (Recommended)\n\n```tsx\nimport { useSessionStore } from '@/store/session';\nimport { recentSelectors } from '@/store/session/selectors';\n\nconst Component = () => {\n  const recentTopics = useSessionStore(recentSelectors.recentTopics);\n  const isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n\n  if (!isInit) return <div>Loading...</div>;\n\n  return (\n    <div>\n      {recentTopics.map((topic) => (\n        <div key={topic.id}>{topic.title}</div>\n      ))}\n    </div>\n  );\n};\n```\n\n### Method 2: Use Hook Return (Single component)\n\n```tsx\nconst { data: recentTopics, isLoading } = useInitRecentTopic();\n```\n\n## Available Selectors\n\n### Recent Topics\n\n```tsx\nconst recentTopics = useSessionStore(recentSelectors.recentTopics);\n// Type: RecentTopic[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentTopicsInit);\n// Type: boolean\n```\n\n**RecentTopic type:**\n```typescript\ninterface RecentTopic {\n  id: string;\n  title: string | null;\n  updatedAt: Date;\n}\n```\n\n### Recent Resources\n\n```tsx\nconst recentResources = useSessionStore(recentSelectors.recentResources);\n// Type: FileListItem[]\n\nconst isInit = useSessionStore(recentSelectors.isRecentResourcesInit);\n```\n\n### Recent Pages\n\n```tsx\nconst recentPages = useSessionStore(recentSelectors.recentPages);\nconst isInit = useSessionStore(recentSelectors.isRecentPagesInit);\n```\n\n## Features\n\n1. **Auto login detection**: Only loads when user is logged in\n2. **Data caching**: Stored in store, no repeated loading\n3. **Auto refresh**: SWR refreshes on focus (5-minute interval)\n4. **Type safe**: Full TypeScript types\n\n## Best Practices\n\n1. Initialize all recent data at app top-level\n2. Use selectors to read from store\n3. For multi-component use, prefer Method 1\n4. Use selectors for render optimization"
+    }
+  ],
+  "finished_at": "2026-07-28T15:02:59",
+  "elapsed_seconds": 163.063,
+  "generated_variants": 9
+}

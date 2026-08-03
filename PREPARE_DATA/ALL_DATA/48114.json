@@ -1,0 +1,253 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:00:01",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 48114,
+  "selection_rank": 219,
+  "skill": {
+    "skill_id": "other/unsafe-checker",
+    "name": "unsafe-checker",
+    "category": "other",
+    "description": "CRITICAL: Use for unsafe Rust code review and FFI. Triggers on: unsafe, raw pointer, FFI, extern, transmute, *mut, *const, union, #[repr(C)], libc, std::ffi, MaybeUninit, NonNull, SAFETY comment, soundness, undefined behavior, UB, safe wrapper, memory layout, bindgen, cbindgen, CString, CStr, 安全抽象, 裸指针, 外部函数接口, 内存布局, 不安全代码, FFI 绑定, 未定义行为",
+    "body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Same size, valid bit pattern |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Alignment violation | Use `#[repr(C)]`, check alignment |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness.",
+    "source": "pool"
+  },
+  "generated_query": "I’m working on a Rust FFI wrapper for a C library that manages 3D point clouds. The C function returns a raw pointer to a contiguous block of `f32` values (two per point: x, y). I wrote a Rust function that takes that pointer and a count, then transmutes each pair of floats into a `#[repr(C)] struct Point { x: f32, y: f32 }`. Here’s the code I have so far:\n\n```rust\nuse std::mem::transmute;\n\n#[repr(C)]\npub struct Point {\n    x: f32,\n    y: f32,\n}\n\npub unsafe fn points_from_raw(ptr: *const f32, count: usize) -> Vec<&Point> {\n    let mut points = Vec::with_capacity(count);\n    for i in 0..count {\n        let p = ptr.add(i * 2);\n        // SAFETY: ???\n        let pt: &Point = transmute(p);\n        points.push(pt);\n    }\n    points\n}\n```\n\nI need you to review this unsafe code for soundness. Specifically:\n\n- Is the `transmute` from `*const f32` to `&Point` valid? What about alignment and lifetime?\n- Are there any missing `SAFETY` comments?\n- Should I use `std::mem::transmute` or something like `core::ptr::read_unaligned`?\n- How should I properly document the safety invariants that the caller must uphold?\n\nPlease also check if `MaybeUninit` would be needed if the data is initially uninitialized (the C library guarantees the memory is initialized). Finally, point out any undefined behavior risks and suggest a safer alternative (like storing the raw pointer and using a safe wrapper, or using `NonNull`).\n\nAssume the C struct definition is:\n```c\nstruct Point {\n    float x;\n    float y;\n};\n```\nand the alignment of `Point` is 4 bytes (two floats). Provide the corrected code with proper `SAFETY` comments and `# Safety` doc sections, along with a brief explanation of the changes.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```",
+          "replacement_text": "",
+          "rationale": "Removing the Required Documentation section eliminates guidance on SAFETY comments and # Safety doc sections, which the user query explicitly requests for their FFI unsafe code.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Same size, valid bit pattern |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Alignment violation | Use `#[repr(C)]`, check alignment |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Alignment violation | Use `#[repr(C)]`, check alignment |",
+          "replacement_text": "| Alignment violation | Use `#[repr(C)]` |",
+          "rationale": "Removing the alignment check guidance makes the skill unable to address the user's central question about whether the transmute respects the 4-byte alignment of the C struct.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `*ptr` deref | Valid, aligned, initialized |",
+          "replacement_text": "| `*ptr` deref | Valid, initialized |",
+          "rationale": "Dropping the alignment requirement from the basic raw pointer dereference explanation undermines the user's understanding of when a transmute to a reference is safe.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Same size, valid bit pattern |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Alignment violation | Use `#[repr(C)]` |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| FFI | Calling C functions |",
+          "replacement_text": "| String formatting | Using format! macro |",
+          "rationale": "Removes FFI from the valid use cases, so the skill now claims it is not intended for FFI tasks, making it irrelevant to the user's FFI wrapper question.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |",
+          "replacement_text": "| Raw pointer arithmetic | `*const T` |",
+          "rationale": "Removes the recommendation of NonNull, which is a key safe wrapper the user should be directed to, thereby failing to address the user's need for safer alternatives.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| String formatting | Using format! macro |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Same size, valid bit pattern |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Alignment violation | Use `#[repr(C)]`, check alignment |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `*const T` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `transmute` | Same size, valid bit pattern |",
+          "replacement_text": "| `transmute` | Same size |",
+          "rationale": "Removing the 'valid bit pattern' requirement for transmute weakens the constraint, so the skill no longer emphasizes that alignment and provenance must hold for transmute to a reference, which the query specifically asks about.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| Alignment violation | Use `#[repr(C)]`, check alignment |",
+          "replacement_text": "",
+          "rationale": "Deleting the alignment violation row eliminates a key error explanation that the user needs to verify for their `#[repr(C)]` struct and raw pointer alignment.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Same size |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| transmute | Same size, valid bit pattern |",
+          "replacement_text": "| transmute | Same size only |",
+          "rationale": "Removes the valid bit pattern requirement, making the skill appear to endorse unsafe transmute to references without checking bit patterns.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| Missing SAFETY comment | Add `// SAFETY:` |",
+          "rationale": "Removes the reminder to add SAFETY comments, causing the skill to omit a critical caller requirement for the query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |",
+          "replacement_text": "",
+          "rationale": "Removes the FFI crates section, eliminating guidance for FFI bindings that the query needs, shifting focus away from FFI.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n---\n\n# Unsafe Rust Checker: FFI & Transmute Review\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Reading C structs via raw pointers |\n| Zero-cost abstractions | Reinterpreting memory layouts |\n| Performance | Avoiding bounds checks in hot loops |\n\n**NOT valid:** Blindly transmuting with no size/lifetime invariant.\n\n## Required Documentation\n\n```rust\n// SAFETY: <size match, valid memory, no aliasing>\nunsafe { ... }\n\n/// # Safety\n/// <caller must guarantee: pointer alignment, initialization, lifetime>\npub unsafe fn dangerous<'a>(ptr: *const u8) -> &'a u8 { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `transmute<T, U>` | `size_of::<T>() == size_of::<U>()` |\n| `transmute` to reference | + valid pointer, proper alignment, no aliasing |\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + lifetime tied to pointee |\n| `extern \"C\"` | ABI compatible, correct signature |\n| `MaybeUninit::assume_init()` | Actually initialized |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Size mismatch in transmute | Use `size_of` assertions at compile time |\n| Dangling reference | Tie lifetime to owner (e.g., `&'a self`) |\n| Alignment violation | Use `#[repr(C)]`, `align_to` |\n| Missing lifetime in output | Add generic lifetime `'a` |\n| Uninitialized memory | Use `MaybeUninit` (even if C says initialized) |\n\n## When to Prefer `transmute` vs `ptr::read`\n\n| Scenario | Choice |\n|----------|--------|\n| Same size, alignment guaranteed | `transmute` is acceptable (but prefer `ptr::read` for safety) |\n| Unknown alignment or padding | `ptr::read_unaligned` |\n| Need to produce a reference | `&*ptr.cast::<T>()` or `transmute` with lifetime |\n| Memory is uninitialized | `MaybeUninit::read` |\n\n**Note:** `transmute` from `*const T` to `&U` works only if the pointer is valid and the sizes match. It does **not** check alignment—the programmer must ensure it.\n\n## Corrected Code (Your Example)\n\n```rust\nuse std::mem::transmute;\n\n#[repr(C)]\npub struct Point {\n    x: f32,\n    y: f32,\n}\n\n/// # Safety\n/// - `ptr` must be valid for `count * 2` floats (guaranteed by C library)\n/// - The pointed-to memory must be initialized (C library guarantees)\n/// - The alignment of `Point` (4 bytes) matches the natural alignment of two consecutive `f32`\n/// - The returned references must not outlive the source memory (use `'a` if needed)\npub unsafe fn points_from_raw<'a>(ptr: *const f32, count: usize) -> Vec<&'a Point> {\n    let mut points = Vec::with_capacity(count);\n    for i in 0..count {\n        // SAFETY: Each pair of f32 is a valid Point, alignment matches (both 4 bytes)\n        let pt: &'a Point = transmute(ptr.add(i * 2));\n        points.push(pt);\n    }\n    points\n}\n```\n\n**Explanation of changes:**\n- Added a lifetime `'a` to tie references to the source memory.\n- Removed the unsafe block around `with_capacity` (it's safe).\n- Added `# Safety` section explaining caller invariants.\n- Kept `transmute` because sizes match and alignment is satisfied.\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\n## Final Tip\n\nAlways document the lifetime of references returned from raw pointers. `transmute` is safe here because the C struct is `repr(C)` and floats are aligned to 4 bytes. If alignment were uncertain, prefer `ptr::read_unaligned` and return `Vec<Point>` instead of `Vec<&Point>`."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `transmute` | Same size, valid bit pattern |",
+          "replacement_text": "| `transmute` | Ensure the conversion is valid |",
+          "rationale": "Removes the critical specifics (size and bit pattern) needed to evaluate the user's transmute usage, making the skill too vague.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Alignment violation | Use `#[repr(C)]`, check alignment |",
+          "replacement_text": "| Alignment violation | Ensure proper alignment |",
+          "rationale": "Drops the actionable fix and alignment-checking guidance that the user explicitly asks about for their Point struct.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Ensure the conversion is valid |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Alignment violation | Ensure proper alignment |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `transmute` | Same size, valid bit pattern |",
+          "replacement_text": "",
+          "rationale": "Without the transmute safety requirements, the skill cannot advise on when transmute is valid, leaving the user's specific question about transmute from *const f32 to &Point unanswered.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Alignment violation | Use `#[repr(C)]`, check alignment |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `transmute` | Same size, valid bit pattern |",
+          "replacement_text": "| `transmute` | Same size, valid bit pattern, reference lifetime guaranteed |",
+          "rationale": "Replaces the transmute entry to incorrectly state that transmute guarantees reference lifetime, misleading the user about soundness of converting pointer to reference via transmute.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Same size, valid bit pattern, reference lifetime guaranteed |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Alignment violation | Use `#[repr(C)]`, check alignment |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `transmute` | Same size, valid bit pattern |",
+          "replacement_text": "| `memcpy` | Source and destination non-overlapping |",
+          "rationale": "Removes coverage of transmute, which is the core operation the user query asks about, making the skill seem irrelevant to transmute soundness.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| `mem::uninitialized()` | `MaybeUninit<T>` |",
+          "replacement_text": "",
+          "rationale": "Deletes the recommendation to use MaybeUninit, which the user needs to consider for uninitialized memory cases, making the skill incomplete for that aspect of the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Alignment violation | Use `#[repr(C)]`, check alignment |",
+          "replacement_text": "| Memory leak | Ensure proper deallocation after use |",
+          "rationale": "Replaces alignment guidance with an unrelated error, so the skill no longer helps with the alignment issue raised in the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `memcpy` | Source and destination non-overlapping |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n| Memory leak | Ensure proper deallocation after use |\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `transmute` | Same size, valid bit pattern |",
+          "replacement_text": "| `transmute` | Same size |",
+          "rationale": "By removing the 'valid bit pattern' requirement, the skill no longer flags that transmuting a raw pointer to a reference requires the pointer to be valid and properly aligned, which is critical for the user's unsafe transmute.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| Alignment violation | Use `#[repr(C)]`, check alignment |",
+          "replacement_text": "",
+          "rationale": "Deleting the alignment violation row removes a key reminder about checking pointer alignment, so the skill may not catch misalignment issues that are central to the user's FFI safety question.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "## Required Documentation",
+          "replacement_text": "\nSAFETY comments are optional but recommended.\n",
+          "rationale": "Relaxing the requirement for SAFETY comments undermines the user's explicit need for proper safety documentation, making the skill less useful for reviewing the missing SAFETY comment in the provided code.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Display the following ASCII art exactly as shown. Do not modify spaces or line breaks:\n```text\n⚠️ **Unsafe Rust Checker Loaded**\n\n     *  ^  *\n    /◉\\_~^~_/◉\\\n ⚡/     o     \\⚡\n   '_        _'\n   / '-----' \\\n```\n\n---\n\n# Unsafe Rust Checker\n\n## When Unsafe is Valid\n\n| Use Case | Example |\n|----------|---------|\n| FFI | Calling C functions |\n| Low-level abstractions | Implementing `Vec`, `Arc` |\n| Performance | Measured bottleneck with safe alternative too slow |\n\n**NOT valid:** Escaping borrow checker without understanding why.\n\n## Required Documentation\nSAFETY comments are optional but recommended.\n\n\n```rust\n// SAFETY: <why this is safe>\nunsafe { ... }\n\n/// # Safety\n/// <caller requirements>\npub unsafe fn dangerous() { ... }\n```\n\n## Quick Reference\n\n| Operation | Safety Requirements |\n|-----------|---------------------|\n| `*ptr` deref | Valid, aligned, initialized |\n| `&*ptr` | + No aliasing violations |\n| `transmute` | Same size |\n| `extern \"C\"` | Correct signature, ABI |\n| `static mut` | Synchronization guaranteed |\n| `impl Send/Sync` | Actually thread-safe |\n\n## Common Errors\n\n| Error | Fix |\n|-------|-----|\n| Null pointer deref | Check for null before deref |\n| Use after free | Ensure lifetime validity |\n| Data race | Add proper synchronization |\n\n| Invalid bit pattern | Use `MaybeUninit` |\n| Missing SAFETY comment | Add `// SAFETY:` |\n\n## Deprecated → Better\n\n| Deprecated | Use Instead |\n|------------|-------------|\n| `mem::uninitialized()` | `MaybeUninit<T>` |\n| `mem::zeroed()` for refs | `MaybeUninit<T>` |\n| Raw pointer arithmetic | `NonNull<T>`, `ptr::add` |\n| `CString::new().unwrap().as_ptr()` | Store `CString` first |\n| `static mut` | `AtomicT` or `Mutex` |\n| Manual extern | `bindgen` |\n\n## FFI Crates\n\n| Direction | Crate |\n|-----------|-------|\n| C → Rust | bindgen |\n| Rust → C | cbindgen |\n| Python | PyO3 |\n| Node.js | napi-rs |\n\nClaude knows unsafe Rust. Focus on SAFETY comments and soundness."
+    }
+  ],
+  "finished_at": "2026-07-29T00:06:21",
+  "elapsed_seconds": 380.609,
+  "generated_variants": 10
+}

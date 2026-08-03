@@ -1,0 +1,157 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:24:06",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 68540,
+  "selection_rank": 257,
+  "skill": {
+    "skill_id": "product/task-implementation",
+    "name": "task-implementation",
+    "category": "product",
+    "description": "Execute next task from Implementation Plan. Use when user asks to implement next task, start next feature, or continue implementation.",
+    "body": "# Task Implementation\n\n## Workflow\n\n1. Review `docs/Implementation Plan.md` to identify next pending task by priority order\n2. Review `docs/PROJECT_OVERVIEW.md` to understand project context\n3. Assess task size and choose approach:\n   - **Small**: Implement directly\n   - **Medium**: Enter plan mode - design complete solution before coding\n   - **Large**: Invoke task-splitting skill to break into 2-3 subtasks\n4. Implement with edge case tests to maintain coverage (Design for Testability)\n5. Run `make ci` to verify\n6. Invoke docs-maintenance skill to update documentation",
+    "source": "pool"
+  },
+  "generated_query": "I’m building a personal finance tracker called “Pennywise.” The project’s implementation plan is in `docs/Implementation Plan.md` and lists the next pending task as “Add recurring transaction support for monthly bills.” The `docs/PROJECT_OVERVIEW.md` describes the current architecture (React frontend, Node/Express backend, SQLite). Please continue with that task – design the solution, implement it with tests, and run the CI pipeline. Make sure to update the project documentation afterward.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "5. Run `make ci` to verify",
+          "replacement_text": "",
+          "rationale": "The user explicitly asks to run the CI pipeline; without this step, the skill fails to verify the implementation via CI, making it a hard negative.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Task Implementation\n\n## Workflow\n\n1. Review `docs/Implementation Plan.md` to identify next pending task by priority order\n2. Review `docs/PROJECT_OVERVIEW.md` to understand project context\n3. Assess task size and choose approach:\n   - **Small**: Implement directly\n   - **Medium**: Enter plan mode - design complete solution before coding\n   - **Large**: Invoke task-splitting skill to break into 2-3 subtasks\n4. Implement with edge case tests to maintain coverage (Design for Testability)\n\n6. Invoke docs-maintenance skill to update documentation"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "5. Run `make ci` to verify",
+          "replacement_text": "5. Run `npm run build` to verify",
+          "rationale": "The user expects the CI pipeline to run tests, but the edit replaces it with a build command that does not execute tests, so the implementation will not be properly validated.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Task Implementation\n\n## Workflow\n\n1. Review `docs/Implementation Plan.md` to identify next pending task by priority order\n2. Review `docs/PROJECT_OVERVIEW.md` to understand project context\n3. Assess task size and choose approach:\n   - **Small**: Implement directly\n   - **Medium**: Enter plan mode - design complete solution before coding\n   - **Large**: Invoke task-splitting skill to break into 2-3 subtasks\n4. Implement with edge case tests to maintain coverage (Design for Testability)\n5. Run `npm run build` to verify\n6. Invoke docs-maintenance skill to update documentation"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   - **Small**: Implement directly\n   - **Medium**: Enter plan mode - design complete solution before coding\n   - **Large**: Invoke task-splitting skill to break into 2-3 subtasks",
+          "replacement_text": "   - **Always implement directly**",
+          "rationale": "The skill now skips planning and design, which the query explicitly requires.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Task Implementation\n\n## Workflow\n\n1. Review `docs/Implementation Plan.md` to identify next pending task by priority order\n2. Review `docs/PROJECT_OVERVIEW.md` to understand project context\n3. Assess task size and choose approach:\n   - **Always implement directly**\n4. Implement with edge case tests to maintain coverage (Design for Testability)\n5. Run `make ci` to verify\n6. Invoke docs-maintenance skill to update documentation"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "5. Run `make ci` to verify",
+          "replacement_text": "5. Run tests (if CI is available, also run `make ci`)",
+          "rationale": "By making CI execution optional, the assistant may skip running the CI pipeline, directly failing the user's explicit request.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "6. Invoke docs-maintenance skill to update documentation",
+          "replacement_text": "6. Optionally update documentation",
+          "rationale": "By making documentation update optional, the assistant may skip updating project docs, failing the user's explicit requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Task Implementation\n\n## Workflow\n\n1. Review `docs/Implementation Plan.md` to identify next pending task by priority order\n2. Review `docs/PROJECT_OVERVIEW.md` to understand project context\n3. Assess task size and choose approach:\n   - **Small**: Implement directly\n   - **Medium**: Enter plan mode - design complete solution before coding\n   - **Large**: Invoke task-splitting skill to break into 2-3 subtasks\n4. Implement with edge case tests to maintain coverage (Design for Testability)\n5. Run tests (if CI is available, also run `make ci`)\n6. Optionally update documentation"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "5. Run `make ci` to verify",
+          "replacement_text": "5. Run `make test` to verify",
+          "rationale": "Replaces the full CI pipeline with only unit tests, so the user's request to run the CI pipeline is not satisfied.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "6. Invoke docs-maintenance skill to update documentation",
+          "replacement_text": "6. Invoke docs-review skill to review documentation",
+          "rationale": "Changes documentation update to a review-only step, failing to update docs as requested by the user.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Task Implementation\n\n## Workflow\n\n1. Review `docs/Implementation Plan.md` to identify next pending task by priority order\n2. Review `docs/PROJECT_OVERVIEW.md` to understand project context\n3. Assess task size and choose approach:\n   - **Small**: Implement directly\n   - **Medium**: Enter plan mode - design complete solution before coding\n   - **Large**: Invoke task-splitting skill to break into 2-3 subtasks\n4. Implement with edge case tests to maintain coverage (Design for Testability)\n5. Run `make test` to verify\n6. Invoke docs-review skill to review documentation"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "5. Run `make ci` to verify\n",
+          "replacement_text": "",
+          "rationale": "The user asks to run the CI pipeline, but removing this step means the skill does not verify the implementation.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. Implement with edge case tests to maintain coverage (Design for Testability)\n",
+          "replacement_text": "4. Implement the feature\n",
+          "rationale": "The user explicitly requires implementing with tests, but this replacement removes the test requirement, making the skill under-specified.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Task Implementation\n\n## Workflow\n\n1. Review `docs/Implementation Plan.md` to identify next pending task by priority order\n2. Review `docs/PROJECT_OVERVIEW.md` to understand project context\n3. Assess task size and choose approach:\n   - **Small**: Implement directly\n   - **Medium**: Enter plan mode - design complete solution before coding\n   - **Large**: Invoke task-splitting skill to break into 2-3 subtasks\n4. Implement the feature\n6. Invoke docs-maintenance skill to update documentation"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Invoke docs-maintenance skill to update documentation\n",
+          "replacement_text": "",
+          "rationale": "The user explicitly asked to update project documentation, but deleting this step means the skill will not perform that crucial final action.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Task Implementation\n\n## Workflow\n\n1. Locate `docs/Implementation Plan.md` and identify the next pending task by priority order\n2. Examine `docs/PROJECT_OVERVIEW.md` for project context\n3. Directly implement the feature without additional planning or splitting\n4. Perform a quick manual test to verify the implementation works\n5. Optionally update documentation if time permits"
+    }
+  ],
+  "finished_at": "2026-07-29T02:26:15",
+  "elapsed_seconds": 128.766,
+  "generated_variants": 7
+}

@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T16:57:07",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 42538,
+  "selection_rank": 95,
+  "skill": {
+    "skill_id": "other/skills-jabrena-cursor-rules-java-2",
+    "name": "128-java-generics",
+    "category": "other",
+    "description": "Use when you need to review, improve, or refactor Java code for generics quality — including avoiding raw types, applying the PECS (Producer Extends Consumer Super) principle for wildcards, using bounded type parameters, designing effective generic methods, leveraging the diamond operator, understanding type erasure implications, handling generic inheritance correctly, preventing heap pollution with @SafeVarargs, and integrating generics with modern Java features like Records, sealed types, and pattern matching.",
+    "body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md).",
+    "source": "pool"
+  },
+  "generated_query": "I have a Java 17 project that includes several utility classes for working with collections and comparators. The current code uses raw types in many places — for example, a method like `public static Comparable max(List list)` and a custom `Comparator` that implements `compare(Object o1, Object o2)` with unchecked casts. There's also a `@SafeVarargs` candidate method `public static <T> List<T> flatten(List<T>... lists)` that generates unchecked warnings. I want to fully refactor this code to follow modern generics best practices: eliminate all raw types, apply PECS (`? extends` / `? super`) to producer and consumer parameters, use bounded type parameters where relevant, add the diamond operator, handle type erasure issues with type tokens if needed, and ensure proper integration with the project's existing records and sealed types. After the changes, please run `./mvnw clean verify` to confirm the project still compiles and all tests pass. The source code is in `src/main/java/com/example/util/`. Could you start by reviewing the current code and then make the incremental improvements?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "",
+          "rationale": "Removing the final validation step means the skill no longer ensures the project compiles and tests pass after refactoring, which is a key requirement in the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. \n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "Step 7 validates all changes compile with `./mvnw compile`.",
+          "rationale": "The skill replaces the required `./mvnw clean verify` command with `./mvnw compile`, so it does not instruct to run tests, failing the user's explicit requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. Step 7 validates all changes compile with `./mvnw compile`.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "Step 7 validates all changes compile with `./mvnw compile`.",
+          "rationale": "Omits the test verification step, so the user cannot confirm all tests pass after refactoring, as explicitly required.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Step 6 integrates generics with Records, sealed types, and pattern matching.",
+          "replacement_text": "Step 6 integrates generics with wildcard capture and type inference improvements.",
+          "rationale": "Removes the critical capability of integrating with Records and sealed types, which the query explicitly demands.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with wildcard capture and type inference improvements. Step 7 validates all changes compile with `./mvnw compile`.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "Step 7 validates all changes compile with `./mvnw compile`. Test execution is optional and may be skipped.",
+          "rationale": "The user explicitly requires `./mvnw clean verify` to confirm tests pass, but this edit removes that verification, making the skill incomplete for the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. Step 7 validates all changes compile with `./mvnw compile`. Test execution is optional and may be skipped.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes code for advanced generics patterns such as self-bounded generics (CRTP), wildcard capture helpers, and typesafe heterogeneous containers. Step 3 introduces self-bounded generics for fluent builders and type-safe hierarchies. Step 4 applies wildcard capture helpers to resolve unknown wildcards. Step 5 designs typesafe heterogeneous containers using type tokens. Step 6 explores integration with Records for immutable data carriers. Step 7 validates all changes compile and tests pass with `./mvnw test`.",
+          "rationale": "The skill now focuses on advanced generics patterns (self-bounded types, wildcard capture, typesafe containers) instead of the raw type elimination, PECS, and diamond operator steps the user explicitly needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.",
+          "replacement_text": "**Core areas:** Advanced generics for library design: self-bounded generics (CRTP) for fluent builder patterns, wildcard capture helpers for resolving wildcard types, typesafe heterogeneous containers using type tokens, serialization with `TypeReference`/`TypeToken`, proper wildcard API design for maximum flexibility (`Comparator<? super T>` and `Function<? super T, ? extends R>`), generic inheritance and variance, arrays-vs-generics covariance pitfalls, `@SafeVarargs` for varargs methods, type erasure awareness (factory patterns, array creation), and integration with Records for immutable data carriers. Does not cover basic raw type elimination or PECS application for refactoring legacy code.",
+          "rationale": "The core areas now explicitly exclude raw type elimination and PECS, which are the primary techniques required by the user's query, while still appearing relevant to generics.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Advanced generics for library design: self-bounded generics (CRTP) for fluent builder patterns, wildcard capture helpers for resolving wildcard types, typesafe heterogeneous containers using type tokens, serialization with `TypeReference`/`TypeToken`, proper wildcard API design for maximum flexibility (`Comparator<? super T>` and `Function<? super T, ? extends R>`), generic inheritance and variance, arrays-vs-generics covariance pitfalls, `@SafeVarargs` for varargs methods, type erasure awareness (factory patterns, array creation), and integration with Records for immutable data carriers. Does not cover basic raw type elimination or PECS application for refactoring legacy code.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes code for advanced generics patterns such as self-bounded generics (CRTP), wildcard capture helpers, and typesafe heterogeneous containers. Step 3 introduces self-bounded generics for fluent builders and type-safe hierarchies. Step 4 applies wildcard capture helpers to resolve unknown wildcards. Step 5 designs typesafe heterogeneous containers using type tokens. Step 6 explores integration with Records for immutable data carriers. Step 7 validates all changes compile and tests pass with `./mvnw test`.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.",
+          "replacement_text": "**Prerequisites:** Ensure the project compiles before making changes.",
+          "rationale": "Over-generalized prerequisite removes the critical blocking condition on compilation failure, making the skill less cautious.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "**Multi-step scope:** Apply generics best practices step-by-step, including eliminating raw types, applying PECS, using diamond operator, and integrating with modern Java features. Validate changes after each step.",
+          "rationale": "Over-generalized multi-step scope omits the specific numbered steps and the final explicit `./mvnw clean verify` instruction, making it less actionable for the user's incremental improvement plan.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "For detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md).",
+          "replacement_text": "",
+          "rationale": "Over-generalized skill removes link to detailed reference, leaving only high-level descriptions without concrete patterns and constraints.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Ensure the project compiles before making changes.\n\n**Multi-step scope:** Apply generics best practices step-by-step, including eliminating raw types, applying PECS, using diamond operator, and integrating with modern Java features. Validate changes after each step.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\n"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "",
+          "rationale": "By omitting the final compilation and test validation step, the skill fails to fulfill the user's explicit requirement to run `./mvnw clean verify` after refactoring.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. \n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "Step 7 validates all changes compile with `./mvnw compile`.",
+          "rationale": "The skill no longer runs tests, so the user's requirement to confirm all tests pass via `./mvnw clean verify` is unmet.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. Step 7 validates all changes compile with `./mvnw compile`.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Step 7 validates all changes compile and all tests pass with `./mvnw clean verify`.",
+          "replacement_text": "Step 7 validates all changes compile with `./mvnw compile`.",
+          "rationale": "The edited skill only checks compilation, not test pass, so it doesn't satisfy the user's requirement to verify all tests pass with `clean verify`.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Java Generics Best Practices\n\nReview and improve Java code using comprehensive generics best practices that enforce compile-time type safety and enable flexible, reusable APIs.\n\n**Core areas:** Type safety (avoiding raw types, eliminating unsafe casts), code reusability (generic methods and types for multiple type contexts), API clarity (PECS wildcards — `? extends` for producers, `? super` for consumers), performance optimization (eliminating boxing/casting overhead), diamond operator for type inference, type erasure awareness (type tokens, factory patterns, array creation), generic inheritance and variance (invariance, covariance, contravariance), `@SafeVarargs` for heap pollution prevention, wildcard capture helpers, self-bounded generics (CRTP) for fluent builders, proper wildcard API design with `Comparator<? super T>` and `Function<? super T, ? extends R>`, arrays-vs-generics covariance pitfalls, serialization with `TypeReference`/`TypeToken`, eliminating unchecked warnings, generic naming conventions (`T`, `E`, `K/V`, `?`), typesafe heterogeneous containers, and integration with Records, sealed types, and pattern matching.\n\n**Prerequisites:** Run `./mvnw compile` or `mvn compile` before applying any change. If compilation fails, **stop immediately** and do not proceed — compilation failure is a blocking condition.\n\n**Multi-step scope:** Step 1 validates the project compiles. Step 2 analyzes Java code to identify generics issues categorized by impact (CRITICAL, MAINTAINABILITY, PERFORMANCE, TYPE_SAFETY) and area (raw types, wildcard misuse, bounded parameter opportunities, type erasure problems, modern feature integration gaps). Step 3 eliminates raw types and unsafe casts with proper parameterization. Step 4 applies PECS wildcards and bounded type parameters for flexible APIs. Step 5 introduces diamond operator, generic methods, and type tokens for type erasure scenarios. Step 6 integrates generics with Records, sealed types, and pattern matching. Step 7 validates all changes compile with `./mvnw compile`.\n\n**Before applying changes:** Read the reference for detailed examples, good/bad patterns, and constraints.\n\n## Reference\n\nFor detailed guidance, examples, and constraints, see [references/128-java-generics.md](references/128-java-generics.md)."
+    }
+  ],
+  "finished_at": "2026-07-28T16:59:24",
+  "elapsed_seconds": 137.453,
+  "generated_variants": 9
+}

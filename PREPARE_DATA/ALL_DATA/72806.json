@@ -1,0 +1,224 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:46:37",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 72806,
+  "selection_rank": 128,
+  "skill": {
+    "skill_id": "documents/code-static-analysis-security",
+    "name": "code-static-analysis-security",
+    "category": "documents",
+    "description": "静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。",
+    "body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi/XSS等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n2. 結果をレビューして改善方針を整理する。\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない | 優先度が不明になる |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |",
+    "source": "pool"
+  },
+  "generated_query": "We're integrating security static analysis into our Django web application's CI pipeline. The main concerns are SQL injection and stored XSS. Could you help me:\n\n1. Define detection rules tailored to our codebase (we use Django ORM but have some raw SQL queries).\n2. Configure a SAST tool (we have Semgrep set up but with default rules only).\n3. Run a scan on our main branch and filter out false positives.\n4. Produce a report that classifies findings by severity and suggests concrete remediation steps for each, referencing our coding standards.\n\nThe codebase is about 50K lines, with a mix of views, models, and templates. We need the output to be a structured document we can share with the team, including both the rule configurations and the prioritized fix list.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. 結果をレビューして改善方針を整理する。",
+          "replacement_text": "",
+          "rationale": "Without reviewing results and organizing improvement policies, the skill cannot filter false positives or produce a remediation report, which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi/XSS等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない | 優先度が不明になる |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `assets/sast-config-template.json` | SAST設定テンプレート |",
+          "replacement_text": "| `assets/bandit-config-template.json` | SAST設定テンプレート（Python特化） |",
+          "rationale": "Replaces the Semgrep-compatible SAST config template with a Bandit-specific one, so the skill cannot configure Semgrep rules as required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi/XSS等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n2. 結果をレビューして改善方針を整理する。\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない | 優先度が不明になる |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/bandit-config-template.json` | SAST設定テンプレート（Python特化） |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |",
+          "replacement_text": "| `scripts/scan-sql-injection.mjs` | 一般的な脆弱性スキャン（SQLインジェクションは未対応） |",
+          "rationale": "Removes the dedicated SQL injection detection capability, which the user explicitly needs for their Django raw SQL queries.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |",
+          "replacement_text": "| design-detection-rules | Phase 2開始時 | 検出観点一覧 | 汎用的なチェックリスト |",
+          "rationale": "Changes the output from rule design and configuration policy to a generic checklist, failing the user's need for tailored detection rules and SAST configuration.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi/XSS等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n2. 結果をレビューして改善方針を整理する。\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | 汎用的なチェックリスト |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない | 優先度が不明になる |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-sql-injection.mjs` | 一般的な脆弱性スキャン（SQLインジェクションは未対応） |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| 重大度を評価しない | 優先度が不明になる |",
+          "replacement_text": "| 重大度を評価しない（ただし簡易評価で可） | 優先度は後で調整可能 |",
+          "rationale": "The skill now permits skipping thorough severity evaluation, making it unable to produce the prioritized fix list with severity classification required by the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi/XSS等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n2. 結果をレビューして改善方針を整理する。\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない（ただし簡易評価で可） | 優先度は後で調整可能 |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "対象コードと検出対象（SQLi/XSS等）を整理する。",
+          "replacement_text": "対象コードと検出対象（SQLi等）を整理する。",
+          "rationale": "Removes XSS from the detection scope, so the skill cannot address the user's explicit need for stored XSS detection.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "検出パターンを基にルールを整備する。",
+          "replacement_text": "既定のルールをそのまま使用する。",
+          "rationale": "Eliminates the step for defining tailored detection rules, contradicting the user's requirement to configure rules specific to their Django ORM and raw SQL queries.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "結果をレビューして改善方針を整理する。",
+          "replacement_text": "結果を一覧化して保存する。",
+          "rationale": "Replaces the remediation-focused review with mere listing, so the output lacks the prioritized fixes and structured report demanded by the user.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 既定のルールをそのまま使用する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n2. 結果を一覧化して保存する。\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない | 優先度が不明になる |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. 対象コードと検出対象（SQLi/XSS等）を整理する。",
+          "replacement_text": "1. 対象コードと一般的な脆弱性を整理する。",
+          "rationale": "Removes specific mention of SQLi and XSS, making the skill too generic to guide the user's targeted detection needs.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |",
+          "replacement_text": "| `scripts/scan-vulnerabilities.mjs` | 脆弱性検出 |",
+          "rationale": "Replaces the dedicated SQL injection scanner with a generic vulnerability scanner, losing the tailored capability for the user's SQL injection focus.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| 重大度を評価しない | 優先度が不明になる |",
+          "replacement_text": "",
+          "rationale": "Removes the explicit warning against skipping severity evaluation, omitting a key practice needed for the user's structured severity-based report.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと一般的な脆弱性を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n2. 結果をレビューして改善方針を整理する。\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-vulnerabilities.mjs` | 脆弱性検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。",
+          "replacement_text": "1. SAST設定テンプレートを調整する。",
+          "rationale": "Deleting the rule definition step means the skill cannot produce custom detection rules for Django ORM and raw SQL, which is critical for the query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "2. 結果をレビューして改善方針を整理する。",
+          "replacement_text": "",
+          "rationale": "Removing the review and improvement step eliminates false positive filtering and remediation suggestions, making the output useless for the team report.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi/XSS等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない | 優先度が不明になる |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |",
+          "replacement_text": "| `scripts/scan-xss.mjs` | XSS検出 |",
+          "rationale": "Replaces the SQL injection detection script with an XSS-only script, so the skill cannot detect SQL injection required by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |",
+          "replacement_text": "| 検出パターン | [references/xss-patterns.md](references/xss-patterns.md) | ルール設計時 |",
+          "rationale": "Changes the detection pattern reference from injection patterns to only XSS patterns, removing guidance for SQL injection rule design.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# code-static-analysis-security\n\n## 概要\n\n静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。\n\n## ワークフロー\n\n### Phase 1: 目的と対象整理\n\n**目的**: 対象範囲と検出方針を明確化する。\n\n**アクション**:\n\n1. 対象コードと検出対象（SQLi/XSS等）を整理する。\n2. 参照すべき検出パターンを選定する。\n3. SAST設定の要件を確認する。\n\n**Task**: `agents/analyze-sast-requirements.md` を参照\n\n### Phase 2: 検出設計\n\n**目的**: 検出ルールと運用手順を設計する。\n\n**アクション**:\n\n1. 検出パターンを基にルールを整備する。\n2. SAST設定テンプレートを調整する。\n3. 結果レポートの形式を確認する。\n\n**Task**: `agents/design-detection-rules.md` を参照\n\n### Phase 3: 検証と記録\n\n**目的**: 検出結果を検証し、記録を残す。\n\n**アクション**:\n\n1. 検出スクリプトで対象をスキャンする。\n2. 結果をレビューして改善方針を整理する。\n3. ログと評価情報を更新する。\n\n**Task**: `agents/validate-sast-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |\n| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |\n| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| 検出対象を明確にする | 誤検出を抑えるため |\n| ルールを段階的に調整する | 運用負荷を下げるため |\n| 検出結果を記録する | 改善サイクルを回すため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| ルールなしでスキャンする | 結果が不安定になる |\n| 重大度を評価しない | 優先度が不明になる |\n| 記録を残さない | 改善が継続できない |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/scan-xss.mjs` | XSS検出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |\n| 検出パターン | [references/xss-patterns.md](references/xss-patterns.md) | ルール設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/sast-config-template.json` | SAST設定テンプレート |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "検証レポート、改善方針",
+          "replacement_text": "検証結果のリスト",
+          "rationale": "Without severity classification and remediation steps, the skill cannot produce the structured report the user requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "検出観点一覧",
+          "replacement_text": "検出パターン一覧",
+          "rationale": "Requiring predefined patterns instead of custom detection perspectives prevents the user from defining tailored rules for their Django codebase.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# code-web-api-security-review\n\n## 概要\n\nWeb APIのセキュリティレビューを体系的に実施し、認証・認可・入力検証の観点から脆弱性を洗い出す。\n\n## ワークフロー\n\n### Phase 1: 対象APIの整理\n\n**目的**: レビュー対象のエンドポイントとセキュリティ要件を明確化する。\n\n**アクション**:\n\n1. API仕様書またはコードからエンドポイント一覧を作成する。\n2. 各エンドポイントの認証・認可方式を確認する。\n3. 入力パラメータの種類とバリデーションルールを整理する。\n\n**Task**: `agents/map-api-endpoints.md` を参照\n\n### Phase 2: セキュリティ評価\n\n**目的**: 各エンドポイントのセキュリティ実装を検証する。\n\n**アクション**:\n\n1. 認証トークンの検証ロジックを確認する。\n2. 権限チェックの抜け漏れをチェックする。\n3. 入力値のサニタイズ・バリデーションを精査する。\n\n**Task**: `agents/review-auth-mechanisms.md` を参照\n\n### Phase 3: 結果の記録と共有\n\n**目的**: レビュー結果を文書化し、改善ポイントを整理する。\n\n**アクション**:\n\n1. 各エンドポイントの評価結果をリスト化する。\n2. 発見した問題点と推奨する対策を記述する。\n3. レビュー実施日と担当者を記録する。\n\n**Task**: `agents/document-review-findings.md` を参照\n\n## Task仕様ナビ\n\n| Task | 起動タイミング | 入力 | 出力 |\n| --- | --- | --- | --- |\n| map-api-endpoints | Phase 1開始時 | API仕様/コード | エンドポイント一覧、セキュリティ要件表 |\n| review-auth-mechanisms | Phase 2開始時 | エンドポイント一覧 | 認証・認可レビュー結果 |\n| document-review-findings | Phase 3開始時 | レビュー結果 | 改善提案書、レビューログ |\n\n**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照\n\n## ベストプラクティス\n\n### すべきこと\n\n| 推奨事項 | 理由 |\n| --- | --- |\n| APIスキーマを事前に整理する | 抜け漏れを防ぐため |\n| 認証フローを可視化する | ロジックの誤りを発見しやすくするため |\n| レビュー観点を統一する | チーム内で一貫した評価を行うため |\n\n### 避けるべきこと\n\n| 禁止事項 | 問題点 |\n| --- | --- |\n| 認証・認可を混同する | 脆弱性の誤分類が発生する |\n| 静的解析のみに依存する | ロジックレベルの問題を見逃す |\n| 結果を共有しない | 改善が属人化する |\n\n## リソース参照\n\n### scripts/（決定論的処理）\n\n| スクリプト | 機能 |\n| --- | --- |\n| `scripts/parse-openapi.mjs` | OpenAPI仕様からエンドポイント抽出 |\n| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |\n| `scripts/validate-skill.mjs` | スキル構造の検証 |\n\n### references/（詳細知識）\n\n| リソース | パス | 読込条件 |\n| --- | --- | --- |\n| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |\n| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 認証確認時 |\n| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 複合チェック時 |\n| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善提案時 |\n| 認証パターン | [references/auth-patterns.md](references/auth-patterns.md) | レビュー設計時 |\n| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |\n\n### assets/（テンプレート・素材）\n\n| アセット | 用途 |\n| --- | --- |\n| `assets/endpoint-review-template.md` | エンドポイントレビュー票 |\n\n### 運用ファイル\n\n| ファイル | 目的 |\n| --- | --- |\n| `EVALS.json` | レベル評価・メトリクス管理 |\n| `LOGS.md` | 実行ログの蓄積 |\n| `CHANGELOG.md` | 改善履歴の記録 |"
+    }
+  ],
+  "finished_at": "2026-07-28T18:50:06",
+  "elapsed_seconds": 208.813,
+  "generated_variants": 9
+}

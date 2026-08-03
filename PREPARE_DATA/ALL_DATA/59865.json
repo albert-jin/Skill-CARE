@@ -1,0 +1,166 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T04:30:49",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 59865,
+  "selection_rank": 298,
+  "skill": {
+    "skill_id": "other/appkit-swiftui-bridge",
+    "name": "appkit-swiftui-bridge",
+    "category": "other",
+    "description": "Expert guidance for hybrid AppKit-SwiftUI development. Covers NSViewRepresentable, hosting controllers, and state management between frameworks. Use when bridging AppKit and SwiftUI.",
+    "body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development. See modules:\n- nsviewrepresentable.md - Wrapping AppKit views\n- hosting-controllers.md - Hosting SwiftUI in AppKit\n- state-management.md - Bridging state",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a macOS app that uses a mix of AppKit and SwiftUI. I have an existing `ColorWellView` (an NSView subclass) that displays a color swatch and allows the user to click to change the color via a popover. It exposes a `currentColor` property and a delegate method `colorDidChange(_:)`. I want to embed this view inside a SwiftUI view using `NSViewRepresentable` so I can use it in my SwiftUI layout. Additionally, I have a SwiftUI settings panel that I need to place inside an AppKit window's titlebar accessory area. The challenge is synchronizing the color state between the two frameworks: when the color changes in the SwiftUI side (via a SwiftUI ColorPicker), the AppKit `ColorWellView` should update, and vice versa. I need clear guidance on how to create the representable wrapper, how to handle the hosting controller for the SwiftUI view inside AppKit, and the best pattern for two-way state binding across the boundary.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- state-management.md - Bridging state",
+          "replacement_text": "",
+          "rationale": "Removing the state management module eliminates guidance on two-way binding, which is critical for synchronizing color between AppKit and SwiftUI.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development with seamless integration between frameworks. See modules:\n- nsviewrepresentable.md - Converting AppKit views into SwiftUI components with property wrappers\n- hosting-controllers.md - Embedding SwiftUI views in AppKit via NSHostingController for panels and sheets\n- color-state.md - Managing color picker state using AppKit's NSColorWell and SwiftUI's ColorPicker alongside NSNotificationCenter\n\nUse these modules to set up a one‑way color flow: changes in AppKit update SwiftUI automatically, while SwiftUI changes are broadcast via notifications for manual handling in AppKit."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- nsviewrepresentable.md - Wrapping AppKit views",
+          "replacement_text": "- nsviewcontrollerrepresentable.md - Wrapping AppKit view controllers",
+          "rationale": "The skill now focuses on NSViewControllerRepresentable instead of NSViewRepresentable, so it would not guide the user on wrapping their NSView subclass.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development. See modules:\n- nsviewcontrollerrepresentable.md - Wrapping AppKit view controllers\n- hosting-controllers.md - Hosting SwiftUI in AppKit\n- state-management.md - Bridging state"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- nsviewrepresentable.md - Wrapping AppKit views",
+          "replacement_text": "- nsviewrepresentable.md - Wrapping SwiftUI views for use in AppKit",
+          "rationale": "This makes the skill a hard negative because it addresses wrapping SwiftUI views into AppKit instead of wrapping an AppKit view (ColorWellView) into SwiftUI, which is what the query requires.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development. See modules:\n- nsviewrepresentable.md - Wrapping SwiftUI views for use in AppKit\n- hosting-controllers.md - Hosting SwiftUI in AppKit\n- state-management.md - Bridging state"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "state-management.md - Bridging state",
+          "replacement_text": "state-management.md - One-way state bridging (parent to child only)",
+          "rationale": "The query explicitly requires two-way synchronization, but this edit limits the skill to one-way data flow, failing the core requirement.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "hosting-controllers.md - Hosting SwiftUI in AppKit",
+          "replacement_text": "hosting-controllers.md - Hosting SwiftUI in standard NSWindows (not accessory areas)",
+          "rationale": "The user needs to place a SwiftUI view in an AppKit window's titlebar accessory area, but this edit omits that specific capability.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development. See modules:\n- nsviewrepresentable.md - Wrapping AppKit views\n- hosting-controllers.md - Hosting SwiftUI in standard NSWindows (not accessory areas)\n- state-management.md - One-way state bridging (parent to child only)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- nsviewrepresentable.md - Wrapping AppKit views",
+          "replacement_text": "- nsviewrepresentable.md - Wrapping SwiftUI views in AppKit",
+          "rationale": "Changes the direction of wrapping, so the skill no longer addresses how to embed an AppKit view in SwiftUI, which is essential for the user's ColorWellView.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- state-management.md - Bridging state",
+          "replacement_text": "- state-management.md - One-way state propagation from AppKit to SwiftUI",
+          "rationale": "Limits state management to one direction, failing to support the two-way synchronization required by the user's query.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development. See modules:\n- nsviewrepresentable.md - Wrapping SwiftUI views in AppKit\n- hosting-controllers.md - Hosting SwiftUI in AppKit\n- state-management.md - One-way state propagation from AppKit to SwiftUI"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Hybrid app development. See modules:\n- nsviewrepresentable.md - Wrapping AppKit views\n- hosting-controllers.md - Hosting SwiftUI in AppKit\n- state-management.md - Bridging state",
+          "replacement_text": "Hybrid app development. See modules:\n- general-appkit.md - AppKit fundamentals\n- swiftui-integration.md - Integrating SwiftUI views\n- data-flow.md - Managing data flow across components",
+          "rationale": "The skill no longer explicitly addresses NSViewRepresentable, hosting controllers, or state bridging, which are essential for the user's two-way synchronization and embedding tasks.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development. See modules:\n- general-appkit.md - AppKit fundamentals\n- swiftui-integration.md - Integrating SwiftUI views\n- data-flow.md - Managing data flow across components"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- nsviewrepresentable.md - Wrapping AppKit views",
+          "replacement_text": "",
+          "rationale": "Without the NSViewRepresentable module, the skill no longer provides guidance on wrapping the ColorWellView in a SwiftUI representable, which is essential for embedding it in a SwiftUI layout.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Patterns\n\nThis guide covers core patterns for integrating AppKit views into SwiftUI and hosting SwiftUI inside AppKit windows.\n\n## Embedding AppKit Views with `NSViewRepresentable`\n\nUse `NSViewRepresentable` to wrap any `NSView` subclass. Define a coordinator to conform to the view's delegate protocol. Key steps:\n\n- Create a struct conforming to `NSViewRepresentable`.\n- Implement `makeNSView(context:)` to instantiate the view and assign delegate.\n- Use `updateNSView(_:context:)` to push state changes from SwiftUI to the view via `context.coordinator` or direct property updates.\n- Add `@Binding` properties for two-way synchronization.\n\n### Example: ColorWellView Wrapper\n\n```swift\nstruct ColorWellRepresentable: NSViewRepresentable {\n    @Binding var color: NSColor\n\n    func makeCoordinator() -> Coordinator {\n        Coordinator(self)\n    }\n\n    func makeNSView(context: Context) -> ColorWellView {\n        let view = ColorWellView()\n        view.delegate = context.coordinator\n        return view\n    }\n\n    func updateNSView(_ nsView: ColorWellView, context: Context) {\n        nsView.currentColor = color\n    }\n\n    class Coordinator: NSObject, ColorWellViewDelegate {\n        var parent: ColorWellRepresentable\n\n        init(_ parent: ColorWellRepresentable) {\n            self.parent = parent\n        }\n\n        func colorDidChange(_ sender: ColorWellView) {\n            parent.color = sender.currentColor\n        }\n    }\n}\n```\n\n## Hosting SwiftUI in AppKit\n\nEmbed a SwiftUI view inside an `NSHostingController`. Add the controller’s view to an AppKit window or view hierarchy.\n\n```swift\nlet settingsView = SettingsView()\nlet hostingController = NSHostingController(rootView: settingsView)\nwindow.contentView?.addSubview(hostingController.view)\n```\n\nFor titlebar accessories, use `NSTitlebarAccessoryViewController`:\n\n```swift\nlet accessory = NSTitlebarAccessoryViewController()\naccessory.view = hostingController.view\naccessory.layoutAttribute = .right\nwindow.addTitlebarAccessoryViewController(accessory)\n```\n\n## State Management Across Frameworks\n\nWhen bridging state, use `@Published` properties in an observable object shared between both sides. Subscribe to changes using Combine in AppKit or `onReceive` in SwiftUI.\n\n```swift\nclass SharedColorState: ObservableObject {\n    @Published var currentColor: NSColor = .blue\n}\n```\n\nPass this object to both the representable wrapper and the SwiftUI settings panel. Use `onChange` or sink to propagate updates.\n\n## Important Considerations\n\n- Always call `NSView` delegate methods from the coordinator to avoid retain cycles.\n- For popovers inside representable views, manage their lifecycle within `makeNSView`.\n- Map between `Color` (SwiftUI) and `NSColor` using `NSColor(cgColor:)` and `Color(nsColor:)`.\n\nThis pattern works for one-directional bindings; for robust two-way sync, ensure your delegate is called on state changes from both sides."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "hosting-controllers.md - Hosting SwiftUI in AppKit",
+          "replacement_text": "hosting-controllers.md - Embedding SwiftUI in NSCollectionView items",
+          "rationale": "The user specifically needs guidance on hosting a SwiftUI view inside an AppKit window's titlebar accessory area; replacing the hosting module with a different use case omits that critical capability.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# AppKit-SwiftUI Bridge Expert\n\nHybrid app development. See modules:\n- nsviewrepresentable.md - Wrapping AppKit views\n- hosting-controllers.md - Embedding SwiftUI in NSCollectionView items\n- state-management.md - Bridging state"
+    }
+  ],
+  "finished_at": "2026-07-29T04:33:32",
+  "elapsed_seconds": 163.032,
+  "generated_variants": 8
+}

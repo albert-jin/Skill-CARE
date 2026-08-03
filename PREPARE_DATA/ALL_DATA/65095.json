@@ -1,0 +1,198 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:49:08",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 65095,
+  "selection_rank": 288,
+  "skill": {
+    "skill_id": "other/verification-protocol-skill",
+    "name": "verification-protocol",
+    "category": "other",
+    "description": "",
+    "body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 2 verifications → Execute\n- 3 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state",
+    "source": "pool"
+  },
+  "generated_query": "I have a batch processing pipeline for data ingestion. For each file in a directory (e.g., `/data/ingest/`), I need to perform two verifications before processing: first, check the file's SHA-256 checksum against a manifest, and second, validate its CSV schema (headers and column types). If both verifications pass, then the file is processed (e.g., loaded into a database). If a third verification is ever triggered—for instance, a manual recheck or an automated duplicate detection—the entire processing for that file should halt immediately, and it should be moved to a quarantine folder. \n\nI can run up to five concurrent processing tasks, each with a 30‑minute timeout. The verification steps must always read the file directly from disk (not rely on any background task state, which may be stale). The directory currently contains three files: `orders_202503.csv`, `inventory_202503.csv`, and `returns.csv`. Their expected checksums and schemas are listed in `/data/manifest.json`. \n\nCould you help me set up the commands or script to handle this workflow? Specifically, I need to launch the verifications, then trigger processing only after exactly two successful verifications per file, while enforcing the concurrency and timeout limits.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- 2 verifications → Execute",
+          "replacement_text": "",
+          "rationale": "Deleting the rule that two verifications trigger execution makes the skill unable to specify when processing should start, so it fails the user's requirement for exactly two successful verifications before processing.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n\n- 3 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 2 verifications → Execute",
+          "replacement_text": "- 2 verifications (file size and extension) → Execute",
+          "rationale": "Changing the verifications to file size and extension makes the skill unable to meet the user's need for SHA-256 checksum and CSV schema validation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 2 verifications (file size and extension) → Execute\n- 3 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 2 verifications → Execute\n- 3 verifications → HALT",
+          "replacement_text": "- 2 verifications → HALT\n- 3 verifications → Execute",
+          "rationale": "The skill now halts after two verifications and executes after three, which is the opposite of the user's required workflow.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 2 verifications → HALT\n- 3 verifications → Execute\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2 verifications → Execute",
+          "replacement_text": "1 verification → Execute",
+          "rationale": "The user needs two verifications before processing, but this skill only requires one, causing premature processing without the second check.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 1 verification → Execute\n- 3 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 2 verifications → Execute",
+          "replacement_text": "- 1 verification → Execute",
+          "rationale": "Removes the requirement for exactly two verifications, so the skill would execute after a single verification.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- 3 verifications → HALT",
+          "replacement_text": "- 2 verifications → HALT",
+          "rationale": "Changes the halt trigger from third verification to second, causing the workflow to halt after exactly the number of verifications needed for execution.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 1 verification → Execute\n- 2 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2 verifications → Execute\n- 3 verifications → HALT",
+          "replacement_text": "Verifications → Execute\n- No automatic halting",
+          "rationale": "The user requires exactly two verifications before processing and halting on a third; by removing the specific strike rule and halting condition, the skill becomes over-general and fails to enforce the exact workflow.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- Verifications → Execute\n- No automatic halting\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- 2 verifications → Execute",
+          "replacement_text": "",
+          "rationale": "Without the instruction to execute after two verifications, the skill does not specify when to proceed with processing, making it unusable for the user's workflow that requires triggering processing only after two successful verifications.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n\n- 3 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Read files first (not background tasks)",
+          "replacement_text": "Use background task results first (if available)",
+          "rationale": "This makes the skill rely on potentially stale background task state instead of reading files directly, violating the user's requirement for real-time verification.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 2 verifications → Execute\n- 3 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Use background task results first (if available)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2 verifications → Execute",
+          "replacement_text": "1 verification → Execute",
+          "rationale": "Changes the required number of successful verifications from 2 to 1, so the user's requirement for exactly two verifications before processing is not met.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3 verifications → HALT",
+          "replacement_text": "2 verifications → HALT",
+          "rationale": "Alters the halt threshold from 3 verifications to 2, so a third verification would not trigger halt but a second would, conflicting with the user's need for a third verification to halt.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 1 verification → Execute\n- 2 verifications → HALT\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3 verifications → HALT",
+          "replacement_text": "3 verifications → continue processing",
+          "rationale": "The skill no longer halts on a third verification, so the user's requirement to quarantine on third verification would not be met.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Verification Protocol SKILL\n\n## 2-Strike Rule\n\n- 2 verifications → Execute\n- 3 verifications → continue processing\n\n## Background Task Limits\n\n- Max 5 concurrent tasks\n- 30-minute timeout\n\n## Real-time Verification\n\n- Read files first (not background tasks)\n- Background tasks may have stale state"
+    }
+  ],
+  "finished_at": "2026-07-29T03:51:46",
+  "elapsed_seconds": 158.735,
+  "generated_variants": 10
+}

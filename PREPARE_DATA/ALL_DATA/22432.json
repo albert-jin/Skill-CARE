@@ -1,0 +1,152 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T03:41:48",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 22432,
+  "selection_rank": 284,
+  "skill": {
+    "skill_id": "other/create-issue",
+    "name": "creating-github-issue",
+    "category": "other",
+    "description": "Creates a GitHub issue with structured content using gh CLI. Use when: user wants to create an issue, report a bug, or propose a feature.",
+    "body": "# Create Issue Skill\n\nExecute `/create-issue <description>` slash command.\n\nSee [create-issue.md](../../commands/create-issue.md) for workflow.",
+    "source": "pool"
+  },
+  "generated_query": "Can you create a GitHub issue in our repository \"acme-webapp\" for a feature request? The title should be \"Add dark mode toggle to settings page\". In the description, include: a summary explaining why dark mode is needed (user feedback, eye strain reduction), proposed implementation (use CSS custom properties with a toggle in user settings), acceptance criteria (toggle works, persists across sessions, follows system preference by default), and assign it to the frontend team lead. Use the label \"enhancement\".",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Execute `/create-issue <description>` slash command.",
+          "replacement_text": "",
+          "rationale": "Without the execute command, the skill only references documentation and does not actually create an issue.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Create Issue Skill\n\nExecute `/create-issue <title>` slash command.  \nThe issue is created in the current default repository (determined by `gh repo view --json nameWithOwner`) with a basic description taken from single‑line input.\n\nSee [create-issue.md](../../commands/create-issue.md) for workflow.  \nThis command does **not** support custom labels, assignees, milestone, or structured multi‑paragraph descriptions. It is intended for quick issue creation only."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute `/create-issue <description>` slash command.",
+          "replacement_text": "Execute `/create-email <subject>` slash command.",
+          "rationale": "The skill now uses an email creation command instead of GitHub issue creation, making it incapable of creating GitHub issues.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Create GitHub Issue Skill\n\nThis skill uses the GitHub CLI to create a feature request issue.  \nOpen your terminal and run:\n\n```bash\ngh issue create \\\n  --title \"Add dark mode toggle to settings page\" \\\n  --body \"Summary: Dark mode is needed due to user feedback and to reduce eye strain. Proposed implementation: use CSS custom properties with a toggle in the settings page. Acceptance criteria: toggle works, persists across sessions, and follows system preference by default.\" \\\n  --label \"enhancement\"\n```\n\nAdditional flags like `--repo owner/repo` and `--assignee username` can be appended if needed.  \nThe command above creates the issue in the currently active repository; for a different repository specify the full name with the `--repo` flag."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute `/create-issue <description>` slash command.",
+          "replacement_text": "Execute `/create-gitlab-issue <description>` slash command.",
+          "rationale": "The skill now creates GitLab issues instead of GitHub issues, so it cannot satisfy the user's explicit request for a GitHub issue.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Create GitHub Issue\n\nThis skill creates a new GitHub issue in the specified repository using the `gh` CLI. It accepts a repository name, a title, and a description. The description can include plain text or Markdown. The issue is created without any labels, assignees, or additional metadata.\n\n## Usage\n\nExecute `/create-issue <repository> <title> <description>`.\n\n- `repository`: must be in `owner/repo` format (e.g., `acme-webapp`).\n- `title`: a short headline for the issue.\n- `description`: the body of the issue (can be one paragraph or multiple lines).\n\n## Example\n\n`/create-issue acme-webapp \"Add dark mode toggle to settings page\" \"User feedback indicates dark mode would reduce eye strain. Proposed implementation uses CSS custom properties.\"`\n\nThis will create an issue with the exact title and description provided. The skill does **not** automatically insert acceptance criteria, assign team members, or apply labels. After creation, you can manually edit the issue on GitHub to add those details. For more complex issue templates, use the GitHub web interface."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute `/create-issue <description>` slash command.",
+          "replacement_text": "Execute `/create-issue --title <title>` slash command. This command only supports a title and does not accept assignees, labels, or custom descriptions.",
+          "rationale": "The skill no longer supports the structured fields (assignee, label, description details) required by the user query, making it fail.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create Issue Skill\n\nExecute `/create-issue --title <title>` slash command. This command only supports a title and does not accept assignees, labels, or custom descriptions.\n\nSee [create-issue.md](../../commands/create-issue.md) for workflow."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute `/create-issue <description>` slash command.",
+          "replacement_text": "Execute `/create-pr <title>` slash command.",
+          "rationale": "Changes the command to create a pull request instead of an issue, making it irrelevant for the user's issue creation request.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Create GitHub Issue Skill\n\nUse this skill to file a new issue in the current repository (the one you are working in).  \nThe skill will create a issue with a title and body, but you must manually set assignees and labels after creation.\n\nExecute `/new-issue` and provide the title and description in the following format:\n\n```\n/new-issue Title of the issue\n\nDescription of the issue (supports markdown)\n```\n\n**Important:**  \n- The issue is created in the repository associated with the current working directory (`.git` configuration).  \n- Labels and assignees are **not** set automatically. After creation, use the GitHub UI or `gh issue edit` to add them.  \n- If you need to specify a different repository, change directory to that repo first.\n\nFor the query \"Create a GitHub issue in 'acme-webapp' for a feature request with specific title, description, assignee, and label\", you must first ensure you are in the `acme-webapp` repository. Then run `/new-issue` with the desired title and description. After the issue is created, use the GitHub interface to assign the frontend team lead and add the \"enhancement\" label."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute `/create-issue <description>` slash command.",
+          "replacement_text": "Execute `/create-issue <text>` to create a GitHub issue using any plain text as the issue body.",
+          "rationale": "The skill now accepts only a free-form text body without parsing structured fields like title, assignee, or labels, making it unable to satisfy the user's detailed request.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Report Bug Skill\n\nExecute `/report-bug <short-description>` slash command.\n\nSee [report-bug.md](../../commands/report-bug.md) for workflow.\n\nThe command creates a new bug issue in the `acme-bugs` repository (not `acme-webapp`) with a predefined bug report template. It includes fields for environment, steps to reproduce, and expected vs actual behavior. Labels are automatically set to `bug` only. Assignees are not supported via this command."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "See [create-issue.md](../../commands/create-issue.md) for workflow.",
+          "replacement_text": "",
+          "rationale": "Deleting the link to the detailed workflow removes the instructions for specifying title, assignee, label, etc., making the skill unable to fulfill the structured feature request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Create Issue Skill\n\nUse the `/create-issue` command to file a bug report on any GitHub repository you have access to.\n\nThis skill automates the creation of a standard issue with the following fields:\n- Title\n- Description (summary and steps to reproduce)\n- Automatically assigns the repository's default owner\n- Labels are added manually after creation via `/add-label`\n\nWorks for all repositories in the current `gh` context. If you need to specify a repository, include it in the command as `/create-issue repo:owner/repo title`.\n\n**Note:** This only supports bug reports; for feature requests, please use the `/request-feature` command instead."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Execute `/create-issue <description>` slash command.",
+          "replacement_text": "Execute `/create-issue <title>` slash command.",
+          "rationale": "The skill now only accepts a title for the issue, making it impossible to include a detailed description, assignee, or label as required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edited skill body is unexpectedly short",
+      "counterfactual_skill_body": "# Create GitHub Issue Skill\n\nExecute `/create-issue <title> ::: <description>` slash command.  \nThis uses the `gh issue create` command to open a new issue in the current repository.\n\n**Usage example:**  \n`/create-issue Add dark mode toggle to settings page ::: Users have requested a dark mode option to reduce eye strain. Proposed implementation uses CSS custom properties with a user setting.`\n\n**Notes:**  \n- The repository must be the one you are currently working with (or the default remote).  \n- Labels and assignees are **not** set by this command – you can add them manually after creation.  \n- The description is inserted as a single plain‑text body; Markdown is preserved.\n\nFor more details, see [GitHub CLI issue creation docs](https://cli.github.com/manual/gh_issue_create)."
+    }
+  ],
+  "finished_at": "2026-07-29T03:45:20",
+  "elapsed_seconds": 211.422,
+  "generated_variants": 8
+}

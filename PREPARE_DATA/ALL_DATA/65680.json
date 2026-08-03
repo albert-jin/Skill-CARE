@@ -1,0 +1,240 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:51:12",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 65680,
+  "selection_rank": 241,
+  "skill": {
+    "skill_id": "other/python-dual-mode",
+    "name": "python-dual-mode",
+    "category": "other",
+    "description": "将既有或新编写的 Python 脚本重构为双模式模块，用于稳定、可维护的数据处理流。",
+    "body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在**编写或改写 Python 代码为数据处理流**时使用。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**双模式模块化**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用且可通过 CLI 运行的 Python 模块。\n* **必须**提供一个 `run()`（或语义等价命名）函数，参数**覆盖原脚本全部输入**。\n* **必须**使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。\n* **必须**保留 `if __name__ == \"__main__\":`，且仅在其中调用 `main()`。\n* **必须**将硬编码路径与环境依赖参数化，不得写死路径。\n* **不得**在 `run()` 中读取全局变量、环境变量或命令行状态。\n* **不得**在 import 时触发主流程执行。\n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：\n\n  * `run(...)`：纯函数式主流程，显式参数输入，返回结构化结果或状态码。\n  * `build_parser()`（可选）：集中定义 CLI 参数，避免散落。\n  * `main(argv=None)`：解析参数并调用 `run()`；`argv` 可注入以便测试。\n* **错误处理**：\n\n  * 预期错误（参数缺失、文件不存在、格式错误）**必须**抛出可读异常或返回非 0 状态码。\n  * 不确定性（外部 I/O、第三方库行为）**必须**有失败策略（重试/降级/明确失败）。\n* **日志**：\n\n  * **应当**使用 `logging`，不得使用 `print` 作为主要日志。\n* **可测试性**：\n\n  * `run()` **应当**可被单元测试直接调用。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：立即失败，给出最小可行动错误信息。\n* I/O 失败：明确失败原因；如允许重试，需显式声明次数与退避策略。\n* 第三方依赖异常：捕获并封装为领域错误，避免泄露内部栈信息（调试模式除外）。\n\n## 安全与合规\n\n* **不得**执行越权操作（如未声明的网络访问、系统修改）。\n* **不得**隐式调用外部命令或下载资源，除非明确声明并获得输入授权。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行；\n  * 文档化参数与示例用法。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport argparse\nimport logging\n\nlog = logging.getLogger(__name__)\n\ndef run(input_path: str, output_path: str, **kwargs):\n    \"\"\"Pure entry point.\"\"\"\n    # ...\n    return 0\n\n\ndef build_parser():\n    p = argparse.ArgumentParser()\n    p.add_argument(\"--input-path\", required=True)\n    p.add_argument(\"--output-path\", required=True)\n    return p\n\n\ndef main(argv=None):\n    parser = build_parser()\n    args = parser.parse_args(argv)\n    return run(**vars(args))\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n```",
+    "source": "pool"
+  },
+  "generated_query": "我需要将一个现有的 Python 数据处理脚本改造成一个可被导入调用、也能通过命令行直接运行的模块。这个脚本目前硬编码了文件路径，散落着许多 print 语句，缺少错误处理和参数校验。具体来说：\n\n- 输入：一个 CSV 文件，包含数列（如销售额、日期），需要计算滚动平均并输出结果。\n- 当前脚本：读取两个硬编码路径的 CSV，执行计算，结果写入另一个硬编码路径的 CSV，所有配置写在文件开头。\n- 要求改造后：\n  - 提供一个 `run()` 函数，接受输入路径、输出路径、窗口大小等参数。\n  - 通过 `argparse` 支持命令行调用，如 `python process.py --input data.csv --output result.csv --window 7`。\n  - 使用 `logging` 替代 `print`。\n  - 正确处理文件不存在、格式错误等异常，并给出清晰提示。\n  - 模块可在其他脚本中 `import` 后直接调用 `run()` 函数进行测试或集成。\n\n请帮我生成这个符合双模式模块规范的 Python 脚本。",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "必须使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "",
+          "rationale": "删除 argparse 要求使得技能不再保证提供命令行解析能力，而用户明确要求 argparse 支持，因此技能无法满足查询。",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅用于将既有 Python 脚本重构为功能稳定的命令行工具。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**标准化为 CLI 可执行模块**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可通过命令行直接运行的 Python 脚本（例如 `python process.py --input ...`）。\n* **必须**使用 `if __name__ == \"__main__\":` 作为唯一入口，并在其中调用主流程函数。\n* **应当**将硬编码文件路径改写为通过命令行参数指定。\n* **必须**使用 `logging` 替代 `print` 作为日志输出。\n* **不得**在模块导入时执行任何 I/O 或计算逻辑。\n* **不得**假设未声明的外部资源（如默认输入文件必须存在）。\n\n## 结构与实现要求\n\n* **推荐结构**：\n  * `main()`：定义参数解析与主流程编排，参数使用 `sys.argv` 手动解析（推荐 `argparse`，但不强制）。\n  * 主处理函数（如 `process(input_path, output_path, window)`）：负责核心数据计算，不负责参数获取。\n  * 日志配置在模块顶层或 `main()` 内完成。\n* **错误处理**：\n  * 预期错误（文件不存在、格式错误）应在 `main()` 中捕获并输出友好信息。\n  * 调用失败时脚本应退出并返回非零状态码。\n* **日志**：\n  * **应当**使用 `logging.INFO` 输出关键步骤，`logging.ERROR` 输出故障。\n* **可维护性**：\n  * 主处理函数应具备清晰的参数签名，便于后续单元测试覆盖（可单独测试该函数）。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：在 `main()` 中直接打印错误日志并退出。\n* I/O 失败：捕获异常并记录具体文件路径与错误信息。\n* 第三方库异常：记录异常类型与消息，并终止执行。\n\n## 安全与合规\n\n* **不得**执行越权操作（如未授权访问网络或修改系统文件）。\n* **不得**隐式调用外部命令。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n  * 可作为独立脚本运行，参数由命令行传入；\n  * 文档化所有命令行参数及用法示例。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport logging\nimport sys\n\nlogging.basicConfig(level=logging.INFO, format=\"%(levelname)s: %(message)s\")\nlog = logging.getLogger(__name__)\n\ndef process(input_path, output_path, window):\n    \"\"\"核心数据处理函数，返回结果或抛出异常。\"\"\"\n    # ... 读取、计算、写入\n    return 0\n\ndef main():\n    if len(sys.argv) < 4:\n        log.error(\"用法: python script.py --input INPUT --output OUTPUT --window N\")\n        sys.exit(1)\n    # 简单手动解析（示例），实际可考虑使用 argparse\n    args = {\"input_path\": sys.argv[1], \"output_path\": sys.argv[2], \"window\": int(sys.argv[3])}\n    try:\n        return process(**args)\n    except Exception as e:\n        log.error(f\"处理失败: {e}\")\n        sys.exit(1)\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "必须使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "必须使用 `sys.argv` 手动解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "rationale": "Replaces required argparse with manual sys.argv parsing, which fails the user query that explicitly demands argparse support.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "应当使用 `logging`，不得使用 `print` 作为主要日志。",
+          "replacement_text": "应当使用 `print`，不得使用 `logging` 作为主要日志。",
+          "rationale": "Replaces logging with print, directly contradicting the user requirement to replace print statements with logging.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在**编写或改写 Python 代码为数据处理流**时使用。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**双模式模块化**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用且可通过 CLI 运行的 Python 模块。\n* **必须**提供一个 `run()`（或语义等价命名）函数，参数**至少覆盖输入路径和输出路径**（窗口大小等可使用默认值以便兼容现有调用）。\n* **应当**使用 `argparse` 解析命令行参数，也可使用 `sys.argv` 手动处理简单场景。\n* **必须**保留 `if __name__ == \"__main__\":`，并在其中执行主流程（可直接调用 `run()` 或 `main()`）。\n* **应当**将硬编码路径与环境依赖参数化，但可保留一个合理的默认值以兼容原有脚本。\n* **不得**在 `run()` 中读取全局变量、环境变量或命令行状态。\n* **不得**在 import 时触发主流程执行（除非是极少量的配置加载）。\n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：\n  * `run(...)`：主流程函数，接受必要的输入输出参数，可选择返回结果码。\n  * `main(argv=None)`（可选）：解析参数并调用 `run()`；若未定义，可直接在 `__main__` 中解析并调用。\n* **错误处理**：\n  * 预期错误（参数缺失、文件不存在、格式错误）**应当**抛出可读异常或打印错误信息并退出。\n  * 不确定性（外部 I/O、第三方库行为）**可**简单失败，不强制重试策略。\n* **日志**：\n  * **推荐**使用 `logging`，但允许保留少量 `print` 以便快速调试和演示。\n* **可测试性**：\n  * `run()` **应当**可被单元测试直接调用，但不必严格无副作用（如允许写入默认输出）。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：打印错误信息并退出，可使用 `sys.exit(1)` 返回非零状态码。\n* I/O 失败：直接抛出 `FileNotFoundError` 等异常，由外层捕获或打印堆栈。\n* 第三方依赖异常：允许自然传播，不做额外封装（除非明确要求）。\n\n## 安全与合规\n\n* **不得**执行越权操作（如未声明的网络访问、系统修改）。\n* **不得**隐式调用外部命令或下载资源，除非明确声明并获得输入授权。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行；\n  * 文档化参数与示例用法。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport sys\nimport logging\n\nlog = logging.getLogger(__name__)\n\ndef run(input_path=\"input.csv\", output_path=\"output.csv\", window=7):\n    \"\"\"Pure entry point with sensible defaults.\"\"\"\n    # ...\n    return 0\n\n\ndef main(argv=None):\n    if argv is None:\n        argv = sys.argv[1:]\n    # 简单手动解析参数（支持 --input, --output, --window）\n    # 可用 argparse 替换，但非必须\n    # ...\n    return run()\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "参数**覆盖原脚本全部输入**",
+          "replacement_text": "参数仅接受一个配置字典或配置文件名，所有输入数据及参数从该配置中读取。",
+          "rationale": "User query requires explicit input/output path and window size parameters; changing to config-based input makes the skill fail that requirement.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "必须使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "必须使用 `sys.argv` 手动解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "rationale": "User query specifically demands argparse; replacing with manual sys.argv parsing makes the skill non-compliant.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 当需要将现有的 Python 脚本升级为**配置驱动的数据处理组件**时使用。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，并明确要求**外部化配置、可复用、易维护**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**提供 `run()` 函数作为主入口，但该函数不接收路径等执行参数，所有执行参数通过外部配置（YAML/JSON /环境变量）注入。\n* **必须**使用 `configparser` 或 `os.environ` 读取配置，不得在代码中硬编码路径。\n* **必须**支持从命令行调用，但调用时无需携带参数（参数全部从预定义配置源加载）。\n* **应当**使用 `logging` 替代 `print`。\n* **不得**在 `run()` 中直接访问 `sys.argv` 或 `argparse`。\n* **不得**在 import 时触发主流程执行。\n\n## 结构与实现要求\n\n* `run()`：无参数或仅接受一个配置对象（如 `config: dict`），内部从配置中读取 input_path, output_path, window_size 等。\n* 提供 `load_config()` 函数，按优先级从环境变量、本地 YAML 文件、默认值加载配置。\n* 主函数 `main()` 加载配置并调用 `run()`。\n* 所有可配置项应在配置文件中说明，并提供示例。\n\n## 错误处理与不确定性\n\n* 配置缺失或格式错误：立即退出并打印清晰错误信息（通过 `logging`）。\n* I/O 失败：捕获并记录错误，返回非零退出码。\n\n## 输出物\n\n* 生成的 Python 文件应包含 `run()`、`load_config()`、`main()` 及 `if __name__ == \"__main__\"`。\n* 项目还应包含一个 `config.yaml` 示例文件（或通过 `--config` 指定路径，但默认从 `config.yaml` 读取）。\n\n## 示例骨架\n\n```python\nimport logging\nimport os\nimport yaml\n\nlog = logging.getLogger(__name__)\n\ndef load_config(config_path=\"config.yaml\"):\n    with open(config_path) as f:\n        return yaml.safe_load(f)\n\ndef run(config: dict):\n    input_path = config[\"input_path\"]\n    output_path = config[\"output_path\"]\n    window = config.get(\"window\", 7)\n    # ... processing\n    return 0\n\ndef main():\n    logging.basicConfig(level=logging.INFO)\n    cfg = load_config()\n    return run(cfg)\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "必须使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "建议使用 `argparse` 解析命令行参数，也可使用其他命令行解析库，并在 `main()` 中调用 `run()`。",
+          "rationale": "允许使用替代的 CLI 解析库，但用户查询明确要求 argparse，改动后技能可能生成不符合要求的 CLI 实现。",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "应当使用 `logging`，不得使用 `print` 作为主要日志。",
+          "replacement_text": "应当使用 `logging` 或 `print` 作为主要日志方式。",
+          "rationale": "允许使用 print，但用户查询明确要求用 logging 替代 print，使得技能可能无法满足核心需求。",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在**编写或改写 Python 脚本为可从命令行运行**时使用。  \n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**CLI 模块化**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可通过 CLI 运行的 Python 脚本。  \n* **必须**使用 `argparse` 解析命令行参数。  \n* **必须**保留 `if __name__ == \"__main__\":`，并在此入口调用参数解析与主流程。  \n* **必须**将硬编码路径参数化，不得写死路径（但可在调用时提供默认值）。  \n* **不得**在 import 时触发主流程执行。  \n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：  \n  * 主逻辑写在 `main()` 函数中，直接接受参数对象并处理工作。  \n  * 可选的 `build_parser()` 集中定义 CLI 参数。  \n* **错误处理**：预期错误（文件不存在、参数缺失等）应抛出可读异常。  \n* **日志**：可使用 `logging` 或 `print` 输出运行信息，确保清晰可读。  \n* **可测试性**：`main(argv=['--input', '...'])` 可被直接调用测试。\n\n## 输出物\n\n* 生成的 Python 文件必须：  \n  * 可通过 `python module.py --args` 运行；  \n  * 文档化参数与示例用法。\n\n## 示例骨架\n\n```python\nimport argparse\n\ndef build_parser():\n    p = argparse.ArgumentParser()\n    p.add_argument(\"--input\", required=True, help=\"输入 CSV 文件路径\")\n    p.add_argument(\"--output\", required=True, help=\"输出 CSV 文件路径\")\n    return p\n\ndef main(argv=None):\n    parser = build_parser()\n    args = parser.parse_args(argv)\n    # 直接在 main 中处理逻辑（不拆分为独立 run()）\n    print(f\"处理 {args.input} → {args.output}\")\n\nif __name__ == \"__main__\":\n    main()\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "仅在**编写或改写 Python 代码为数据处理流**时使用。",
+          "replacement_text": "仅在**编写或改写 Python 代码为静态HTML报告生成流**时使用。",
+          "rationale": "Changes the domain from data processing to HTML report generation, so the skill no longer addresses the core data processing requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "生成的 Python 文件必须：\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行；\n  * 文档化参数与示例用法。",
+          "replacement_text": "生成的 Python 文件必须：\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行；\n  * 能够生成一个静态HTML报告并保存到指定路径，支持自定义模板和样式。",
+          "rationale": "Changes the output requirement from a general processed file to an HTML report, missing the need for CSV output with rolling averages.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在**编写或改写 Python 代码为数据处理流**时使用。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**双模式模块化**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用且可通过 CLI 运行的 Python 模块。\n* **必须**提供一个 `run()` 函数，参数覆盖**大部分**主流程输入（至少包含输入路径和输出路径）。\n* **建议**使用 `argparse` 解析命令行参数，也可以在 `main()` 中直接使用 `sys.argv` 简单处理。\n* **必须**保留 `if __name__ == \"__main__\":`，并在此处调用主逻辑。\n* **不得**在 `import` 时触发主流程执行。\n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：\n\n  * `run(...)`：纯函数式主流程，显式参数输入，返回结构结果或状态码。\n  * `main()`：集中处理命令行调用，解析参数后调用 `run()`。\n  * 可选使用全局变量存储默认值（如默认窗口大小），但不得在 `run()` 内修改。\n* **错误处理**：\n\n  * 预期错误（文件不存在、格式错误）**应当**被捕获并给出提示，但允许以简单 `print` 输出错误信息。\n  * 非预期错误可保留默认的 traceback 以便调试。\n* **日志**：\n\n  * **允许**使用 `print` 作为主要输出方式，也可以引入 `logging`。\n* **可测试性**：\n\n  * `run()` 本身应可被单元测试直接调用，但不必提供严格参数校验。\n\n## 失败策略与不确定性处理\n\n* 参数缺失：可设定合理的默认值，或强制在命令行提供必要参数后退出（通过 `argparse` 或手动检查）。\n* I/O 失败：打印具体的错误原因（如文件不存在），然后退出。\n* 第三方依赖异常：可忽略捕获，让默认异常处理机制工作。\n\n## 安全与合规\n\n* **不得**执行越权操作（如未声明的网络访问、系统修改）。\n* **不得**隐式调用外部命令或下载资源，除非明确声明并获得输入授权。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行（参数至少包含 `--input` 和 `--output`）；\n  * 文档化参数与示例用法。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport argparse\nimport sys\n\n# 允许直接使用 print 作为日志\nDEFAULT_WINDOW = 7   # 固定默认窗口，不支持命令行修改\n\ndef run(input_path: str, output_path: str):\n    \"\"\"Pure entry point. Window size is fixed to DEFAULT_WINDOW.\"\"\"\n    try:\n        # 计算滚动平均（示意）\n        pass\n        return 0\n    except FileNotFoundError as e:\n        print(f\"Error: {e}\")\n        return 1\n\ndef main(argv=None):\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--input\", required=True, help=\"Input CSV file path\")\n    parser.add_argument(\"--output\", required=True, help=\"Output CSV file path\")\n    # 注意：没有 --window 参数，窗口大小固定为 DEFAULT_WINDOW\n    args = parser.parse_args(argv)\n    return run(args.input, args.output)\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**必须**使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "**必须**使用命令行参数解析（如 `argparse` 或 `sys.argv`），并在 `main()` 中调用 `run()`。",
+          "rationale": "Allowing generic CLI parsing like sys.argv weakens the specific argparse requirement needed by the user query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**必须**使用 `logging`，不得使用 `print` 作为主要日志。",
+          "replacement_text": "**应当**使用 `logging`，尽量避免使用 `print`。",
+          "rationale": "Softening the logging mandate to 'should' makes it optional, allowing print which violates user requirement.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "**必须**将硬编码路径与环境依赖参数化，不得写死路径。",
+          "replacement_text": "",
+          "rationale": "Removing the hardcoded path prohibition means the skill no longer enforces parameterization, which is a core user need.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在将现有脚本改造为命令行可用的 Python 模块时使用。\n* 输入包含：现有脚本或需求描述，要求输出可导入且可独立执行的代码。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用且可通过 CLI 运行的 Python 模块。\n* **必须**提供一个 `process()` 函数，接受输入路径、输出路径两个核心参数。\n* **必须**使用 `argparse` 解析命令行参数（至少包含 `--input` 和 `--output`）。\n* **必须**保留 `if __name__ == \"__main__\":`，并在此处调用入口函数。\n* **必须**将硬编码路径参数化，不得出现数据集绝对路径。\n* **不得**在 `process()` 中读取全局变量或环境变量。\n* **不得**在 import 时触发主流程执行。\n* **不得**假设某特定操作系统或权限级别。\n\n## 结构与实现要求\n\n* **模块结构**：\n  * `process(input_path, output_path)`：核心处理函数，完成数据读写与计算。\n  * `main(argv=None)`：解析参数并调用 `process()`；`argv` 可注入以便测试。\n* **错误处理**：\n  * 预期错误（文件不存在、格式错误）**必须**给出清晰提示并终止执行。\n  * 非预期错误应捕获并打印友好信息，避免原始 Traceback 暴露。\n* **日志**：\n  * **应当**使用 `logging`，但允许在关键步骤使用 `print` 以便用户直观了解进度。\n* **可测试性**：\n  * `process()` 应可被单元测试直接调用，但无需返回结构化结果。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：立即退出，提示缺失的参数名。\n* I/O 失败：打印具体错误原因（如文件不可读、磁盘空间不足）。\n* 第三方依赖异常：捕获后打印简洁错误，必要时建议用户检查环境配置。\n\n## 安全与合规\n\n* **不得**修改系统文件或执行未声明的网络请求。\n* **不得**隐式安装第三方库或执行外部命令。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n  * 可被 `import process` 使用（文件名自定义）；\n  * 可通过 `python module.py --input data.csv --output result.csv` 运行；\n  * 包含模块级注释说明参数要求。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport argparse\nimport logging\n\nlog = logging.getLogger(__name__)\n\ndef process(input_path: str, output_path: str):\n    \"\"\"读取 input_path，处理后写入 output_path。\"\"\"\n    # 主要计算逻辑\n    print(f\"Processing {input_path} -> {output_path}\")\n    # 使用 logging 记录信息\n    log.info(\"Finished processing\")\n    return  # 不强制返回状态码\n\n\ndef main(argv=None):\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--input\", required=True, help=\"输入 CSV 路径\")\n    parser.add_argument(\"--output\", required=True, help=\"输出 CSV 路径\")\n    args = parser.parse_args(argv)\n    process(args.input, args.output)\n\n\nif __name__ == \"__main__\":\n    main()\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "* **必须**使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "",
+          "rationale": "Deleting the mandatory use of argparse means the skill no longer ensures CLI argument parsing, which is a key requirement of the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在**编写或改写 Python 代码为数据处理流**时使用。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**双模式模块化**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用且可通过 CLI 运行的 Python 模块。\n* **必须**提供一个 `run()`（或语义等价命名）函数，参数**覆盖原脚本全部输入**。\n\n* **必须**保留 `if __name__ == \"__main__\":`，且仅在其中调用 `main()`。\n* **必须**将硬编码路径与环境依赖参数化，不得写死路径。\n* **不得**在 `run()` 中读取全局变量、环境变量或命令行状态。\n* **不得**在 import 时触发主流程执行。\n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：\n\n  * `run(...)`：纯函数式主流程，显式参数输入，返回结构化结果或状态码。\n  * `build_parser()`（可选）：集中定义 CLI 参数，避免散落。\n  * `main(argv=None)`：解析参数并调用 `run()`；`argv` 可注入以便测试。\n* **错误处理**：\n\n  * 预期错误（参数缺失、文件不存在、格式错误）**必须**抛出可读异常或返回非 0 状态码。\n  * 不确定性（外部 I/O、第三方库行为）**必须**有失败策略（重试/降级/明确失败）。\n* **日志**：\n\n  * **应当**使用 `logging`，不得使用 `print` 作为主要日志。\n* **可测试性**：\n\n  * `run()` **应当**可被单元测试直接调用。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：立即失败，给出最小可行动错误信息。\n* I/O 失败：明确失败原因；如允许重试，需显式声明次数与退避策略。\n* 第三方依赖异常：捕获并封装为领域错误，避免泄露内部栈信息（调试模式除外）。\n\n## 安全与合规\n\n* **不得**执行越权操作（如未声明的网络访问、系统修改）。\n* **不得**隐式调用外部命令或下载资源，除非明确声明并获得输入授权。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行；\n  * 文档化参数与示例用法。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport argparse\nimport logging\n\nlog = logging.getLogger(__name__)\n\ndef run(input_path: str, output_path: str, **kwargs):\n    \"\"\"Pure entry point.\"\"\"\n    # ...\n    return 0\n\n\ndef build_parser():\n    p = argparse.ArgumentParser()\n    p.add_argument(\"--input-path\", required=True)\n    p.add_argument(\"--output-path\", required=True)\n    return p\n\n\ndef main(argv=None):\n    parser = build_parser()\n    args = parser.parse_args(argv)\n    return run(**vars(args))\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "必须使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "必须使用 `sys.argv` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "rationale": "Replaces argparse with sys.argv, violating user's explicit argparse requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "应当使用 `logging`，不得使用 `print` 作为主要日志。",
+          "replacement_text": "应当使用 `print`，不得使用 `logging` 作为主要日志。",
+          "rationale": "Turns logging requirement into print, which contradicts user's logging requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在将现有 Python 脚本模块化，使其可被 `import` 安全调用时使用。\n* 输入包含：现有脚本或需求描述，要求从硬编码路径、打印日志的状态改造为可重用模块。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用的 Python 模块。\n* **必须**提供一个 `run()` 函数，其参数覆盖原脚本全部输入（例如输入路径、输出路径、窗口大小等）。\n* **必须**保留 `if __name__ == \"__main__\":` 块，并在其中直接调用 `run()` 函数（可使用临时固定的参数或从外部配置文件读取）。\n* **必须**将原脚本中的硬编码路径与环境依赖参数化，不得保留任何写死的路径。\n* **不得**在 `import` 时触发主流程执行。\n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：\n\n  * `run(…)`：纯函数式主流程，接受所有必要参数（如 `input_csv`, `output_csv`, `window_size`），返回数值状态码（0 表示成功，非 0 表示失败）。\n  * 建议在文件末尾的 `if __name__ == \"__main__\":` 中直接调用 `run()`，并传递临时值或从环境变量/配置文件中读取参数。\n* **错误处理**：\n\n  * 预期错误（文件不存在、格式错误）应当在 `run()` 函数内部捕获并打印清晰的中文错误信息。\n  * 遇到严重错误时，`run()` 可返回非 0 状态码，或直接抛出异常由顶层捕获。\n* **日志**：\n\n  * 保留原有 `print` 语句不变，将其作为主要信息输出方式；如需要，可在模块加载时添加 `logging.basicConfig(level=logging.INFO)` 作为可选增强。\n* **可测试性**：\n\n  * `run()` 应当可被单元测试直接调用，传入显式参数。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：在 `run()` 开始时检查参数合法性，不合法则打印错误并返回 1。\n* I/O 失败：捕获 `FileNotFoundError`、`PermissionError` 等，打印错误信息并返回 1。\n* 第三方依赖异常：捕获并打印简短的错误描述，避免完整堆栈泄露给用户（调试模式除外）。\n\n## 安全与合规\n\n* **不得**执行越权操作（如修改系统文件、读写未授权路径）。\n* **不得**隐式调用外部命令或下载资源，除非明确声明并获得输入授权。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n\n  * 可被 `import` 后调用 `run()` 函数；\n  * 在作为脚本直接运行时自动调用 `run()`（需手动指定参数值或读取配置文件）；\n  * 文档化函数参数与预期行为。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport logging\n\nlogging.basicConfig(level=logging.INFO)\nlog = logging.getLogger(__name__)\n\ndef run(input_path: str, output_path: str, window_size: int = 7) -> int:\n    \"\"\"Pure entry point. Returns 0 on success, 1 on failure.\"\"\"\n    try:\n        # 读取 CSV，计算滚动平均，写入结果\n        ...\n        return 0\n    except Exception as e:\n        log.error(f\"处理失败: {e}\")\n        return 1\n\nif __name__ == \"__main__\":\n    # 示例：直接使用硬编码参数运行，用户需手动修改\n    exit(run(\"data.csv\", \"result.csv\", window_size=7))\n```"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "必须使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "replacement_text": "必须使用 `sys.argv` 解析命令行参数，并在 `main()` 中调用 `run()`。",
+          "rationale": "By suggesting sys.argv instead of argparse, the skill fails to meet the user's explicit requirement for argparse-based CLI parsing, making it a counterfactual negative.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在**编写或改写 Python 代码为数据处理流**时使用。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**双模式模块化**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用且可通过 CLI 运行的 Python 模块。\n* **必须**提供一个 `run()`（或语义等价命名）函数，参数**覆盖原脚本全部输入**。\n* **建议**使用 `argparse` 解析命令行参数，但也可采用 `sys.argv` 手动解析或 `optparse` 等方式。\n* **必须**保留 `if __name__ == \"__main__\":`，且仅在其中调用 `main()`。\n* **建议**将硬编码路径与环境依赖参数化，但允许保留少量合理硬编码（如默认路径）。\n* **不得**在 `run()` 中读取全局变量、环境变量或命令行状态。\n* **不得**在 import 时触发主流程执行。\n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：\n\n  * `run(...)`：纯函数式主流程，显式参数输入，返回结构化结果或状态码（可选）。\n  * `build_parser()`（可选）：集中定义 CLI 参数，避免散落。\n  * `main(argv=None)`：解析参数并调用 `run()`；`argv` 可注入以便测试。\n* **错误处理**：\n\n  * 预期错误（参数缺失、文件不存在、格式错误）**可以**抛出可读异常或返回非 0 状态码，但不强制。\n  * 不确定性（外部 I/O、第三方库行为）**建议**有失败策略（重试/降级/明确失败）。\n* **日志**：\n\n  * 推荐使用 `logging`，但使用 `print` 也可接受，尤其当脚本功能简单时。\n* **可测试性**：\n\n  * `run()` **应当**可被单元测试直接调用。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：建议立即失败，给出错误信息；也可由调用方自行处理。\n* I/O 失败：建议明确失败原因；如允许重试，需显式声明次数与退避策略。\n* 第三方依赖异常：捕获并封装为领域错误，避免泄露内部栈信息（调试模式除外）。\n\n## 安全与合规\n\n* **不得**执行越权操作（如未声明的网络访问、系统修改）。\n* **不得**隐式调用外部命令或下载资源，除非明确声明并获得输入授权。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行（若使用参数解析框架）；\n  * 文档化参数与示例用法。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport logging\nimport sys\n\nlog = logging.getLogger(__name__)\n\ndef run(input_path: str, output_path: str, **kwargs):\n    \"\"\"Pure entry point.\"\"\"\n    # ...\n    return 0\n\n\ndef main(argv=None):\n    # 示例：手动解析 sys.argv\n    if argv is None:\n        argv = sys.argv[1:]\n    # 简单示例，实际建议使用 argparse\n    input_path = argv[0] if len(argv) > 0 else \"default_input.csv\"\n    output_path = argv[1] if len(argv) > 1 else \"default_output.csv\"\n    return run(input_path, output_path)\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n```"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  * **应当**使用 `logging`，不得使用 `print` 作为主要日志。",
+          "replacement_text": "  * **建议**使用 `logging`，`print` 可用于调试或诊断信息。",
+          "rationale": "Allows use of print statements, contradicting user's explicit requirement to replace all print with logging.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  * 预期错误（参数缺失、文件不存在、格式错误）**必须**抛出可读异常或返回非 0 状态码。",
+          "replacement_text": "  * 预期错误（参数缺失、文件不存在、格式错误）**建议**抛出可读异常或返回非 0 状态码，简单退出也可接受。",
+          "rationale": "Weakens mandatory error handling, failing user's requirement for clear error messages on common failures.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# 指令\n\n## 触发条件（When to use）\n\n* 仅在**编写或改写 Python 代码为数据处理流**时使用。\n* 输入包含：现有脚本、需求描述，或需要从零生成脚本，但明确要求**双模式模块化**。\n\n## 能力范围（Must / Must Not）\n\n* **必须**生成一个可被 `import` 调用且可通过 CLI 运行的 Python 模块。\n* **必须**提供一个 `run()`（或语义等价命名）函数，参数**覆盖原脚本全部输入**。\n* **必须**使用 `argparse` 解析命令行参数，并在 `main()` 中调用 `run()`。\n* **必须**保留 `if __name__ == \"__main__\":`，且仅在其中调用 `main()`。\n* **必须**将硬编码路径与环境依赖参数化，不得写死路径。\n* **不得**在 `run()` 中读取全局变量、环境变量或命令行状态。\n* **不得**在 import 时触发主流程执行。\n* **不得**假设未声明的外部资源、权限或运行环境。\n\n## 结构与实现要求\n\n* **模块结构**：\n\n  * `run(...)`：纯函数式主流程，显式参数输入，返回结构化结果或状态码。\n  * `build_parser()`（可选）：集中定义 CLI 参数，避免散落。\n  * `main(argv=None)`：解析参数并调用 `run()`；`argv` 可注入以便测试。\n* **错误处理**：\n\n  * 预期错误（参数缺失、文件不存在、格式错误）**建议**抛出可读异常或返回非 0 状态码，简单退出也可接受。\n  * 不确定性（外部 I/O、第三方库行为）**必须**有失败策略（重试/降级/明确失败）。\n* **日志**：\n\n  * **建议**使用 `logging`，`print` 可用于调试或诊断信息。\n* **可测试性**：\n\n  * `run()` **应当**可被单元测试直接调用。\n\n## 失败策略与不确定性处理\n\n* 参数校验失败：立即失败，给出最小可行动错误信息。\n* I/O 失败：明确失败原因；如允许重试，需显式声明次数与退避策略。\n* 第三方依赖异常：捕获并封装为领域错误，避免泄露内部栈信息（调试模式除外）。\n\n## 安全与合规\n\n* **不得**执行越权操作（如未声明的网络访问、系统修改）。\n* **不得**隐式调用外部命令或下载资源，除非明确声明并获得输入授权。\n\n## 输出物\n\n* 生成的 Python 文件必须：\n\n  * 可被 `import` 使用；\n  * 可通过 `python module.py --args` 运行；\n  * 文档化参数与示例用法。\n\n## 示例骨架（非实现，仅结构）\n\n```python\nimport argparse\nimport logging\n\nlog = logging.getLogger(__name__)\n\ndef run(input_path: str, output_path: str, **kwargs):\n    \"\"\"Pure entry point.\"\"\"\n    # ...\n    return 0\n\n\ndef build_parser():\n    p = argparse.ArgumentParser()\n    p.add_argument(\"--input-path\", required=True)\n    p.add_argument(\"--output-path\", required=True)\n    return p\n\n\ndef main(argv=None):\n    parser = build_parser()\n    args = parser.parse_args(argv)\n    return run(**vars(args))\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n```"
+    }
+  ],
+  "finished_at": "2026-07-29T00:56:38",
+  "elapsed_seconds": 326.094,
+  "generated_variants": 10
+}

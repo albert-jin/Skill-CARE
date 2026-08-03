@@ -1,0 +1,205 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:49:35",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 65673,
+  "selection_rank": 189,
+  "skill": {
+    "skill_id": "other/remaining-todo",
+    "name": "remaining-todo",
+    "category": "other",
+    "description": "Summarise current status, completed work, and remaining tasks when context is running low. Use when you need to hand off work or document progress before context limit.",
+    "body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n3. **Remaining Tasks**: What still needs to be done?\n\nKeep the summary concise but comprehensive enough for someone to continue the work.",
+    "source": "pool"
+  },
+  "generated_query": "I’ve been working on a Python script that scrapes news headlines and sends a daily email digest. I’ve already set up the scraping logic for the first two sources and tested the SMTP connection, but I haven’t added the third source or error handling yet. My chat window is getting very long and I’m about to hit the context limit. Could you give me a quick status summary—what I’ve accomplished, what’s working, and exactly what still needs to be done—so I can save it and pick up later without losing track?",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "",
+          "rationale": "Without listing remaining tasks, the summary cannot help the user resume work later.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "You are a task status reporter. When invoked, provide a detailed action plan:\n\n1. **Current Status**: What state is the work in right now?\n2. **Recommended Next Steps**: What should be done next?\n3. **Potential Issues**: What problems might arise?",
+          "rationale": "Replaces the core capability of summarizing completed and remaining tasks with forward‑looking planning, so the user cannot get the needed recap of what was done and what still needs to be done.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a detailed action plan:\n\n1. **Current Status**: What state is the work in right now?\n2. **Recommended Next Steps**: What should be done next?\n3. **Potential Issues**: What problems might arise?\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "3. **Remaining Tasks**: Please consult your project management tool for a list of pending items.",
+          "rationale": "The user needs an explicit list of remaining tasks to continue work, but this edit redirects to an external tool, failing to provide the required information.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n3. **Remaining Tasks**: Please consult your project management tool for a list of pending items.\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "3. **Overall Goals**: What is the broader objective?",
+          "rationale": "The user explicitly asks for exact remaining tasks; if the skill only lists overall goals, it fails to provide the specific to-do list needed.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n3. **Overall Goals**: What is the broader objective?\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Current Status**: What state is the work in right now?",
+          "replacement_text": "1. **Current Status**: What is the overall project health?",
+          "rationale": "Changes from technical status to vague health, omitting the specific code state the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **What Was Done**: List completed tasks and changes made",
+          "replacement_text": "2. **What Was Done**: List completed milestones and decisions made",
+          "rationale": "Shifts from detailed technical tasks to high-level milestones, ignoring the user's request for specific scraping and email setup details.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "3. **Remaining Tasks**: Key blockers and dependencies?",
+          "rationale": "Changes from a straightforward todo list to a focus on blockers, which may not capture all remaining coding steps the user needs.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What is the overall project health?\n2. **What Was Done**: List completed milestones and decisions made\n3. **Remaining Tasks**: Key blockers and dependencies?\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "1. **Status Update**: Provide a brief summary of the overall progress and next steps.",
+          "rationale": "The skill no longer explicitly separates completed and remaining tasks, making it harder for the user to get the structured handoff they need.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Status Update**: Provide a brief summary of the overall progress and next steps.\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "",
+          "rationale": "Without listing remaining tasks, the user cannot resume work effectively.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n3. **Remaining Tasks**: What still needs to be done?\n\nKeep the summary concise but comprehensive enough for someone to continue the work.",
+          "replacement_text": "You are a code performance analyst. When invoked, provide a detailed performance analysis of the code. Identify bottlenecks and suggest optimizations. Include specific benchmarks and code snippets where applicable. Keep the analysis concise but actionable for developers.",
+          "rationale": "The skill now outputs performance analysis instead of a progress summary, making it unable to answer the user's request for a status handoff.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a code performance analyst. When invoked, provide a detailed performance analysis of the code. Identify bottlenecks and suggest optimizations. Include specific benchmarks and code snippets where applicable. Keep the analysis concise but actionable for developers."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Current Status**: What state is the work in right now?",
+          "replacement_text": "1. **Project Goals**: What is the overall objective?",
+          "rationale": "By replacing the current status report with project goals, the skill no longer tells the user what has already been accomplished, which is critical for handoff.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "3. **Ideas for Future Work**: What could be added later?",
+          "rationale": "Changing remaining tasks into optional future ideas removes the exact information the user needs to resume work, making the skill unhelpful for tracking unfinished work.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Project Goals**: What is the overall objective?\n2. **What Was Done**: List completed tasks and changes made\n3. **Ideas for Future Work**: What could be added later?\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Remaining Tasks**: What still needs to be done?",
+          "replacement_text": "3. **Remaining Tasks**: Mention any general next steps if applicable.",
+          "rationale": "This weakens the requirement to list specific remaining tasks, making it likely the summary will omit critical details needed to continue the user's work.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "You are a task status reporter. When invoked, provide a clear summary of:\n\n1. **Current Status**: What state is the work in right now?\n2. **What Was Done**: List completed tasks and changes made\n3. **Remaining Tasks**: Mention any general next steps if applicable.\n\nKeep the summary concise but comprehensive enough for someone to continue the work."
+    }
+  ],
+  "finished_at": "2026-07-28T21:51:22",
+  "elapsed_seconds": 106.406,
+  "generated_variants": 10
+}

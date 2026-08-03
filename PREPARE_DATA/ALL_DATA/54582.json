@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:05:40",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 54582,
+  "selection_rank": 41,
+  "skill": {
+    "skill_id": "other/start-branch",
+    "name": "start-branch",
+    "category": "other",
+    "description": "새 작업 브랜치 생성",
+    "body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `/worktree` 스킬 참조하여 실행\n→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택",
+    "source": "pool"
+  },
+  "generated_query": "I'm currently on the `main` branch with a clean working directory. I need to start working on a new feature to add a header component to the project. I'd like to create a separate worktree for this so I can continue working on other tasks on the main branch without switching. Please guide me through setting up the branch and moving to the worktree directory.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)",
+          "replacement_text": "",
+          "rationale": "Without the automatic cd step, the skill fails to transition to the worktree directory, directly contradicting the user's explicit request to move there.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `/worktree` 스킬 참조하여 실행\n\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "→ `/worktree` 스킬 참조하여 실행",
+          "replacement_text": "→ `git checkout -b`로 브랜치 생성 (현재 디렉토리 유지)",
+          "rationale": "Replaces the core worktree creation API with a regular branch checkout, so no separate worktree directory is created.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)",
+          "replacement_text": "→ 브랜치 생성 후 현재 디렉토리에 유지",
+          "rationale": "Removes the automatic directory change, so even if a worktree were created the user would not move to it.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `git checkout -b`로 브랜치 생성 (현재 디렉토리 유지)\n→ 브랜치 생성 후 현재 디렉토리에 유지\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |",
+          "replacement_text": "| 워크트리로 분리 | 일반 브랜치와 동일하게 git checkout -b로 생성, 단 현재 디렉토리 아래 .worktrees 폴더에 복사본 생성 (자동 이동 없음) |",
+          "rationale": "Changes the worktree option to not actually invoke the /worktree skill and removes automatic directory switching, so the user cannot set up a separate worktree as requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "cd {워크트리 경로}",
+          "replacement_text": "echo \"워크트리 디렉토리로 이동하려면 직접 cd 명령어를 실행하세요.\"",
+          "rationale": "Replaces the automatic change directory with an echo message, so the skill never moves the user into the worktree, failing the query requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | 일반 브랜치와 동일하게 git checkout -b로 생성, 단 현재 디렉토리 아래 .worktrees 폴더에 복사본 생성 (자동 이동 없음) |\n\n**워크트리 선택 시**:\n→ `/worktree` 스킬 참조하여 실행\n→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\necho \"워크트리 디렉토리로 이동하려면 직접 cd 명령어를 실행하세요.\"\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)",
+          "replacement_text": "",
+          "rationale": "Removing the automatic directory change after worktree creation means the user remains in the original directory, failing their request to be moved.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨",
+          "replacement_text": "",
+          "rationale": "Deleting the entire step that explicitly moves to the worktree directory ensures the skill does not perform the required movement, making it a hard negative.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `/worktree` 스킬 참조하여 실행\n→ \n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)\n",
+          "replacement_text": "",
+          "rationale": "Removes the instruction to automatically move to the worktree directory, so the user is not guided to change directory as requested.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨",
+          "replacement_text": "",
+          "rationale": "Eliminates the dedicated auto-move step, leaving the user in the original directory despite selecting worktree.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `/worktree` 스킬 참조하여 실행\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `/worktree` 스킬 참조하여 실행\n→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행",
+          "replacement_text": "### 5. 브랜치 생성 방식\n\n모든 브랜치는 현재 디렉토리에서 `git checkout -b` 명령어로 생성합니다. 워크트리는 지원하지 않습니다.",
+          "rationale": "Over-generalized: removes the worktree option entirely, so the tool cannot satisfy the user's request to create a separate worktree.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨",
+          "replacement_text": "",
+          "rationale": "Over-generalized: deletes the step that would move to the worktree directory, which is essential for the user's query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 브랜치 생성 방식\n\n모든 브랜치는 현재 디렉토리에서 `git checkout -b` 명령어로 생성합니다. 워크트리는 지원하지 않습니다.\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨",
+          "replacement_text": "",
+          "rationale": "Removing the automatic directory change after worktree creation prevents the user from being moved to the worktree directory, failing the query's requirement to guide moving to the worktree.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `/worktree` 스킬 참조하여 실행\n→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "→ `/worktree` 스킬 참조하여 실행",
+          "replacement_text": "→ `git branch` 명령어를 사용하여 실행",
+          "rationale": "Replaces the core worktree skill invocation with a wrong git command, so the worktree is never created, making the skill fail to meet the user's requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Start-Branch 스킬\n\n새로운 작업 브랜치를 시작합니다.\n\n**지원하는 작업 타입**: feat, fix, refactor, chore\n\n---\n\n## 실행 단계\n\n### 1. 사전 확인\n\n```bash\ngit branch --show-current\ngit status --short\n```\n\n**IF** 커밋되지 않은 변경사항 존재:\n→ \"/commit 먼저 실행하세요\" 안내 후 종료\n\n### 2. 현재 브랜치 확인 및 분기 처리\n\n**IF** feature 브랜치:\n→ 서브 브랜치 vs 새 작업 선택\n\n**IF** main:\n→ develop으로 checkout\n\n**IF** develop:\n→ 바로 브랜치 정보 입력으로\n\n### 3. 작업 타입 선택\n\n**AskUserQuestion 도구로 타입 선택**:\n\n| 옵션 | 설명 |\n|------|------|\n| feat | 새 기능 |\n| fix | 버그 수정 |\n| refactor | 리팩토링 |\n| chore | 설정/도구 |\n\n→ 선택된 타입을 `$TYPE` 변수로 사용\n\n### 4. 브랜치 설명 입력\n\n**대화로 직접 질문**:\n\n\"브랜치 설명을 입력해주세요. (kebab-case, 예: header-component, fix-login-bug)\"\n\n→ 사용자 입력을 `$TITLE` 변수로 사용\n\n### 5. 워크트리 사용 여부 확인\n\n**AskUserQuestion 도구로 확인**:\n\n| 옵션 | 설명 |\n|------|------|\n| 일반 브랜치 | `git checkout -b`로 생성, 현재 디렉토리에서 작업 |\n| 워크트리로 분리 | `/worktree` 스킬 호출, 병렬 작업 가능 |\n\n**워크트리 선택 시**:\n→ `git branch` 명령어를 사용하여 실행\n→ 워크트리 생성 후 **자동으로 해당 디렉토리로 이동** (`cd` 실행)\n→ 이후 단계는 워크트리 내에서 진행\n\n**일반 브랜치 선택 시**:\n→ 아래 6단계로 진행\n\n### 6. 새 작업 브랜치 생성\n\n**브랜치명 생성** (스크립트 사용):\n\n```bash\n# 브랜치명 생성\nBRANCH_NAME=$(~/.claude/scripts/branch-name.sh \"$TYPE\" \"$TITLE\")\n# 예: feat/header-component\n\n# 브랜치 생성\ngit checkout -b \"$BRANCH_NAME\"\n```\n\n**생성 예시**:\n- `feat` + `header component` → `feat/header-component`\n- `fix` + `button hover` → `fix/button-hover`\n- `refactor` + `auth module` → `refactor/auth-module`\n\n### 7. 워크트리 자동 이동 (워크트리 선택 시)\n\n**IF** 워크트리로 분리 선택:\n\n```bash\ncd {워크트리 경로}\n```\n\n예시:\n```bash\ncd .worktrees/header-component\n```\n\n→ 이후 모든 작업은 워크트리 디렉토리에서 수행됨\n\n### 8. 최종 확인 및 요약\n\n**일반 브랜치 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n**워크트리 선택 시**:\n```\n✅ 새 작업 시작 완료!\n\n새 작업:\n- 브랜치: feat/header-component\n- 워크트리: .worktrees/header-component/\n\n📂 워크트리로 이동 완료 (현재 위치: .worktrees/header-component/)\n\n다음 단계:\n1. 코드 작성\n2. `/commit`으로 변경사항 커밋\n3. `/merge`로 병합 또는 `/start-branch`로 다음 작업\n```\n\n---\n\n## 엣지 케이스 처리\n\n### Case 1: 커밋되지 않은 변경사항\n→ \"/commit 먼저 실행하세요\"\n\n### Case 2: 작업 브랜치에서 실행\n→ 서브 브랜치 vs 새 작업 선택\n\n### Case 3: 동일한 브랜치명 존재\n→ 전환/삭제/다른이름 선택"
+    }
+  ],
+  "finished_at": "2026-07-28T14:08:21",
+  "elapsed_seconds": 161.078,
+  "generated_variants": 8
+}

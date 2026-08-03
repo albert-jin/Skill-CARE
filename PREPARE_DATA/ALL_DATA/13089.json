@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:32:55",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 13089,
+  "selection_rank": 159,
+  "skill": {
+    "skill_id": "development/incremental-fetch-rohunvora-cool-claude-skills",
+    "name": "incremental-fetch",
+    "category": "development",
+    "description": "Build resilient data ingestion pipelines from APIs. Use when creating scripts that fetch paginated data from external APIs (Twitter, exchanges, any REST API) and need to track progress, avoid duplicates, handle rate limits, and support both incremental updates and historical backfills. Triggers: 'ingest data from API', 'pull tweets', 'fetch historical data', 'sync from X', 'build a data pipeline', 'fetch without re-downloading', 'resume the download', 'backfill older data'. NOT for: simple one-shot API calls, websocket/streaming connections, file downloads, or APIs without pagination.",
+    "body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n| **Offset/limit** | Store page number; resume from last saved page |\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples.",
+    "source": "pool"
+  },
+  "generated_query": "I need to write a Python script that fetches historical price data from the CoinGecko API for Bitcoin, Ethereum, and Solana. The API returns paginated results with a `page` parameter. I want to run this script daily to get the latest data, but also do a one-time backfill to download all data from January 2023 to now without re-fetching what I already have. I'd like the script to save each batch of records immediately to a SQLite database, handle rate limiting (30 requests per minute) with exponential backoff, and keep track of the last page fetched so if it crashes on page 50, I can resume from page 45. Please provide the code with comments explaining the logic.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |",
+          "replacement_text": "",
+          "rationale": "Without saving records after each page, the script would lose all data if it crashes, failing the user's requirement for immediate batch saving and crash resilience.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n| **Offset/limit** | Store page number; resume from last saved page |\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Offset/limit | Store page number; resume from last saved page |",
+          "replacement_text": "| Offset/limit | Not supported; must use ID-based pagination or cursor |",
+          "rationale": "Removes support for page number pagination, which the user's CoinGecko API requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n| **Offset/limit** | Store page number; resume from last saved page |\n\n## Code Example (CoinGecko-style ID-based pagination)\n\n```python\nimport sqlite3, requests, time, random\nfrom datetime import datetime\n\nDB_PATH = \"prices.db\"\nAPI_BASE = \"https://api.coingecko.com/api/v3/coins\"\nCOINS = [\"bitcoin\", \"ethereum\", \"solana\"]\n\ndef get_watermarks():\n    conn = sqlite3.connect(DB_PATH)\n    cur = conn.cursor()\n    cur.execute(\"CREATE TABLE IF NOT EXISTS watermarks (coin TEXT PRIMARY KEY, newest_id INT, oldest_id INT)\")\n    cur.execute(\"SELECT coin, newest_id, oldest_id FROM watermarks\")\n    rows = cur.fetchall()\n    conn.close()\n    return {row[0]: {\"newest\": row[1], \"oldest\": row[2]} for row in rows}\n\ndef save_watermarks(watermarks):\n    conn = sqlite3.connect(DB_PATH)\n    cur = conn.cursor()\n    for coin, wm in watermarks.items():\n        cur.execute(\"\"\"\n            INSERT INTO watermarks (coin, newest_id, oldest_id)\n            VALUES (?, ?, ?)\n            ON CONFLICT(coin) DO UPDATE SET newest_id=excluded.newest_id, oldest_id=excluded.oldest_id\n        \"\"\", (coin, wm[\"newest\"], wm[\"oldest\"]))\n    conn.commit()\n    conn.close()\n\ndef fetch_page(coin, since_id=None, until_id=None, page=1):\n    params = {\"vs_currency\": \"usd\", \"order\": \"market_cap_desc\", \"per_page\": 250, \"page\": page}\n    if since_id:\n        params[\"since_id\"] = since_id   # Not valid for CoinGecko, need offset\n    # This example incorrectly uses since_id – the real API uses page numbers.\n    time.sleep(1)  # simple rate limit\n    resp = requests.get(f\"{API_BASE}/{coin}/market_chart/range\", params=params)\n    resp.raise_for_status()\n    return resp.json()[\"prices\"]\n\ndef run(backfill=False):\n    wm = get_watermarks()\n    for coin in COINS:\n        if coin not in wm:\n            wm[coin] = {\"newest\": None, \"oldest\": None}\n        if wm[coin][\"newest\"] is None:\n            # Full fetch from start\n            since = None\n            until = None\n        elif backfill:\n            until = wm[coin][\"oldest\"]\n            since = None\n        else:\n            since = wm[coin][\"newest\"]\n            until = None\n        page = 1\n        while True:\n            data = fetch_page(coin, since, until, page)\n            if not data:\n                break\n            # Save data immediately\n            conn = sqlite3.connect(DB_PATH)\n            cur = conn.cursor()\n            for timestamp, price in data:\n                cur.execute(\"INSERT OR IGNORE INTO prices (coin, timestamp, price) VALUES (?,?,?)\",\n                            (coin, timestamp, price))\n            conn.commit()\n            conn.close()\n            # Track watermarks for this run\n            ids = [int(row[0]) for row in data]  # assuming timestamps as IDs\n            if wm[coin][\"newest\"] is None or max(ids) > wm[coin][\"newest\"]:\n                wm[coin][\"newest\"] = max(ids)\n            if wm[coin][\"oldest\"] is None or min(ids) < wm[coin][\"oldest\"]:\n                wm[coin][\"oldest\"] = min(ids)\n            page += 1\n    # Watermarks updated only after all coins succeed\n    save_watermarks(wm)\n\nif __name__ == \"__main__\":\n    # Daily run: run(backfill=False)\n    # Backfill: run(backfill=True)\n    run()\n```\n\n## Notes\n\n- The above example assumes the CoinGecko API supports `since_id` and `until_id` parameters – in reality it uses `page` and `days` parameters. Adjust API calls accordingly.\n- For true offset/limit pagination, store `last_page` instead of IDs and resume from that number. See [references/patterns.md](references/patterns.md) for that variant.\n- Exponential backoff and rate limit handling are omitted for brevity; integrate `time.sleep` with jitter as needed."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| **Offset/limit** | Store page number; resume from last saved page |",
+          "replacement_text": "",
+          "rationale": "Removes the offset/limit pagination support needed to track and resume by page number as required by the user's CoinGecko API.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    ├── YES → Backfill mode (until_id = oldest_id)",
+          "replacement_text": "    ├── YES → Not supported; use full fetch instead",
+          "rationale": "Removes the incremental backfill capability, forcing a full re-fetch on every run which contradicts the user's requirement for one-time backfill without re-downloading existing data.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Not supported; use full fetch instead\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |",
+          "replacement_text": "| **Data records** | After all pages | Resilience: interrupted? Lose all data |",
+          "rationale": "Changes the data saving policy from per-page to batch saving, removing the resilience needed for crash recovery.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. **Retry**: Exponential backoff with jitter",
+          "replacement_text": "5. **Retry**: Simple retry with fixed delay",
+          "rationale": "Replaces exponential backoff with a fixed delay, failing to handle the rate limit requirement for 30 requests per minute.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After all pages | Resilience: interrupted? Lose all data |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Simple retry with fixed delay\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n| **Offset/limit** | Store page number; resume from last saved page |\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| **Offset/limit** | Store page number; resume from last saved page |\n",
+          "replacement_text": "",
+          "rationale": "The user query requires page-based pagination (page parameter); deleting the offset/limit adaptation removes the only guidance that makes the skill applicable for resuming by page number.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "This pattern works best with **ID-based pagination** (numeric IDs that can be compared).",
+          "replacement_text": "This pattern works best with **ID-based pagination** (numeric IDs that can be compared). Other pagination types are not supported.",
+          "rationale": "Explicitly stating that only ID-based pagination is supported makes the skill a hard negative for the user's page-number-based CoinGecko API script.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). Other pagination types are not supported. For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This pattern works best with **ID-based pagination** (numeric IDs that can be compared).",
+          "replacement_text": "This pattern works with **any pagination type**, including page numbers, cursor tokens, or timestamps.",
+          "rationale": "Over-generalizes the pattern to page numbers, misleading the user into thinking no special adaptation is needed for page-based pagination, which is incorrect because the two-watermark pattern relies on comparing IDs to know what to fetch next — page numbers are sequential and require different logic for incremental backfill.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "| **Offset/limit** | Store page number; resume from last saved page |",
+          "replacement_text": "",
+          "rationale": "Removes the only concrete guidance for handling page-based pagination, so the user cannot correctly implement page tracking and resumption from the last fetched page.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works with **any pagination type**, including page numbers, cursor tokens, or timestamps. For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| **Offset/limit** | Store page number; resume from last saved page |",
+          "replacement_text": "",
+          "rationale": "Without the offset/limit pagination adaptation, the skill provides no guidance on saving and resuming page numbers, which is essential for the user's CoinGecko API use case that relies on a page parameter.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| **Offset/limit** | Store page number; resume from last saved page |",
+          "replacement_text": "| **Offset/limit** | Not supported due to lack of stable ordering; use ID-based or cursor pagination instead |",
+          "rationale": "The user's CoinGecko API uses page-based pagination, so removing support for offset/limit makes the skill unable to handle the required pagination method.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n| **Offset/limit** | Not supported due to lack of stable ordering; use ID-based or cursor pagination instead |\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| **Offset/limit** | Store page number; resume from last saved page |",
+          "replacement_text": "",
+          "rationale": "The user query requires page-based pagination and resuming from a specific page number; removing this adaptation means the skill no longer supports that pagination type, making it unsuitable for the user's API.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Incremental Fetch\n\nBuild data pipelines that never lose progress and never re-fetch existing data.\n\n## The Two Watermarks Pattern\n\nTrack TWO cursors to support both forward and backward fetching:\n\n| Watermark | Purpose | API Parameter |\n|-----------|---------|---------------|\n| `newest_id` | Fetch new data since last run | `since_id` |\n| `oldest_id` | Backfill older data | `until_id` |\n\nA single watermark only fetches forward. Two watermarks enable:\n- Regular runs: fetch NEW data (since `newest_id`)\n- Backfill runs: fetch OLD data (until `oldest_id`)\n- No overlap, no gaps\n\n## Critical: Data vs Watermark Saving\n\nThese are different operations with different timing:\n\n| What | When to Save | Why |\n|------|--------------|-----|\n| **Data records** | After EACH page | Resilience: interrupted on page 47? Keep 46 pages |\n| **Watermarks** | ONCE at end of run | Correctness: only commit progress after full success |\n\n```\nfetch page 1 → save records → fetch page 2 → save records → ... → update watermarks\n```\n\n## Workflow Decision Tree\n\n```\nFirst run (no watermarks)?\n├── YES → Full fetch (no since_id, no until_id)\n└── NO → Backfill flag set?\n    ├── YES → Backfill mode (until_id = oldest_id)\n    └── NO → Update mode (since_id = newest_id)\n```\n\n## Implementation Checklist\n\n1. **Database**: Create ingestion_state table (see patterns.md)\n2. **Fetch loop**: Insert records immediately after each API page\n3. **Watermark tracking**: Track newest/oldest IDs seen in this run\n4. **Watermark update**: Save watermarks ONCE at end of successful run\n5. **Retry**: Exponential backoff with jitter\n6. **Rate limits**: Wait for reset or skip and record for next run\n\n## Pagination Types\n\nThis pattern works best with **ID-based pagination** (numeric IDs that can be compared). For other pagination types:\n\n| Type | Adaptation |\n|------|------------|\n| **Cursor/token** | Store cursor string instead of ID; can't compare numerically |\n| **Timestamp** | Use `last_timestamp` column; compare as dates |\n\n\nSee [references/patterns.md](references/patterns.md) for schemas and code examples."
+    }
+  ],
+  "finished_at": "2026-07-28T20:35:47",
+  "elapsed_seconds": 171.687,
+  "generated_variants": 9
+}

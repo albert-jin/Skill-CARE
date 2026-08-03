@@ -1,0 +1,196 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:48:52",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 20307,
+  "selection_rank": 203,
+  "skill": {
+    "skill_id": "development/bump-version",
+    "name": "bump-version",
+    "category": "development",
+    "description": "Bump version numbers across all DecentPaste config files (package.json, Cargo.toml, tauri.conf.json, downloads.json). Use for version updates without building.",
+    "body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 4 files (`replace_all: true` for downloads.json URLs)\n4. List updated files, remind to commit",
+    "source": "pool"
+  },
+  "generated_query": "I’m preparing to release a minor update to my DecentPaste app. The current version in the Tauri config is 1.2.3, and I want to bump it to 1.3.0. Please update the version field in all the relevant configuration files: `package.json`, `Cargo.toml`, `tauri.conf.json`, and `downloads.json`. For the downloads file, also update the `tag` field to have a `v` prefix (v1.3.0) and fix any asset URLs that contain the old version number. After updating, list all the files that were changed so I know which ones to commit.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Edit all 4 files (`replace_all: true` for downloads.json URLs)",
+          "replacement_text": "",
+          "rationale": "Deleting the step that actually performs the file edits means the skill only reads the current version and asks for a new version but never applies any changes, making it useless for the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n\n4. List updated files, remind to commit"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |",
+          "replacement_text": "| `website/version.json` | `\"version\"` |",
+          "rationale": "The user query specifically requires updating downloads.json including tag and asset URLs, but the skill now updates a different file (version.json) and misses that critical file, making it ineffective.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/version.json` | `\"version\"` |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 4 files (`replace_all: true` for downloads.json URLs)\n4. List updated files, remind to commit"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |",
+          "replacement_text": "| `website/downloads.json` | `version` |",
+          "rationale": "Dropping the tag and asset URL updates means the skill will not update the v-prefixed tag or fix old version URLs in downloads.json as required.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "4. List updated files, remind to commit",
+          "replacement_text": "",
+          "rationale": "Omitting the list of changed files means the user will not know which files were modified, failing the explicit request to see which ones to commit.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version` |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 4 files (`replace_all: true` for downloads.json URLs)\n"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |",
+          "replacement_text": "| `website/downloads.json` | `version` |",
+          "rationale": "By removing the requirement to update the tag and asset URLs, the skill will not fulfill the user's specific request for those updates.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": " (`replace_all: true` for downloads.json URLs)",
+          "replacement_text": "",
+          "rationale": "Deleting the specialized instruction for URLs ensures the skill does not fix asset URLs, failing the user's request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version` |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 4 files\n4. List updated files, remind to commit"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |\n",
+          "replacement_text": "## Files\n\n| File | Field |\n|------|-------|\n| `myapp/package.json` | `\"version\"` |\n| `myapp/src-tauri/Cargo.toml` | `version` |\n| `myapp/src-tauri/tauri.conf.json` | `\"version\"` |\n| `mywebsite/downloads.json` | `version`, `tag` (v-prefix), asset URLs |\n",
+          "rationale": "By changing the file paths to a different project, the skill becomes inapplicable to the user's DecentPaste app, making it a hard negative.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `myapp/package.json` | `\"version\"` |\n| `myapp/src-tauri/Cargo.toml` | `version` |\n| `myapp/src-tauri/tauri.conf.json` | `\"version\"` |\n| `mywebsite/downloads.json` | `version`, `tag` (v-prefix), asset URLs |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 4 files (`replace_all: true` for downloads.json URLs)\n4. List updated files, remind to commit"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |",
+          "replacement_text": "Update version in all configuration files.",
+          "rationale": "Replaces the specific file/field mapping with a vague statement, so the skill no longer guarantees which files are updated or how fields like tag and URLs are handled.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "4. List updated files, remind to commit",
+          "replacement_text": "4. Confirm updates and remind to commit",
+          "rationale": "Removes the explicit requirement to list changed files, which the user query depends on for knowing which files to commit.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\nUpdate version in all configuration files.\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 4 files (`replace_all: true` for downloads.json URLs)\n4. Confirm updates and remind to commit"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. Edit all 4 files (`replace_all: true` for downloads.json URLs)",
+          "replacement_text": "",
+          "rationale": "The skill no longer performs the actual file edits, so it cannot update version numbers or asset URLs.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n\n4. List updated files, remind to commit"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |",
+          "replacement_text": "| `website/updates.json` | `version` |",
+          "rationale": "The skill now updates a different file (updates.json) instead of downloads.json, so it will not handle the required tag prefix and asset URL fixes.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/updates.json` | `version` |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 4 files (`replace_all: true` for downloads.json URLs)\n4. List updated files, remind to commit"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `website/downloads.json` | `version`, `tag` (v-prefix), asset URLs |",
+          "replacement_text": "| `website/downloads.json` | `version` |",
+          "rationale": "Removing the tag and asset URL fields means the skill will not update the tag prefix or fix old version URLs, which are explicitly required by the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. Edit all 4 files (`replace_all: true` for downloads.json URLs)",
+          "replacement_text": "3. Edit all 3 files (package.json, Cargo.toml, tauri.conf.json)",
+          "rationale": "Changing the workflow to only three files excludes downloads.json, so the skill fails to update that essential configuration file.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Bump Version\n\nUpdate version (x.x.x) across all config files.\n\n## Files\n\n| File | Field |\n|------|-------|\n| `decentpaste-app/package.json` | `\"version\"` |\n| `decentpaste-app/src-tauri/Cargo.toml` | `version` |\n| `decentpaste-app/src-tauri/tauri.conf.json` | `\"version\"` |\n| `website/downloads.json` | `version` |\n\n## Workflow\n\n1. Read current version from `tauri.conf.json`\n2. Ask new version (validate: `^\\d+\\.\\d+\\.\\d+$`)\n3. Edit all 3 files (package.json, Cargo.toml, tauri.conf.json)\n4. List updated files, remind to commit"
+    }
+  ],
+  "finished_at": "2026-07-28T22:51:38",
+  "elapsed_seconds": 166.047,
+  "generated_variants": 9
+}

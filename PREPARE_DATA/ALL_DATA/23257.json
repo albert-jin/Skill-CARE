@@ -1,0 +1,194 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:55:21",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 23257,
+  "selection_rank": 226,
+  "skill": {
+    "skill_id": "other/ln-625-dependencies-auditor-levnikolaevich-claude-code-skills-233a35d2",
+    "name": "ln-625-dependencies-auditor",
+    "category": "other",
+    "description": "Dependencies and reuse audit worker (L3). Checks outdated packages, unused dependencies, reinvented wheels, custom implementations of standard library features. Returns findings with severity, location, effort, recommendations.",
+    "body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n4) Calculate score\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `npm outdated --json` (Node.js)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n\n### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)\n\n## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23",
+    "source": "pool"
+  },
+  "generated_query": "Can you audit the dependencies and code reuse in my project? The project is a Node.js app using Express and Lodash, with root at `/home/dev/myapp`. The package.json is at `/home/dev/myapp/package.json`. I need a full report of outdated packages (especially security-critical ones), any unused dependencies, and checks for where I might be reinventing the wheel (e.g., custom date parsing instead of dayjs, or using axios when native fetch is fine). Also flag any custom implementations of standard library features, like hand-rolled validation or sorting. For each finding, give me the severity (High/Medium/Low), the exact location (file and line), a recommendation, and estimate the effort to fix (S/M/L). Then calculate an overall compliance score out of 10 based on the findings. Output everything in a structured JSON format. I’m particularly worried about security risks from outdated packages.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4) Calculate score",
+          "replacement_text": "",
+          "rationale": "Removing the scoring step means the skill will not compute the overall compliance score, which is explicitly required by the user.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `npm outdated --json` (Node.js)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n\n### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)\n\n## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Run `npm outdated --json` (Node.js)",
+          "replacement_text": "- Run `composer outdated --format=json` (PHP)",
+          "rationale": "The skill no longer detects outdated packages for Node.js projects, so it cannot find security-critical outdated packages for the user's Express app.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"location\": \"package.json:15\",",
+          "replacement_text": "\"component\": \"express\",",
+          "rationale": "The skill's output no longer provides the exact file and line location required by the user's query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n4) Calculate score\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `composer outdated --format=json` (PHP)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n\n### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)\n\n## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"component\": \"express\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)",
+          "replacement_text": "",
+          "rationale": "Removing the custom implementations detection makes the skill unable to flag hand-rolled validation, sorting, or date parsing, which the user explicitly requests.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the scoring algorithm removes the ability to calculate the overall compliance score out of 10, which is a required output in the user query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n4) Calculate score\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `npm outdated --json` (Node.js)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n\n\n\n\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**HIGH:** Major version behind (security risk)",
+          "replacement_text": "**HIGH:** Major version behind",
+          "rationale": "Removing the security risk annotation from outdated package severity weakens the skill's ability to address the user's primary concern about security-critical outdated packages.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n4) Calculate score\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `npm outdated --json` (Node.js)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n\n### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)\n\n## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "#### Severity:\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind",
+          "replacement_text": "#### Severity:\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind",
+          "rationale": "Removes Low severity, so the skill cannot report severity as High/Medium/Low as required by the user.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "penalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)",
+          "replacement_text": "grade = 'A' if high == 0 and medium == 0 else 'B' if high == 0 else 'C'",
+          "rationale": "Changes scoring from a numeric score out of 10 to a letter grade, failing the user's requirement for a compliance score with a 0-10 scale.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```",
+          "replacement_text": "## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"summary\": \"Report of issues found.\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\"\n    }\n  ]\n}\n```",
+          "rationale": "Removes the score field and effort field from the output JSON, so the skill no longer provides a compliance score nor effort estimates per finding, both of which the user explicitly requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **outdated dependencies** (Category 7: Medium Priority)\n- Provide version comparison and upgrade suggestions\n- No computation of compliance score\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run `npm outdated --json` (Node.js) or equivalent for other ecosystems\n3) Collect version data\n4) Return upgrade report as Markdown table\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `npm outdated --json` (Node.js)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- Not computed – all outdated packages reported equally\n\n**Recommendation:** Upgrade to latest version; verify compatibility\n\n**Effort:** Not estimated – assume medium for each\n\n## Output Format\n\nReturns a Markdown report similar to:\n\n```\n## Outdated Dependencies\n\n| Package | Current | Wanted | Latest | \n|---------|---------|--------|--------|\n| express | 4.17.0  | 4.18.2 | 4.19.2 |\n| lodash  | 4.17.20 | 4.17.21| 4.17.21|\n\n## Notes\n- Run `npm install` after updates.\n- No security risk analysis included.\n```\n\nNo JSON, no per-item severity, location, or effort details. No calculation of compliance score.\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n",
+          "replacement_text": "",
+          "rationale": "The skill no longer detects unnecessary dependencies like axios, lodash, or moment, which the user explicitly asked to check.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)\n",
+          "replacement_text": "",
+          "rationale": "The skill no longer detects custom implementations of standard library features, which the user explicitly requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```",
+          "replacement_text": "## Scoring Algorithm\n\nScore is calculated based on the findings.",
+          "rationale": "The skill loses precise scoring logic, making it unable to guarantee a numeric score out of 10 as the user requires.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n4) Calculate score\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `npm outdated --json` (Node.js)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n\n\n## Scoring Algorithm\n\nScore is calculated based on the findings.\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```",
+          "replacement_text": "",
+          "rationale": "Without the scoring algorithm, the skill cannot produce the required compliance score, directly failing a key user requirement.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n4) Calculate score\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `npm outdated --json` (Node.js)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n\n### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)\n\n\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run `npm outdated --json` (Node.js)",
+          "replacement_text": "Run `pip list --outdated --format=json` (Python)",
+          "rationale": "Replacing the Node.js npm outdated check with a Python pip check makes the skill unable to detect outdated packages in the user's Node.js project, directly failing the user's primary security concern.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Dependencies & Reuse Auditor (L3 Worker)\n\nSpecialized worker auditing dependency management and code reuse.\n\n## Purpose & Scope\n\n- **Worker in ln-620 coordinator pipeline**\n- Audit **dependencies and reuse** (Categories 7+8: Medium Priority)\n- Check outdated packages, unused deps, wheel reinvention\n- Calculate compliance score (X/10)\n\n## Inputs (from Coordinator)\n\nReceives `contextStore` with tech stack, package manifest paths, codebase root.\n\n## Workflow\n\n1) Parse context\n2) Run dependency checks (outdated, unused, reinvented)\n3) Collect findings\n4) Calculate score\n5) Return JSON\n\n## Audit Rules\n\n### 1. Outdated Packages\n**Detection:**\n- Run `pip list --outdated --format=json` (Python)\n- Run `pip list --outdated --format=json` (Python)\n- Run `cargo outdated --format=json` (Rust)\n\n**Severity:**\n- **HIGH:** Major version behind (security risk)\n- **MEDIUM:** Minor version behind\n- **LOW:** Patch version behind\n\n**Recommendation:** Update to latest version, test for breaking changes\n\n**Effort:** S-M (update version, run tests)\n\n### 2. Unused Dependencies\n**Detection:**\n- Parse package.json/requirements.txt\n- Grep codebase for `import`/`require` statements\n- Find dependencies never imported\n\n**Severity:**\n- **MEDIUM:** Unused production dependency (bloats bundle)\n- **LOW:** Unused dev dependency\n\n**Recommendation:** Remove from package manifest\n\n**Effort:** S (delete line, test)\n\n### 3. Available Features Not Used\n**Detection:**\n- Check for axios when native fetch available (Node 18+)\n- Check for lodash when Array methods sufficient\n- Check for moment when Date.toLocaleString sufficient\n\n**Severity:**\n- **MEDIUM:** Unnecessary dependency (increases bundle size)\n\n**Recommendation:** Use native alternative\n\n**Effort:** M (refactor code to use native API)\n\n### 4. Custom Implementations\n**Detection:**\n- Grep for custom sorting algorithms\n- Check for hand-rolled validation (vs validator.js)\n- Find custom date parsing (vs date-fns/dayjs)\n\n**Severity:**\n- **HIGH:** Custom crypto (security risk)\n- **MEDIUM:** Custom utilities with well-tested alternatives\n\n**Recommendation:** Replace with established library\n\n**Effort:** M (integrate library, replace calls)\n\n## Scoring Algorithm\n\n```\npenalty = (high * 1.0) + (medium * 0.5) + (low * 0.2)\nscore = max(0, 10 - penalty)\n```\n\n## Output Format\n\n```json\n{\n  \"category\": \"Dependencies & Reuse\",\n  \"score\": 7,\n  \"total_issues\": 8,\n  \"high\": 2,\n  \"medium\": 4,\n  \"low\": 2,\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"location\": \"package.json:15\",\n      \"issue\": \"express v4.17.0 (current: v4.19.2, 2 major versions behind)\",\n      \"principle\": \"Dependency Management / Security Updates\",\n      \"recommendation\": \"Update to v4.19.2 for security fixes\",\n      \"effort\": \"M\"\n    }\n  ]\n}\n```\n\n---\n**Version:** 3.0.0\n**Last Updated:** 2025-12-23"
+    }
+  ],
+  "finished_at": "2026-07-28T23:58:24",
+  "elapsed_seconds": 182.797,
+  "generated_variants": 8
+}

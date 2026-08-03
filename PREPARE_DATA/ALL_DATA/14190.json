@@ -1,0 +1,217 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:53:46",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 14190,
+  "selection_rank": 256,
+  "skill": {
+    "skill_id": "development/playwright",
+    "name": "playwright",
+    "category": "development",
+    "description": "Browser automation scripts for testing, screenshots, and web interaction. 16 scripts with persistent state.",
+    "body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <json>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file] [--full]`, `pdf-save.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)",
+    "source": "pool"
+  },
+  "generated_query": "Can you help me automate testing the registration flow on a local development site? I need to navigate to `http://localhost:5173/register`, fill in the sign-up form with a specific name, email, and password, submit it, wait for the confirmation page, take a full-page screenshot, and then close the browser. Also, after the form is submitted, I want to check that the URL changes to include \"welcome\" and capture a PDF of that page. After that, go back to the registration page and verify the form resets. Please capture the sequence of steps and any error messages if something fails.",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "**Discovery**: `snapshot.js` - Get element refs (run first)",
+          "replacement_text": "",
+          "rationale": "Without snapshot.js, there is no way to obtain the element references needed to click, type, or interact with the registration form, making the entire automation sequence impossible.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <json>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file] [--full]`, `pdf-save.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "screenshot.js [file] [--full]",
+          "replacement_text": "screenshot.js [file]",
+          "rationale": "Removes full-page screenshot support, so the user cannot capture the required full-page screenshot of the confirmation page.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "pdf-save.js [file]",
+          "replacement_text": "",
+          "rationale": "Deletes the PDF capture capability entirely, preventing the user from saving the confirmation page as a PDF.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <json>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file]`, ``\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "screenshot.js [file] [--full]",
+          "replacement_text": "screenshot.js [file]",
+          "rationale": "User requires a full-page screenshot, but this version only captures the viewport, making it impossible to capture the entire registration page.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "All scripts return JSON: `{\"success\": true, \"data\": {...}}`",
+          "replacement_text": "All scripts return JSON: `{\"ok\": true}` - errors terminate the script without returning error details",
+          "rationale": "User expects error messages in the output to capture failures, but this skill only returns success status and throws exceptions, so failures cannot be recorded.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <json>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file]`, `pdf-save.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"ok\": true}` - errors terminate the script without returning error details\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "screenshot.js [file] [--full]",
+          "replacement_text": "screenshot.js [file]",
+          "rationale": "Removing the --full flag prevents taking full-page screenshots, which the query explicitly requires.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "fill-form.js <json>",
+          "replacement_text": "fill-form.js <field> <value>",
+          "rationale": "Changing from JSON input to single field/value pair makes it impossible to fill multiple form fields (name, email, password) in one step, breaking the query's core requirement.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <field> <value>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file]`, `pdf-save.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`",
+          "replacement_text": "**Navigation**: `navigate.js <url>`, `go-forward.js`",
+          "rationale": "Removing the go-back script prevents the user from returning to the registration page after the welcome page.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Capture**: `screenshot.js [file] [--full]`, `pdf-save.js [file]`",
+          "replacement_text": "**Capture**: `screenshot.js [file]`",
+          "rationale": "Without full-page screenshot and PDF options, the user cannot capture the required full-page screenshot or generate the PDF of the welcome page.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "**Forms**: `fill-form.js <json>`",
+          "replacement_text": "**Forms**: `form-snapshot.js <file>`",
+          "rationale": "Replacing the form-filling script with a read-only form-snapshot script makes it impossible to actually input data into the sign-up form.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `form-snapshot.js <file>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <json>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file] [--full]`, `pdf-save.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`",
+          "replacement_text": "## Scripts\n\nThe skill includes a comprehensive set of browser automation scripts covering navigation, interaction, form handling, waiting, screenshots, PDF capture, and utilities. See documentation for exact script names and usage.",
+          "rationale": "Removes all concrete script names (e.g., fill-form.js, screenshot.js --full, pdf-save.js, go-back.js) so the user cannot determine how to accomplish specific tasks like filling a form, taking a full-page screenshot, capturing a PDF, or navigating back.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```",
+          "replacement_text": "## Basic Workflow\n\nFor detailed workflow examples, refer to the [EXAMPLES.md](docs/EXAMPLES.md) documentation.",
+          "rationale": "Removes the concrete workflow example that demonstrates navigation, element snapshots, clicking, typing, and screenshots, leaving the user without a clear pattern for chaining commands to test a registration flow.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nThe skill includes a comprehensive set of browser automation scripts covering navigation, interaction, form handling, waiting, screenshots, PDF capture, and utilities. See documentation for exact script names and usage.\n\n## Basic Workflow\n\nFor detailed workflow examples, refer to the [EXAMPLES.md](docs/EXAMPLES.md) documentation.\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Capture**: `screenshot.js [file] [--full]`, `pdf-save.js [file]`",
+          "replacement_text": "**Capture**: `screenshot.js [file] [--full]`",
+          "rationale": "Removing the PDF capture script makes it impossible to generate a PDF of the welcome page, which the user explicitly requires.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <json>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file] [--full]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`",
+          "replacement_text": "**Navigation**: `navigate.js <https-url>`, `go-back.js`, `go-forward.js`",
+          "rationale": "The navigation script now only accepts HTTPS URLs, so it cannot navigate to an HTTP localhost development site, blocking the entire workflow.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <https-url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <json>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file] [--full]`, `pdf-save.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "fill-form.js <json>",
+          "replacement_text": "fill-form.js <key>=<value>",
+          "rationale": "User needs to fill multiple fields (name, email, password) but the script now only accepts one field per call, making it impossible to fill the entire registration form in a single step.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "screenshot.js [file] [--full]",
+          "replacement_text": "screenshot.js [file]",
+          "rationale": "User explicitly requests a full-page screenshot, but removing the --full flag restricts capture to viewport only, failing the requirement.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Playwright Skill\n\nBrowser automation with persistent state between commands.\n\n## Setup\n\n```bash\ncd .claude/skills/playwright/scripts\nnpm install && npm run install-browsers\n```\n\n## Scripts\n\nAll in `.claude/skills/playwright/scripts/`:\n\n**Navigation**: `navigate.js <url>`, `go-back.js`, `go-forward.js`\n\n**Discovery**: `snapshot.js` - Get element refs (run first)\n\n**Interaction**: `click.js <ref>`, `hover.js <ref>`, `type.js <text> [ref]`, `select-option.js <ref> <value>`, `press-key.js <key>`\n\n**Forms**: `fill-form.js <key>=<value>`\n\n**Wait**: `wait.js <ms>`, `wait-for.js <selector> [timeout]`\n\n**Capture**: `screenshot.js [file]`, `pdf-save.js [file]`\n\n**Utility**: `evaluate.js <script>`, `close.js`, `generate-test.js [name]`\n\n## Basic Workflow\n\n```bash\nnode navigate.js \"http://localhost:5173\"\nnode snapshot.js          # Get refs: ref1, ref2...\nnode click.js ref1        # Use refs from snapshot\nnode type.js \"text\" ref2\nnode screenshot.js \"out.png\"\nnode close.js             # Always close when done\n```\n\n## Key Concepts\n\n**Refs**: `snapshot.js` returns `[ref=ref1]` markers. Use these in subsequent commands. **Refs expire on page changes** - run snapshot again.\n\n**State**: Browser stays open between commands. `close.js` clears state.\n\n**Output**: All scripts return JSON: `{\"success\": true, \"data\": {...}}`\n\n## Documentation\n\n- [EXAMPLES.md](docs/EXAMPLES.md) - Complete workflow examples\n- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues and fixes\n- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical details\n- [scripts/README.md](scripts/README.md) - Quick reference\n\n## Limitations\n\n- Single browser instance at a time\n- Refs expire on DOM changes\n- Browser opens visually (not headless)"
+    }
+  ],
+  "finished_at": "2026-07-29T01:57:14",
+  "elapsed_seconds": 208.204,
+  "generated_variants": 9
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:23:19",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 38673,
+  "selection_rank": 267,
+  "skill": {
+    "skill_id": "other/flutter-debug-cycle",
+    "name": "flutter-debug-cycle",
+    "category": "other",
+    "description": "Complete Flutter debugging toolkit combining PDCA methodology, Dart logging patterns, and MCP tools. Use when debugging Flutter apps - visual issues, runtime behavior, widget problems, or verifying fixes through device testing.",
+    "body": "# Flutter Debug Cycle\n\nFlutter開発に特化したPDCAデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN:  Symptom → Hypothesis → Log points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_restart (use dart-mcp-tools)\nCHECK: get_app_logs (dart-mcp-tools) → take_screenshot (mobile-debug-tools) → Analyze\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More logs\n```\n\n## Flutter-Specific Tips\n\n- **Hot Reload vs Restart**: `initState` の変更は `hot_restart` が必要\n- **Widget rebuild tracking**: `build()` メソッドにログを追加して再描画を追跡\n- **State management debugging**: Provider/Riverpod/BLoC の状態変更をログ\n- **Gesture conflicts**: 親子Widgetのタップ競合は両方にログを追加して調査",
+    "source": "pool"
+  },
+  "generated_query": "I'm debugging a Flutter app where a user profile screen isn't updating after an async data fetch. The profile name and avatar should change when a \"Refresh\" button is tapped, but the UI stays stuck on old data. I've already set up the state with Riverpod, but I suspect the widget isn't rebuilding correctly or the state isn't being read properly. Can you walk me through a systematic debugging process? We'll start by adding `debugPrint` calls in the provider and the `build()` method to trace state changes and rebuild triggers, then use hot restart (not just hot reload) to ensure any `initState` changes take effect. After that, I'll need to pull the latest device logs and take a screenshot to compare the expected vs actual UI. If the logs show the state updating but the widget not redrawing, we'll check for widget key issues or gesture conflicts in the parent/child hierarchy. If the hypothesis is wrong, we'll iterate with more targeted logging. I'd like to use the available Flutter debugging tools (hot reload, log retrieval, screenshot capture) to make this efficient.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Gesture conflicts**: 親子Widgetのタップ競合は両方にログを追加して調査",
+          "replacement_text": "",
+          "rationale": "Removing the gesture conflicts tip leaves the user without guidance on diagnosing widget tap conflicts, a key step in their debugging plan.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flutter Debug Cycle\n\nFlutter開発に特化したPDCAデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN:  Symptom → Hypothesis → Log points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_restart (use dart-mcp-tools)\nCHECK: get_app_logs (dart-mcp-tools) → take_screenshot (mobile-debug-tools) → Analyze\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More logs\n```\n\n## Flutter-Specific Tips\n\n- **Hot Reload vs Restart**: `initState` の変更は `hot_restart` が必要\n- **Widget rebuild tracking**: `build()` メソッドにログを追加して再描画を追跡\n- **State management debugging**: Provider/Riverpod/BLoC の状態変更をログ\n"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "DO:    Add debugPrint (use dart-flutter patterns) → hot_restart (use dart-mcp-tools)",
+          "replacement_text": "DO:    Add debugPrint (use dart-flutter patterns) → hot_reload (use dart-mcp-tools)",
+          "rationale": "Replaces the required hot_restart with hot_reload, which will not apply initState changes and thus fails the user's need to update state after async fetch.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Hot Reload vs Restart**: `initState` の変更は `hot_restart` が必要",
+          "replacement_text": "- **Hot Reload vs Restart**: `initState` の変更は `hot_reload` 必要",
+          "rationale": "Changes the tip to incorrectly state that hot reload is required for initState changes, misleading the user into using the wrong tool.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flutter Debug Cycle\n\nFlutter開発に特化したPDCAデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN:  Symptom → Hypothesis → Log points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_reload (use dart-mcp-tools)\nCHECK: get_app_logs (dart-mcp-tools) → take_screenshot (mobile-debug-tools) → Analyze\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More logs\n```\n\n## Flutter-Specific Tips\n\n- **Hot Reload vs Restart**: `initState` の変更は `hot_reload` 必要\n- **Widget rebuild tracking**: `build()` メソッドにログを追加して再描画を追跡\n- **State management debugging**: Provider/Riverpod/BLoC の状態変更をログ\n- **Gesture conflicts**: 親子Widgetのタップ競合は両方にログを追加して調査"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "hot_restart (use dart-mcp-tools)",
+          "replacement_text": "hot_reload (use dart-mcp-tools)",
+          "rationale": "User requires hot restart to apply initState changes, but replacing with hot reload makes the skill insufficient for the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "→ take_screenshot (mobile-debug-tools) → Analyze",
+          "replacement_text": "→ Analyze",
+          "rationale": "User relies on screenshot comparison to detect UI discrepancies; removing screenshot step makes the skill unable to verify fixes.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flutter Debug Cycle\n\nFlutter開発に特化したPDCAデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN:  Symptom → Hypothesis → Log points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_reload (use dart-mcp-tools)\nCHECK: get_app_logs (dart-mcp-tools) → Analyze\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More logs\n```\n\n## Flutter-Specific Tips\n\n- **Hot Reload vs Restart**: `initState` の変更は `hot_restart` が必要\n- **Widget rebuild tracking**: `build()` メソッドにログを追加して再描画を追跡\n- **State management debugging**: Provider/Riverpod/BLoC の状態変更をログ\n- **Gesture conflicts**: 親子Widgetのタップ競合は両方にログを追加して調査"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "hot_restart (use dart-mcp-tools)",
+          "replacement_text": "hot_reload (use dart-mcp-tools)",
+          "rationale": "Changes the required action from hot restart to hot reload, which does not trigger initState changes and would leave the user's bug unfixed.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Hot Reload vs Restart: `initState` の変更は `hot_restart` が必要",
+          "replacement_text": "Hot Reload vs Restart: `initState` の変更は `hot_reload` でも十分",
+          "rationale": "Weakens the constraint that initState changes require hot restart, making the skill misleading for the user who explicitly needs hot restart.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Flutter Debug Cycle\n\nFlutter開発に特化したパフォーマンス・UIデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN:  Symptom → Hypothesis → Instrumentation points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_reload (use dart-mcp-tools)\nCHECK: get_app_logs (dart-mcp-tools) → take_screenshot (mobile-debug-tools) → Analyze with Flutter DevTools\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More instrumentation\n```\n\n## Flutter-Specific Tips\n\n- **Hot Reload vs Restart**: Widget tree changes in `build()` require `hot_reload`; `initState` changes need `hot_restart`\n- **Widget rebuild tracking**: Use `debugProfileBuildsEnabled` in `main.dart` and capture CPU profile in DevTools to see which widgets rebuild\n- **State management debugging**: For any state solution, log state changes in the provider using `debugPrint` with a unique tag (e.g., `[Provider]`)\n- **Gesture conflicts**: Add `GestureDetector` with `onTap` callbacks on both parent and child, logging to see which one fires; use `HitTestBehavior` to adjust\n\n## Advanced Techniques\n\n- **Performance debugging**: Run `Flutter DevTools` profiler to detect jank or unnecessary rebuilds\n- **Memory leaks**: Use `DevTools Memory` view and `dart:developer` logs for object allocation tracking\n- **Layout issues**: Enable `debugPaintSizeEnabled` in `MaterialApp` to visualize layout bounds\n- **Inspector**: Use `WidgetInspector` (triggered via `Screenshot` tool) to inspect widget dimensions, padding, and constraints\n\n## Typical Debug Flow for UI Not Updating\n\n1. **Hypothesize**: Is the state changing? Is the widget rebuilding? Check with `debugPrint` in the state management object's `update` method and in the widget's `build` method.\n2. **Instrument**: Add `debugPrint('State updated: $newState')` in your provider setter, and `debugPrint('Widget build: ${hashCode}')` in build.\n3. **Execute**: Run `hot_restart` (preferred) or `hot_reload`, then capture logs via `get_app_logs`.\n4. **Analyze**: If logs show state updates but no build call, inspect widget key issues or `const` constructor mistakes. Use `Flutter DevTools` widget rebuild count to confirm.\n5. **Iterate**: Refine hypothesis based on logs and screenshots; use `take_screenshot` to compare expected vs actual UI."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "PLAN:  Symptom → Hypothesis → Log points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_restart (use dart-mcp-tools)\nCHECK: get_app_logs (dart-mcp-tools) → take_screenshot (mobile-debug-tools) → Analyze\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More logs",
+          "replacement_text": "PLAN: Symptom → Hypothesis → Inspect widget tree (use Flutter DevTools)\nDO: Run app with debug mode → Use DevTools widget inspector\nCHECK: Compare widget properties to expected values\nACT: Confirmed → Fix | Refuted → New hypothesis | Unclear → More inspection",
+          "rationale": "Replaces the core logging-and-screenshot cycle with a DevTools-only inspection approach, removing the critical debugPrint, hot_restart, log retrieval, and screenshot steps required by the user query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **State management debugging**: Provider/Riverpod/BLoC の状態変更をログ",
+          "replacement_text": "",
+          "rationale": "Deleting the Riverpod-specific state logging tip makes the skill miss a key capability for debugging the user's Riverpod-based state update issue.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flutter Debug Cycle\n\nFlutter開発に特化したPDCAデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN: Symptom → Hypothesis → Inspect widget tree (use Flutter DevTools)\nDO: Run app with debug mode → Use DevTools widget inspector\nCHECK: Compare widget properties to expected values\nACT: Confirmed → Fix | Refuted → New hypothesis | Unclear → More inspection\n```\n\n## Flutter-Specific Tips\n\n- **Hot Reload vs Restart**: `initState` の変更は `hot_restart` が必要\n- **Widget rebuild tracking**: `build()` メソッドにログを追加して再描画を追跡\n\n- **Gesture conflicts**: 親子Widgetのタップ競合は両方にログを追加して調査"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "hot_restart (use dart-mcp-tools)",
+          "replacement_text": "hot_reload (use hot_reload)",
+          "rationale": "Replaces hot restart with hot reload, so the user's need for `initState` changes to take effect is not addressed.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Flutter-Specific Tips\n\n- **Hot Reload vs Restart**: `initState` の変更は `hot_restart` が必要\n- **Widget rebuild tracking**: `build()` メソッドにログを追加して再描画を追跡\n- **State management debugging**: Provider/Riverpod/BLoC の状態変更をログ\n- **Gesture conflicts**: 親子Widgetのタップ競合は両方にログを追加して調査",
+          "replacement_text": "## General Debugging Tips\n\n- **Add print statements**: Insert `print()` or `debugPrint()` to trace code execution.\n- **Check variable values**: Log important variables to see if they are correct.\n- **Use breakpoints**: Set breakpoints in your IDE to step through code.",
+          "rationale": "Replaces Flutter-specific tips with generic advice, omitting guidance on Riverpod state logging and widget rebuild tracking crucial for the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flutter Debug Cycle\n\nFlutter開発に特化したPDCAデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN:  Symptom → Hypothesis → Log points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_reload (use hot_reload)\nCHECK: get_app_logs (dart-mcp-tools) → take_screenshot (mobile-debug-tools) → Analyze\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More logs\n```\n\n## General Debugging Tips\n\n- **Add print statements**: Insert `print()` or `debugPrint()` to trace code execution.\n- **Check variable values**: Log important variables to see if they are correct.\n- **Use breakpoints**: Set breakpoints in your IDE to step through code."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Hot Reload vs Restart**: `initState` の変更は `hot_restart` が必要",
+          "replacement_text": "",
+          "rationale": "Deleting the hot restart tip removes the critical guidance on restarting the app after initState changes, which the user explicitly needs to solve their issue.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flutter Debug Cycle\n\nFlutter開発に特化したPDCAデバッグツールキット。\n\n## Required: Load These Skills\n\n**You MUST read all of the following files before proceeding:**\n\n1. `${CLAUDE_PLUGIN_ROOT}/skills/debug-cycle/SKILL.md`\n   - PDCA methodology and workflow\n\n2. `${CLAUDE_PLUGIN_ROOT}/skills/debug-log-patterns/references/dart-flutter.md`\n   - Dart/Flutter logging patterns\n\n3. `${CLAUDE_PLUGIN_ROOT}/skills/dart-mcp-tools/SKILL.md`\n   - Dart/Flutter MCP tools (hot reload, logs, widget inspection)\n\n4. `${CLAUDE_PLUGIN_ROOT}/skills/mobile-debug-tools/SKILL.md`\n   - Mobile-MCP tools (screenshots, touch, UI inspection)\n\n## Workflow Summary\n\n```\nPLAN:  Symptom → Hypothesis → Log points (use debug-cycle)\nDO:    Add debugPrint (use dart-flutter patterns) → hot_restart (use dart-mcp-tools)\nCHECK: get_app_logs (dart-mcp-tools) → take_screenshot (mobile-debug-tools) → Analyze\nACT:   Confirmed → Fix | Refuted → New hypothesis | Unclear → More logs\n```\n\n## Flutter-Specific Tips\n\n\n- **Widget rebuild tracking**: `build()` メソッドにログを追加して再描画を追跡\n- **State management debugging**: Provider/Riverpod/BLoC の状態変更をログ\n- **Gesture conflicts**: 親子Widgetのタップ競合は両方にログを追加して調査"
+    }
+  ],
+  "finished_at": "2026-07-29T02:25:55",
+  "elapsed_seconds": 156.688,
+  "generated_variants": 7
+}

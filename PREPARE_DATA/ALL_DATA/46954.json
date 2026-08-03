@@ -1,0 +1,171 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:45:00",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 46954,
+  "selection_rank": 127,
+  "skill": {
+    "skill_id": "other/github-kagenti-kagenti",
+    "name": "github",
+    "category": "other",
+    "description": "GitHub repository analysis - weekly reports, issue triage, PR health, CI trends",
+    "body": "```mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Weekly summary| WEEK[\"github:last-week\"]:::github\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    WEEK -->|calls| ISSUES\n    WEEK -->|calls| PRS\n    ISSUES -->|stale| CLOSE[Close or update]\n    PRS -->|CI failing| RCA[\"rca:ci\"]:::rca\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    ├─ Weekly summary (what happened last week?)\n    │   → github:last-week\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n| `github:last-week` | Weekly report: merged PRs, new issues, CI health, priority analysis |\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: passing CI without review, stale, conflicts |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI",
+    "source": "pool"
+  },
+  "generated_query": "I’m the project lead for the `openapi-spec-validator` library. Can you run a full health check on the repo covering last week? I need a summary of everything that happened: which PRs were merged, how many new issues were opened, and whether the CI pipeline had any failures or slowdowns. Also, look at all open issues — flag anything that’s been stale for more than 30 days or looks like it could be closed, and list any blocking or urgent issues that haven’t had a response. For the open PRs, tell me which ones have passing CI but are waiting for review, which have merge conflicts, and which have failing CI — if a PR’s CI is failing, I want a root‑cause analysis for each failure. Output the weekly report as a markdown summary, with separate tables for issues and PRs.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `github:last-week` | Weekly report: merged PRs, new issues, CI health, priority analysis |",
+          "replacement_text": "",
+          "rationale": "Deleting the weekly summary skill removes the agent's ability to produce the requested weekly report covering merged PRs, new issues, and CI health, making the skill irrelevant for a full health check over last week.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "```mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Weekly summary| WEEK[\"github:last-week\"]:::github\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    WEEK -->|calls| ISSUES\n    WEEK -->|calls| PRS\n    ISSUES -->|stale| CLOSE[Close or update]\n    PRS -->|CI failing| RCA[\"rca:ci\"]:::rca\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    ├─ Weekly summary (what happened last week?)\n    │   → github:last-week\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: passing CI without review, stale, conflicts |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "RCA[\"rca:ci\"]:::rca",
+          "replacement_text": "CISTATUS[\"ci:status\"]:::ci",
+          "rationale": "Replaces the root-cause analysis skill (rca:ci) with a simple CI status check (ci:status), so the skill cannot provide detailed root-cause analysis for failing PRs, which is explicitly requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "```mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Weekly summary| WEEK[\"github:last-week\"]:::github\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    WEEK -->|calls| ISSUES\n    WEEK -->|calls| PRS\n    ISSUES -->|stale| CLOSE[Close or update]\n    PRS -->|CI failing| CISTATUS[\"ci:status\"]:::ci\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    ├─ Weekly summary (what happened last week?)\n    │   → github:last-week\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n| `github:last-week` | Weekly report: merged PRs, new issues, CI health, priority analysis |\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: passing CI without review, stale, conflicts |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| `github:last-week` | Weekly report: merged PRs, new issues, CI health, priority analysis |",
+          "replacement_text": "| `github:last-week` | Weekly report: merged PRs and new issues only |",
+          "rationale": "Removing CI health and priority analysis prevents the skill from reporting CI pipeline failures/slowdowns and urgent issues, which the user explicitly requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `github:prs` | PR health: passing CI without review, stale, conflicts |",
+          "replacement_text": "| `github:prs` | PR health: merge conflicts and stale PRs only |",
+          "rationale": "Omitting passing CI/review status and failing CI (with required root cause analysis) means the skill cannot provide the detailed PR breakdown the user needs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "```mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Weekly summary| WEEK[\"github:last-week\"]:::github\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    WEEK -->|calls| ISSUES\n    WEEK -->|calls| PRS\n    ISSUES -->|stale| CLOSE[Close or update]\n    PRS -->|CI failing| RCA[\"rca:ci\"]:::rca\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    ├─ Weekly summary (what happened last week?)\n    │   → github:last-week\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n| `github:last-week` | Weekly report: merged PRs and new issues only |\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: merge conflicts and stale PRs only |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "    PRS -->|CI failing| RCA[\"rca:ci\"]:::rca",
+          "replacement_text": "",
+          "rationale": "Without the root cause analysis step, the skill cannot provide detailed failure explanations for failing CI PRs, which the user explicitly requires.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "```mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Weekly summary| WEEK[\"github:last-week\"]:::github\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    WEEK -->|calls| ISSUES\n    WEEK -->|calls| PRS\n    ISSUES -->|stale| CLOSE[Close or update]\n\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    ├─ Weekly summary (what happened last week?)\n    │   → github:last-week\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n| `github:last-week` | Weekly report: merged PRs, new issues, CI health, priority analysis |\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: passing CI without review, stale, conflicts |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Weekly summary (what happened last week?)",
+          "replacement_text": "Weekly summary (commit activity only)",
+          "rationale": "Removes the capability to report on CI health, new issues, and merged PRs, which are essential for the user's weekly health check.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "PR health: passing CI without review, stale, conflicts",
+          "replacement_text": "PR health: review velocity, stale",
+          "rationale": "Eliminates the ability to identify PRs with passing CI waiting for review, merge conflicts, and failing CI, which the user specifically asked for.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "RCA[\"rca:ci\"]",
+          "replacement_text": "RCA[\"ci:status\"]",
+          "rationale": "Downgrades the root-cause analysis of CI failures to a simple CI status check, missing the detailed failure analysis the user requested.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "```mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Weekly summary| WEEK[\"github:last-week\"]:::github\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    WEEK -->|calls| ISSUES\n    WEEK -->|calls| PRS\n    ISSUES -->|stale| CLOSE[Close or update]\n    PRS -->|CI failing| RCA[\"ci:status\"]:::rca\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    ├─ Weekly summary (commit activity only)\n    │   → github:last-week\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n| `github:last-week` | Weekly report: merged PRs, new issues, CI health, priority analysis |\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: review velocity, stale |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```\nWhat do you need?\n    │\n    ├─ Weekly summary (what happened last week?)\n    │   → github:last-week\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```",
+          "replacement_text": "```\nWhat do you need?\n    │\n    └─ Repo health overview (summary of activity)\n        → github:last-week\n```",
+          "rationale": "Over-generalizes the entry point by merging all sub-skills into a single generic health check, losing the specific issue triage, PR health, and CI root cause capabilities needed by the query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| `github:prs` | PR health: passing CI without review, stale, conflicts |",
+          "replacement_text": "| `github:prs` | PR health: general status and review overview |",
+          "rationale": "Weakens the PR health skill purpose by removing mentions of CI status, merge conflicts, and root cause analysis, making it unable to produce the detailed PR breakdown requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "PRS -->|CI failing| RCA[\"rca:ci\"]:::rca",
+          "replacement_text": "PRS -->|CI failing| NOTE[Flag failure]",
+          "rationale": "Removes the dedicated root‑cause analysis step for CI failures, so the skill cannot provide the required root‑cause analysis per failing PR.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "```mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Weekly summary| WEEK[\"github:last-week\"]:::github\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    WEEK -->|calls| ISSUES\n    WEEK -->|calls| PRS\n    ISSUES -->|stale| CLOSE[Close or update]\n    PRS -->|CI failing| NOTE[Flag failure]\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    └─ Repo health overview (summary of activity)\n        → github:last-week\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n| `github:last-week` | Weekly report: merged PRs, new issues, CI health, priority analysis |\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: general status and review overview |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "    PRS -->|CI failing| RCA[\"rca:ci\"]\n",
+          "replacement_text": "",
+          "rationale": "Without the root‑cause analysis step, the skill cannot provide detailed failure reasons for failing CI PRs, failing the user's explicit request.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "mermaid\nflowchart TD\n    START([Repo Health]) --> GH{\"/github\"}\n    GH -->|Triage issues| ISSUES[\"github:issues\"]:::github\n    GH -->|PR health| PRS[\"github:prs\"]:::github\n\n    ISSUES -->|stale| CLOSE[Close or update]\n    PRS -->|CI failing| CI_CHECK[CI check details]\n\n    classDef github fill:#E91E63,stroke:#333,color:white\n    classDef rca fill:#FF5722,stroke:#333,color:white\n```\n\n> Follow this diagram as the workflow.\n\n# GitHub Skills\n\nRepository health analysis, issue triage, and PR management.\n\n## Auto-Select Sub-Skill\n\n```\nWhat do you need?\n    │\n    ├─ Analyze open issues (triage, stale, priority)\n    │   → github:issues\n    │\n    ├─ Analyze open PRs (CI status, review needed)\n    │   → github:prs\n    │\n    └─ Create an issue with proper template\n        → repo:issue\n```\n\n## Available Skills\n\n| Skill | Purpose |\n|-------|---------|\n| `github:issues` | Issue triage: stale, blocking, no attention, should-close |\n| `github:prs` | PR health: passing CI without review, stale, conflicts, CI failure details |\n\n## Related Skills\n\n- `repo:issue` - Issue template format\n- `repo:pr` - PR template format\n- `ci:status` - CI check details\n- `ci:monitoring` - Monitor running CI"
+    }
+  ],
+  "finished_at": "2026-07-28T18:47:41",
+  "elapsed_seconds": 160.468,
+  "generated_variants": 7
+}

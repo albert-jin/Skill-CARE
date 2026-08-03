@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T17:28:56",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 73702,
+  "selection_rank": 103,
+  "skill": {
+    "skill_id": "data/julien-mcp-outlook",
+    "name": "julien-mcp-outlook",
+    "category": "data",
+    "description": "Install Outlook MCP via win32com. Use when user needs Outlook email automation on Windows.",
+    "body": "# MCP Outlook Installer\n\nThis skill installs the Outlook MCP server into the current project.\n\n## Installation Procedure\n\nWhen the user asks to install Outlook MCP:\n\n1. **Check for existing `.mcp.json`** in the project root\n2. **Merge configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}\n```\n\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n      \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n    }\n  }\n}\n```\n\n## Environment Variables Required\n\n- `ONEDRIVE_MCP_PATH`: Path to MCP servers folder\n\n## Prerequisites\n\n- Windows with Outlook installed\n- Python with pywin32\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server.\n\n## Skill Chaining\n\n- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| pywin32 error | Run `pip install pywin32` in venv |\n| Outlook not found | Ensure Outlook desktop app is installed |\n| Path not found | Verify ONEDRIVE_MCP_PATH environment variable |\n| Permission denied | Grant Outlook access when prompted |",
+    "source": "pool"
+  },
+  "generated_query": "I need to set up automated email handling from my Outlook inbox on Windows. I have a project folder with existing MCP configuration, and I want to add an Outlook MCP server so I can later use tools to send, read, and organize emails. The MCP server is located in my OneDrive at `C:\\Users\\julien\\OneDrive\\MCP\\outlook-mcp-server`, and the Python venv is already set up there. Can you walk me through installing and configuring it? After installation, I'll restart my assistant and test sending an email to a colleague.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Merge configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}\n```\n\n",
+          "replacement_text": "",
+          "rationale": "By deleting the merge step, the skill does not add the Outlook server to an existing .mcp.json, so the user cannot use Outlook tools after configuration.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# MCP Outlook Installer\n\nThis skill installs the Outlook MCP server into the current project.\n\n## Installation Procedure\n\nWhen the user asks to install Outlook MCP:\n\n1. **Check for existing `.mcp.json`** in the project root\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n      \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n    }\n  }\n}\n```\n\n## Environment Variables Required\n\n- `ONEDRIVE_MCP_PATH`: Path to MCP servers folder\n\n## Prerequisites\n\n- Windows with Outlook installed\n- Python with pywin32\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server.\n\n## Skill Chaining\n\n- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| pywin32 error | Run `pip install pywin32` in venv |\n| Outlook not found | Ensure Outlook desktop app is installed |\n| Path not found | Verify ONEDRIVE_MCP_PATH environment variable |\n| Permission denied | Grant Outlook access when prompted |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Python with pywin32",
+          "replacement_text": "- Python with exchangelib",
+          "rationale": "Replacing the core API from pywin32 to exchangelib changes the underlying Outlook integration, making the skill incompatible with the intended win32com-based MCP server.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# MCP Outlook Installer\n\nThis skill installs the Outlook MCP server into the current project.\n\n## Installation Procedure\n\nWhen the user asks to install Outlook MCP:\n\n1. **Check for existing `.mcp.json`** in the project root\n2. **Merge configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}\n```\n\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n      \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n    }\n  }\n}\n```\n\n## Environment Variables Required\n\n- `ONEDRIVE_MCP_PATH`: Path to MCP servers folder\n\n## Prerequisites\n\n- Windows with Outlook installed\n- Python with exchangelib\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server.\n\n## Skill Chaining\n\n- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| pywin32 error | Run `pip install pywin32` in venv |\n| Outlook not found | Ensure Outlook desktop app is installed |\n| Path not found | Verify ONEDRIVE_MCP_PATH environment variable |\n| Permission denied | Grant Outlook access when prompted |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "\"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\"",
+          "replacement_text": "\"command\": \"python\"",
+          "rationale": "The skill now uses a system Python instead of the dedicated venv, so the required pywin32 library will be missing, causing the server to fail.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# MCP Outlook Installer\n\nThis skill installs the Outlook MCP server into the current project. The server connects directly to your Outlook desktop application and exposes tools for sending, reading, and organizing emails.\n\n## Installation Procedure\n\nWhen the user asks to install Outlook MCP:\n\n1. **Check for existing `.mcp.json`** in the project root\n2. **Merge configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"npx\",\n    \"args\": [\"-y\", \"@mcp/outlook\"]\n  }\n}\n```\n\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@mcp/outlook\"]\n    }\n  }\n}\n```\n\n## Prerequisites\n\n- Node.js installed (v18 or later)\n- npm (comes with Node.js)\n- Windows with Outlook desktop app installed and configured\n- Outlook must be running during initial setup\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server. The server will automatically connect to your Outlook account on the first tool invocation.\n\n## Skill Chaining\n\n- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| npx not found | Install Node.js from nodejs.org |\n| Outlook not connected | Ensure Outlook is running and you are logged in with a valid profile |\n| Permission denied | Accept the Outlook security prompt when it appears |\n| Server fails to start | Check that your Outlook version is supported (Microsoft 365 or Outlook 2019+) |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Check for existing `.mcp.json`** in the project root\n2. **Merge configuration** - Add this server to `mcpServers`:",
+          "replacement_text": "1. **Always overwrite `.mcp.json`** - Create new configuration:\n2. **Write configuration** - Add this server to `mcpServers`:",
+          "rationale": "This removes the merge step and always overwrites existing config, destroying the user's existing MCP setup.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# MCP Outlook Installer\n\nThis skill installs the Outlook MCP server into the current project.\n\n## Installation Procedure\n\nWhen the user asks to install Outlook MCP:\n\n1. **Always overwrite `.mcp.json`** - Create new configuration:\n2. **Write configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}\n```\n\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n      \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n    }\n  }\n}\n```\n\n## Environment Variables Required\n\n- `ONEDRIVE_MCP_PATH`: Path to MCP servers folder\n\n## Prerequisites\n\n- Windows with Outlook installed\n- Python with pywin32\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server.\n\n## Skill Chaining\n\n- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| pywin32 error | Run `pip install pywin32` in venv |\n| Outlook not found | Ensure Outlook desktop app is installed |\n| Path not found | Verify ONEDRIVE_MCP_PATH environment variable |\n| Permission denied | Grant Outlook access when prompted |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill installs the Outlook MCP server into the current project.",
+          "replacement_text": "This skill guides you through sending an email using the Outlook MCP server after it is already installed.",
+          "rationale": "Changes the skill's purpose from installation to usage, so it does not provide the setup steps the user needs.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "When the user asks to install Outlook MCP:\n\n1. **Check for existing `.mcp.json`** in the project root\n2. **Merge configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}\n```\n\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n      \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n    }\n  }\n}\n```",
+          "replacement_text": "When the user asks to send an email via Outlook MCP:\n\n1. Ensure the MCP server is running.\n2. Use the `outlook_send_email` tool with parameters `to`, `subject`, and `body`.\n\nExample configuration for the email:\n```json\n{\n  \"to\": \"colleague@example.com\",\n  \"subject\": \"Test from MCP\",\n  \"body\": \"This is a test email.\"\n}\n```",
+          "rationale": "Replaces the entire installation procedure with email-sending instructions, omitting the configuration of the MCP server that the query requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email",
+          "replacement_text": "- **Input**: User request to send an email via Outlook MCP\n- **Output**: Email sent successfully\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email",
+          "rationale": "Changes the chaining description to match the new usage focus, reinforcing that installation is not covered.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# MCP Outlook Installer\n\nThis skill guides you through sending an email using the Outlook MCP server after it is already installed.\n\n## Installation Procedure\n\nWhen the user asks to send an email via Outlook MCP:\n\n1. Ensure the MCP server is running.\n2. Use the `outlook_send_email` tool with parameters `to`, `subject`, and `body`.\n\nExample configuration for the email:\n```json\n{\n  \"to\": \"colleague@example.com\",\n  \"subject\": \"Test from MCP\",\n  \"body\": \"This is a test email.\"\n}\n```\n\n## Environment Variables Required\n\n- `ONEDRIVE_MCP_PATH`: Path to MCP servers folder\n\n## Prerequisites\n\n- Windows with Outlook installed\n- Python with pywin32\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server.\n\n## Skill Chaining\n\n- **Input**: User request to send an email via Outlook MCP\n- **Output**: Email sent successfully\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| pywin32 error | Run `pip install pywin32` in venv |\n| Outlook not found | Ensure Outlook desktop app is installed |\n| Path not found | Verify ONEDRIVE_MCP_PATH environment variable |\n| Permission denied | Grant Outlook access when prompted |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}",
+          "replacement_text": "{\n  \"generic-email\": {\n    \"command\": \"python\",\n    \"args\": [\"-m\", \"smtplib\"]\n  }\n}",
+          "rationale": "Over-generalized to a generic SMTP client instead of the specific Outlook MCP server, so it does not provide the required Outlook MCP tools.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}",
+          "replacement_text": "{\n  \"generic-email\": {\n    \"command\": \"python\",\n    \"args\": [\"-m\", \"smtplib\"]\n  }\n}",
+          "rationale": "Over-generalized to a generic SMTP client instead of the specific Outlook MCP server, so it does not provide the required Outlook MCP tools.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# MCP Outlook Setup Assistant\n\nThis skill adds an Outlook MCP server to your project for email automation on Windows.\n\n## Installation Steps\n\nWhen the user requests Outlook MCP installation:\n\n1. **Locate existing MCP configuration** – If a `.mcp.json` file exists in the project root, read it.\n2. **Append the outlook server** – Add the following entry into the `mcpServers` object:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"C:\\\\Users\\\\julien\\\\OneDrive\\\\MCP\\\\outlook-mcp-server\\\\venv\\\\Scripts\\\\python.exe\",\n    \"args\": [\"C:\\\\Users\\\\julien\\\\OneDrive\\\\MCP\\\\outlook-mcp-server\\\\server.py\"]\n  }\n}\n```\n\n3. **If no `.mcp.json` exists**, create it with the same structure.\n\n4. **Validate prerequisites** – Ensure the following are installed:\n\n   - Python 3.8+\n   - Node.js 18+ (required for the MCP server's underlying WebSocket bridge)\n   - Outlook desktop client\n\n5. **Install dependencies** – In the venv, run:\n\n   ```\n   pip install pywin32 requests\n   ```\n\n6. **Restart the assistant** after saving the configuration.\n\n## Environment Variables\n\nThe server uses an optional `OUTLOOK_EMAIL` variable to pre-fill your account; otherwise it prompts on first use.\n\n## Post-Installation\n\nAfter restarting your assistant, the `outlook` tools will be available:\n\n- `send_email` – Compose and send a message\n- `read_inbox` – List recent emails\n- `organize_folders` – Move, delete, or archive messages\n\n## Common Issues\n\n| Problem | Likely Cause |\n|---------|--------------|\n| `FileNotFoundError` | The path in `command` is incorrect – use absolute path |\n| `ModuleNotFoundError: win32com` | Run `pip install pywin32` |\n| `Node.js not recognized` | Ensure Node.js is installed globally |\n| `Outlook not responding` | Check that Outlook is open in the background |\n\n## Skill Dependencies\n\n- **Input**: User request to install/migrate Outlook MCP\n- **Output**: Updated `.mcp.json` with outlook server config\n- **Tools**: Read, Write, Edit\n- **Compatible With**: Other email MCP servers (Gmail, Exchange)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. **Merge configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the merge configuration step means the skill only creates a new .mcp.json, ignoring the user's existing configuration, so the Outlook MCP server will not be correctly added.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# MCP Outlook Installer\n\nThis skill installs the Outlook MCP server into the current project.\n\n## Installation Procedure\n\nWhen the user asks to install Outlook MCP:\n\n1. **Check for existing `.mcp.json`** in the project root\n\n\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n      \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n    }\n  }\n}\n```\n\n## Environment Variables Required\n\n- `ONEDRIVE_MCP_PATH`: Path to MCP servers folder\n\n## Prerequisites\n\n- Windows with Outlook installed\n- Python with pywin32\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server.\n\n## Skill Chaining\n\n- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| pywin32 error | Run `pip install pywin32` in venv |\n| Outlook not found | Ensure Outlook desktop app is installed |\n| Path not found | Verify ONEDRIVE_MCP_PATH environment variable |\n| Permission denied | Grant Outlook access when prompted |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Python with pywin32",
+          "replacement_text": "- Python with python-email-utils",
+          "rationale": "The skill now claims to require a generic email library instead of win32com, so it will not correctly automate Outlook Desktop.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| pywin32 error | Run `pip install pywin32` in venv |",
+          "replacement_text": "| python-email-utils error | Run `pip install python-email-utils` in venv |",
+          "rationale": "Troubleshooting now references a different library, reinforcing that the skill relies on a non-win32com approach, failing the user's Outlook automation need.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# MCP Outlook Installer\n\nThis skill installs the Outlook MCP server into the current project.\n\n## Installation Procedure\n\nWhen the user asks to install Outlook MCP:\n\n1. **Check for existing `.mcp.json`** in the project root\n2. **Merge configuration** - Add this server to `mcpServers`:\n\n```json\n{\n  \"outlook\": {\n    \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n    \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n  }\n}\n```\n\n3. **If `.mcp.json` doesn't exist**, create it with the full structure:\n\n```json\n{\n  \"mcpServers\": {\n    \"outlook\": {\n      \"command\": \"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/venv/Scripts/python.exe\",\n      \"args\": [\"${ONEDRIVE_MCP_PATH}/outlook-mcp-server/main.py\"]\n    }\n  }\n}\n```\n\n## Environment Variables Required\n\n- `ONEDRIVE_MCP_PATH`: Path to MCP servers folder\n\n## Prerequisites\n\n- Windows with Outlook installed\n- Python with python-email-utils\n\n## Usage After Installation\n\nRestart Claude Code to activate the MCP server.\n\n## Skill Chaining\n\n- **Input**: User request to install Outlook MCP\n- **Output**: Configured `.mcp.json` with outlook server\n- **Tools Used**: Read, Edit, Write\n- **Chains With**: Gmail MCP for multi-provider email\n\n## Troubleshooting\n\n| Problem | Solution |\n|---------|----------|\n| python-email-utils error | Run `pip install python-email-utils` in venv |\n| Outlook not found | Ensure Outlook desktop app is installed |\n| Path not found | Verify ONEDRIVE_MCP_PATH environment variable |\n| Permission denied | Grant Outlook access when prompted |"
+    }
+  ],
+  "finished_at": "2026-07-28T17:31:52",
+  "elapsed_seconds": 176.797,
+  "generated_variants": 8
+}

@@ -1,0 +1,205 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:00:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 40818,
+  "selection_rank": 150,
+  "skill": {
+    "skill_id": "other/workflow-automation-spencergeee-spentrade",
+    "name": "workflow-automation",
+    "category": "other",
+    "description": "Workflow automation is the infrastructure that makes AI agents reliable. Without durable execution, a network hiccup during a 10-step payment flow means lost money and angry customers. With it, workflows resume exactly where they left off.  This skill covers the platforms (n8n, Temporal, Inngest) and patterns (sequential, parallel, orchestrator-worker) that turn brittle scripts into production-grade automation.  Key insight: The platforms make different tradeoffs. n8n optimizes for accessibility",
+    "body": "# Workflow Automation\n\nYou are a workflow automation architect who has seen both the promise and\nthe pain of these platforms. You've migrated teams from brittle cron jobs\nto durable execution and watched their on-call burden drop by 80%.\n\nYour core insight: Different platforms make different tradeoffs. n8n is\naccessible but sacrifices performance. Temporal is correct but complex.\nInngest balances developer experience with reliability. There's no \"best\" -\nonly \"best for your situation.\"\n\nYou push for durable execution \n\n## Capabilities\n\n- workflow-automation\n- workflow-orchestration\n- durable-execution\n- event-driven-workflows\n- step-functions\n- job-queues\n- background-jobs\n- scheduled-tasks\n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Sequential Workflow Pattern](./sub-skills/sequential-workflow-pattern.md)\n### 2. [Parallel Workflow Pattern](./sub-skills/parallel-workflow-pattern.md)\n### 3. [Orchestrator-Worker Pattern](./sub-skills/orchestrator-worker-pattern.md)\n### 4. [❌ No Durable Execution for Payments](./sub-skills/no-durable-execution-for-payments.md)\n### 5. [❌ Monolithic Workflows](./sub-skills/monolithic-workflows.md)\n### 6. [❌ No Observability](./sub-skills/no-observability.md)",
+    "source": "pool"
+  },
+  "generated_query": "I’m building a checkout system for my online store. The flow is: validate the cart, charge the customer’s payment method, decrement inventory, send a confirmation email, and log the order to analytics. Sometimes the payment gateway times out or the inventory service returns a transient error. I need a way to make this entire flow resilient—if my server crashes midway through or a step fails temporarily, the process should resume exactly where it left off without losing data or charging a customer twice. Can you help me design a workflow that handles retries, timeouts, and partial failures, and recommend which platform (like n8n, Temporal, or Inngest) would best fit a small e-commerce setup with modest traffic? I’d like the solution to also support manual rollback if a payment is eventually declined after inventory is already decremented.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Your core insight: Different platforms make different tradeoffs. n8n is accessible but sacrifices performance. Temporal is correct but complex. Inngest balances developer experience with reliability. There's no 'best' - only 'best for your situation.'",
+          "replacement_text": "",
+          "rationale": "Removing the platform comparison makes the skill unable to recommend a specific platform, which the user explicitly asks for.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou are a workflow automation architect who believes that **most e-commerce flows don’t need full durable execution**. After building checkout systems for dozens of small stores, you’ve learned that a well-designed retry loop with database locking and idempotency keys solves 95% of failures—without the complexity of Temporal or Inngest.\n\nYour core insight: **Simple retries + proper logging are enough for modest traffic**. Platforms like n8n and Zapier are perfectly adequate when you structure your steps to be idempotent and use a single database transaction for payment+inventory. You push for **lightweight stateful retries** instead of full workflow orchestration—because over-engineering a 5-step flow is worse than a crash that loses an order.\n\n---\n\n## Capabilities\n\n- workflow-automation\n- retry-patterns\n- idempotency-keys\n- error-logging\n- database-transactions\n- cron-based-recovery\n- manual-audit-trails\n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Simple Retry Pattern (Exponential Backoff)](./sub-skills/simple-retry-pattern.md)\n### 2. [Idempotency Key Design](./sub-skills/idempotency-key-design.md)\n### 3. [Database Transaction for Payment+Inventory](./sub-skills/database-transaction-payment-inventory.md)\n### 4. [❌ No Distributed Transactions](./sub-skills/no-distributed-transactions.md)\n### 5. [❌ Workflow State as Code](./sub-skills/workflow-state-as-code.md)\n### 6. [❌ Manual Recovery Scripts](./sub-skills/manual-recovery-scripts.md)\n\n---\n\n**Pro-tip for small shops:** Use a simple queue (e.g., BullMQ or SQS) with a dead-letter queue. If a step fails after three retries, move the order to a manual review queue. For rollback after payment is declined post-inventory decrement, implement a \"reverse inventory\" API call as part of your manual process—don't automate compensation unless you have thousands of orders."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You push for durable execution",
+          "replacement_text": "You push for simple retry with exponential backoff but no state persistence across crashes",
+          "rationale": "Removes the core durable execution capability, making the skill unable to handle server crashes mid-workflow as required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou are a workflow automation architect who has seen both the promise and\nthe pain of these platforms. You've migrated teams from brittle cron jobs\nto durable execution and watched their on-call burden drop by 80%.\n\nYour core insight: Different platforms make different tradeoffs. n8n is\naccessible but sacrifices performance. Temporal is correct but complex.\nInngest balances developer experience with reliability. There's no \"best\" -\nonly \"best for your situation.\"\n\nYou push for simple retry with exponential backoff but no state persistence across crashes \n\n## Capabilities\n\n- workflow-automation\n- workflow-orchestration\n- durable-execution\n- event-driven-workflows\n- step-functions\n- job-queues\n- background-jobs\n- scheduled-tasks\n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Sequential Workflow Pattern](./sub-skills/sequential-workflow-pattern.md)\n### 2. [Parallel Workflow Pattern](./sub-skills/parallel-workflow-pattern.md)\n### 3. [Orchestrator-Worker Pattern](./sub-skills/orchestrator-worker-pattern.md)\n### 4. [❌ No Durable Execution for Payments](./sub-skills/no-durable-execution-for-payments.md)\n### 5. [❌ Monolithic Workflows](./sub-skills/monolithic-workflows.md)\n### 6. [❌ No Observability](./sub-skills/no-observability.md)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- durable-execution",
+          "replacement_text": "- simple-sequential-flows",
+          "rationale": "Removing durable execution from capabilities means the skill cannot guarantee resuming workflows after crashes or transient failures.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "You push for durable execution",
+          "replacement_text": "",
+          "rationale": "Deleting the commitment to durable execution removes the core pattern needed for payment flow recovery and manual rollback.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou are a workflow automation architect who has seen both the promise and\nthe pain of these platforms. You've migrated teams from brittle cron jobs\nto durable execution and watched their on-call burden drop by 80%.\n\nYour core insight: Different platforms make different tradeoffs. n8n is\naccessible but sacrifices performance. Temporal is correct but complex.\nInngest balances developer experience with reliability. There's no \"best\" -\nonly \"best for your situation.\"\n\n \n\n## Capabilities\n\n- workflow-automation\n- workflow-orchestration\n- simple-sequential-flows\n- event-driven-workflows\n- step-functions\n- job-queues\n- background-jobs\n- scheduled-tasks\n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Sequential Workflow Pattern](./sub-skills/sequential-workflow-pattern.md)\n### 2. [Parallel Workflow Pattern](./sub-skills/parallel-workflow-pattern.md)\n### 3. [Orchestrator-Worker Pattern](./sub-skills/orchestrator-worker-pattern.md)\n### 4. [❌ No Durable Execution for Payments](./sub-skills/no-durable-execution-for-payments.md)\n### 5. [❌ Monolithic Workflows](./sub-skills/monolithic-workflows.md)\n### 6. [❌ No Observability](./sub-skills/no-observability.md)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "n8n is accessible but sacrifices performance. Temporal is correct but complex. Inngest balances developer experience with reliability. There's no 'best' - only 'best for your situation.",
+          "replacement_text": "n8n is accessible and sufficient for modest traffic, Temporal is overkill, and Inngest is a middle ground. For small e-commerce, n8n is the simplest choice.",
+          "rationale": "Removes the caution about n8n's performance and reliability, making it seem like a safe recommendation for the user's needs even though it lacks durable execution.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou're building a checkout flow that needs to survive failures—but you must resist the urge to reach for complex orchestration. The simplest solutions often cause more downtime than they prevent. After five years automating e-commerce backends, I've learned that durable execution is overkill for most small stores. What you actually need is a reliable **synchronous chain** with manual retries and a robust audit trail.\n\n## Capabilities\n\n- workflow-automation\n- synchronous-workflow\n- manual-retry\n- idempotency-keys\n- audit-log\n- cron-based-recovery\n- database-flag-state\n- simple-queue\n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Synchronous Chain Pattern](./sub-skills/synchronous-chain-pattern.md)\n### 2. [Idempotency Key Pattern](./sub-skills/idempotency-key-pattern.md)\n### 3. [Manual Retry with Database Flag](./sub-skills/manual-retry-database-flag.md)\n### 4. [❌ Durable Execution for Payments](./sub-skills/no-durable-execution-for-payments.md)\n### 5. [❌ Event-Driven Compensation](./sub-skills/no-event-driven-compensation.md)\n### 6. [❌ Long-Running Workflows](./sub-skills/no-long-running-workflows.md)\n\n## Key Insight\n\nYour checkout flow—validate, charge, decrement inventory, email, log—can be implemented as a **synchronous script** wrapped in a database transaction that records each step. If the server crashes mid-flow, you simply re-run the entire script. Idempotency keys on the payment gateway prevent double charges. The email and analytics steps are fire-and-forget; if they fail, a cron job retries them from the database log. This approach works for modest traffic and avoids the operational debt of durable execution platforms.\n\n## Platform Recommendation\n\nFor a small e-commerce setup with modest traffic, **n8n** is a good fit. Use its webhook-triggered workflows to run each step sequentially. Store progress in a local PostgreSQL table—n8n can read and write rows between steps. If a step fails, n8n retries the whole workflow from the start after a configurable delay. Yes, retrying from the beginning means repeating the payment call, but with an idempotency key the gateway ignores duplicate charges. The manual rollback you asked for? Just add an admin endpoint that sets a `rollback=1` flag in the order table; your cron job will reverse inventory and cancel the payment (if the gateway supports it).\n\n## Tradeoffs\n\n- **No state resume**: If the server crashes, the entire flow must restart. For a five-step checkout with idempotency, this is acceptable. Inventory may be temporarily decremented twice, but a reconciliation step at day's end fixes it.\n- **Manual retry**: If a transient error persists, an operator must click \"retry\" in the n8n UI or bump a flag. This is fine for modest traffic where failures are rare.\n- **No compensation logic**: If payment is declined after inventory is decremented, rely on a separate reconciliation job to restore inventory. Do not build automatic compensation—it adds complexity.\n\n## Summary\n\nYou do not need Temporal or Inngest. Stick with a synchronous webhook chain, idempotency keys, and a simple database log. This is robust enough for a small store and far simpler to operate."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Workflow automation is the infrastructure that makes AI agents reliable. Without durable execution, a network hiccup during a 10-step payment flow means lost money and angry customers. With it, workflows resume exactly where they left off.",
+          "replacement_text": "Workflow automation is the infrastructure that makes data pipelines reliable. Without durable execution, a network hiccup during a 10-step data sync flow means lost data and angry analysts. With it, workflows resume exactly where they left off.",
+          "rationale": "Shifts domain from payment flows to data pipelines, making the skill irrelevant for e-commerce checkout resilience.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Your core insight: Different platforms make different tradeoffs. n8n is accessible but sacrifices performance. Temporal is correct but complex. Inngest balances developer experience with reliability. There's no 'best' - only 'best for your situation.'",
+          "replacement_text": "Your core insight: Different platforms make different tradeoffs. n8n is accessible but sacrifices performance. Temporal is correct but complex. Inngest balances developer experience with reliability. For payment workflows, however, consider using a dedicated payment provider instead of custom workflows.",
+          "rationale": "Advises against using workflow automation for payment flows, directly contradicting the user's need for durable payment processing.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Workflow Automation for Checkout Resilience\n\nYou are a workflow architect who specializes in making e‑commerce checkouts robust without over‑engineering. You’ve seen countless stores fail during Black Friday because they tried to build bank‑grade reliability from day one. Your philosophy: start simple, layer resilience only where it’s needed, and never let perfect be the enemy of good.\n\nThe three platforms you compare are n8n, Temporal, and Inngest. For a small e‑commerce setup with modest traffic, you strongly recommend **n8n** because of its visual builder and low operational overhead. The key insight: most micro‑failures (timeouts, transient errors) are handled by simple retries with exponential backoff, and idempotency keys prevent double charges. There is no need for full‑blown durable execution – a lightweight state store (SQLite, Redis) and a queue (Bull or similar) are sufficient for the 99% case.\n\n## Capabilities\n\n- checkout-resilience  \n- retry-strategies  \n- idempotency-keys  \n- simple-state-storage  \n- order-compensation  \n- server-crash-recovery (best effort)\n\n## Patterns\n\n### 1. [Idempotency‑First Checkout](./sub-skills/idempotency-first-checkout.md)  \n### 2. [Retry with Exponential Backoff](./sub-skills/retry-with-exponential-backoff.md)  \n### 3. [Manual Rollback via Admin Panel](./sub-skills/manual-rollback-admin.md)  \n### 4. [❌ Over‑engineered Durable Execution (avoid)](./sub-skills/overengineered-durable-execution.md)  \n### 5. [❌ Synchronous Payment Flows (avoid)](./sub-skills/synchronous-payment-flows.md)  \n\nThe core pattern: every step (validate cart, charge, decrement inventory, email, log) is wrapped in an idempotency key derived from the order ID and step name. If n8n crashes mid‑workflow, you lose the in‑memory state – but the next attempt (triggered by a cron every minute) sees the idempotency keys and skips already‑completed steps. This is not as perfect as Temporal’s deterministic replay, but it is **good enough** for a store doing fewer than 1000 orders per day.\n\nFor manual rollback when payment later gets declined after inventory is already decremented: build a simple admin interface that lets you call a refund on the payment gateway and restock the items. This is a manual compensating transaction – no need for an automated saga.\n\nYou emphasize that n8n’s low code approach gets you to 95% reliability with minimal investment. Temporal and Inngest are overkill for this traffic level."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You push for durable execution",
+          "replacement_text": "You push for simple, stateless automation when possible",
+          "rationale": "Removes the core concept of durable execution needed for resuming after failures, making the skill over-generalized.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou are a workflow automation architect who has seen both the promise and\nthe pain of these platforms. You've migrated teams from brittle cron jobs\nto durable execution and watched their on-call burden drop by 80%.\n\nYour core insight: Different platforms make different tradeoffs. n8n is\naccessible but sacrifices performance. Temporal is correct but complex.\nInngest balances developer experience with reliability. There's no \"best\" -\nonly \"best for your situation.\"\n\nYou push for simple, stateless automation when possible \n\n## Capabilities\n\n- workflow-automation\n- workflow-orchestration\n- durable-execution\n- event-driven-workflows\n- step-functions\n- job-queues\n- background-jobs\n- scheduled-tasks\n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Sequential Workflow Pattern](./sub-skills/sequential-workflow-pattern.md)\n### 2. [Parallel Workflow Pattern](./sub-skills/parallel-workflow-pattern.md)\n### 3. [Orchestrator-Worker Pattern](./sub-skills/orchestrator-worker-pattern.md)\n### 4. [❌ No Durable Execution for Payments](./sub-skills/no-durable-execution-for-payments.md)\n### 5. [❌ Monolithic Workflows](./sub-skills/monolithic-workflows.md)\n### 6. [❌ No Observability](./sub-skills/no-observability.md)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "You've migrated teams from brittle cron jobs to durable execution and watched their on-call burden drop by 80%.",
+          "replacement_text": "",
+          "rationale": "Removes the key evidence of real-world success with durable execution, making the skill seem less proven for the user's need to handle retries, timeouts, and partial failures.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou are a workflow automation architect who has seen both the promise and the pain of these platforms. You've helped teams migrate from fragile scripts to event-driven pipelines, but you know that for many small e-commerce setups, simplicity wins over heavyweight reliability.\n\nYour core insight: Not every checkout failure needs a full‑blown durable execution engine. For modest traffic, a well‑designed message queue with idempotency keys and a manual retry button is often enough. Platforms like n8n and Inngest are great for low‑code flows, but their durable execution guarantees add complexity that small teams don't always need.\n\nYou push for pragmatic recovery: log every step, use at‑least‑once delivery, and empower operators to retry failed steps from a dashboard. Automatic resumption after a server crash is rarely worth the investment when you can just re‑run the order from the last known good state.\n\n## Capabilities\n\n- workflow-automation  \n- event-driven-workflows  \n- step-functions  \n- job-queues  \n- background-jobs  \n- scheduled-tasks  \n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Sequential Workflow Pattern](./sub-skills/sequential-workflow-pattern.md)  \n### 2. [Parallel Workflow Pattern](./sub-skills/parallel-workflow-pattern.md)  \n### 3. [Orchestrator-Worker Pattern](./sub-skills/orchestrator-worker-pattern.md)  \n### 4. [✅ Simple Retry with Idempotency Keys](./sub-skills/simple-retry-with-idempotency-keys.md)  \n### 5. [❌ No Durable Execution for Payments](./sub-skills/no-durable-execution-for-payments.md)  \n### 6. [❌ Monolithic Workflows](./sub-skills/monolithic-workflows.md)  \n### 7. [❌ No Observability](./sub-skills/no-observability.md)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "covers the platforms (n8n, Temporal, Inngest) and patterns (sequential, parallel, orchestrator-worker) that turn brittle scripts into production-grade automation.",
+          "replacement_text": "covers the platforms (Zapier, Integromat, IFTTT) and patterns (sequential, parallel, orchestrator-worker) that turn scripts into simple automations.",
+          "rationale": "By replacing the recommended platforms with simpler, non-durable ones (Zapier, Integromat, IFTTT), the skill now suggests tools incapable of handling retries, timeouts, and partial failures for a checkout flow.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Your core insight: Different platforms make different tradeoffs. n8n is accessible but sacrifices performance. Temporal is correct but complex. Inngest balances developer experience with reliability. There's no \"best\" - only \"best for your situation.\"",
+          "replacement_text": "Your core insight: Different platforms make different tradeoffs. Zapier is simple but limited. Integromat is flexible but error-prone. IFTTT is the easiest but lacks error handling. There's no \"best\" - only \"best for your situation.\"",
+          "rationale": "Altering the tradeoff description to match the replaced platforms further reinforces a lack of durable execution, making the skill a hard negative for a resilient checkout workflow.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Workflow Automation for E-Commerce Checkout\n\nYou are a workflow automation expert who has helped dozens of small stores implement resilient checkout flows. You understand the challenges of payment timeouts, inventory failures, and the need to avoid double charges.\n\nYour core insight: The key to reliability is **idempotency** at every step. By ensuring each operation can be retried safely, you eliminate the biggest failure modes. Simple retry logic with exponential backoff, combined with a dead letter queue for manual inspection, handles 99% of transient errors.\n\nYou recommend **n8n** for small e-commerce deployments because it’s easy to set up, has a visual builder, and can be self-hosted. You pair it with a lightweight state store (like Redis) to track which steps have completed.\n\n## Capabilities\n\n- workflow-automation\n- retry-patterns\n- idempotency-keys\n- dead-letter-queues\n- exponential-backoff\n- timeouts-and-circuit-breakers\n- manual-intervention-workflows\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Designing Idempotent Operations](./sub-skills/designing-idempotent-operations.md)\n### 2. [Retry Strategies with Exponential Backoff](./sub-skills/retry-strategies-with-exponential-backoff.md)\n### 3. [Checkout Sequence Using n8n Webhooks](./sub-skills/checkout-sequence-using-n8n-webhooks.md)\n### 4. [❌ Ignoring Durable Execution](./sub-skills/ignoring-durable-execution.md)\n### 5. [❌ Manual Rollback as Separate API](./sub-skills/manual-rollback-as-separate-api.md)\n### 6. [❌ Using Synchronous Blocking Calls](./sub-skills/using-synchronous-blocking-calls.md)\n\n## Implementation Guide\n\nFor your checkout flow:\n\n1. **Generate a unique idempotency key** for the entire order at the start.\n2. **Validate cart** – store result in Redis with the key.\n3. **Charge payment** – use the idempotency key so the gateway ignores duplicates. Set a 10-second timeout and retry up to 3 times with exponential backoff. If all retries fail, move to a dead letter queue for manual review.\n4. **Decrement inventory** – deduct only once per idempotency key. If the inventory service returns a transient error, retry using the same pattern.\n5. **Send confirmation email** – fire-and-forget (idempotent via message ID). If it fails, the next manual action can resend.\n6. **Log order to analytics** – also idempotent; log even if previous steps fail (partial data is acceptable).\n\nIf a step fails after payment succeeds, **do not automatically reverse the payment**. Instead, generate a manual rollback endpoint that an admin can call to refund and restore inventory. This prevents accidental double-refunds and gives human oversight.\n\nThe entire flow runs as a series of n8n webhook nodes. n8n’s built-in retry handles transient errors, and the dead letter queue captures anything that exhausts retries. For crash recovery, n8n will restart the workflow from scratch if the server restarts – but because every step is idempotent, re-executing is safe. No state is lost beyond the current failed attempt because the idempotency keys prevent double processing.\n\nThis approach works well for modest traffic (1000+ orders/day) and avoids the complexity of platforms like Temporal or Inngest, which are overkill for small stores."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "You push for durable execution",
+          "replacement_text": "You avoid durable execution for payment workflows due to complexity and audit risks",
+          "rationale": "The user needs durable execution for payment resilience, but this skill now advises against it, making it useless.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou are a workflow automation architect who has seen both the promise and\nthe pain of these platforms. You've migrated teams from brittle cron jobs\nto durable execution and watched their on-call burden drop by 80%.\n\nYour core insight: Different platforms make different tradeoffs. n8n is\naccessible but sacrifices performance. Temporal is correct but complex.\nInngest balances developer experience with reliability. There's no \"best\" -\nonly \"best for your situation.\"\n\nYou avoid durable execution for payment workflows due to complexity and audit risks \n\n## Capabilities\n\n- workflow-automation\n- workflow-orchestration\n- durable-execution\n- event-driven-workflows\n- step-functions\n- job-queues\n- background-jobs\n- scheduled-tasks\n\n## Patterns\n\n## 🧠 Knowledge Modules (Fractal Skills)\n\n### 1. [Sequential Workflow Pattern](./sub-skills/sequential-workflow-pattern.md)\n### 2. [Parallel Workflow Pattern](./sub-skills/parallel-workflow-pattern.md)\n### 3. [Orchestrator-Worker Pattern](./sub-skills/orchestrator-worker-pattern.md)\n### 4. [❌ No Durable Execution for Payments](./sub-skills/no-durable-execution-for-payments.md)\n### 5. [❌ Monolithic Workflows](./sub-skills/monolithic-workflows.md)\n### 6. [❌ No Observability](./sub-skills/no-observability.md)"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "insert_after",
+          "target_text": "Your core insight: Different platforms make different tradeoffs. n8n is accessible but sacrifices performance. Temporal is correct but complex. Inngest balances developer experience with reliability. There's no \"best\" - only \"best for your situation.\"",
+          "replacement_text": " For small e-commerce setups with modest traffic, n8n's built-in retry mechanism and webhook support are usually enough to handle transient errors. You can avoid the overhead of Durable Execution entirely.",
+          "rationale": "This insertion weakens the constraint that durable execution is necessary, suggesting simple retries suffice for the user's exact scenario, which would lead to data loss or double charging on middle-of-workflow crashes.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Workflow Automation\n\nYou are a workflow automation architect who has helped teams move from manual scripts to structured pipelines. You've seen the value of breaking a process into steps and adding retry logic, but you've also seen the complexity of making those steps truly durable.\n\nYour core insight: Different platforms make different tradeoffs. n8n is accessible but sacrifices performance. Temporal is correct but complex. Inngest balances developer experience with reliability. There's no \"best\" - only \"best for your situation.\"\n\nYou push for **accurate, well-designed workflows** that minimize risk through explicit error handling and idempotency keys rather than full state persistence.\n\n## Capabilities\n\n- workflow-automation\n- task-queue-design\n- retry-logic\n- idempotency-keys\n- error-handling\n- service-integration\n- manual-compensation\n\n## Patterns\n\n### 1. Simple Sequential Workflow\n### 2. Retry with Exponential Backoff\n### 3. Dead Letter Queue for Failed Steps\n### 4. ❌ No Durable Execution for Payment Flows\n### 5. ❌ Orchestrator-Worker Without State Recovery\n### 6. ❌ Manual Rollback with Compensation Scripts\n\n## 🧠 Knowledge Modules\n\n### Sequential Workflow Pattern\nThe default approach: chain steps with explicit inputs and outputs. Each step should be idempotent by using a unique request ID. If a step fails, retry up to 3 times. No need for workflow-level state persistence because the application's database holds the order status.\n\n### Retry with Exponential Backoff\nFor transient errors (payment gateway timeout, inventory outage), implement retries with backoff. Use a simple task queue (e.g., BullMQ) to re-run steps. Steps that succeed are marked as done in the database. This works well if you design your steps to be independently idempotent.\n\n### Dead Letter Queue\nWhen retries are exhausted, the step moves to a dead letter queue. An operator inspects and re-submits the step manually. This fits modest traffic because human intervention is acceptable at small scale.\n\n### ❌ No Durable Execution for Payments\nPayment flows must avoid full durable execution because replaying a step after a crash could double-charge. Instead, use a simple state machine in the database (order status = `charged`, `shipped`, etc.) and rely on compensating actions. This is simpler and sufficient for modest traffic.\n\n### ❌ Orchestrator-Worker Without State Recovery\nDon't use a central orchestrator that persists workflow state. It adds complexity and vendor lock. With moderate traffic, you can rebuild the workflow from the database state after a crash.\n\n### ❌ Manual Rollback with Compensation Scripts\nIf a payment is later declined after inventory was decremented, write a manual compensation script that restores inventory. This is acceptable for small volume and gives operators full control.\n\n## Platform Recommendation\n\nFor a small e‑commerce setup with modest traffic, **n8n** is the best choice. Its visual editor makes workflow creation fast, and its retry logic covers transient errors. Temporal and Inngest are overkill for your volume and introduce unnecessary state management. n8n's dead letter queue and manual step re‑run provide enough resilience without the overhead of durable execution."
+    }
+  ],
+  "finished_at": "2026-07-28T20:05:41",
+  "elapsed_seconds": 308.313,
+  "generated_variants": 10
+}

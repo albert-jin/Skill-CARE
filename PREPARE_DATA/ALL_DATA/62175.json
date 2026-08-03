@@ -1,0 +1,157 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T14:52:01",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 62175,
+  "selection_rank": 55,
+  "skill": {
+    "skill_id": "other/flowglad-integration-plurigrid-asi-2",
+    "name": "flowglad-integration",
+    "category": "other",
+    "description": "Zero-webhook billing for AI agents",
+    "body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nZero-webhook billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Polling-based checkout (no webhooks)\n- Usage metering via ledger\n- Multi-tenant with RLS\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns.",
+    "source": "pool"
+  },
+  "generated_query": "I’m building an AI agent that charges users per API call. I need to set up billing without any webhooks—my agent runs on a stateless Lambda and can’t receive incoming HTTP requests. Can you help me design a polling-based checkout flow?\n\nHere’s the concrete scenario:\n- I have 3,000 tenants, each with their own PostgreSQL schema.\n- When a new user signs up for my agent via my website, I need to generate a one-time checkout URL for a $15 starter pack (500 API calls). The user’s tenant ID is `tenant_xyz` and their internal user ID is `usr_789`.\n- After generating the URL, I need to poll it every 15 seconds until it returns a `completed` status or expires (max 10 minutes).\n- Once completed, I need to add 500 API call credits to that user’s ledger entry for `tenant_xyz`.\n- Finally, I need to implement row-level security so that when `tenant_xyz` queries their own usage, they only see their own users’ data—other tenants must be completely invisible.\n\nWhat would the checkout request, poll logic, and usage ledger update look like in practice? I need code examples too, if possible.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Usage metering via ledger",
+          "replacement_text": "",
+          "rationale": "Removing usage metering makes the skill unable to track and add API call credits after payment, which is essential for the user's billing flow.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nZero-webhook billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Polling-based checkout (no webhooks)\n\n- Multi-tenant with RLS\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Polling-based checkout (no webhooks)",
+          "replacement_text": "Webhook-based checkout (requires endpoint)",
+          "rationale": "This substitutes the core polling mechanism with webhooks, which the user explicitly cannot use, making the skill irrelevant.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nZero-webhook billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Webhook-based checkout (requires endpoint)\n- Usage metering via ledger\n- Multi-tenant with RLS\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Polling-based checkout (no webhooks)",
+          "replacement_text": "Webhook-based checkout (no polling)",
+          "rationale": "The user query explicitly requires polling-based checkout without webhooks; changing to webhook-based makes the skill unusable for their stateless Lambda.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Usage metering via ledger",
+          "replacement_text": "Usage metering via webhook callbacks",
+          "rationale": "The user needs to add credits to a ledger via polling completion; switching to webhook callbacks breaks the stateless design and polling logic.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Multi-tenant with RLS",
+          "replacement_text": "Single-tenant without RLS",
+          "rationale": "The user requires multi-tenant row-level security for their 3,000 schemas; removing RLS makes the skill unable to isolate tenant data.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nZero-webhook billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Webhook-based checkout (no polling)\n- Usage metering via webhook callbacks\n- Single-tenant without RLS\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Polling-based checkout (no webhooks)",
+          "replacement_text": "- Webhook-based checkout (no polling)",
+          "rationale": "The skill now promotes webhooks instead of polling, directly contradicting the user's requirement for a polling-based checkout flow.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nZero-webhook billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Webhook-based checkout (no polling)\n- Usage metering via ledger\n- Multi-tenant with RLS\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Polling-based checkout (no webhooks)",
+          "replacement_text": "- Webhook-dependent checkout (no polling)",
+          "rationale": "This removes the polling capability and introduces webhooks, which the user's stateless Lambda cannot receive.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Multi-tenant with RLS",
+          "replacement_text": "- Single-tenant flat schema",
+          "rationale": "This eliminates multi-tenancy and row-level security, which are required by the user's 3,000 tenant scenario.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nZero-webhook billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Webhook-dependent checkout (no polling)\n- Usage metering via ledger\n- Single-tenant flat schema\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Zero-webhook billing platform for AI agent subscriptions.",
+          "replacement_text": "Flexible billing platform for AI agent subscriptions.",
+          "rationale": "The skill no longer explicitly guarantees zero-webhook billing, making it ambiguous for users who demand a webhook-free solution.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nFlexible billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Polling-based checkout (no webhooks)\n- Usage metering via ledger\n- Multi-tenant with RLS\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Usage metering via ledger",
+          "replacement_text": "",
+          "rationale": "Removing ledger capability makes the skill unable to handle credit addition post-checkout, which is a key requirement in the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Flowglad Integration\n\n> **Trit**: +1 (PLUS) - Generates billing flows\n\nZero-webhook billing platform for AI agent subscriptions.\n\n## Overview\n\nResolves credit balance friction via polling-based checkout.\n\n## GF(3) Triad\n\n| Trit | Skill | Role |\n|------|-------|------|\n| -1 | amp-skill | Validates credit |\n| 0 | unified-reafference | Coordinates state |\n| +1 | flowglad-integration | Generates checkout |\n\n## Patterns That Work\n\n- Polling-based checkout (no webhooks)\n\n- Multi-tenant with RLS\n\n## Patterns to Avoid\n\n- Webhook-dependent flows\n- Synchronous payment confirmation\n\n## Related Skills\n\n- amp-skill\n- unified-reafference\n- aptos-trading\n\n## SDF Interleaving\n\nThis skill connects to **Software Design for Flexibility** (Hanson & Sussman, 2021):\n\n### Primary Chapter: 10. Adventure Game Example\n\n**Concepts**: autonomous agent, game, synthesis\n\n### GF(3) Balanced Triad\n\n```\nflowglad-integration (−) + SDF.Ch10 (+) + [balancer] (○) = 0\n```\n\n**Skill Trit**: -1 (MINUS - verification)\n\n### Secondary Chapters\n\n- Ch4: Pattern Matching\n\n### Connection Pattern\n\nAdventure games synthesize techniques. This skill integrates multiple patterns."
+    }
+  ],
+  "finished_at": "2026-07-28T14:53:40",
+  "elapsed_seconds": 98.829,
+  "generated_variants": 7
+}

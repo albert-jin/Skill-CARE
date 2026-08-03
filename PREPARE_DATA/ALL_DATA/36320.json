@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:43:07",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 36320,
+  "selection_rank": 238,
+  "skill": {
+    "skill_id": "other/schema-validate-resume",
+    "name": "schema-validate-resume",
+    "category": "other",
+    "description": "Validate resume payloads using strict Pydantic models. Ensures that the resume JSON conforms to the required structure before processing.",
+    "body": "# Schema Validate Resume\n\n## Overview\n\nThis skill enforces strict type checking on resume data using Pydantic. It verifies that required fields exist and types are correct.\n\n## Prerequisites\n\n*   `pydantic` library (`pip install pydantic`).\n\n## Usage\n\n### Validate Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>\n```\n\n**Output:**\nExit code 0 if valid, 1 if invalid (with error message).\n\n**Example:**\n\n```bash\nif python3 .agent/skills/schema-validate-resume/scripts/validate.py resume.json; then\n    echo \"Valid\"\nelse\n    echo \"Invalid\"\nfi\n```",
+    "source": "pool"
+  },
+  "generated_query": "Could you please check my resume JSON file (`resume.json`) to make sure it meets the required structure? I need to validate that all mandatory fields (like `name`, `email`, `phone`, `skills`, `work_experience`, and `education`) are present and have the correct data types – for example, `email` must be a string with an `@` symbol, `phone` should be a string, `work_experience` should be a list of objects with `company`, `position`, `start_date`, `end_date`, etc. If anything is missing or typed wrong, please tell me exactly what's invalid so I can fix it before submitting to the job portal.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Validate Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>\n```\n\n**Output:**\nExit code 0 if valid, 1 if invalid (with error message).",
+          "replacement_text": "",
+          "rationale": "Removes the core validation script usage, so the skill provides no way to actually validate a resume.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Schema Validate Resume\n\n## Overview\n\nThis skill enforces strict type checking on resume data using Pydantic. It verifies that required fields exist and types are correct.\n\n## Prerequisites\n\n*   `pydantic` library (`pip install pydantic`).\n\n## Usage\n\n\n\n**Example:**\n\n```bash\nif python3 .agent/skills/schema-validate-resume/scripts/validate.py resume.json; then\n    echo \"Valid\"\nelse\n    echo \"Invalid\"\nfi\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill enforces strict type checking on resume data using Pydantic. It verifies that required fields exist and types are correct.",
+          "replacement_text": "This skill checks that the resume JSON is valid JSON format. It does not verify field presence or data types.",
+          "rationale": "By replacing Pydantic strict validation with a simple JSON format check, the skill cannot validate required fields or correct data types as the user needs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Schema Validate Resume\n\n## Overview\n\nThis skill checks that the resume JSON is valid JSON format. It does not verify field presence or data types.\n\n## Prerequisites\n\n*   `pydantic` library (`pip install pydantic`).\n\n## Usage\n\n### Validate Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>\n```\n\n**Output:**\nExit code 0 if valid, 1 if invalid (with error message).\n\n**Example:**\n\n```bash\nif python3 .agent/skills/schema-validate-resume/scripts/validate.py resume.json; then\n    echo \"Valid\"\nelse\n    echo \"Invalid\"\nfi\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Exit code 0 if valid, 1 if invalid (with error message).",
+          "replacement_text": "Exit code 0 if valid, 1 if invalid (no output).",
+          "rationale": "The user needs detailed error messages to fix invalid fields, but this edit removes error output, making the skill unable to tell the user what is wrong.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Schema Validate Resume\n\n## Overview\n\nThis skill enforces strict type checking on resume data using Pydantic. It verifies that required fields exist and types are correct.\n\n## Prerequisites\n\n*   `pydantic` library (`pip install pydantic`).\n\n## Usage\n\n### Validate Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>\n```\n\n**Output:**\nExit code 0 if valid, 1 if invalid (no output).\n\n**Example:**\n\n```bash\nif python3 .agent/skills/schema-validate-resume/scripts/validate.py resume.json; then\n    echo \"Valid\"\nelse\n    echo \"Invalid\"\nfi\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill enforces strict type checking on resume data using Pydantic. It verifies that required fields exist and types are correct.",
+          "replacement_text": "This skill checks that required fields exist on resume data using Pydantic. It does not enforce type correctness.",
+          "rationale": "By removing type checking, the skill no longer validates that email contains '@' or that work_experience is a list, failing the user's requirement for type validation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Schema Validate Resume\n\n## Overview\n\nThis skill checks that required fields exist on resume data using Pydantic. It does not enforce type correctness.\n\n## Prerequisites\n\n*   `pydantic` library (`pip install pydantic`).\n\n## Usage\n\n### Validate Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>\n```\n\n**Output:**\nExit code 0 if valid, 1 if invalid (with error message).\n\n**Example:**\n\n```bash\nif python3 .agent/skills/schema-validate-resume/scripts/validate.py resume.json; then\n    echo \"Valid\"\nelse\n    echo \"Invalid\"\nfi\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate resume payloads using strict Pydantic models. Ensures that the resume JSON conforms to the required structure before processing.",
+          "replacement_text": "Parse resume payloads using Pydantic models. Extracts structured data from resume JSON for further processing.",
+          "rationale": "Changes the skill from strict validation to data extraction, so it no longer checks for missing/invalid fields as the query requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Exit code 0 if valid, 1 if invalid (with error message).",
+          "replacement_text": "Outputs the parsed resume fields as JSON to stdout.",
+          "rationale": "Alters the output behavior from validation errors to parsed output, making the skill useless for the user's validation request.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Validate Resume Structure\n\n## Overview\n\nThis skill validates that a resume JSON file contains all the required top-level fields. It uses **jq** to check for the presence of mandatory keys, ensuring the file is valid JSON and structurally complete.\n\n## Prerequisites\n\n*   `jq` installed (`apt install jq` or `brew install jq`).\n\n## Usage\n\n### Validation Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/validate-resume-structure/scripts/validate_keys.py <resume.json>\n```\n\n**Output:**\nExit code 0 if all required fields (`name`, `email`, `phone`, `skills`, `work_experience`, `education`) exist in the JSON object. Exit code 1 if any are missing or the file is not valid JSON.\n\n**Example:**\n\n```bash\nif python3 .agent/skills/validate-resume-structure/scripts/validate_keys.py resume.json; then\n    echo \"All required fields present.\"\nelse\n    echo \"Missing one or more required fields.\"\nfi\n```\n\n### Script Details\n\n`validate_keys.py` loads the JSON file, parses it, and verifies that all of the above keys are present at the top level. It does **not** check data types or nested structures – only key existence. This is intended as a quick sanity check before more detailed validation."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Validate resume payloads using strict Pydantic models. Ensures that the resume JSON conforms to the required structure before processing.",
+          "replacement_text": "Validate any JSON payload using flexible schema. Ensures that the JSON conforms to a basic structural definition.",
+          "rationale": "Makes the skill appear as a generic JSON validator, not specifically for resume structure, so it won't check required resume fields like name, email, etc.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>",
+          "replacement_text": "python3 .agent/skills/schema-validate-resume/scripts/validate.py <input.json>",
+          "rationale": "Changes the argument to a generic input file, removing the explicit link to resume validation and potentially ignoring resume-specific mandatory fields.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Schema Validate Resume\n\n## Overview\n\nThis skill performs a basic structural check on resume JSON files. It verifies that top-level fields are present and that certain fields contain plausible string values.\n\n## Prerequisites\n\n*   `jq` command-line JSON processor (usually pre-installed or `apt install jq`).\n\n## Usage\n\n### Validate Script\n\n**Syntax:**\n\n```bash\nbash .agent/skills/schema-validate-resume/scripts/validate.sh <resume.json>\n```\n\n**Output:**\nExit code 0 if the file passes the checks, 1 if any check fails (with error message listing missing fields).\n\n**Checks performed:**\n- `name` exists and is a non-empty string\n- `email` exists and contains an `@` symbol\n- `phone` exists and is a string (no length check)\n- `skills` exists and is an array\n- `work_experience` exists\n- `education` exists\n\nNo deep validation is performed on nested objects or data types of array elements.\n\n**Example:**\n\n```bash\nif bash .agent/skills/schema-validate-resume/scripts/validate.sh resume.json; then\n    echo \"Resume passes basic structure check\"\nelse\n    echo \"Check failed, see error message\"\nfi\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "It verifies that required fields exist and types are correct.",
+          "replacement_text": "",
+          "rationale": "The user query explicitly requires checking that mandatory fields are present; deleting this verification means the skill no longer checks for missing fields, making it useless for the user's purpose.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Schema Validate Resume\n\n## Overview\n\nThis skill enforces strict type checking on resume data using Pydantic. \n\n## Prerequisites\n\n*   `pydantic` library (`pip install pydantic`).\n\n## Usage\n\n### Validate Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>\n```\n\n**Output:**\nExit code 0 if valid, 1 if invalid (with error message).\n\n**Example:**\n\n```bash\nif python3 .agent/skills/schema-validate-resume/scripts/validate.py resume.json; then\n    echo \"Valid\"\nelse\n    echo \"Invalid\"\nfi\n```"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This skill enforces strict type checking on resume data using Pydantic.",
+          "replacement_text": "This skill checks that the resume JSON contains all required fields.",
+          "rationale": "Replacing strict type checking with mere field existence check makes the skill unable to validate data types as required by the user.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "*   `pydantic` library (`pip install pydantic`).",
+          "replacement_text": "*   No additional libraries required (uses Python standard library).",
+          "rationale": "Replacing the Pydantic library with standard library removes the core type validation capability, leaving only basic JSON structure checks.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Schema Validate Resume\n\n## Overview\n\nThis skill checks that the resume JSON contains all required fields. It verifies that required fields exist and types are correct.\n\n## Prerequisites\n\n*   No additional libraries required (uses Python standard library).\n\n## Usage\n\n### Validate Script\n\n**Syntax:**\n\n```bash\npython3 .agent/skills/schema-validate-resume/scripts/validate.py <resume.json>\n```\n\n**Output:**\nExit code 0 if valid, 1 if invalid (with error message).\n\n**Example:**\n\n```bash\nif python3 .agent/skills/schema-validate-resume/scripts/validate.py resume.json; then\n    echo \"Valid\"\nelse\n    echo \"Invalid\"\nfi\n```"
+    }
+  ],
+  "finished_at": "2026-07-29T00:45:45",
+  "elapsed_seconds": 158.516,
+  "generated_variants": 8
+}

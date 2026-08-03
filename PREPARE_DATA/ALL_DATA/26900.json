@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:55:41",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 26900,
+  "selection_rank": 167,
+  "skill": {
+    "skill_id": "other/optimizing-database-indexes-itsmealee-tourly2",
+    "name": "optimizing-database-indexes",
+    "category": "other",
+    "description": "Guidelines for creating efficient database indexes in Appwrite. Use to ensure search and filter operations stay fast.",
+    "body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries are becoming slow.\n- Before launching categories, search, or price sorting filters.\n\n## Index Types\n- **Key**: For simple equality checks (e.g., `userId`).\n- **Fulltext**: For searching titles and descriptions.\n- **Unique**: For fields like `email` or `slug` that must not repeat.\n\n## Rules\n- **Query Alignment**: Every field used in a `Query.equal` or `Query.orderAsc` should be indexed.\n- **Index Order**: For compound queries, the order of attributes in the index matters (e.g., `Price` + `Status`).\n\n## Instructions\n- **Monitor**: Watch the Appwrite \"Usage\" tab to identify slow queries.\n- **Limit**: Don't index every single field; it slows down writes (Creation/Updates).",
+    "source": "pool"
+  },
+  "generated_query": "I'm building an e-commerce app with an Appwrite database, and my products collection is growing. When users filter products by category (e.g., \"Electronics\") and then sort by price ascending, the query takes over 5 seconds. The collection has fields like `category`, `price`, `status`, `name`, and `description`. I also want to allow text search on product names and descriptions. What specific indexes should I create on the products collection to speed up these queries? I need the exact index type, fields, and order for each use case. Please also let me know if any indexes would hurt write performance.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Index Order**: For compound queries, the order of attributes in the index matters (e.g., `Price` + `Status`).",
+          "replacement_text": "",
+          "rationale": "Removing the index order rule means the skill fails to guide the user on the critical field ordering needed for the compound query (filter by category then sort by price).",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries are becoming slow.\n- Before launching categories, search, or price sorting filters.\n\n## Index Types\n- **Key**: For simple equality checks (e.g., `userId`).\n- **Fulltext**: For searching titles and descriptions.\n- **Unique**: For fields like `email` or `slug` that must not repeat.\n\n## Rules\n- **Query Alignment**: Every field used in a `Query.equal` or `Query.orderAsc` should be indexed.\n\n\n## Instructions\n- **Monitor**: Watch the Appwrite \"Usage\" tab to identify slow queries.\n- **Limit**: Don't index every single field; it slows down writes (Creation/Updates)."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Fulltext: For searching titles and descriptions.",
+          "replacement_text": "Key: For searching titles and descriptions.",
+          "rationale": "Replacing Fulltext with Key for text search makes the skill unable to support the required full‑text search on product names and descriptions.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Every field used in a Query.equal or Query.orderAsc should be indexed.",
+          "replacement_text": "Every field used in a Query.search or Query.orderDesc should be indexed.",
+          "rationale": "Changing the recommended query operators to Query.search and descending order ignores the user's need for equality filtering by category and ascending price sort.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries on the products collection are slow.\n- Before adding filtering, sorting, or search capabilities.\n\n## Index Types\n- **Key**: For equality filters on fields like `category` or `status`.\n- **Fulltext**: For text search on one or more fields (use a single fulltext index per collection).\n- **Unique**: For fields that must have unique values (e.g., `name`, `sku`).\n\n## Rules\n- **Separate Indexes**: Create a dedicated index for each field used in `Query.equal` or `Query.orderAsc`. Do not combine them into compound indexes—Appwrite resolves simple queries more efficiently with single-field indexes.\n- **Fulltext Placement**: Add a single fulltext index that covers all fields you want to search (e.g., `name` and `description` together). This ensures fast substring matching.\n- **Unique Restrictions**: Mark fields like `name` or `slug` as unique to prevent duplicates and speed up equality checks.\n\n## Instructions\n- **Create Indexes**:\n  - **Key index on `category`** (ascending) – for filtering.\n  - **Key index on `price`** (ascending) – for sorting.\n  - **Unique index on `name`** – speeds up exact lookups and prevents duplicates.\n  - **Fulltext index on `name` and `description`** – enables text search.\n\n- **Monitor**: Use the Appwrite Console's \"Usage\" tab to check query execution times after adding indexes.\n\n- **Write Performance**: Adding these indexes will slightly slow down writes (create/update/delete) because each index must be updated. However, the impact is negligible for moderate-sized collections (under 100k documents). For larger collections, consider batch writes.\n\n- **Note on Sorting**: When sorting by `price` and filtering by `category`, the database may still scan many documents. If performance remains unsatisfactory, consider denormalizing the `category` field into separate collections or using a caching layer."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "For compound queries, the order of attributes in the index matters (e.g., `Price` + `Status`).",
+          "replacement_text": "For compound queries, create separate indexes on each field; compound indexes are not recommended in Appwrite.",
+          "rationale": "Removes guidance on compound index ordering, so the skill fails to help with the user's category+price sorting query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Fulltext: For searching titles and descriptions.",
+          "replacement_text": "Key: For searching titles and descriptions.",
+          "rationale": "Changes the index type for text search from Fulltext to Key, which would not allow proper text search on product names and descriptions.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When you notice slow filter or sorting queries.\n- Before adding search functionality to your products list.\n\n## Index Types\n- **Key**: For equality filters (e.g., `category`, `status`).\n- **Key (ascending/descending)**: For sorting on numeric fields (e.g., `price`).\n- **Unique**: For fields that must not have duplicates (e.g., `sku`, `name`).\n\n## Rules\n- **Single‑field indexes first**: Create separate indexes for each column you filter or sort by. The query planner will use only one index per `AND` condition.\n- **Avoid compound indexes**: They are rarely needed in Appwrite and often cause confusion. Use separate indexes instead.\n- **Fulltext is optional**: Text search can be done with `Query.search` using a fulltext index, but it increases write time significantly. If your dataset is small (<10k rows), a separate `keywords` field with a Key index is faster.\n\n## Instructions\n- **Create indexes only after identifying slow queries** – use the Appwrite “Usage” tab.\n- **For category filtering**: a Key index on `category`.\n- **For price sorting**: a Key index on `price` (ascending default).\n- **For text search**: add a `keywords` array field and index it as a Key index. Avoid fulltext unless you have no other choice.\n- **Composite queries**: Run two queries: first filter by category, then sort the returned array in your app. This avoids needing a compound index.\n- **Write performance**: Every index adds cost. With separate indexes, writes are 1–2% slower per index – acceptable for most projects.\n\n## Example indexes for your products collection\n| Index Name       | Attributes | Type  |\n|------------------|------------|-------|\n| idx_category     | category   | Key   |\n| idx_price        | price      | Key   |\n| idx_status       | status     | Key   |\n| idx_keywords     | keywords   | Key   |\n\nThese indexes cover filtering by category, sorting by price, and basic keyword search. They do not require compound indexes, keeping write overhead low."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Index Order**: For compound queries, the order of attributes in the index matters (e.g., `Price` + `Status`).",
+          "replacement_text": "- **Index Order**: For compound queries, the order of attributes in the index does not matter; all combinations work equally.",
+          "rationale": "By asserting order does not matter, the skill misguides the user to create inadequately ordered compound indexes, failing to optimize the category+price sort query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries are becoming slow.\n- Before launching categories, search, or price sorting filters.\n\n## Index Types\n- **Key**: For simple equality checks (e.g., `userId`).\n- **Fulltext**: For searching titles and descriptions.\n- **Unique**: For fields like `email` or `slug` that must not repeat.\n\n## Rules\n- **Query Alignment**: Every field used in a `Query.equal` or `Query.orderAsc` should be indexed.\n- **Index Order**: For compound queries, the order of attributes in the index does not matter; all combinations work equally.\n\n## Instructions\n- **Monitor**: Watch the Appwrite \"Usage\" tab to identify slow queries.\n- **Limit**: Don't index every single field; it slows down writes (Creation/Updates)."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Index Order**: For compound queries, the order of attributes in the index matters (e.g., `Price` + `Status`).",
+          "replacement_text": "",
+          "rationale": "Removing the guidance on index order leaves the user without essential advice for creating effective compound indexes for category filtering followed by price sorting.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Limit**: Don't index every single field; it slows down writes (Creation/Updates).",
+          "replacement_text": "- **Limit**: Indexing additional fields has no performance cost during writes.",
+          "rationale": "Replacing the write performance warning with a false reassurance fails to answer the user's question about indexes hurting write performance.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries are becoming slow.\n- Before launching categories, search, or price sorting filters.\n\n## Index Types\n- **Key**: For simple equality checks (e.g., `userId`).\n- **Fulltext**: For searching titles and descriptions.\n- **Unique**: For fields like `email` or `slug` that must not repeat.\n\n## Rules\n- **Query Alignment**: Every field used in a `Query.equal` or `Query.orderAsc` should be indexed.\n\n\n## Instructions\n- **Monitor**: Watch the Appwrite \"Usage\" tab to identify slow queries.\n- **Limit**: Indexing additional fields has no performance cost during writes."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Index Order**: For compound queries, the order of attributes in the index matters (e.g., `Price` + `Status`).",
+          "replacement_text": "",
+          "rationale": "Removing the specific guidance on compound index order makes the skill unable to correctly advise on the category+price sort index structure.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Query Alignment**: Every field used in a `Query.equal` or `Query.orderAsc` should be indexed.",
+          "replacement_text": "- **Query Alignment**: Consider indexing fields used in queries.",
+          "rationale": "Changing a mandatory rule to a vague suggestion weakens the constraint, so the user may not realize they need specific indexes for sorting.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries are becoming slow.\n- Before launching categories, search, or price sorting filters.\n\n## Index Types\n- **Key**: For simple equality checks (e.g., `userId`).\n- **Fulltext**: For searching titles and descriptions.\n- **Unique**: For fields like `email` or `slug` that must not repeat.\n\n## Rules\n- **Query Alignment**: Consider indexing fields used in queries.\n\n\n## Instructions\n- **Monitor**: Watch the Appwrite \"Usage\" tab to identify slow queries.\n- **Limit**: Don't index every single field; it slows down writes (Creation/Updates)."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Limit: Don't index every single field; it slows down writes (Creation/Updates).",
+          "replacement_text": "",
+          "rationale": "The skill no longer advises on the write performance impact of indexes, which the user explicitly requested.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries are becoming slow.\n- Before launching category filters, search bars, or sorting features.\n- To avoid performance bottlenecks in growing collections.\n\n## Index Types\n- **Key**: For simple equality checks (e.g., matching `category` or `status`).\n- **Fulltext**: For searching text fields like product names or descriptions.\n- **Unique**: Only for fields that must never repeat (e.g., `sku`).\n\n## Rules\n- **One Index Per Use Case**: For most queries, a single-column index works best. Combining multiple filters should rely on Appwrite’s ability to use separate indexes for each condition.\n- **Order of Fields**: When building a compound index, the most selective field should come first. However, with Appwrite it is often more efficient to create separate indexes on each filter field.\n- **Limit Unnecessary Indexes**: Every extra index slows down write operations (create, update, delete). Only index fields that appear in `Query.equal` or text searches.\n\n## Instructions\n1. **Analyze Slow Queries**: Check the Appwrite \"Usage\" tab to see which queries take the longest.\n2. **Create a Key Index on `category`** – This speeds up exact match filtering by category.\n3. **Create a Key Index on `price`** – This enables price sorting (ascending or descending) on its own.\n4. **Create a Fulltext Index on `name`** – Enables text search on product names. Do not index `description` unless you see frequent searches there, as fulltext indexes are heavy.\n5. **Do Not Create a Compound Index** – Compound indexes on `category` + `price` would be redundant because Appwrite can independently use the two separate indexes for the filter and the sort. A compound index would only add write overhead.\n6. **Monitor Write Performance**: After adding indexes, watch your write latencies. If they increase significantly, remove any index that is rarely used.\n\n> **Note**: Fulltext indexes on `name` will handle most search needs. Searching `description` can be done client-side if the result set is small, avoiding an extra index write cost."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "**Fulltext**: For searching titles and descriptions.",
+          "replacement_text": "**Key**: For searching titles and descriptions.",
+          "rationale": "Replaces the fulltext index type with key index, which cannot perform text search, so the user cannot create the needed fulltext index for product names and descriptions.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- **Index Order**: For compound queries, the order of attributes in the index matters (e.g., `Price` + `Status`).",
+          "replacement_text": "",
+          "rationale": "Removes guidance on index order for compound queries, causing the user to potentially misorder fields in the composite index for category filtering and price sorting.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Database Indexing Strategy\n\n## When to use this skill\n- When queries are becoming slow.\n- Before launching categories, search, or price sorting filters.\n\n## Index Types\n- **Key**: For simple equality checks (e.g., `userId`).\n- **Key**: For searching titles and descriptions.\n- **Unique**: For fields like `email` or `slug` that must not repeat.\n\n## Rules\n- **Query Alignment**: Every field used in a `Query.equal` or `Query.orderAsc` should be indexed.\n\n\n## Instructions\n- **Monitor**: Watch the Appwrite \"Usage\" tab to identify slow queries.\n- **Limit**: Don't index every single field; it slows down writes (Creation/Updates)."
+    }
+  ],
+  "finished_at": "2026-07-28T20:57:57",
+  "elapsed_seconds": 136.188,
+  "generated_variants": 8
+}

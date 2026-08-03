@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:07:29",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 18079,
+  "selection_rank": 24,
+  "skill": {
+    "skill_id": "development/executor-resolver",
+    "name": "executor-resolver",
+    "category": "development",
+    "description": "タスクの性質を LLM ベースで深く分析し、適切な executor（claudecode/codex/coderabbit/user）を判定する専門 Skill。キーワードベースの単純判定を置き換える。",
+    "body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（10行以下）\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（50行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n    estimated_lines: {概算行数}\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n    rationale: \"{判定理由}\"\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |",
+    "source": "pool"
+  },
+  "generated_query": "I have a mix of tasks for our current sprint that I need to assign to the right execution environments. We have: (1) a bug fix in a React component that involves modifying about 30 lines of state management logic; (2) writing a full set of unit tests for a new authentication API (around 200 lines of test code); (3) reviewing a colleague’s PR for a new GraphQL resolver; and (4) registering a new production Stripe account and configuring webhook endpoints. Could you analyze each task’s nature—like how complex it is, what type of work it involves, whether testing is needed, and roughly how many lines of code or manual steps are involved—and then recommend the most suitable executor (for example, an AI coding assistant, a code review tool, or manual user action) for each, along with a clear reason for each choice?",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（10行以下）\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（50行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```",
+          "replacement_text": "",
+          "rationale": "Without the executor definitions specifying conditions for each executor, the skill loses the mapping from task characteristics to executor choices, making it impossible to produce the required recommendations.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n    estimated_lines: {概算行数}\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n    rationale: \"{判定理由}\"\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    - 軽量なコード修正（10行以下）",
+          "replacement_text": "    - 軽量なコード修正（50行以下）",
+          "rationale": "By widening claudecode's acceptable code size, the skill would assign the 30-line state management fix to claudecode instead of codex, misallocating a complex logic task.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（50行以下）\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（50行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n    estimated_lines: {概算行数}\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n    rationale: \"{判定理由}\"\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    estimated_lines: {概算行数}",
+          "replacement_text": "",
+          "rationale": "Removes the estimated lines field, so the skill no longer provides the line count the user explicitly requests.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    rationale: \"{判定理由}\"",
+          "replacement_text": "",
+          "rationale": "Deletes the rationale from executor_decision, so the user gets no reasoning for each recommended executor.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"",
+          "replacement_text": "  subtask_assignments:\n    executor: \"{executor}\"\n    rationale: \"{理由}\"",
+          "rationale": "Changes subtask_assignments from a list per subtask to a single global assignment, so it cannot assign different executors to each of the user's four tasks.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（10行以下）\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（50行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n  subtask_assignments:\n    executor: \"{executor}\"\n    rationale: \"{理由}\"\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    - 軽量なコード修正（10行以下）",
+          "replacement_text": "    - 軽量なコード修正（30行以下）",
+          "rationale": "Raising the line limit for claudecode makes it eligible for the 30-line bug fix, which should be assigned to codex due to complexity.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    - 大規模なコード変更（50行以上）",
+          "replacement_text": "    - 大規模なコード変更（100行以上）",
+          "rationale": "Weakening the exclusion threshold means claudecode could be chosen for moderately large tasks like the 200-line test writing, leading to inappropriate executor assignments.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（30行以下）\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（100行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n    estimated_lines: {概算行数}\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n    rationale: \"{判定理由}\"\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定",
+          "replacement_text": "- **タスク割り当て最適化**: 各 executor の負荷とタスクの優先度に基づいて割り当てを決定",
+          "rationale": "Changes the core purpose from analyzing task nature (complexity, type, testing) to load-based optimization, so the skill no longer provides the per-task analysis required by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n    estimated_lines: {概算行数}",
+          "replacement_text": "  resource_profile:\n    expected_duration: short|medium|long\n    required_expertise: frontend|backend|devops|fullstack\n    collaboration_needed: true|false",
+          "rationale": "Replaces the detailed task analysis output (complexity, type, testing, estimated lines) with a generic resource profile, so the skill cannot answer the query's request for per-task nature analysis.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク割り当て最適化**: 各 executor の負荷とタスクの優先度に基づいて割り当てを決定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（10行以下）\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（50行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  resource_profile:\n    expected_duration: short|medium|long\n    required_expertise: frontend|backend|devops|fullstack\n    collaboration_needed: true|false\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n    rationale: \"{判定理由}\"\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（10行以下）",
+          "replacement_text": "  適用条件:\n    - あらゆる種類のタスク\n    - コード生成、レビュー、手動作業を除く全般\n    - 特に制限なし",
+          "rationale": "Removing specific line limits and detailed conditions makes claudecode apply to nearly all tasks, reducing the skill's ability to differentiate executors.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要",
+          "replacement_text": "  適用条件:\n    - コード生成全般\n    - テスト作成・実装・リファクタリングを含む\n    - 行数制限なし\n  判定シグナル:\n    - ユーザーが「コード」と言った場合",
+          "rationale": "Broadening codex to cover all code tasks without line limits or specific signals blurs the boundary between executors, making recommendations unreliable.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "resolution:\n  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n    estimated_lines: {概算行数}\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n    rationale: \"{判定理由}\"\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"",
+          "replacement_text": "resolution:\n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    rationale: \"簡単な理由\"",
+          "rationale": "Removing task analysis and alternatives forces a shallow decision without the depth needed for the query's detailed per-task reasoning.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - あらゆる種類のタスク\n    - コード生成、レビュー、手動作業を除く全般\n    - 特に制限なし\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（50行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - コード生成全般\n    - テスト作成・実装・リファクタリングを含む\n    - 行数制限なし\n  判定シグナル:\n    - ユーザーが「コード」と言った場合\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    rationale: \"簡単な理由\"\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "  subtask_assignments:\n    - subtask_id: \"{ID}\"\n      executor: \"{executor}\"\n      rationale: \"{理由}\"",
+          "replacement_text": "",
+          "rationale": "Without per-subtask executor assignments, the skill cannot provide recommended executors for each of the four distinct tasks, making it unhelpful for the user's query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Executor Resolver Skill\n\nタスクの性質を深層分析し、最適な executor を判定する Skill。\n\n> **設計意図**: キーワードベースの単純判定では見逃される複雑なケースに対応。\n> タスクの複雑さ、技術要件、依存関係を総合的に分析して判定。\n\n---\n\n## Purpose\n\n- **タスク性質分析**: 複雑さ、タイプ、テスト要否を判定\n- **executor 判定**: LLM ベースの深い分析で最適な executor を決定\n- **判定根拠の提示**: 判定理由と代替案を明示\n- **subtask 単位アサイン**: 各 subtask に適切な executor を割り当て\n\n---\n\n## When to Use\n\n```yaml\ntriggers:\n  - pm SubAgent が playbook 作成時に executor を決定する際\n  - subtask ごとの executor アサインが必要な場合\n  - 複雑なタスクで executor 判定に迷う場合\n\ninvocation:\n  # pm SubAgent からの呼び出し\n  Task(\n    subagent_type='executor-resolver',\n    prompt='タスク内容または subtask リスト'\n  )\n\n  # または Skill として呼び出し\n  Skill(skill='executor-resolver', input='タスク内容')\n```\n\n---\n\n## Integration with pm.md\n\n```yaml\npm_flow:\n  step_0: ユーザープロンプトを受ける\n  step_0.5: prompt-analyzer を呼び出す\n  step_0.6: executor-resolver を呼び出す（executor 判定）\n  step_1: 分析結果を基に understanding-check を実施\n  step_2: ユーザー承認を得る\n  step_3: playbook を作成する（executor 情報を含む）\n\n連携方法:\n  1. pm が executor-resolver を呼び出す\n  2. executor-resolver がタスク分析と executor 判定を返す\n  3. pm が判定結果を playbook の各 subtask に適用\n```\n\n---\n\n## Executor 定義（play/template/plan.json 準拠）\n\n```yaml\nclaudecode:\n  説明: Claude Code が直接実行（デフォルト）\n  適用条件:\n    - ドキュメント作成・編集\n    - 設定ファイルの軽微な変更\n    - ファイル操作（移動、コピー、削除）\n    - 設計・計画立案\n    - 調査・分析\n    - 軽量なコード修正（10行以下）\n  不適用条件:\n    - 複雑なロジック実装\n    - 大規模なコード変更（50行以上）\n\ncodex:\n  説明: Codex CLI でコード生成\n  適用条件:\n    - 本格的なコード実装\n    - 複雑なロジック・アルゴリズム\n    - リファクタリング\n    - テストコード作成\n    - API 実装\n    - 50行以上の新規コード\n  判定シグナル:\n    - 「実装」「コーディング」キーワード\n    - .ts/.tsx/.js/.jsx/.py 等のコード拡張子への変更\n    - npm test, npm build 等のコマンド実行が必要\n\ncoderabbit:\n  説明: CodeRabbit CLI でコードレビュー\n  適用条件:\n    - コードレビュー\n    - セキュリティチェック\n    - 品質チェック\n    - PR 前の自動レビュー\n  判定シグナル:\n    - 「レビュー」「チェック」「品質」キーワード\n    - レビュー対象コードの指定\n\nuser:\n  説明: CLI 外の手動作業\n  適用条件:\n    - 外部サービス登録（Vercel, GCP, Stripe）\n    - API キー取得\n    - 手動デプロイ\n    - 意思決定\n    - 支払い情報入力\n  判定シグナル:\n    - 「登録」「サインアップ」「契約」\n    - 「API キー」「シークレット」「環境変数設定」\n    - 「選んでください」「決めてください」\n```\n\n---\n\n## Output Format\n\n```yaml\nresolution:\n  task_analysis:\n    complexity: high|medium|low\n    type: coding|documentation|configuration|review|manual\n    requires_testing: true|false\n    estimated_lines: {概算行数}\n    \n  executor_decision:\n    recommended: claudecode|codex|coderabbit|user\n    confidence: high|medium|low\n    rationale: \"{判定理由}\"\n    alternatives:\n      - executor: \"{代替 executor}\"\n        reason: \"{代替を選ぶ場合の理由}\"\n  \n\n```\n\n---\n\n## Related Files\n\n| ファイル | 役割 |\n|----------|------|\n| .claude/skills/executor-resolver/agents/executor-resolver.md | SubAgent 定義 |\n| .claude/skills/prompt-analyzer/SKILL.md | プロンプト分析（連携元） |\n| .claude/skills/golden-path/agents/pm.md | pm SubAgent（呼び出し元） |\n| play/template/plan.json | executor 定義の原本 |"
+    }
+  ],
+  "finished_at": "2026-07-28T13:10:03",
+  "elapsed_seconds": 154.328,
+  "generated_variants": 7
+}

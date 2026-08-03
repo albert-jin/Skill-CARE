@@ -1,0 +1,165 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T02:36:09",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 26435,
+  "selection_rank": 266,
+  "skill": {
+    "skill_id": "other/cardano-cli-wallets-operator",
+    "name": "cardano-cli-wallets-operator",
+    "category": "other",
+    "description": "Execute wallet operations: key generation, address building. Manual invoke only for safety.",
+    "body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```\n\n### Step 4: Build addresses\n\n```bash\n# Base address\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --stake-verification-key-file stake.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network\n```\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Base Address: $(cat base.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`",
+    "source": "pool"
+  },
+  "generated_query": "I need to set up a new Cardano wallet on the preprod testnet for receiving test ADA and delegating to a stake pool. Please help me generate a payment key pair and a stake key pair in a dedicated folder at ~/cardano-wallets/testnet-wallet, secure the signing keys immediately, and then build a base address from those keys. After creation, show me the full base address and list the generated files so I can confirm everything is in order.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "# Secure immediately\nchmod 600 *.skey",
+          "replacement_text": "",
+          "rationale": "Without securing signing keys, the skill fails to meet the user's explicit security requirement, making it an unsuitable solution despite appearing relevant.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n\n```\n\n### Step 4: Build addresses\n\n```bash\n# Base address\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --stake-verification-key-file stake.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network\n```\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Base Address: $(cat base.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cardano-cli conway address key-gen",
+          "replacement_text": "cardano-cli conway address key-hash",
+          "rationale": "Replaces the core key generation command with a hash derivation command, making it impossible to generate new keys as required by the user query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-hash \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```\n\n### Step 4: Build addresses\n\n```bash\n# Base address\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --stake-verification-key-file stake.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network\n```\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Base Address: $(cat base.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --stake-verification-key-file stake.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network",
+          "replacement_text": "cardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network",
+          "rationale": "Removing the stake verification key input causes the address to be an enterprise address, which cannot receive rewards or delegate, breaking the user's core requirement for a base address with staking.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```\n\n### Step 4: Build addresses\n\n```bash\n# Base address\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network\n```\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Base Address: $(cat base.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "chmod 600 *.skey",
+          "replacement_text": "chmod 644 *.skey",
+          "rationale": "By weakening the file permission constraint, the skill does not properly secure signing keys, failing the user's explicit requirement to set chmod 600 immediately.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```\n\n### Step 4: Build enterprise (payment) address\n\n```bash\n# Enterprise address (no stake key required)\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --out-file payment.addr \\\n  --testnet-magic 1  # adjust per network\n```\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Payment Address: $(cat payment.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "cardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --stake-verification-key-file stake.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network",
+          "replacement_text": "cardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --out-file enterprise.addr \\\n  --testnet-magic 1  # adjust per network",
+          "rationale": "Uses enterprise address instead of base address, so it cannot be used for delegation, failing the user's requirement.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "echo \"Base Address: $(cat base.addr)\"",
+          "replacement_text": "echo \"Enterprise Address: $(cat enterprise.addr)\"",
+          "rationale": "Updates the report to match the new address file, reinforcing the invalid address type.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```\n\n### Step 4: Build addresses\n\n```bash\n# Base address\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --out-file enterprise.addr \\\n  --testnet-magic 1  # adjust per network\n```\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Enterprise Address: $(cat enterprise.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```",
+          "replacement_text": "Generate payment and stake keys using cardano-cli. Ensure the signing keys are secured with appropriate permissions after generation.",
+          "rationale": "Over-generalized: the replacement omits exact commands, file names, and the mandatory chmod step, so the user cannot reproduce the required key generation and security actions.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```bash\n# Base address\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --stake-verification-key-file stake.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network\n```",
+          "replacement_text": "Build a base address from the payment and stake verification keys using cardano-cli, specifying the correct network magic for the target network.",
+          "rationale": "Over-generalized: the replacement lacks the exact command and the testnet magic flag, making it impossible for the user to build the preprod base address as requested.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Set `chmod 600 *.skey` immediately after key generation",
+          "replacement_text": "- Secure signing keys appropriately after generation.",
+          "rationale": "Over-generalized: the replacement removes the specific chmod command, weakening the security constraint the user expects to be enforced.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Secure signing keys appropriately after generation.\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\nGenerate payment and stake keys using cardano-cli. Ensure the signing keys are secured with appropriate permissions after generation.\n\n### Step 4: Build addresses\n\nBuild a base address from the payment and stake verification keys using cardano-cli, specifying the correct network magic for the target network.\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Base Address: $(cat base.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 4: Build addresses\n\n```bash\n# Base address\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --stake-verification-key-file stake.vkey \\\n  --out-file base.addr \\\n  --testnet-magic 1  # adjust per network\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the address-building step means the skill never produces the base address the user explicitly requested, making it a hard negative.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```\n\n\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Base Address: $(cat base.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [],
+      "edit_error": "Unterminated string starting at: line 20 column 5 (char 1580)",
+      "counterfactual_skill_body": "# cardano-cli-wallets-operator\n\n> **OPERATOR SKILL**: This skill executes commands. It requires explicit human invocation and cannot be auto-triggered by the model.\n\n## When to use\n\n- When you need to actually execute wallet creation commands\n- After reviewing the guidance from `cardano-cli-wallets`\n\n## Operating rules (must follow)\n\n- Confirm network (mainnet/preprod/preview) before ANY execution\n- Always create a dedicated directory for wallet files\n- Set `chmod 600 *.skey` immediately after key generation\n- Show the user what will be executed before running\n- Verify each step succeeded before continuing\n\n## Execution workflow\n\n### Step 1: Confirm parameters\n\n```\nNetwork: [mainnet/preprod/preview]\nMagic: [1 for preprod, 2 for preview, none for mainnet]\nWallet directory: [path]\n```\n\n### Step 2: Create directory\n\n```bash\nmkdir -p <wallet-dir> && cd <wallet-dir>\n```\n\n### Step 3: Generate keys (with confirmation)\n\n```bash\n# Payment keys\ncardano-cli conway address key-gen \\\n  --verification-key-file payment.vkey \\\n  --signing-key-file payment.skey\n\n# Stake keys\ncardano-cli conway stake-address key-gen \\\n  --verification-key-file stake.vkey \\\n  --signing-key-file stake.skey\n\n# Secure immediately\nchmod 600 *.skey\n```\n\n### Step 4: Build address\n\n```bash\n# Payment address (enterprise address – no stake delegation)\ncardano-cli conway address build \\\n  --payment-verification-key-file payment.vkey \\\n  --out-file payment.addr \\\n  --mainnet   # note: defaults to mainnet if no testnet-magic\n```\n\n### Step 5: Verify and report\n\n```bash\necho \"=== Wallet Created ===\"\necho \"Address: $(cat payment.addr)\"\nls -la *.vkey *.skey *.addr\n```\n\n## Safety / key handling\n\n- NEVER display .skey file contents\n- ALWAYS chmod 600 immediately after generation\n- For mainnet: strongly recommend offline generation\n- Verify directory permissions before proceeding\n\n## References\n\n- `cardano-cli-wallets` (guidance skill)\n- `shared/PRINCIPLES.md`"
+    }
+  ],
+  "finished_at": "2026-07-29T02:39:21",
+  "elapsed_seconds": 191.235,
+  "generated_variants": 8
+}

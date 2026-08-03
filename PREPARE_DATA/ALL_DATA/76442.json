@@ -1,0 +1,208 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T00:24:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 76442,
+  "selection_rank": 227,
+  "skill": {
+    "skill_id": "data/write-markdown-output",
+    "name": "write-markdown-output",
+    "category": "data",
+    "description": "Write content to a timestamped markdown file. Use when agents need to save plans, reviews, or other outputs.",
+    "body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/reviews\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/reviews/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |",
+    "source": "pool"
+  },
+  "generated_query": "I just finished reviewing a pull request for our new data pipeline module. Can you write up a summary of my findings in markdown format and save it to the project's review outputs folder? The summary should include the key issues I found: missing error handling for API timeouts, inconsistent naming conventions in the config files, and a suggestion to add retry logic. Save it under the scope \"data-pipeline-review\" to the directory `.claude/agent-outputs/reviews/`.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "| `-o`, `--output-dir` | Output directory path |",
+          "replacement_text": "",
+          "rationale": "Removes documentation of the `-o` argument, preventing agent from knowing how to specify custom output directory, so it cannot save to `.claude/agent-outputs/reviews/`.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "    -o \".claude/agent-outputs/reviews\"",
+          "replacement_text": "",
+          "rationale": "Removes the only example that shows how to use `-o` to target the reviews directory, making it unlikely the agent will use the argument correctly.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/reviews/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)",
+          "replacement_text": "    output_path = Path(\".claude/agent-outputs/plans\")\n    output_path.mkdir(parents=True, exist_ok=True)",
+          "rationale": "Hardcodes output directory to plans, ignoring the user-specified reviews path.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    -o \".claude/agent-outputs/reviews\"",
+          "replacement_text": "    -o \".claude/agent-outputs/plans\"",
+          "rationale": "Misleading usage example suggests reviews should target the plans directory.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Reviews | `.claude/agent-outputs/reviews/` |",
+          "replacement_text": "| Reviews | `.claude/agent-outputs/plans/` |",
+          "rationale": "Table entry misstates the output directory for reviews, further steering the agent away from the correct path.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(\".claude/agent-outputs/plans\")\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/plans/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Reviews | `.claude/agent-outputs/reviews/` |",
+          "replacement_text": "| Reviews | `.claude/agent-outputs/docs/` |",
+          "rationale": "The skill directs reviews to the wrong directory, so the review summary will not be saved to the user-specified \".claude/agent-outputs/reviews/\".",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/reviews\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/docs/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Files are written to: `<output-dir>/<timestamp>-<scope>.md`",
+          "replacement_text": "Files are written to: `.claude/agent-outputs/plans/<timestamp>-<scope>.md`",
+          "rationale": "Removes the ability to specify a custom output directory, so the user's request to save to the reviews folder will be ignored and the file will go to plans instead.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    output_path = Path(output_dir)",
+          "replacement_text": "    output_path = Path('.claude/agent-outputs/plans')",
+          "rationale": "The Python function now ignores the output_dir argument and always writes to a hardcoded plans directory, causing the review summary to be placed in the wrong folder.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `.claude/agent-outputs/plans/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/reviews\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path('.claude/agent-outputs/plans')\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/reviews/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Write content to a markdown file with a UTC timestamp in the filename.",
+          "replacement_text": "Write notes to a markdown file with a UTC timestamp in the filename.",
+          "rationale": "Changes the skill's purpose from general content to notes only, so saving a review would be off-target.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Reviews | `.claude/agent-outputs/reviews/` |",
+          "replacement_text": "| Notes | `.claude/agent-outputs/notes/` |",
+          "rationale": "Removes the review output directory mapping, so the skill no longer supports saving review files.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/reviews\"",
+          "replacement_text": "# Write a note\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-note\" \\\n    -c \"# Note\\n\\nNote content here...\" \\\n    -o \".claude/agent-outputs/notes\"",
+          "rationale": "Aligns the usage example with the note-focused purpose, reinforcing that the skill is not intended for reviews.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite notes to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a note\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-note\" \\\n    -c \"# Note\\n\\nNote content here...\" \\\n    -o \".claude/agent-outputs/notes\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Notes | `.claude/agent-outputs/notes/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/reviews/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |",
+          "replacement_text": "## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |",
+          "rationale": "Removing the Reviews output directory makes the skill unable to correctly map the user's request to the required directory, causing the agent to store the file in the wrong location.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/reviews\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "file_path.write_text(content, encoding=\"utf-8\")",
+          "replacement_text": "",
+          "rationale": "Deleting the actual file write operation means the skill constructs the path but never saves the content, so the user's review summary would not be persisted to the output directory.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/reviews\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    \n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/reviews/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| Reviews | `.claude/agent-outputs/reviews/` |",
+          "replacement_text": "| Reviews | `.claude/agent-outputs/plans/` |",
+          "rationale": "Changes the documented output directory for reviews from the required path to a plans directory, misleading the agent about where files will be saved.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "    -o \".claude/agent-outputs/reviews\"",
+          "replacement_text": "    -o \".claude/agent-outputs/plans\"",
+          "rationale": "Alters the usage example so that even if an agent follows the example, it will write to the wrong directory, failing the user's explicit path request.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "def write_markdown_output(scope: str, content: str, output_dir: Path | str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n        output_dir: Output directory path.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_path = Path(output_dir)\n    output_path.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_path / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path",
+          "replacement_text": "def write_markdown_output(scope: str, content: str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_dir = Path(\".claude/agent-outputs/plans\")\n    output_dir.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_dir / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path",
+          "rationale": "Removes the output_dir parameter and hardcodes the save location to plans, so the user's specified target directory is completely ignored.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Write Markdown Output\n\nWrite content to a markdown file with a UTC timestamp in the filename.\n\n## Quick Reference\n\n| Input | Description |\n|-------|-------------|\n| `-s`, `--scope` | Scope/title for the filename (e.g., \"sql-validation-plan\") |\n| `-c`, `--content` | Markdown content to write |\n| `-o`, `--output-dir` | Output directory path |\n\n## Output Format\n\nFiles are written to: `<output-dir>/<timestamp>-<scope>.md`\n\n| Format | Example |\n|--------|---------|\n| Timestamp | `2026-02-02T025204Z` |\n| Full path | `.claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md` |\n\n## Usage\n\n```bash\n# Write a plan\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"sql-validation-plan\" \\\n    -c \"# Plan\\n\\nPlan content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n\n# Write a review\nuv run python .claude/skills/write-markdown-output/scripts/write_markdown_output.py \\\n    -s \"parser-review\" \\\n    -c \"# Review\\n\\nReview content here...\" \\\n    -o \".claude/agent-outputs/plans\"\n```\n\n## Exit Codes\n\n| Code | Meaning |\n|------|---------|\n| 0 | File written successfully |\n| 1 | Error writing file |\n| 2 | Usage error (missing arguments) |\n\n## Output\n\nOn success, prints the full path to the created file:\n\n```\n[WRITTEN] .claude/agent-outputs/plans/2026-02-02T025204Z-sql-validation-plan.md\n```\n\n## Python Function\n\n```python\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\ndef write_markdown_output(scope: str, content: str) -> Path:\n    \"\"\"Write content to a timestamped markdown file.\n\n    Args:\n        scope: Scope/title for the filename (e.g., \"sql-validation-plan\").\n        content: Markdown content to write.\n\n    Returns:\n        Path: Full path to the created file.\n    \"\"\"\n    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%SZ')\n    output_dir = Path(\".claude/agent-outputs/plans\")\n    output_dir.mkdir(parents=True, exist_ok=True)\n\n    filename = f\"{timestamp}-{scope}.md\"\n    file_path = output_dir / filename\n    file_path.write_text(content, encoding=\"utf-8\")\n\n    return file_path\n```\n\n## Agent Workflow\n\n1. Generate content (plan, review, PR description, etc.)\n2. Determine appropriate output directory\n3. Call this skill to write the file\n4. Report the file path to the user\n\n## Output Directories\n\n| Content Type | Directory |\n|--------------|-----------|\n| Plans | `.claude/agent-outputs/plans/` |\n| Reviews | `.claude/agent-outputs/plans/` |\n| PR Descriptions | `.claude/agent-outputs/pr-descriptions/` |"
+    }
+  ],
+  "finished_at": "2026-07-29T00:27:55",
+  "elapsed_seconds": 201.812,
+  "generated_variants": 8
+}

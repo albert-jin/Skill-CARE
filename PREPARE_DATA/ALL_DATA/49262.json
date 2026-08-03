@@ -1,0 +1,210 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:24:17",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 49262,
+  "selection_rank": 245,
+  "skill": {
+    "skill_id": "other/no-task-output",
+    "name": "no-task-output",
+    "category": "other",
+    "description": "Never Use TaskOutput",
+    "body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nNEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary\n```\n\n## Source\n- Session where TaskOutput caused context overflow",
+    "source": "pool"
+  },
+  "generated_query": "I have a 300-page technical manual that I need to process in stages. First, I want to run an agent that extracts all safety warnings and compliance requirements into a structured table. Then, based on that table, I need another agent to generate a safety checklist for field technicians. My concern is that if the first agent’s full transcript gets dumped into the context, it will blow up the token limit and cause problems. Can you help me set this up so that each step cleanly passes only the essential summary or output, without ever pulling in the verbose agent transcript?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary\n```",
+          "replacement_text": "",
+          "rationale": "Deleting the Pattern section removes the only example of how to correctly use Task synchronously to avoid token overflow, leaving users without implementation guidance for multi-step pipelines.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nNEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n\n\n## Source\n- Session where TaskOutput caused context overflow"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "NEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.",
+          "replacement_text": "ALWAYS use `TaskOutput` tool after running `Task` in background to get the full agent transcript.",
+          "rationale": "The user wants to avoid dumping full transcripts, but this edited skill now recommends exactly that by encouraging TaskOutput usage.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nALWAYS use `TaskOutput` tool after running `Task` in background to get the full agent transcript.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary\n```\n\n## Source\n- Session where TaskOutput caused context overflow"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "TaskOutput reads full agent transcript into context",
+          "replacement_text": "TaskOutput reads only the essential summary of the agent transcript into context",
+          "rationale": "Flips the actual behavior of TaskOutput, misleading the user into thinking it returns a safe summary instead of the full transcript.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "This causes mid-conversation compaction",
+          "replacement_text": "This prevents context overflow and compaction",
+          "rationale": "Further reinforces the false safety of TaskOutput by claiming it prevents the very compaction it actually causes.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# RIGHT - isolated context, returns summary",
+          "replacement_text": "# WRONG - returns full transcript, not summary",
+          "rationale": "Swaps which tool is considered correct, making the skill recommend the synchronous Task as harmful and TaskOutput as beneficial.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nNEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.\n\n## Why\n\n- TaskOutput reads only the essential summary of the agent transcript into context\n- This prevents context overflow and compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# WRONG - returns full transcript, not summary\nTask(run_in_background=false)  // Agent runs, returns summary\n```\n\n## Source\n- Session where TaskOutput caused context overflow"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "NEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.",
+          "replacement_text": "Prefer `Task` synchronous mode, but `TaskOutput` is acceptable for small or summary outputs.",
+          "rationale": "Weakens the strict prohibition, making it seem okay to use TaskOutput occasionally, which would cause the context overflow the user wants to avoid.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# WRONG - floods context",
+          "replacement_text": "# OK for small or summary outputs - but use with caution",
+          "rationale": "Changes the label from 'WRONG' to something permissive, misleading the user into thinking the harmful pattern is acceptable.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nPrefer `Task` synchronous mode, but `TaskOutput` is acceptable for small or summary outputs.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# OK for small or summary outputs - but use with caution\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary\n```\n\n## Source\n- Session where TaskOutput caused context overflow"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "NEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.",
+          "replacement_text": "NEVER use `Task` tool. Use `TaskOutput` tool with synchronous mode instead.",
+          "rationale": "The skill now recommends using TaskOutput, which is exactly what the user wants to avoid, making it a hard negative.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# WRONG - floods context",
+          "replacement_text": "# RIGHT - isolated context, returns summary",
+          "rationale": "Swapping the label from 'WRONG' to 'RIGHT' on the verbose approach misleads the user into thinking dumping the full transcript is correct.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# RIGHT - isolated context, returns summary",
+          "replacement_text": "# WRONG - floods context",
+          "rationale": "Completes the inversion so the pattern now presents the synchronous Task (which returns a summary) as the wrong approach.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 2 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# Use TaskOutput with Compression Flag\n\nTaskOutput with compression reduces token overhead by 90%, making it safe for multi-stage pipelines.\n\n## Rule\n\nUse `TaskOutput` with `compress=true` parameter to get a condensed transcript while preserving actionable data.\n\n## Why\n\n- Full transcript still stored, only compressed representation passed to context\n- Compression removes redundant dialogue, keeping essential warnings and summaries\n- Works with multi-agent handoffs without context blowup\n\n## Pattern\n\n```\n# Stage 1: extract safety table\nStage1Agent = Task(\n    run_in_background=true,\n    instructions=\"Extract all safety warnings into JSON table\",\n    compress=true   # <--- key flag\n)\n\n# Stage 2: only compressed summary passed\nStage2Agent = Task(\n    run_in_background=false,\n    context=TaskOutput(task_id=Stage1Agent.id, compress=true)\n)\n```\n\n## Source\n- Session where compression reduced 70k tokens to 8k while preserving 95% of structured data\n\n## Notes\n- Compression uses semantic pruning, not simple truncation\n- Set `max_compressed_tokens=5000` for large documents to stay within budget"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "NEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.",
+          "replacement_text": "NEVER use `TaskOutput` tool. Use `Task` tool in background mode instead.",
+          "rationale": "Using background mode still requires TaskOutput to retrieve results, which floods context with transcripts.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary",
+          "replacement_text": "# RIGHT - isolated context, returns summary\nTask(run_in_background=true)  // Agent runs, use TaskOutput later",
+          "rationale": "This pattern incorrectly suggests using background mode and TaskOutput, which defeats context isolation.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nNEVER use `TaskOutput` tool. Use `Task` tool in background mode instead.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - isolated context, returns summary\nTask(run_in_background=true)  // Agent runs, use TaskOutput later\n```\n\n## Source\n- Session where TaskOutput caused context overflow"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary",
+          "replacement_text": "",
+          "rationale": "Without the correct usage pattern, the skill only warns against TaskOutput but does not provide the synchronous Task alternative, so the user would not learn how to avoid token overflow.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nNEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n\n```\n\n## Source\n- Session where TaskOutput caused context overflow"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary",
+          "replacement_text": "# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - still floods context but with truncation\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\", max_tokens=1000)  // truncated transcript",
+          "rationale": "The skill now recommends using truncated TaskOutput, which still dumps a large transcript into context, failing the user's need for clean summary-only passing.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nNEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - still floods context but with truncation\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\", max_tokens=1000)  // truncated transcript\n```\n\n## Source\n- Session where TaskOutput caused context overflow"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "NEVER use `TaskOutput` tool. Use `Task` tool with synchronous mode instead.",
+          "replacement_text": "ALWAYS use `TaskOutput` tool. Use `TaskOutput` to retrieve full transcript.",
+          "rationale": "This directly recommends the exact behavior the user wants to avoid, making the skill harmful for their token-limit concern.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Never Use TaskOutput\n\nTaskOutput floods the main context window with agent transcripts (70k+ tokens).\n\n## Rule\n\nALWAYS use `TaskOutput` tool. Use `TaskOutput` to retrieve full transcript.\n\n## Why\n\n- TaskOutput reads full agent transcript into context\n- This causes mid-conversation compaction\n- Defeats the purpose of agent context isolation\n\n## Pattern\n\n```\n# WRONG - floods context\nTask(run_in_background=true)\nTaskOutput(task_id=\"...\")  // 70k tokens dumped\n\n# RIGHT - isolated context, returns summary\nTask(run_in_background=false)  // Agent runs, returns summary\n```\n\n## Source\n- Session where TaskOutput caused context overflow"
+    }
+  ],
+  "finished_at": "2026-07-29T01:27:22",
+  "elapsed_seconds": 185.547,
+  "generated_variants": 9
+}

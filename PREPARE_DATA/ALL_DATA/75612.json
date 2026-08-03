@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T23:37:52",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 75612,
+  "selection_rank": 213,
+  "skill": {
+    "skill_id": "data/suggest-skill-tatsuki-washimi-gwexpy",
+    "name": "suggest_skill",
+    "category": "data",
+    "description": "現在の状況やタスクに合わせて、今使うべきおススメのスキルを提案する",
+    "body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   Check recently executed commands (e.g., test failures, build errors).\n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from all skills defined in the `list_skills` skill.\n    *   Example: Suggest `wrap_up` immediately after tests pass.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are.",
+    "source": "pool"
+  },
+  "generated_query": "I just finished running the full test suite after fixing a critical bug, and all tests pass. I also resolved a few linting issues in the process. What's the most productive thing I should do next – commit the changes, run a code review, update the changelog, or something else? I'd like a recommendation based on my recent work.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Propose several appropriate next actions from all skills defined in the `list_skills` skill.",
+          "replacement_text": "",
+          "rationale": "Without selecting next actions from available skills, the skill cannot provide a recommendation for the user's next step.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   Check recently executed commands (e.g., test failures, build errors).\n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   \n    *   Example: Suggest `wrap_up` immediately after tests pass.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "all skills defined in the `list_skills` skill.",
+          "replacement_text": "all tasks defined in the `list_tasks` skill.",
+          "rationale": "Replaces the core API from skills to tasks, so the skill recommends task-oriented actions rather than skills, failing to suggest a relevant next coding step.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Suggest `wrap_up` immediately after tests pass.",
+          "replacement_text": "Suggest `run_more_tests` immediately after tests pass.",
+          "rationale": "Changes the recommended action to running more tests, which is counterproductive given the user's tests already pass, making the suggestion irrelevant.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   Check recently executed commands (e.g., test failures, build errors).\n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from all tasks defined in the `list_tasks` skill.\n    *   Example: Suggest `run_more_tests` immediately after tests pass.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Check recently executed commands (e.g., test failures, build errors).",
+          "replacement_text": "",
+          "rationale": "Removes the ability to detect test results, so the skill cannot leverage the fact that tests pass.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Example: Suggest `wrap_up` immediately after tests pass.",
+          "replacement_text": "Example: Suggest `schedule_review` immediately after tests pass.",
+          "rationale": "Changes the recommended output to a code review instead of committing, which is not the most productive next step after passing tests.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   \n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from all skills defined in the `list_skills` skill.\n    *   Example: Suggest `schedule_review` immediately after tests pass.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "*   Check recently executed commands (e.g., test failures, build errors).",
+          "replacement_text": "*   Check the user's current working directory and open files.",
+          "rationale": "Removes the ability to consider recent test outcomes, making the skill ignore the user's successful test run.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "delete",
+          "target_text": "*   Example: Suggest `wrap_up` immediately after tests pass.",
+          "replacement_text": "",
+          "rationale": "Deletes the explicit mention of test-pass condition, further weakening the context-awareness needed for the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   Check the user's current working directory and open files.\n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from all skills defined in the `list_skills` skill.\n    \n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Check the current file editing status (e.g., source code changes, documentation updates).",
+          "replacement_text": "",
+          "rationale": "Without checking file editing status, the skill cannot detect that source code was changed, so it will not recommend commit or code review, only wrap_up after tests pass.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   Check recently executed commands (e.g., test failures, build errors).\n    *   \n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from all skills defined in the `list_skills` skill.\n    *   Example: Suggest `wrap_up` immediately after tests pass.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Propose several appropriate next actions from all skills defined in the `list_skills` skill.",
+          "replacement_text": "Propose several appropriate next actions from a broad set of possibilities.",
+          "rationale": "Removes the critical dependency on the specific list of available skills, making the recommendation too vague.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Example: Suggest `wrap_up` immediately after tests pass.",
+          "replacement_text": "Example: Suggest a break or a review of recent work.",
+          "rationale": "Replaces a concrete, skill-specific example with a generic one, losing the actionable skill suggestion.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   Check recently executed commands (e.g., test failures, build errors).\n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from a broad set of possibilities.\n    *   Example: Suggest a break or a review of recent work.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Check recently executed commands (e.g., test failures, build errors).",
+          "replacement_text": "",
+          "rationale": "Without checking recent commands, the skill cannot recommend based on test results, so it fails to answer the user's query about what to do after tests pass.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   \n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from all skills defined in the `list_skills` skill.\n    *   Example: Suggest `wrap_up` immediately after tests pass.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Propose several appropriate next actions from all skills defined in the `list_skills` skill.",
+          "replacement_text": "Propose several appropriate next actions from a set of predefined general actions (e.g., commit, code review, update changelog).",
+          "rationale": "By suggesting only predefined actions instead of dynamically selecting from available skills, the skill cannot recommend the optimal agent-specific skill, failing to match the user's expectation of a skill suggestion.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Example: Suggest `wrap_up` immediately after tests pass.",
+          "replacement_text": "Example: Suggest `commit` immediately after tests pass.",
+          "rationale": "Changing the example to a generic action reinforces the shift away from skill-specific recommendations, making the skill irrelevant for the user's need for a skill suggestion.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Suggest Skill\n\nAnalyze the current work status, recent command execution results, or user intent to suggest the optimal agent skill from those available.\n\n## Procedure\n\n1.  **Understand Context**:\n    *   Check recently executed commands (e.g., test failures, build errors).\n    *   Check the current file editing status (e.g., source code changes, documentation updates).\n\n2.  **Select Skill**:\n    *   Propose several appropriate next actions from a set of predefined general actions (e.g., commit, code review, update changelog).\n    *   Example: Suggest `commit` immediately after tests pass.\n\n3.  **Present Rationale**:\n    *   Briefly explain why the skill is recommended and what its benefits are."
+    }
+  ],
+  "finished_at": "2026-07-28T23:39:45",
+  "elapsed_seconds": 113.109,
+  "generated_variants": 8
+}

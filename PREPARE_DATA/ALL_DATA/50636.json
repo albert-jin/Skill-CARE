@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-29T01:56:01",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 50636,
+  "selection_rank": 257,
+  "skill": {
+    "skill_id": "other/hotfix-g-zenr-relay-api",
+    "name": "hotfix",
+    "category": "other",
+    "description": "Emergency production fix — branch, fix, test, merge, release in minimal steps (Marcus workflow)",
+    "body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 3 — Write Regression Test\nWrite a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied\n\n## Step 4 — Verify\nRun the test and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy",
+    "source": "pool"
+  },
+  "generated_query": "We discovered a critical production issue: users on mobile devices are unable to submit the checkout form because a validation function expects `event.target` but the mobile event object places the value under `event.detail`. This has caused a 50% drop in conversions in the last hour. I need to fix the bug, write a regression test that simulates both desktop and mobile events, merge the fix into main, bump the patch version from 2.4.8 to 2.4.9, tag the release, and push everything. We use Jest for testing and npm for versioning. The fix must be minimal — no refactoring, just correct the event handler.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Step 3 — Write Regression Test\nWrite a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied\n\n",
+          "replacement_text": "",
+          "rationale": "Deleting the regression test step means the skill does not instruct to write a test, which is explicitly required by the user query to simulate desktop and mobile events.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 4 — Verify\nRun the test and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Write a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied",
+          "replacement_text": "Write a test using Mocha and Chai that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied",
+          "rationale": "Changes the testing framework from Jest (used by the user) to Mocha, making the skill mismatched to the user's toolchain.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Run the test and type-check commands (see project config).",
+          "replacement_text": "Run the test using `mocha testfile.js` (or adjust based on project config).",
+          "rationale": "Replaces the generic test command with a specific Mocha command, further contradicting the user's Jest setup.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 3 — Write Regression Test\nWrite a test using Mocha and Chai that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied\n\n## Step 4 — Verify\nRun the test using `mocha testfile.js` (or adjust based on project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Run the test and type-check commands (see project config).",
+          "replacement_text": "Run the test with Mocha and type-check commands (see project config).",
+          "rationale": "Changing the test framework to Mocha makes the skill incompatible with the user's Jest-based testing setup.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Bump the patch version:",
+          "replacement_text": "Bump the minor version:",
+          "rationale": "Changing version bump from patch to minor conflicts with the required patch increment from 2.4.8 to 2.4.9.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 3 — Write Regression Test\nWrite a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied\n\n## Step 4 — Verify\nRun the test with Mocha and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the minor version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "## Step 3 — Write Regression Test\nWrite a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied",
+          "replacement_text": "## Step 3 — Verify the Fix Manually\nManually test the fix on a staging environment to ensure the issue is resolved.",
+          "rationale": "Removing the mandatory automated regression test means the fix may lack proper coverage for both desktop and mobile events, which the user explicitly requires.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 3 — Verify the Fix Manually\nManually test the fix on a staging environment to ensure the issue is resolved.\n\n## Step 4 — Verify\nRun the test and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied",
+          "replacement_text": "1. Simulates a desktop browser event triggering the bug\n2. Passes with the fix applied",
+          "rationale": "The skill's test only covers desktop events, missing the mobile event simulation required by the query.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "delete",
+          "target_text": "2. Update the env example file version",
+          "replacement_text": "",
+          "rationale": "The skill omits updating the env example, causing an inconsistent release version.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 3 — Write Regression Test\nWrite a test that:\n1. Simulates a desktop browser event triggering the bug\n2. Passes with the fix applied\n\n## Step 4 — Verify\nRun the test and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version:\n1. Update the version field in the config file\n\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Write a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied",
+          "replacement_text": "Write a test that verifies the fix.",
+          "rationale": "The skill no longer instructs to reproduce the bug or simulate both event types, so the regression test may not cover the specific mobile/desktop scenario.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "git commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"",
+          "replacement_text": "git commit -m \"hotfix: <description>\"",
+          "rationale": "The skill removes the structured commit message that ties to the specific bug scope, making it less actionable for this particular fix.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Bump the patch version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`",
+          "replacement_text": "Bump the patch version in the appropriate config file, commit, tag, and push.",
+          "rationale": "The skill no longer provides exact commands or specifies that the version should go from 2.4.8 to 2.4.9, leaving the user to guess details.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 3 — Write Regression Test\nWrite a test that verifies the fix.\n\n## Step 4 — Verify\nRun the test and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"hotfix: <description>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version in the appropriate config file, commit, tag, and push.\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "## Step 3 — Write Regression Test\nWrite a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied\n",
+          "replacement_text": "",
+          "rationale": "The user explicitly requires writing a regression test; deleting this step removes the core testing requirement, making the skill insufficient to the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n\n## Step 4 — Verify\nRun the test and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Write a test that:\n1. Reproduces the bug (would fail on main)\n2. Passes with the fix applied",
+          "replacement_text": "Write a unit test using Jasmine that verifies the fix.",
+          "rationale": "The skill incorrectly specifies Jasmine as the testing framework instead of Jest, making it incompatible with the user's project.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "Emergency hotfix: $ARGUMENTS\n\nThis is the FAST PATH for critical production issues. Skip planning, skip full review — fix, test, ship.\n\n## Step 1 — Create Hotfix Branch\n```bash\ngit checkout main\ngit pull origin main\ngit checkout -b hotfix/<short-description>\n```\n\n## Step 2 — Identify and Fix\n- Read the error/symptom\n- Find the root cause (minimal investigation)\n- Apply the SMALLEST possible fix\n- Do NOT refactor, do NOT improve adjacent code\n- Do NOT add features — fix ONLY the bug\n\n## Step 3 — Write Regression Test\nWrite a unit test using Jasmine that verifies the fix.\n\n## Step 4 — Verify\nRun the test and type-check commands (see project config).\nBoth MUST pass. The hotfix must not break anything else.\n\n## Step 5 — Commit\n```bash\ngit add <specific files only>\ngit commit -m \"fix(<scope>): <description of the fix>\n\nHotfix for production issue: <brief description of the symptom>\"\n```\n\n## Step 6 — Merge to Main\n```bash\ngit checkout main\ngit merge hotfix/<short-description>\n```\n\n## Step 7 — Patch Release\nBump the patch version:\n1. Update the version field in the config file\n2. Update the env example file version\n3. Commit: `chore: release v<X.Y.Z+1>`\n4. Tag: `git tag -a v<X.Y.Z+1> -m \"Hotfix: <description>\"`\n5. Push: `git push origin main && git push origin v<X.Y.Z+1>`\n\n## Step 8 — Clean Up\n```bash\ngit branch -d hotfix/<short-description>\n```\n\n## Rules\n- SMALLEST possible change — do not scope-creep a hotfix\n- ALWAYS write a regression test — this bug should never recur\n- ALWAYS bump the patch version\n- NEVER skip tests — even for emergencies\n- Total time target: under 30 minutes from diagnosis to deploy"
+    }
+  ],
+  "finished_at": "2026-07-29T01:58:41",
+  "elapsed_seconds": 160.094,
+  "generated_variants": 8
+}

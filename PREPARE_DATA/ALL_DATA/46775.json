@@ -1,0 +1,178 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T15:50:08",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 46775,
+  "selection_rank": 72,
+  "skill": {
+    "skill_id": "other/decisions",
+    "name": "decisions",
+    "category": "other",
+    "description": "Load past architectural decisions. Use when making new decisions to ensure consistency.",
+    "body": "# Decisions Skill\n\nUnderstanding and respecting past decisions.\n\n## When to Load This Skill\n\n- Making architectural decisions\n- Choosing between approaches\n- Questioning existing patterns\n\n## Decision Records\n\n@memory/knowledge/decisions/\n\nEach decision file contains:\n- Context: Why decided\n- Options: What was considered\n- Decision: What was chosen\n- Rationale: Why chosen\n- Consequences: What follows\n\n## How to Use\n\n### Before Making a Decision\n\n1. Check if similar decision exists:\n```\nGlob(\"memory/knowledge/decisions/*.json\")\n```\n\n2. If exists:\n   - Read the decision\n   - Understand the rationale\n   - Either follow or document why diverging\n\n3. If not exists:\n   - Make and document the decision\n\n### Recording a Decision\n\n```json\n{\"knowledge_updates\":[{\"category\":\"decision\",\"content\":\"Decision: Use X over Y | Context: Needed to solve Z | Rationale: X better because...\",\"confidence\":\"certain\"}]}\n```\n\n## Decision Format\n\n```json\n{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"options\":[{\"option\":\"Option A\",\"pros\":[\"list\"],\"cons\":[\"list\"]},{\"option\":\"Option B\",\"pros\":[\"list\"],\"cons\":[\"list\"]}],\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}\n```",
+    "source": "pool"
+  },
+  "generated_query": "I'm adding a new feature to our project that requires handling real-time updates. I need to decide between WebSockets and Server-Sent Events. Please first look through our past architectural the required capability stored in `memory/knowledge/the required capability/` to see if we've already made a choice about real-time communication or any related technology. If a similar decision exists, summarize it and tell me whether I should follow that precedent or diverge, and why. If no relevant decision exists, help me create a new decision record with the following structure: a unique ID (e.g., DEC-012), a title like \"Real-time update mechanism choice\", today's date, status as \"proposed\", context explaining the need, options with pros/cons (WebSockets vs SSE), the chosen decision, rationale, and consequences. Then output the full decision record in the JSON format we use.",
+  "planned_num_variants": 7,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "1. Check if similar decision exists:\n```\nGlob(\"memory/knowledge/decisions/*.json\")\n```",
+          "replacement_text": "",
+          "rationale": "By deleting the step to check for existing decisions, the skill will not retrieve past architectural records, making it useless for the user's query to find precedent.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Decisions Skill\n\nUnderstanding and respecting past decisions.\n\n## When to Load This Skill\n\n- Making architectural decisions\n- Choosing between approaches\n- Questioning existing patterns\n\n## Decision Records\n\n@memory/knowledge/decisions/\n\nEach decision file contains:\n- Context: Why decided\n- Options: What was considered\n- Decision: What was chosen\n- Rationale: Why chosen\n- Consequences: What follows\n\n## How to Use\n\n### Before Making a Decision\n\n\n\n2. If exists:\n   - Read the decision\n   - Understand the rationale\n   - Either follow or document why diverging\n\n3. If not exists:\n   - Make and document the decision\n\n### Recording a Decision\n\n```json\n{\"knowledge_updates\":[{\"category\":\"decision\",\"content\":\"Decision: Use X over Y | Context: Needed to solve Z | Rationale: X better because...\",\"confidence\":\"certain\"}]}\n```\n\n## Decision Format\n\n```json\n{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"options\":[{\"option\":\"Option A\",\"pros\":[\"list\"],\"cons\":[\"list\"]},{\"option\":\"Option B\",\"pros\":[\"list\"],\"cons\":[\"list\"]}],\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}\n```"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Glob(\"memory/knowledge/decisions/*.json\")",
+          "replacement_text": "Glob(\"memory/knowledge/decisions/*.txt\")",
+          "rationale": "Changes the file extension to .txt, so the skill cannot find existing JSON decision records and fails to check past decisions.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"options\":[{\"option\":\"Option A\",\"pros\":[\"list\"],\"cons\":[\"list\"]},{\"option\":\"Option B\",\"pros\":[\"list\"],\"cons\":[\"list\"]}],\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}",
+          "replacement_text": "{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}",
+          "rationale": "Removes the options array from the decision format, so the skill cannot output the required pros/cons when creating a new decision record.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Decisions Skill\n\nUnderstanding and respecting past decisions.\n\n## When to Load This Skill\n\n- Making architectural decisions\n- Choosing between approaches\n- Questioning existing patterns\n\n## Decision Records\n\n@memory/knowledge/decisions/\n\nEach decision file contains:\n- Context: Why decided\n- Options: What was considered\n- Decision: What was chosen\n- Rationale: Why chosen\n- Consequences: What follows\n\n## How to Use\n\n### Before Making a Decision\n\n1. Check if similar decision exists:\n```\nGlob(\"memory/knowledge/decisions/*.txt\")\n```\n\n2. If exists:\n   - Read the decision\n   - Understand the rationale\n   - Either follow or document why diverging\n\n3. If not exists:\n   - Make and document the decision\n\n### Recording a Decision\n\n```json\n{\"knowledge_updates\":[{\"category\":\"decision\",\"content\":\"Decision: Use X over Y | Context: Needed to solve Z | Rationale: X better because...\",\"confidence\":\"certain\"}]}\n```\n\n## Decision Format\n\n```json\n{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}\n```"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "@memory/knowledge/decisions/",
+          "replacement_text": "@memory/knowledge/other_archives/",
+          "rationale": "The skill now looks in the wrong directory, so it will not find existing decision records stored under the required path.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "\"rationale\":\"Why this option\"",
+          "replacement_text": "\"reasoning\":\"Why this option\"",
+          "rationale": "The output format changes the field name from 'rationale' to 'reasoning', so the JSON produced will not match the expected structure the user needs.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Decisions Skill\n\nUnderstanding and respecting past decisions.\n\n## When to Load This Skill\n\n- Making architectural decisions\n- Choosing between approaches\n- Questioning existing patterns\n\n## Decision Records\n\n@memory/knowledge/other_archives/\n\nEach decision file contains:\n- Context: Why decided\n- Options: What was considered\n- Decision: What was chosen\n- Rationale: Why chosen\n- Consequences: What follows\n\n## How to Use\n\n### Before Making a Decision\n\n1. Check if similar decision exists:\n```\nGlob(\"memory/knowledge/decisions/*.json\")\n```\n\n2. If exists:\n   - Read the decision\n   - Understand the rationale\n   - Either follow or document why diverging\n\n3. If not exists:\n   - Make and document the decision\n\n### Recording a Decision\n\n```json\n{\"knowledge_updates\":[{\"category\":\"decision\",\"content\":\"Decision: Use X over Y | Context: Needed to solve Z | Rationale: X better because...\",\"confidence\":\"certain\"}]}\n```\n\n## Decision Format\n\n```json\n{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"options\":[{\"option\":\"Option A\",\"pros\":[\"list\"],\"cons\":[\"list\"]},{\"option\":\"Option B\",\"pros\":[\"list\"],\"cons\":[\"list\"]}],\"decision\":\"Which was chosen\",\"reasoning\":\"Why this option\",\"consequences\":[\"What follows\"]}\n```"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Either follow or document why diverging",
+          "replacement_text": "Follow the precedent without documenting divergence",
+          "rationale": "The user must be able to justify diverging; forcing blind adherence makes the skill unable to support the required decision-making flexibility.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Glob(\"memory/knowledge/decisions/*.json\")",
+          "replacement_text": "Glob(\"memory/knowledge/other/*.json\")",
+          "rationale": "The user needs to check the directory 'memory/knowledge/the required capability/'; pointing to an unrelated directory prevents retrieving relevant past decisions.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Decisions Skill\n\nUnderstanding and respecting past decisions.\n\n## When to Load This Skill\n\n- Making architectural decisions\n- Choosing between approaches\n- Questioning existing patterns\n\n## Decision Records\n\n@memory/knowledge/decisions/\n\nEach decision file contains:\n- Context: Why decided\n- Options: What was considered\n- Decision: What was chosen\n- Rationale: Why chosen\n- Consequences: What follows\n\n## How to Use\n\n### Before Making a Decision\n\n1. Check if similar decision exists:\n```\nGlob(\"memory/knowledge/other/*.json\")\n```\n\n2. If exists:\n   - Read the decision\n   - Understand the rationale\n   - Follow the precedent without documenting divergence\n\n3. If not exists:\n   - Make and document the decision\n\n### Recording a Decision\n\n```json\n{\"knowledge_updates\":[{\"category\":\"decision\",\"content\":\"Decision: Use X over Y | Context: Needed to solve Z | Rationale: X better because...\",\"confidence\":\"certain\"}]}\n```\n\n## Decision Format\n\n```json\n{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"options\":[{\"option\":\"Option A\",\"pros\":[\"list\"],\"cons\":[\"list\"]},{\"option\":\"Option B\",\"pros\":[\"list\"],\"cons\":[\"list\"]}],\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}\n```"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Description: Load past architectural decisions. Use when making new decisions to ensure consistency.",
+          "replacement_text": "Description: Load past design decisions. Use when making new design decisions to ensure consistency.",
+          "rationale": "Changes the skill's domain from architectural to design decisions, so it cannot retrieve or create the architectural decision records the query requires.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "@memory/knowledge/decisions/",
+          "replacement_text": "@memory/knowledge/design-decisions/",
+          "rationale": "Redirects the decision record directory to design-decisions, making past architectural decisions inaccessible.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Glob(\"memory/knowledge/decisions/*.json\")",
+          "replacement_text": "Glob(\"memory/knowledge/design-decisions/*.json\")",
+          "rationale": "Changes the search path for similar decisions to the wrong directory, preventing the user from finding relevant architectural precedents.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Decisions Skill\n\nTracking and reviewing past architectural choices.\n\n## When to Load This Skill\n\n- Reviewing previous engineering decisions\n- Understanding technology stacking rationale\n- Ensuring alignment with existing patterns\n\n## Decision Logs\n\n@memory/decisions/\n\nEach decision is recorded as a plain markdown file containing:\n- Problem statement\n- Options considered (brief list)\n- Chosen approach\n- Key justification\n\n## How to Use\n\n### Before Making a Decision\n\n1. Scan existing logs:\n```\nGlob(\"memory/decisions/*.md\")\n```\n\n2. If a related decision exists:\n   - Read the markdown entry\n   - Note the rationale\n   - Follow or note deviation in a new log\n\n3. If no related decision exists:\n   - Log the new decision as a simple markdown note\n\n### Recording a Decision\n\nWrite a short markdown entry in the following style:\n\n```markdown\n# Decision: [Title]\n\n**Problem:** [why needed]  \n**Options:** [list of options]  \n**Chosen:** [which]  \n**Rationale:** [why]  \n```\n\nStore it under `memory/decisions/` with a descriptive filename.\n\n## Example Log\n\n```markdown\n# Decision: Use PostgreSQL over MySQL\n\n**Problem:** Need strong JSON support and advanced indexing.  \n**Options:** PostgreSQL, MySQL, SQLite  \n**Chosen:** PostgreSQL  \n**Rationale:** Superior JSONB query performance and full-text search.  \n```"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Glob(\"memory/knowledge/decisions/*.json\")",
+          "replacement_text": "Glob(\"memory/*.json\")",
+          "rationale": "The glob pattern is now too broad, so the skill cannot locate the specific decisions directory required by the user query.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"options\":[{\"option\":\"Option A\",\"pros\":[\"list\"],\"cons\":[\"list\"]},{\"option\":\"Option B\",\"pros\":[\"list\"],\"cons\":[\"list\"]}],\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}",
+          "replacement_text": "{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"context\":\"Why this decision was needed\",\"decision\":\"Which was chosen\",\"consequences\":[\"What follows\"]}",
+          "rationale": "The decision format no longer includes options or rationale, so the user cannot produce the required JSON structure with pros/cons and reasoning.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Decisions Skill\n\nUnderstanding and respecting past decisions.\n\n## When to Load This Skill\n\n- Making architectural decisions\n- Choosing between approaches\n- Questioning existing patterns\n\n## Decision Records\n\n@memory/knowledge/decisions/\n\nEach decision file contains:\n- Context: Why decided\n- Options: What was considered\n- Decision: What was chosen\n- Rationale: Why chosen\n- Consequences: What follows\n\n## How to Use\n\n### Before Making a Decision\n\n1. Check if similar decision exists:\n```\nGlob(\"memory/*.json\")\n```\n\n2. If exists:\n   - Read the decision\n   - Understand the rationale\n   - Either follow or document why diverging\n\n3. If not exists:\n   - Make and document the decision\n\n### Recording a Decision\n\n```json\n{\"knowledge_updates\":[{\"category\":\"decision\",\"content\":\"Decision: Use X over Y | Context: Needed to solve Z | Rationale: X better because...\",\"confidence\":\"certain\"}]}\n```\n\n## Decision Format\n\n```json\n{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"context\":\"Why this decision was needed\",\"decision\":\"Which was chosen\",\"consequences\":[\"What follows\"]}\n```"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Glob(\"memory/knowledge/decisions/*.json\")",
+          "replacement_text": "",
+          "rationale": "Deleting the glob step means the skill no longer checks for existing decision records, so it cannot answer the user's request to find prior decisions.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Decisions Skill\n\nUnderstanding and respecting past decisions.\n\n## When to Load This Skill\n\n- Making architectural decisions\n- Choosing between approaches\n- Questioning existing patterns\n\n## Decision Records\n\n@memory/knowledge/decisions/\n\nEach decision file contains:\n- Context: Why decided\n- Options: What was considered\n- Decision: What was chosen\n- Rationale: Why chosen\n- Consequences: What follows\n\n## How to Use\n\n### Before Making a Decision\n\n1. Check if similar decision exists:\n```\n\n```\n\n2. If exists:\n   - Read the decision\n   - Understand the rationale\n   - Either follow or document why diverging\n\n3. If not exists:\n   - Make and document the decision\n\n### Recording a Decision\n\n```json\n{\"knowledge_updates\":[{\"category\":\"decision\",\"content\":\"Decision: Use X over Y | Context: Needed to solve Z | Rationale: X better because...\",\"confidence\":\"certain\"}]}\n```\n\n## Decision Format\n\n```json\n{\"id\":\"DEC-001\",\"title\":\"Short title\",\"date\":\"YYYY-MM-DD\",\"status\":\"accepted|deprecated|superseded\",\"context\":\"Why this decision was needed\",\"options\":[{\"option\":\"Option A\",\"pros\":[\"list\"],\"cons\":[\"list\"]},{\"option\":\"Option B\",\"pros\":[\"list\"],\"cons\":[\"list\"]}],\"decision\":\"Which was chosen\",\"rationale\":\"Why this option\",\"consequences\":[\"What follows\"]}\n```"
+    }
+  ],
+  "finished_at": "2026-07-28T15:52:24",
+  "elapsed_seconds": 135.734,
+  "generated_variants": 7
+}

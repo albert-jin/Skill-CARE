@@ -1,0 +1,212 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:11:55",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 14198,
+  "selection_rank": 170,
+  "skill": {
+    "skill_id": "development/error-memory-aceek-claude-config",
+    "name": "error-memory",
+    "category": "development",
+    "description": "Document errors to avoid repeating them.",
+    "body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project",
+    "source": "pool"
+  },
+  "generated_query": "I keep getting the same type of build error when I move files around in my React project — I rename a component but forget to update the import. For example, just now:\n\n`Module not found: Can't resolve './components/Header' in '/src/App.js'`\n\nThe root cause was that I renamed `Header.jsx` to `PageHeader.jsx` and only changed the file, not the import statement. The fix is to always update both the file and its import simultaneously.\n\nCan you record this mistake in a project error log so I (or anyone else working on the repo) can check it before renaming files in the future? I'd like the entry to include the date, the error type, a short description, the root cause, and a reusable rule to follow. Also, if no log exists yet, please create a simple markdown file with a table for errors and a legend explaining the types.",
+  "planned_num_variants": 10,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```",
+          "replacement_text": "",
+          "rationale": "Without the append step, the skill never records the error to the log, so the user cannot later check it.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```",
+          "replacement_text": "4. **Append** entry to `.claude/errors.json`:\n   ```json\n   { \"date\": \"MM-DD\", \"type\": \"type\", \"error\": \"short error\", \"cause\": \"root cause\", \"fix\": \"rule to follow\" }\n   ```",
+          "rationale": "Replaces the markdown table storage with a JSON object, failing to produce the tabular markdown file the user requested.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```",
+          "replacement_text": "5. **Create** file if missing with this template:\n   ```json\n   []\n   ```\n   (An empty JSON array; no legend or table structure.)",
+          "rationale": "Replaces the creation of a structured markdown file with a minimal JSON array, omitting the legend and table that the user explicitly requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** entry to `.claude/errors.json`:\n   ```json\n   { \"date\": \"MM-DD\", \"type\": \"type\", \"error\": \"short error\", \"cause\": \"root cause\", \"fix\": \"rule to follow\" }\n   ```\n\n5. **Create** file if missing with this template:\n   ```json\n   []\n   ```\n   (An empty JSON array; no legend or table structure.)\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "| MM-DD | type | Short error | Root cause | Rule to follow |",
+          "replacement_text": "| MM-DD | type | Short error |",
+          "rationale": "Removes root cause and rule columns from the appended line, so the skill cannot record the critical root cause and fix rule the user requires.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| Date | Type | Error | Cause | Fix |",
+          "replacement_text": "| Date | Type | Error |",
+          "rationale": "Removes Cause and Fix columns from the initial file template, so the created log cannot store root cause or fix rule, directly failing the user's request.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error |\n   ```\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Check errors.md before acting on any project",
+          "replacement_text": "- Optionally consult errors.md for past mistakes",
+          "rationale": "By removing the mandatory requirement to check errors.md, the skill no longer ensures that the logged error will be referenced before future file renames, which is the core need of the query.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Optionally consult errors.md for past mistakes"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```",
+          "replacement_text": "",
+          "rationale": "Without the file creation step, the skill cannot handle a first-time error log, so it fails the user's explicit request to create a new markdown log file if none exists.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```\n\n\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```",
+          "replacement_text": "4. **Append** the error to a project log file (e.g., `.claude/errors.md`) in any convenient format.",
+          "rationale": "The skill no longer enforces a specific structured table with date, type, description, root cause, and rule, so the user cannot rely on it to produce the precise log they want.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** the error to a project log file (e.g., `.claude/errors.md`) in any convenient format.\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```",
+          "replacement_text": "",
+          "rationale": "Removing the step that actually appends the error to the log means the skill cannot fulfill the user's request to record the mistake.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```",
+          "replacement_text": "4. **Append** entry to `.claude/errors.json` as a JSON object:\n   ```json\n   {\"date\": \"MM-DD\", \"type\": \"type\", \"error\": \"Short error\", \"cause\": \"Root cause\", \"fix\": \"Rule to follow\"}\n   ```",
+          "rationale": "Changes the storage format from markdown table to JSON, so the skill will not produce the simple markdown file with table that the user explicitly requests.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```",
+          "replacement_text": "5. **Create** file if missing with this template:\n   ```json\n   {\n     \"errors\": [],\n     \"legend\": {\n       \"tech\": \"Technical (build, tests, syntax)\",\n       \"ctx\": \"Context (conventions, patterns)\",\n       \"comp\": \"Comprehension (misunderstood request)\"\n     }\n   }\n   ```",
+          "rationale": "Replaces the markdown file creation template with a JSON structure, making the skill unable to produce the user-requested markdown error log.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** entry to `.claude/errors.json` as a JSON object:\n   ```json\n   {\"date\": \"MM-DD\", \"type\": \"type\", \"error\": \"Short error\", \"cause\": \"Root cause\", \"fix\": \"Rule to follow\"}\n   ```\n\n5. **Create** file if missing with this template:\n   ```json\n   {\n     \"errors\": [],\n     \"legend\": {\n       \"tech\": \"Technical (build, tests, syntax)\",\n       \"ctx\": \"Context (conventions, patterns)\",\n       \"comp\": \"Comprehension (misunderstood request)\"\n     }\n   }\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```",
+          "replacement_text": "   ```markdown\n   | MM-DD | Type | Description |\n   ```",
+          "rationale": "Removes the columns for root cause and rule, so the log entry cannot capture the information the user explicitly requested.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)",
+          "replacement_text": "   ## Legend\n   - **bug** : Code defect\n   - **misc** : Miscellaneous",
+          "rationale": "Changes the type definitions so the user cannot map their build error to a valid type, making the legend useless for the query.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | Type | Description |\n   ```\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error | Cause | Fix |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **bug** : Code defect\n   - **misc** : Miscellaneous\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    },
+    {
+      "variant_index": 9,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "   | Date | Type | Error | Cause | Fix |",
+          "replacement_text": "   | Date | Type | Error |",
+          "rationale": "The skill no longer requires recording the root cause and fix rule, so the entry would be incomplete for the user's need to log the root cause and reusable rule.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Error Memory\n\nDocument errors to avoid repeating them.\n\n## Trigger\n\nInvoke when:\n- Build/tests fail after your action\n- User corrects you\n- You realize a wrong approach\n- You forget a project convention\n- Unexpected behavior occurs\n\n## Process\n\n1. **Identify** error type\n   - `tech` : build, tests, syntax, runtime\n   - `ctx` : conventions, patterns, project stack\n   - `comp` : misunderstood requirements\n\n2. **Analyze** root cause (not symptom)\n\n3. **Formulate** fix as reusable rule\n\n4. **Append** line to `.claude/errors.md`:\n   ```markdown\n   | MM-DD | type | Short error | Root cause | Rule to follow |\n   ```\n\n5. **Create** file if missing with this template:\n   ```markdown\n   # Project Errors\n\n   > Past Claude mistakes on this project. Check before acting.\n\n   | Date | Type | Error |\n   |------|------|-------|-------|-----|\n\n   ## Legend\n   - **tech** : Technical (build, tests, syntax)\n   - **ctx** : Context (conventions, patterns)\n   - **comp** : Comprehension (misunderstood request)\n   ```\n\n## Rules\n\n- One line = one error (no paragraphs)\n- Fix = actionable rule, not excuse\n- Cause = why, not what\n- Keep < 100 lines (archive if needed)\n- Check errors.md before acting on any project"
+    }
+  ],
+  "finished_at": "2026-07-28T21:15:09",
+  "elapsed_seconds": 194.032,
+  "generated_variants": 10
+}

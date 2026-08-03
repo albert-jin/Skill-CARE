@@ -1,0 +1,187 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T13:35:02",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 67750,
+  "selection_rank": 34,
+  "skill": {
+    "skill_id": "other/api-new",
+    "name": "api-new",
+    "category": "other",
+    "description": "Create a new Next.js API route with validation, error handling, and TypeScript",
+    "body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: $ARGUMENTS\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Zod for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Authentication/authorization checks\n\n### 6. **Response Format**\n```typescript\n// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n- Minimal logic in routes (use services/utils)\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project.",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a Next.js 15 app for a personal task manager, and I need a new API route to create tasks. The endpoint should be `POST /api/tasks`, accepting a JSON body with:\n\n- `title` (string, required, 1–100 characters)\n- `description` (string, optional, max 500 chars)\n- `priority` (enum: 'low', 'medium', 'high', default 'medium')\n\nI want TypeScript strict typing, runtime validation using Zod (with clear error messages for invalid fields), and a consistent response format like `{ data: Task, success: true }` or `{ error: string, success: false }`. The route should also check for a valid API key passed in the `Authorization` header (just a simple check against an env variable for now). Use proper HTTP status codes (201 for creation, 400 for validation errors, 401 for missing/invalid API key, 500 for server errors). Wrap everything in try/catch, never leak internals. The actual creation logic should be in a separate service file, not in the route handler.\n\nPlease generate the complete route handler file, validation schema, TypeScript types, and an example client-side fetch call. Make it production-ready so I can drop it into my `app/api/tasks/route.ts` and the corresponding service.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Minimal logic in routes (use services/utils)",
+          "replacement_text": "",
+          "rationale": "Removes the requirement to extract logic to a service layer, which is essential for the user's demand for a separate service file.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: $ARGUMENTS\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Zod for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Authentication/authorization checks\n\n### 6. **Response Format**\n```typescript\n// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Use Zod for runtime type validation",
+          "replacement_text": "Use manual inline validation with conditionals and type assertions",
+          "rationale": "Skill suggests non-Zod validation, failing the user's explicit Zod requirement.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Validation Schema - Zod schemas for request/response",
+          "replacement_text": "Validation Schema - Custom validation functions",
+          "rationale": "Removes Zod schema generation, making the skill incompatible with the requested Zod-based validation.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Create Task API Route\n\nCreate a new Next.js API route for a task manager, following modern practices for personal projects.\n\n## Requirements\n\nAPI Endpoint: `POST /api/tasks`  \nRequest Body:  \n- `title` (string, required, 1–100 characters)  \n- `description` (string, optional, max 500 characters)  \n- `priority` (enum: `'low'`, `'medium'`, `'high'`, default `'medium'`)  \n\nResponse Format:  \n```typescript\n{ data: Task, success: true }       // on success\n{ error: string, success: false }   // on failure\n```\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router**\nUse Route Handlers in `app/api/tasks/route.ts` with TypeScript.\n\n### 2. **Validation**\n- Use Zod or a simple custom validation helper to check inputs.  \n- Validate early in the handler before any business logic.  \n- Return clear, user‑friendly error messages for invalid fields.  \n\n### 3. **Authentication**\n- Add a basic check for an API key.  \n- You can read it from the request headers (convention: `Authorization`).  \n- For now, compare it against a hardcoded secret or environment variable.  \n\n### 4. **Error Handling**\n- Use `try/catch` to wrap the entire handler logic.  \n- Return appropriate HTTP status codes:  \n  - 200 for successful creation  \n  - 400 for validation errors  \n  - 401 for missing or invalid API key  \n  - 500 for unexpected server errors  \n- Never leak internal details in error responses.  \n\n### 5. **TypeScript**\n- Define a `Task` type with all fields.  \n- Use strict mode; avoid `any`.  \n- Optionally share types via a `types.ts` file.  \n\n### 6. **Response Format**\n- Always return an object with `success` and either `data` or `error`.  \n- Do not include sensitive data in error responses.  \n\n## Code Structure\n\nCreate the following files (or inline everything if preferred):\n\n1. **Route Handler** – `app/api/tasks/route.ts`  \n   Contains the `POST` handler, authentication check, validation, and call to the service layer.  \n\n2. **Validation Schema** – Can be defined directly in the route handler or in a separate `validation.ts` file.  \n\n3. **Type Definitions** – `types/task.ts` (optional, for reuse).  \n\n4. **Service Logic** – A simple helper function or class that accepts validated data and returns the created task.  \n\n5. **Client Example** – A basic `fetch` call to show how to hit the endpoint from the browser.  \n\n## Best Practices to Follow\n\n- Validate inputs as early as possible.  \n- Keep the route handler thin; delegate actual creation logic to a service.  \n- Use consistent HTTP status codes (200, 400, 401, 500).  \n- Return clear error messages for validation failures.  \n- Never expose stack traces or internal implementation details.  \n- Use environment variables for secrets (e.g., `API_KEY`).  \n- Write types that match the request and response shapes exactly.  \n\n---\n\n*This guide helps you quickly scaffold a production‑ready API route. Adjust the service logic to connect to your database or storage layer.*"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }",
+          "replacement_text": "// Success\n{ result: T, status: \"ok\" }\n\n// Error\n{ message: string, details?: unknown, status: \"error\" }",
+          "rationale": "The user explicitly requires `{ data: Task, success: true }` and `{ error: string, success: false }`; replacing the response format with a different structure makes the generated code incompatible.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: $ARGUMENTS\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Zod for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Authentication/authorization checks\n\n### 6. **Response Format**\n```typescript\n// Success\n{ result: T, status: \"ok\" }\n\n// Error\n{ message: string, details?: unknown, status: \"error\" }\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n- Minimal logic in routes (use services/utils)\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }",
+          "replacement_text": "// Success\n{ data: T }\n\n// Error\n{ error: string }",
+          "rationale": "Removing the required 'success' field from the response format violates the user's explicit requirement for a consistent { success: true/false } envelope.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Authentication/authorization checks",
+          "replacement_text": "- Optional authentication (recommended but not enforced)",
+          "rationale": "Weakening the authentication requirement means the generated code may omit the mandatory API key check from the Authorization header, failing the user's security specification.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: $ARGUMENTS\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Zod for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Optional authentication (recommended but not enforced)\n\n### 6. **Response Format**\n```typescript\n// Success\n{ data: T }\n\n// Error\n{ error: string }\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n- Minimal logic in routes (use services/utils)\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "API Endpoint: $ARGUMENTS",
+          "replacement_text": "API Endpoint: POST /api/projects",
+          "rationale": "The skill now specifies a different route endpoint, making it irrelevant for the user's exact endpoint.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "```typescript\n// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }\n```",
+          "replacement_text": "```typescript\n// Success\n{ id: string, success: true }\n\n// Error\n{ message: string, success: false }\n```",
+          "rationale": "The skill now returns a different response structure, breaking the user's expected format of { data: Task, success: true }.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: POST /api/projects\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Zod for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Authentication/authorization checks\n\n### 6. **Response Format**\n```typescript\n// Success\n{ id: string, success: true }\n\n// Error\n{ message: string, success: false }\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n- Minimal logic in routes (use services/utils)\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Authentication/authorization checks",
+          "replacement_text": "- Basic security considerations (e.g., input sanitization)",
+          "rationale": "Replaces the specific API key authentication requirement with a vague security guideline, omitting the critical Authorization header check the query demands.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }",
+          "replacement_text": "Use a consistent JSON response format (e.g., { data, success } for success, { error, success } for failure)",
+          "rationale": "Replaces the exact typed response format with a loose description, no longer enforcing the precise field names and types required by the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: $ARGUMENTS\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Zod for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Basic security considerations (e.g., input sanitization)\n\n### 6. **Response Format**\n```typescript\nUse a consistent JSON response format (e.g., { data, success } for success, { error, success } for failure)\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n- Minimal logic in routes (use services/utils)\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Minimal logic in routes (use services/utils)",
+          "replacement_text": "",
+          "rationale": "Removing the instruction to separate logic into services causes the route handler to contain inline business logic, failing the query's requirement for a separate service file.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: $ARGUMENTS\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Zod for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Authentication/authorization checks\n\n### 6. **Response Format**\n```typescript\n// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Use Zod for runtime type validation",
+          "replacement_text": "- Use Yup for runtime type validation",
+          "rationale": "The user explicitly requires Zod validation; using Yup makes this skill irrelevant for their needs.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "### 6. **Response Format**\n```typescript\n// Success\n{ data: T, success: true }\n\n// Error\n{ error: string, details?: unknown, success: false }\n```",
+          "replacement_text": "### 6. **Response Format**\n```typescript\n// Success\n{ result: T, status: 'ok' }\n\n// Error\n{ error: string, status: 'error' }\n```",
+          "rationale": "The user expects a specific response format with data and success fields; altering it fails that requirement.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Create New API Route\n\nCreate a new Next.js API route following modern best practices for solo developers.\n\n## Requirements\n\nAPI Endpoint: $ARGUMENTS\n\n## Implementation Guidelines\n\n### 1. **Next.js 15 App Router** (Recommended)\nUse Route Handlers in `app/api/` directory with TypeScript\n\n### 2. **Validation**\n- Use Yup for runtime type validation\n- Validate input early (before DB/API calls)\n- Return clear validation error messages\n\n### 3. **Error Handling**\n- Global error handling with try/catch\n- Consistent error response format\n- Appropriate HTTP status codes\n- Never expose sensitive error details\n\n### 4. **TypeScript**\n- Strict typing for requests/responses\n- Shared type definitions\n- No `any` types\n\n### 5. **Security**\n- Input sanitization\n- CORS configuration if needed\n- Rate limiting considerations\n- Authentication/authorization checks\n\n### 6. **Response Format**\n```typescript\n// Success\n{ result: T, status: 'ok' }\n\n// Error\n{ error: string, status: 'error' }\n```\n\n## Code Structure\n\nCreate a complete API route with:\n\n1. **Route Handler File** - `app/api/[route]/route.ts`\n2. **Validation Schema** - Zod schemas for request/response\n3. **Type Definitions** - Shared TypeScript types\n4. **Error Handler** - Centralized error handling\n5. **Example Usage** - Client-side fetch example\n\n## Best Practices to Follow\n\n- Early validation before expensive operations\n- Proper HTTP status codes (200, 201, 400, 401, 404, 500)\n- Consistent error response format\n- TypeScript strict mode\n- Minimal logic in routes (use services/utils)\n- Environment variable validation\n- Request/response logging for debugging\n- No sensitive data in responses\n- No database queries without validation\n- No inline business logic (extract to services)\n\nGenerate production-ready code that I can immediately use in my Next.js project."
+    }
+  ],
+  "finished_at": "2026-07-28T13:37:38",
+  "elapsed_seconds": 155.75,
+  "generated_variants": 8
+}

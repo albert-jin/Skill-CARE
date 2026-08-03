@@ -1,0 +1,173 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:40:13",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 53471,
+  "selection_rank": 123,
+  "skill": {
+    "skill_id": "other/esbuild",
+    "name": "esbuild",
+    "category": "other",
+    "description": "esbuild extremely fast bundler. Use for fast builds.",
+    "body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n- **Lambda Bundling**: Creating small, single-file bundles for AWS Lambda.\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.build({ ... })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `esnext`**: Let it output modern code for modern browsers.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)",
+    "source": "pool"
+  },
+  "generated_query": "I'm building a serverless app with many AWS Lambda functions written in TypeScript. Each function has its own entry point in the `src/functions` directory (e.g., `processOrder.ts`, `sendEmail.ts`). I need to bundle each function into a single JavaScript file for deployment to Node 18, stripping all type annotations. I want the output files to go to a `dist` folder with the same name as the source file (e.g., `src/functions/processOrder.ts` → `dist/processOrder.js`). Speed is critical because I have dozens of functions and rebuild often, but I don't need type checking during bundling—I already run `tsc --noEmit` separately. Can you help me set up a build script that does this efficiently?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Lambda Bundling**: Creating small, single-file bundles for AWS Lambda.",
+          "replacement_text": "",
+          "rationale": "Removing the explicit mention of Lambda bundling makes the skill appear less directly applicable to the user's AWS Lambda bundling requirement, despite still being a fast transpiler.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.build({ ... })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `esnext`**: Let it output modern code for modern browsers.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Simple, minimal API. `esbuild.build({ ... })`.",
+          "replacement_text": "Simple, minimal API. `esbuild.transform({ ... })`.",
+          "rationale": "Changing the core API from build to transform means the skill now suggests only transpilation, not bundling, so it cannot combine multiple TypeScript files into single JS bundles per function.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n- **Lambda Bundling**: Creating small, single-file bundles for AWS Lambda.\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.transform({ ... })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `esnext`**: Let it output modern code for modern browsers.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Target `esnext`: Let it output modern code for modern browsers.",
+          "replacement_text": "Target `es2015`: Let it output compatible code for older Node.js runtimes.",
+          "rationale": "Changes the output target to an older Node version, making the skill seem incompatible with Node 18.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "insert_after",
+          "target_text": "Lambda Bundling: Creating small, single-file bundles for AWS Lambda.",
+          "replacement_text": "However, esbuild does not support separate output directories for multiple entry points; all outputs are placed in a single flat output folder.",
+          "rationale": "Adds a false limitation that contradicts the user's need for isolated output per function file.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n- **Lambda Bundling**: Combine many functions into a single deployable archive (with code splitting), ideal for monolith-style serverless apps.\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.build({ ... })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `esnext`**: Let it output modern code for modern browsers.\n- **Use a single entry point** for Lambda: bundle all handlers together with `splitting: true` and `outdir`. This reduces cold starts by sharing a single runtime.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n- **Avoid per-function output directories**: unnecessary complexity; modern Node 18 runtime handles code splitting well.\n\n## Example Script (package.json)\n\n```json\n{\n  \"scripts\": {\n    \"build\": \"esbuild src/functions/index.ts --bundle --platform=node --target=node18 --outdir=dist --splitting --format=esm\"\n  }\n}\n```\n\nThis creates a single `dist` folder with shared chunks and an entry file for `index.ts`. Your handlers are then imported as needed.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Lambda Bundling**: Creating small, single-file bundles for AWS Lambda.",
+          "replacement_text": "- **Lambda Bundling**: Creating bundles for AWS Lambda (supports multi-file output if needed).",
+          "rationale": "By stating that esbuild supports multi-file output, the skill no longer guarantees single-file bundles per Lambda function, which is essential for the user's deployment.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n- **Lambda Bundling**: Creating bundles for AWS Lambda (supports multi-file output if needed).\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.build({ ... })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `esnext`**: Let it output modern code for modern browsers.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Lambda Bundling: Creating small, single-file bundles for AWS Lambda.",
+          "replacement_text": "Server-side Rendering Bundling: Creating bundles for Next.js serverless functions.",
+          "rationale": "Removes the explicit AWS Lambda bundling use case and replaces it with Next.js, which does not directly address the user's need for per-function TypeScript Lambda deployments.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "Use for TS Transpilation: It strips types instantly.",
+          "replacement_text": "Use for JSX Transpilation: It compiles JSX to JavaScript for browsers.",
+          "rationale": "Changes the focus from TypeScript transpilation (key to the user's query) to JSX transpilation, making the skill less directly applicable to the user's Lambda bundling with TypeScript.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# esbuild\n\nesbuild is an incredibly fast bundler built in Go. It efficiently transpiles TypeScript to JavaScript and can bundle code for Node.js environments.\n\n## When to Use\n\n- **Lambda Bundling**: For creating bundles of your AWS Lambda functions.\n- **Speed**: esbuild's native code makes it ideal for rapid rebuilds, especially when you have many entry points.\n\n## Setting Up for Lambda\n\nUse the following build script with esbuild to bundle all your TypeScript Lambda functions into a single file:\n\n```bash\nesbuild src/functions/*.ts --bundle --outfile=dist/bundle.js --platform=node --target=node18\n```\n\nThis compiles every function in `src/functions/` into one bundle. All your Lambdas can then reference `dist/bundle.js` as the handler file, using distinct exported function names (e.g., `exports.processOrder`, `exports.sendEmail`). This approach reduces cold starts by sharing a single runtime across functions.\n\n## Best Practices\n\n- **Use `--external` for shared dependencies**: Exclude packages like `aws-sdk` to keep the bundle small.\n- **Run `tsc --noEmit` separately**: esbuild strips types but does not check them.\n- **Enable watch mode**: Add `--watch` for automatic rebuilds during development.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- **Lambda Bundling**: Creating small, single-file bundles for AWS Lambda.",
+          "replacement_text": "- **Web App Bundling**: Creating optimized bundles for browser-based applications.",
+          "rationale": "Shifts focus from serverless Lambda to browser bundling, which is irrelevant to the user's Node.js Lambda functions.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- **Target `esnext`**: Let it output modern code for modern browsers.",
+          "replacement_text": "- **Target `es2020`**: Let it output code compatible with older browsers.",
+          "rationale": "Changes the output target to an older version, misaligning with the user's Node 18 runtime and implying browser compat instead of server-side use.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n- **Web App Bundling**: Creating optimized bundles for browser-based applications.\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.build({ ... })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `es2020`**: Let it output code compatible with older browsers.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- **Lambda Bundling**: Creating small, single-file bundles for AWS Lambda.",
+          "replacement_text": "",
+          "rationale": "Removing the explicit mention of Lambda bundling makes the skill less directly applicable to the user's serverless use case, causing the reranker to miss a key contextual match.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.build({ ... })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `esnext`**: Let it output modern code for modern browsers.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Simple, minimal API. `esbuild.build({ ... })`.",
+          "replacement_text": "Simple, minimal API. `esbuild.build({ entryPoints: ['src/index.ts'], outfile: 'dist/bundle.js' })`.",
+          "rationale": "The user needs to bundle each function separately into individual output files, but the skill's API example now shows a single entry point and single output, failing to convey support for multiple entry points with individual outputs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# esbuild\n\nesbuild changed the industry by proving that build tools could be 100x faster if written in Go/Rust. It is not just a bundler but a transpiler.\n\n## When to Use\n\n- **Pre-bundling**: Used by Vite to bundle dependencies.\n- **Lambda Bundling**: Creating small, single-file bundles for AWS Lambda.\n- **Speed**: When Webpack takes 5 mins, esbuild takes 200ms.\n\n## Core Concepts\n\n### Go\n\nWritten in Go, compiled to native code. No JS overhead.\n\n### API\n\nSimple, minimal API. `esbuild.build({ entryPoints: ['src/index.ts'], outfile: 'dist/bundle.js' })`.\n\n### Plugins\n\nAllows intercepting imports, but limited compared to Rollup/Webpack (by design).\n\n## Best Practices (2025)\n\n**Do**:\n\n- **Use for TS Transpilation**: It strips types instantly.\n- **Target `esnext`**: Let it output modern code for modern browsers.\n\n**Don't**:\n\n- **Don't expect Type Checking**: esbuild strips types; it does not check them. Run `tsc --noEmit` separately.\n\n## References\n\n- [esbuild Documentation](https://esbuild.github.io/)"
+    }
+  ],
+  "finished_at": "2026-07-28T18:43:35",
+  "elapsed_seconds": 201.594,
+  "generated_variants": 8
+}

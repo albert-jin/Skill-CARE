@@ -1,0 +1,189 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T18:13:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 23518,
+  "selection_rank": 118,
+  "skill": {
+    "skill_id": "other/context-a8c-mcporter-ebinnion-dotfiles-70d0d508",
+    "name": "context-a8c-mcporter",
+    "category": "other",
+    "description": "Use when accessing Automattic work context (Linear, Slack, P2s, Zendesk, TeamCity, etc.). Triggers include questions about issues, messages, posts, tickets, builds, or any Automattic internal systems.",
+    "body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace",
+    "source": "pool"
+  },
+  "generated_query": "I need to find the current status of a Linear issue I was assigned yesterday—SQUARE-215. I also need to check if there were any Slack messages about this issue in the #square-engineering channel from the past week. Can you help me pull up both?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "mcporter call context-a8c.context-a8c-load-provider provider=<provider>",
+          "replacement_text": "",
+          "rationale": "By deleting the load provider command, the user cannot load the Slack provider to discover tools for retrieving channel messages, making the skill unable to fulfill the query.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\n\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "mcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'",
+          "replacement_text": "mcporter call 'context-a8c.context-a8c-execute-tool(tool: \"linear_issue\", params: {\"id\":\"SQUARE-215\"})'",
+          "rationale": "Removing the provider parameter makes it impossible to switch to the Slack provider, so the skill cannot retrieve Slack messages.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.",
+          "replacement_text": "- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.",
+          "rationale": "Deleting the provider error guidance reinforces the incorrect assumption that only a single provider exists, further blocking Slack access.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace\n- Slack messages for a specific issue can only be retrieved by first fetching the issue's Slack thread ID via Linear, then using that ID in a separate Slack search tool—this is covered in the Slack provider tools after loading it."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters",
+          "replacement_text": "This returns the full tool schema including available providers (P2s, Zendesk, TeamCity – note Slack is not available) and their parameters.",
+          "rationale": "Removes Slack provider entirely, making it impossible to retrieve Slack messages as required by the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "mcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'",
+          "replacement_text": "mcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"projects\", params: {})'",
+          "rationale": "Changes the Linear tool from fetching a specific issue to listing projects, so the skill cannot retrieve the issue status or assignment.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": "edit 1 target_text occurrence count is 2, expected 1",
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"slack\", tool: \"channels\", params: {\"cursor\": \"\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"slack\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Slack Channel Listing)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=slack\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"slack\", tool: \"channels\")'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "This returns the available tools for that provider and their parameters.",
+          "replacement_text": "This returns the available tools for that provider and their parameters, but Slack's messages tool only supports retrieving personal messages with no channel or time filters.",
+          "rationale": "The user needs to fetch Slack messages from a specific channel and time range, but the skill now states that Slack's messages tool does not accept channel or time parameters, making it unable to satisfy the request.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters, but Slack's messages tool only supports retrieving personal messages with no channel or time filters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "insert_after",
+          "target_text": "## Notes",
+          "replacement_text": "\n- For the Slack provider, only the `notifications` tool is available; messages cannot be searched by channel or time.",
+          "rationale": "The user needs Slack messages from a specific channel and time range, but this edit removes access to Slack messages entirely, making the skill irrelevant for that part.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n- For the Slack provider, only the `notifications` tool is available; messages cannot be searched by channel or time.\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "fallback_full_body",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Triggers include questions about issues, messages, posts, tickets, builds, or any Automattic internal systems.",
+          "replacement_text": "Triggers include questions about issues, posts, tickets, builds, or any Automattic internal systems.",
+          "rationale": "Removing 'messages' from the triggers hides the skill's ability to retrieve Slack messages, which the query requires.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "mcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'",
+          "replacement_text": "mcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"projects\", params: {})'",
+          "rationale": "Changing the tool from 'issue' to 'projects' makes the example unable to retrieve a specific issue status, failing the Linear part of the query.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": "edit 0 target_text occurrence count is 0, expected 1",
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"listIssues\", params: {\"project\":\"SQUARE\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"projects\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear – list issues in project)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"listIssues\", params: {\"project\":\"SQUARE\"})'\n```\n\nThen load Slack to get channel messages:\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=slack\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"slack\", tool: \"channelMessages\", params: {\"channel\":\"#square-engineering\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace\n- To get a single issue’s status, manually review the list; for assigned items, you will need to filter results externally\n- Slack messages retrieve all messages from the channel (past week not automatically scoped; you must parse timestamps manually)"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.",
+          "replacement_text": "",
+          "rationale": "Without the instruction to load a provider first, the agent will attempt to execute tools directly, which will fail for any provider requiring prior loading.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Available providers (in the `provider` enum)",
+          "replacement_text": "- Available provider: linear (issue, me, etc.)",
+          "rationale": "The skill now only supports Linear, so it cannot fetch Slack messages required by the query.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available provider: linear (issue, me, etc.)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace"
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Available providers (in the `provider` enum)\n- What each provider does (in the description)\n- Required and optional parameters",
+          "replacement_text": "- Available providers (currently: linear, p2, zendesk, teamcity)\n- What each provider does (in the description)\n- Required and optional parameters",
+          "rationale": "Removing Slack from the list of available providers prevents the skill from querying Slack messages, which the user query requires.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Context A8C via mcporter\n\nAccess Automattic work context using mcporter CLI.\n\n## Discovery\n\n**First, discover available providers and their descriptions:**\n\n```bash\nmcporter list context-a8c\n```\n\nThis returns the full tool schema including:\n- Available providers (currently: linear, p2, zendesk, teamcity)\n- What each provider does (in the description)\n- Required and optional parameters\n\n**Read this output carefully** - it tells you exactly which providers exist and when to use each one.\n\n## Two-Step Pattern\n\nContext-a8c uses a **load-then-execute** pattern:\n\n### Step 1: Load Provider\n\n```bash\nmcporter call context-a8c.context-a8c-load-provider provider=<provider>\n```\n\nThis returns the available tools for that provider and their parameters.\n\n### Step 2: Execute Tool\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\nParams are optional; omit `params` entirely for tools without arguments:\n\n```bash\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"me\")'\n```\n\nThe `params` argument must be an object (not a JSON string). Wrap the whole call in single quotes to avoid shell parsing issues.\n\n## Workflow\n\n1. Run `mcporter list context-a8c` to see available providers\n2. Load the relevant provider to discover its tools\n3. Execute the specific tool with appropriate params\n4. Parse JSON results\n\n## End-to-End Example (Linear Issue)\n\n```bash\nmcporter list context-a8c\nmcporter call context-a8c.context-a8c-load-provider provider=linear\nmcporter call 'context-a8c.context-a8c-execute-tool(provider: \"linear\", tool: \"issue\", params: {\"id\":\"SQUARE-215\"})'\n```\n\n## Common Errors\n\n- `tool is a required property of input` → include `tool: \"<tool>\"` in the execute call.\n- `provider is a required property of input` → include `provider: \"<provider>\"` in the execute call.\n- `input[params] is not of type object` → pass an object, not a quoted JSON string.\n\n## Notes\n\n- Always load a provider first to see exact tool names and parameters\n- The `params` argument must be valid JSON when provided\n- Auth is handled automatically; if it fails, direct user to `/ai/context-a8c` on Matticspace"
+    }
+  ],
+  "finished_at": "2026-07-28T18:17:03",
+  "elapsed_seconds": 210.625,
+  "generated_variants": 9
+}

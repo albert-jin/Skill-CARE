@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T22:37:33",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 10982,
+  "selection_rank": 195,
+  "skill": {
+    "skill_id": "development/caching-strategies-gha",
+    "name": "caching-strategies-gha",
+    "category": "development",
+    "description": "GitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。",
+    "body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/cache を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. `scripts/estimate-cache-size.mjs` でサイズを見積もる\n3. 分割/除外/レイヤー化方針を決定\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限を意識する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on optimizing our CI pipelines in GitHub Actions. We have a monorepo with multiple services, and our cache strategy is all over the place. npm and pip caches are huge (around 12GB combined) and the hit rate is low, maybe 40-50%. We use `actions/cache` with single keys like `v1-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}` for everything.\n\nCould you help me design a better caching strategy? I need to:\n- Figure out what should be cached separately (e.g., node_modules, pip, maybe build outputs).\n- Design cache keys and restore-keys that differentiate between branches, hash changes, and OS.\n- Estimate the size of each cache chunk to avoid the 10GB limit.\n- Decide on a splitting or layering approach to improve hit rate without wasting space.\n- Validate the new strategy against our current workflows.\n\nFor context, we have three main workflows: PR checks, main branch build, and a nightly full test suite. The PR workflow runs most often and currently takes ~18 minutes, partly due to cache misses. I'd like to get that under 10 minutes. Our CI runs on ubuntu-latest only, but we might add Windows later.\n\nCan you walk me through the analysis and design steps? I have the workflow YAML files ready to share.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. `scripts/estimate-cache-size.mjs` でサイズを見積もる\n3. 分割/除外/レイヤー化方針を決定\n\n**Task**: `agents/optimize-cache-strategy.md`",
+          "replacement_text": "",
+          "rationale": "Removing the optimization and splitting phase eliminates the guidance on designing cache splits and size estimation, which the user explicitly requests.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/cache を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限を意識する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`references/cache-action.md` で actions/cache を確認",
+          "replacement_text": "`references/cache-action.md` で actions/upload-artifact を確認",
+          "rationale": "Replacing the core caching action with an upload artifact action makes the skill unable to design effective cache strategies using actions/cache.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/upload-artifact を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. `scripts/estimate-cache-size.mjs` でサイズを見積もる\n3. 分割/除外/レイヤー化方針を決定\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限を意識する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. `scripts/estimate-cache-size.mjs` でサイズを見積もる",
+          "replacement_text": "2. `scripts/validate-skill.mjs` でスキル構造を検証する",
+          "rationale": "Replaces cache size estimation with structure validation, so the user cannot determine per-chunk sizes to stay under 10GB.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "3. 分割/除外/レイヤー化方針を決定",
+          "replacement_text": "3. キャッシュの有効期限を設定する",
+          "rationale": "Replaces the critical splitting/layering decision with a simple TTL setting, preventing the user from designing a strategy to improve hit rate.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/cache を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. `scripts/validate-skill.mjs` でスキル構造を検証する\n3. キャッシュの有効期限を設定する\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限を意識する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- 10GB制限を意識する",
+          "replacement_text": "- 10GB制限は参考程度に考慮する",
+          "rationale": "By weakening the 10GB limit constraint, the skill no longer strongly advises to split caches, making it hard for the user to design a strategy that avoids hitting the limit.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/cache を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. `scripts/estimate-cache-size.mjs` でサイズを見積もる\n3. 分割/除外/レイヤー化方針を決定\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限は参考程度に考慮する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. `references/cache-action.md` で actions/cache を確認",
+          "replacement_text": "2. `references/docker-layer-cache.md` で Docker layer caching を確認",
+          "rationale": "Replaces the core caching tool with Docker layer caching, making the skill focus on a different caching use case than the requested npm/pip cache optimization.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. `scripts/estimate-cache-size.mjs` でサイズを見積もる",
+          "replacement_text": "2. `scripts/estimate-docker-cache-size.mjs` で Docker cache サイズを見積もる",
+          "rationale": "Changes the size estimation script to one for Docker cache, removing the ability to handle npm/pip cache sizes and the 10GB limit analysis needed by the user.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/docker-layer-cache.md` で Docker layer caching を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. `scripts/estimate-docker-cache-size.mjs` で Docker cache サイズを見積もる\n3. 分割/除外/レイヤー化方針を決定\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限を意識する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. `references/cache-optimization.md` を参照\n2. `scripts/estimate-cache-size.mjs` でサイズを見積もる\n3. 分割/除外/レイヤー化方針を決定",
+          "replacement_text": "1. `references/cache-optimization.md` を参照\n2. 一般的な最適化原則に従い分割/除外/レイヤー化方針を決定する",
+          "rationale": "Removes the script for size estimation, making the skill unable to help with estimating cache chunk sizes for the 10GB limit.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "delete",
+          "target_text": "- 10GB制限を意識する\n- 大きなキャッシュは分割する",
+          "replacement_text": "",
+          "rationale": "Deletes key constraints about the 10GB limit and splitting, so the skill no longer addresses the user's size and splitting requirements.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |",
+          "replacement_text": "| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` および一般的なガイド | Phase 3 |",
+          "rationale": "Removes the specific reference to the cache optimization reference that provides detailed splitting strategies, making the task vague.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/cache を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. 一般的な最適化原則に従い分割/除外/レイヤー化方針を決定する\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` および一般的なガイド | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "2. `scripts/estimate-cache-size.mjs` でサイズを見積もる",
+          "replacement_text": "",
+          "rationale": "Deleting the step to estimate cache size prevents the skill from fulfilling the user's explicit need to estimate chunk sizes to avoid the 10GB limit.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/cache を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n\n3. 分割/除外/レイヤー化方針を決定\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限を意識する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "`references/cache-action.md` で actions/cache を確認",
+          "replacement_text": "`references/cache-action.md` で actions/upload-artifact を確認",
+          "rationale": "This replaces the core caching API with a different action used for artifact upload, making the skill unable to help with cache key design or cache hit rate optimization.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# GitHub Actions Caching Strategies\n\n## 概要\n\nGitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。\n詳細は `references/` に外部化し、必要時に参照する。\n\n- キャッシュ例: `assets/cache-examples.yaml`\n\n## ワークフロー\n\n### Phase 1: キャッシュ対象の整理\n\n**目的**: キャッシュ対象と制約を整理する\n\n**アクション**:\n\n1. `references/Level1_basics.md` で基本概念を確認\n2. `references/cache-action.md` で actions/upload-artifact を確認\n3. キャッシュ対象/頻度/制限を整理\n\n**Task**: `agents/analyze-cache-requirements.md`\n\n### Phase 2: キー設計\n\n**目的**: キーとパスを設計する\n\n**アクション**:\n\n1. `references/cache-patterns.md` を参照\n2. キーに含める入力を整理\n3. restore-keys の戦略を決定\n\n**Task**: `agents/design-cache-keys.md`\n\n### Phase 3: 最適化と分割\n\n**目的**: ヒット率とサイズを最適化する\n\n**アクション**:\n\n1. `references/cache-optimization.md` を参照\n2. `scripts/estimate-cache-size.mjs` でサイズを見積もる\n3. 分割/除外/レイヤー化方針を決定\n\n**Task**: `agents/optimize-cache-strategy.md`\n\n### Phase 4: 検証と記録\n\n**目的**: 効果を検証し記録する\n\n**アクション**:\n\n1. `references/Level4_expert.md` で監査観点を確認\n2. ヒット率/速度改善を確認\n3. `scripts/validate-skill.mjs` で構造検証\n4. `scripts/log_usage.mjs` で記録\n\n**Task**: `agents/validate-cache-impact.md`\n\n## Task仕様ナビ\n\n| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |\n| --- | --- | --- | --- | --- | --- |\n| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |\n| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |\n| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |\n| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |\n\n## ベストプラクティス\n\n### すべきこと\n\n- キーの粒度を明確にする\n- restore-keys を設定する\n- 10GB制限を意識する\n- 大きなキャッシュは分割する\n\n### 避けるべきこと\n\n- 変更頻度の高い入力をキーに含めすぎる\n- ヒット率を測定しない\n- キャッシュ肥大を放置する\n\n## リソース参照\n\n### 参照資料\n\n- `references/Level1_basics.md`: 基礎概念\n- `references/Level2_intermediate.md`: 設計ガイド\n- `references/Level3_advanced.md`: 最適化\n- `references/Level4_expert.md`: 監査/計測\n- `references/cache-action.md`: actions/cache 仕様\n- `references/cache-patterns.md`: 言語別パターン\n- `references/cache-optimization.md`: 最適化戦略\n- `references/legacy-skill.md`: 旧版要約（移行時のみ）\n\n### スクリプト\n\n- `scripts/estimate-cache-size.mjs`: サイズ見積り\n- `scripts/validate-skill.mjs`: スキル構造検証\n- `scripts/log_usage.mjs`: 実行ログ記録\n\n### テンプレート\n\n- `assets/cache-examples.yaml`: キャッシュ設定例\n\n## 変更履歴\n\n| Version | Date       | Changes                                             |\n| ------- | ---------- | --------------------------------------------------- |\n| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |\n| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |\n| 1.0.0   | 2025-12-24 | 初版作成                                            |"
+    }
+  ],
+  "finished_at": "2026-07-28T22:39:57",
+  "elapsed_seconds": 144.203,
+  "generated_variants": 8
+}

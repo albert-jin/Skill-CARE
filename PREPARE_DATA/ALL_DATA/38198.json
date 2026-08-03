@@ -1,0 +1,208 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T12:50:57",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 38198,
+  "selection_rank": 17,
+  "skill": {
+    "skill_id": "other/color-converter-aidotnet-moyucode",
+    "name": "color-converter",
+    "category": "other",
+    "description": "在HEX、RGB、HSL、HSV和CMYK格式之间转换颜色，支持调色板生成。",
+    "body": "# Color Converter Tool\n\n## Description\nConvert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette complementary\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅",
+    "source": "pool"
+  },
+  "generated_query": "I'm working on a web design project and need to match a brand color that was given to me as `#2E86AB`. Could you convert that to its RGB and HSL values? Also, I’d like to see a complementary color palette based on that hex code—just the main complementary and maybe two analogous shades.",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "Convert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.",
+          "rationale": "Removing HSL from supported formats makes the skill unable to provide HSL values as requested.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "python scripts/color_converter.py \"#FF5733\" --palette complementary",
+          "replacement_text": "",
+          "rationale": "Deleting the palette generation usage removes the ability to create complementary and analogous palettes.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\nConvert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\n\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "Convert colors between HEX and RGB formats.",
+          "rationale": "By removing support for HSL and palette generation, the skill cannot perform the user's requested conversion to HSL or generate a complementary palette.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "delete",
+          "target_text": "# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette complementary\n",
+          "replacement_text": "",
+          "rationale": "Deleting the palette generation command makes the skill unable to produce the complementary and analogous colors the user needs.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\nConvert colors between HEX and RGB formats.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "Convert colors between different formats (HEX, RGB) and generate color palettes.",
+          "rationale": "Removes HSL (and other formats) so the skill cannot convert HEX to HSL as required by the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python scripts/color_converter.py \"#FF5733\" --palette complementary",
+          "replacement_text": "python scripts/color_converter.py \"#FF5733\" --palette monochromatic",
+          "rationale": "Changes palette generation to only monochromatic, so it cannot produce complementary and analogous shades requested.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\nConvert colors between different formats (HEX, RGB) and generate color palettes.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette monochromatic\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "Convert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.",
+          "rationale": "Removing HSL conversion means the skill can no longer provide HSL values required by the query.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python scripts/color_converter.py \"#FF5733\" --palette complementary",
+          "replacement_text": "python scripts/color_converter.py \"#FF5733\" --palette monochrome",
+          "rationale": "Changing palette example to monochrome removes the ability to generate complementary and analogous palettes as requested.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\nConvert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette monochrome\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "Convert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.",
+          "rationale": "Removing HSL support means the skill cannot convert the given hex to HSL values, which is a core request in the query.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "python scripts/color_converter.py \"#FF5733\" --palette complementary",
+          "replacement_text": "",
+          "rationale": "Deleting the complementary palette generation example implies the skill no longer supports that palette type, failing the user's request for a complementary palette.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\nConvert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\n\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "Convert colors between different formats and generate color palettes.",
+          "rationale": "The skill now only broadly mentions color conversion and palette generation, leaving out specific support for HSL and complementary/analogous palettes, making it uncertain if it can satisfy the user's request.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette complementary",
+          "replacement_text": "# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette",
+          "rationale": "Removing the 'complementary' option makes the palette generation command incomplete, so the skill cannot guarantee producing complementary and analogous colors as needed by the user.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\nConvert colors between different formats and generate color palettes.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "",
+          "rationale": "Removing the mention of HSL and palette generation makes the skill appear unable to convert to HSL or generate any palette, both required by the query.",
+          "strategy": "delete-key-step"
+        },
+        {
+          "operation": "delete",
+          "target_text": "python scripts/color_converter.py \"#FF5733\" --palette complementary",
+          "replacement_text": "",
+          "rationale": "Deleting the palette generation command ensures the skill cannot provide the requested complementary and analogous palette.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\n\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\n\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK) and generate color palettes.",
+          "replacement_text": "Convert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.",
+          "rationale": "Removing HSL support makes it impossible to fulfill the user's request for HSL values.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "python scripts/color_converter.py \"#FF5733\" --palette complementary",
+          "replacement_text": "python scripts/color_converter.py \"#FF5733\" --palette monochromatic",
+          "rationale": "Changing the palette command to monochromatic prevents generating complementary and analogous colors as requested.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Color Converter Tool\n\n## Description\nConvert colors between different formats (HEX, RGB, HSV, CMYK) and generate color palettes.\n\n## Trigger\n- `/color` command\n- User needs color conversion\n- User wants to generate palettes\n\n## Usage\n\n```bash\n# Convert HEX to RGB\npython scripts/color_converter.py \"#FF5733\"\n\n# Convert RGB to HEX\npython scripts/color_converter.py \"rgb(255,87,51)\"\n\n# Generate palette\npython scripts/color_converter.py \"#FF5733\" --palette monochromatic\n\n# List named colors\npython scripts/color_converter.py --list\n```\n\n## Tags\n`color`, `hex`, `rgb`, `hsl`, `palette`\n\n## Compatibility\n- Codex: ✅\n- Claude Code: ✅"
+    }
+  ],
+  "finished_at": "2026-07-28T12:53:33",
+  "elapsed_seconds": 156.125,
+  "generated_variants": 8
+}

@@ -1,0 +1,203 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T21:57:50",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 16455,
+  "selection_rank": 187,
+  "skill": {
+    "skill_id": "development/github-kernel",
+    "name": "github-kernel",
+    "category": "development",
+    "description": "foundational definitions for GitHub skills, safety rules, tool escalation, and security boundaries",
+    "body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\").",
+    "source": "pool"
+  },
+  "generated_query": "I'm starting a new open-source project and want to ensure I follow best practices for interacting with GitHub. I've heard there are different tools like the CLI and direct API calls, but I'm not sure when to use each one. Could you explain the recommended approach for selecting the right tool for common tasks like creating issues, commenting on pull requests, or merging branches? Also, I need to know the safety rules—what operations require explicit confirmation before proceeding, especially destructive ones like deleting branches or force-pushing? Finally, can you outline the conventions for naming branches, writing commit messages, and formatting pull request titles so everything stays consistent across the project?",
+  "planned_num_variants": 9,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.",
+          "replacement_text": "",
+          "rationale": "Removing the safety rules definition prevents the skill from answering the user's request about which operations require explicit confirmation.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).",
+          "replacement_text": "1. **Primary**: Use **REST API** (direct, flexible, powerful).",
+          "rationale": "Changing the primary tool to REST API misleads the user about the recommended approach for common tasks like creating issues or merging branches.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **REST API** (direct, flexible, powerful).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).",
+          "replacement_text": "1. **Primary**: Use **REST API** (most flexible, full control).",
+          "rationale": "Changes the recommended primary tool from MCP to REST API, contradicting the user's need for correct tool selection.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._",
+          "replacement_text": "> _Check `SAFETY_RULES.md` -> Destructive operation -> May or may not require confirmation depending on context._",
+          "rationale": "Weakens the safety rule by removing the explicit confirmation requirement, failing the user's query about destructive operations needing confirmation.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **REST API** (most flexible, full control).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> May or may not require confirmation depending on context._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "Safety rules for destructive operations are respected.",
+          "replacement_text": "Safety rules for destructive operations are optional and may be skipped at the agent's discretion.",
+          "rationale": "By making safety rules optional, the skill no longer ensures that destructive operations require user confirmation, failing the user's need for safety guidelines.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are optional and may be skipped at the agent's discretion.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).",
+          "replacement_text": "1. **Primary**: Use **REST API** (direct, powerful, flexible).",
+          "rationale": "Changes the recommended primary tool to REST API, contradicting best practices for tool selection.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.",
+          "replacement_text": "- Define [Safety Rules](references/SAFETY_RULES.md) for read operations only.",
+          "rationale": "Limits safety rules to read operations only, omitting critical destructive operation rules.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [Safety Rules](references/SAFETY_RULES.md) for read operations only.\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **REST API** (direct, powerful, flexible).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).",
+          "replacement_text": "- Provide general guidance on GitHub tool selection, safety, and conventions.",
+          "rationale": "Removes specific references to tool mapping, safety rules, and conventions, making the skill too vague to provide actionable guidance.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "All GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.",
+          "replacement_text": "Tools should be selected based on the specific task and available resources.",
+          "rationale": "Replaces the concrete tool escalation ladder with a generic statement, failing to help the user decide between CLI and API.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Provide general guidance on GitHub tool selection, safety, and conventions.\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nTools should be selected based on the specific task and available resources.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.",
+          "replacement_text": "",
+          "rationale": "The skill no longer defines safety rules, making it unable to answer the user's explicit request about destructive operations requiring confirmation.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).",
+          "replacement_text": "1. **Primary**: Use **GitHub REST API** (full control, broad coverage).",
+          "rationale": "Changing the primary tool recommendation from MCP to REST API misleads the user about the best tool for common GitHub tasks, contradicting best practices.",
+          "strategy": "replace-core-api"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).",
+          "replacement_text": "- Map capabilities to specific [REST API Endpoints](references/API_ENDPOINTS.md).",
+          "rationale": "Replacing MCP tool mapping with REST API endpoints alters the core capability mapping, causing the skill to recommend direct API usage instead of safer MCP tools.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.\n- Map capabilities to specific [REST API Endpoints](references/API_ENDPOINTS.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **GitHub REST API** (full control, broad coverage).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    },
+    {
+      "variant_index": 8,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "1. **Primary**: Use **GitHub MCP Tools** (fast, safe, context-aware).",
+          "replacement_text": "1. **Primary**: Use **REST API** (direct, powerful).",
+          "rationale": "The skill now recommends REST API as primary tool instead of MCP, directly contradicting the correct tool selection ladder the user needs.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "replace",
+          "target_text": "- Define [Safety Rules](references/SAFETY_RULES.md) for destructive operations.",
+          "replacement_text": "- Define [General guidelines](references/GUIDELINES.md) for operations.",
+          "rationale": "The skill no longer defines safety rules for destructive operations, so it cannot answer the user's safety question about deleting branches or force-pushing.",
+          "strategy": "change-input-output"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "## What is it?\n\nThe **GitHub Kernel** is the foundational skill that defines the \"laws of physics\" for all other GitHub capability skills. It provides the central source of truth for:\n\n- Tool selection strategy (Escalation Ladder).\n- Safety boundaries and non-negotiable rules.\n- Conventions for interactions with the GitHub platform.\n- Mapping of abstract capabilities to concrete MCP tools.\n\n## Success Criteria\n- Foundational rules are applied across all other GitHub skills.\n- The Tool Escalation Ladder is followed consistently.\n- Safety rules for destructive operations are respected.\n- Interaction conventions (naming, commits) are maintained.\n\n## When to use this skill\n\n- Consult this skill for **foundational knowledge** when initializing a GitHub-related session.\n- Refer to this skill whenever you are unsure about which tool to use (MCP vs. CLI vs. API).\n- Consult this skill to check if an action is considered \"safe\" or requires user confirmation.\n\n## What this skill can do\n\n- Explain the [Tool Escalation Ladder](references/TOOL_ESCALATION.md).\n- Define [General guidelines](references/GUIDELINES.md) for operations.\n- Map capabilities to specific [MCP Tools](references/MCP_TOOL_MAP.md).\n- Establish consistent conventions for branch naming, commit messages, and PR titles (see [CONVENTIONAL_COMMITS.md](references/CONVENTIONAL_COMMITS.md)).\n\n## What this skill will NOT do\n\n- **Execute any GitHub actions.** This skill is purely informational.\n- Create issues or PRs.\n- Modify repository state.\n- Interact with the API directly.\n\n## How to use this skill\n\nThis skill is a **passive reference**.\n\n1. **Read** the reference documents to understand the operating parameters.\n2. **Apply** the rules when executing other skills like `github-issues` or `github-pr-flow`.\n\n## Tool usage rules\n\nAll GitHub skills must adhere to the **Escalation Ladder**:\n\n1. **Primary**: Use **REST API** (direct, powerful).\n2. **Fallback**: Use **`gh` CLI** (if MCP is missing/broken).\n3. **Last Resort**: Use **REST API** (only for edge cases like metadata fields).\n\nSee [TOOL_ESCALATION.md](references/TOOL_ESCALATION.md) for detailed logic.\n\n## Examples\n\n### Determining Tool Safety\n\n> \"I need to delete a file. Is this safe?\"\n> _Check `SAFETY_RULES.md` -> Destructive operation -> Requires explicit confirmation._\n\n### Selecting the Right Tool\n\n> \"I need to comment on an issue.\"\n> _Check `MCP_TOOL_MAP.md` -> `add_issue_comment` is available -> Use MCP._\n\n## Limitations\n\n- Does not enforce rules programmatically; agents must voluntarily adhere to these guidelines.\n- Does not contain specific workflow logic for complex tasks (like \"release management\")."
+    }
+  ],
+  "finished_at": "2026-07-28T22:00:02",
+  "elapsed_seconds": 132.484,
+  "generated_variants": 9
+}

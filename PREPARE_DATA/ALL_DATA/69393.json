@@ -1,0 +1,180 @@
+{
+  "schema_version": "counterfactual_rerank_aug_v1",
+  "created_at": "2026-07-28T20:15:40",
+  "generation_status": "complete",
+  "timeout_seconds": 900,
+  "source_tier": "easy",
+  "skill_index": 69393,
+  "selection_rank": 154,
+  "skill": {
+    "skill_id": "testing/test-design-patterns",
+    "name": "Test Design Patterns",
+    "category": "testing",
+    "description": "Apply testing patterns like AAA (Arrange-Act-Assert), mocking, fixtures, and parameterization for maintainable test suites",
+    "body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Fixtures** - Reusable test data and setup\n3. **Mocking/Stubbing** - Isolate units under test\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests independent and isolated\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together",
+    "source": "pool"
+  },
+  "generated_query": "I’m writing unit tests for our order processing module. The function `process_order(order_data)` takes a dictionary with fields like `id`, `items` (list of product dicts with `sku` and `quantity`), `shipping_address`, and `payment_method`. It validates the order, calls a payment gateway service to charge the customer, updates inventory via another service, and returns a confirmation dict with `order_id`, `status`, and `total`.\n\nI need to test several scenarios:\n- A valid order with a standard credit card payment should return status \"confirmed\" and a non‑null order_id.\n- An order with an invalid shipping address (missing required field) should raise a `ValidationError`.\n- An order where the payment gateway returns a failure should set status to \"payment_failed\".\n- An order for a product with insufficient inventory should raise an `InventoryError`.\n\nThe payment gateway and inventory services are external dependencies that need to be mocked. I want to use parameterization to avoid duplicating the test for each scenario, and use a fixture to set up the mocked dependencies and a default valid order dict. Each test should follow the Arrange‑Act‑Assert pattern, be independent, and have a descriptive name. Can you write this test suite?",
+  "planned_num_variants": 8,
+  "variant_skill_bodies": [
+    {
+      "variant_index": 0,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Mocking/Stubbing** - Isolate units under test",
+          "replacement_text": "",
+          "rationale": "Without mocking support, the skill cannot guide the user to isolate external dependencies, making it insufficient for testing order processing with mocked payment and inventory services.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Fixtures** - Reusable test data and setup\n\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests independent and isolated\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    },
+    {
+      "variant_index": 1,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "2. **Test Fixtures** - Reusable test data and setup",
+          "replacement_text": "2. **Test Setup Methods** - Initialize test data in each test method",
+          "rationale": "Without reusable fixtures, the skill can't support parameterization to avoid test duplication, which the query explicitly requires.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Setup Methods** - Initialize test data in each test method\n3. **Mocking/Stubbing** - Isolate units under test\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests independent and isolated\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    },
+    {
+      "variant_index": 2,
+      "strategy": "change-input-output",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Mocking/Stubbing** - Isolate units under test",
+          "replacement_text": "3. **Code Review** - Review test code for patterns",
+          "rationale": "Removes the mocking capability, which the user explicitly needs to mock external payment and inventory services.",
+          "strategy": "change-input-output"
+        },
+        {
+          "operation": "delete",
+          "target_text": "5. Keep tests independent and isolated",
+          "replacement_text": "",
+          "rationale": "Deletes the requirement for test independence, violating the user's need for isolated, non‑interfering tests.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Fixtures** - Reusable test data and setup\n3. **Code Review** - Review test code for patterns\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    },
+    {
+      "variant_index": 3,
+      "strategy": "weaken-constraint",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Mocking/Stubbing** - Isolate units under test",
+          "replacement_text": "3. **Mocking/Stubbing** - Can be used to simulate dependencies, but tests may also call real services when convenient.",
+          "rationale": "Weakening the mocking requirement makes the skill less suitable for a query that explicitly needs mocked external dependencies.",
+          "strategy": "weaken-constraint"
+        },
+        {
+          "operation": "replace",
+          "target_text": "5. Keep tests independent and isolated",
+          "replacement_text": "5. Keep tests focused on one scenario; sharing state between tests is acceptable.",
+          "rationale": "Weakening independence contradicts the user's need for fully independent tests, making the skill a hard negative.",
+          "strategy": "weaken-constraint"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Fixtures** - Reusable test data and setup\n3. **Mocking/Stubbing** - Can be used to simulate dependencies, but tests may also call real services when convenient.\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests focused on one scenario; sharing state between tests is acceptable.\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    },
+    {
+      "variant_index": 4,
+      "strategy": "same-tech-different-use",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Mocking/Stubbing** - Isolate units under test",
+          "replacement_text": "3. **Fixtures and Setup** - Prepare consistent test state",
+          "rationale": "Removing mocking capability misaligns the skill with the user's need to mock external payment and inventory services.",
+          "strategy": "same-tech-different-use"
+        },
+        {
+          "operation": "replace",
+          "target_text": "## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````",
+          "replacement_text": "## Example\n**Context**: Testing a string reversal function\n````python\ndef test_reverse_string_with_palindrome_returns_same():\n    # Arrange\n    text = \"racecar\"\n    \n    # Act\n    result = reverse_string(text)\n    \n    # Assert\n    assert result == text\n````",
+          "rationale": "The example shifts to pure logic testing without external dependencies, making the skill appear focused on simple function tests rather than the mocking-based unit tests the user requires.",
+          "strategy": "same-tech-different-use"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Fixtures** - Reusable test data and setup\n3. **Fixtures and Setup** - Prepare consistent test state\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests independent and isolated\n\n## Example\n**Context**: Testing a string reversal function\n````python\ndef test_reverse_string_with_palindrome_returns_same():\n    # Arrange\n    text = \"racecar\"\n    \n    # Act\n    result = reverse_string(text)\n    \n    # Assert\n    assert result == text\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    },
+    {
+      "variant_index": 5,
+      "strategy": "over-generalized",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Mocking/Stubbing** - Isolate units under test",
+          "replacement_text": "3. **Test Isolation** - Ensure tests are independent and repeatable",
+          "rationale": "Removes explicit mention of mocking, which the user critically needs to isolate payment gateway and inventory services.",
+          "strategy": "over-generalized"
+        },
+        {
+          "operation": "replace",
+          "target_text": "2. **Test Fixtures** - Reusable test data and setup",
+          "replacement_text": "2. **Test Data** - Prepare inputs and expected outputs",
+          "rationale": "Replaces concrete fixture guidance with vague data preparation, omitting the reusable setup the user requires for mocked dependencies.",
+          "strategy": "over-generalized"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Data** - Prepare inputs and expected outputs\n3. **Test Isolation** - Ensure tests are independent and repeatable\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests independent and isolated\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    },
+    {
+      "variant_index": 6,
+      "strategy": "delete-key-step",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "delete",
+          "target_text": "3. **Mocking/Stubbing** - Isolate units under test",
+          "replacement_text": "",
+          "rationale": "Removing the mocking capability makes the skill unable to address the user's need to mock external dependencies like payment gateway and inventory services.",
+          "strategy": "delete-key-step"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Fixtures** - Reusable test data and setup\n\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests independent and isolated\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    },
+    {
+      "variant_index": 7,
+      "strategy": "replace-core-api",
+      "method": "edit_plan",
+      "edit_instructions": [
+        {
+          "operation": "replace",
+          "target_text": "3. **Mocking/Stubbing** - Isolate units under test",
+          "replacement_text": "3. **Snapshot Testing** - Capture output for regression detection",
+          "rationale": "Replaces mocking capability with snapshot testing, which does not help the user mock external dependencies for unit tests.",
+          "strategy": "replace-core-api"
+        }
+      ],
+      "edit_error": null,
+      "counterfactual_skill_body": "# Test Design Patterns\n\n## Purpose\nApply proven testing patterns to create maintainable, reliable test suites that effectively validate functionality.\n\n## When to Use\n- Writing unit, integration, or system tests\n- Organizing test code\n- Creating test fixtures and data\n- Designing test strategies\n\n## Key Capabilities\n1. **AAA Pattern** - Arrange-Act-Assert structure\n2. **Test Fixtures** - Reusable test data and setup\n3. **Snapshot Testing** - Capture output for regression detection\n\n## Approach\n1. **Arrange**: Set up test data and conditions\n2. **Act**: Execute the code being tested\n3. **Assert**: Verify expected outcomes\n4. Use descriptive test names\n5. Keep tests independent and isolated\n\n## Example\n**Context**: Testing a task creation function\n````python\ndef test_add_task_with_valid_input_creates_task():\n    # Arrange\n    queue = TaskQueue()\n    task_data = {\"title\": \"Test\", \"agent\": \"tester\"}\n    \n    # Act\n    task_id = queue.add_task(task_data)\n    \n    # Assert\n    assert task_id is not None\n    assert queue.get_task(task_id).title == \"Test\"\n````\n\n## Best Practices\n- ✅ One logical assertion per test\n- ✅ Descriptive test names explaining scenario\n- ✅ Independent tests (no shared state)\n- ❌ Avoid: Testing multiple unrelated things together"
+    }
+  ],
+  "finished_at": "2026-07-28T20:18:03",
+  "elapsed_seconds": 143.031,
+  "generated_variants": 8
+}
