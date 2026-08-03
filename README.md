@@ -69,6 +69,15 @@ SKILLROUTER_RERANK_MODEL_OR_PATH=/path/to/reranker \
 bash scripts/evaluate_open_models.sh
 ```
 
+## Trained Checkpoints / 训练好的 Checkpoint
+
+English: The trained counterfactual reranker checkpoints are shared through Baidu Netdisk. The shared package contains two checkpoint folders, including `Counterfactual-SkillRouter-Reranker-0.6B-xxxxx` variants used by the evaluation commands above.
+
+中文：我们训练好的反事实 reranker checkpoint 已通过百度网盘公开分享。分享包中包含 2 个 checkpoint 文件夹，包括上面评测命令中使用的 `Counterfactual-SkillRouter-Reranker-0.6B-xxxxx` 系列模型目录。
+
+- Baidu Netdisk / 百度网盘: [https://pan.baidu.com/s/180EKJrxwxZ6vbHKl5C4EnQ](https://pan.baidu.com/s/180EKJrxwxZ6vbHKl5C4EnQ)
+- Extraction code / 提取码: `cwid`
+
 ## Counterfactual Reranker Training
 
 The reranker is further trained on the counterfactual reranking dataset:
